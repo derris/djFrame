@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="140994851">
+    <data-source source="LOCAL" name="Django default" uuid="64a66ccc-3836-4d90-a7ee-e95b7d3a146c">
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/yard</jdbc-url>
+      <user-name>yardAdmin</user-name>
+      <user-password>dfd0dfc2dfdedf9ddf92df9adf98df9bdf9e</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+
