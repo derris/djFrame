@@ -5,7 +5,7 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://127.0.0.1:5432/yard</jdbc-url>
       <user-name>yardAdmin</user-name>
-      <user-password>dfd0dfc2dfdedf9ddf92df9adf98df9bdf9e</user-password>
+      <user-password>dfd0dfc2dfdedf81dfcedfc2df97dfd9dfdbdfc6df98</user-password>
       <libraries />
     </data-source>
   </component>

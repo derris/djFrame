@@ -61,7 +61,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'yard',
         'USER': 'yardAdmin',
-        'PASSWORD': 'zht780214',
+        'PASSWORD': 'zht+dh=sql2',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '5432',
     }
