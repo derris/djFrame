@@ -23,6 +23,20 @@ class Client(BaseModel):
         return self.client_name
     class Meta:
         db_table = 'c_client'
+class Contract(BaseModel):
+    id = models.IntegerField('pk',primary_key=True)
+    bill_no = models.CharField('提单号',max_length=25,unique=True)
+    cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
+    origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
+    client_id = models.ForeignKey('Client',verbose_name='客户id')
+    contract_type = models.ForeignKey('SysCode',verbose_name='委托类型')
+    cargo_fee_type = models.ForeignKey('SysCode',verbose_name='货物费用计费类型')
+    cargo_piece = models.IntegerField('货物件数',blank=True,null=True)
+    cargo_weight = models.FloatField('货物重量',blank=True,null=True)
+    cargo_volume = models.FloatField('货物体积',blank=True,null=True)
+    booking_date = models.DateField('接单日期',blank=True,null=True)
+    in_port_date = models.DateField('到港日期',blank=True,null=True)
+    return_cntr_date = models.DateField('')
 class ContractActionCod(BaseModel):
     id = models.IntegerField('pk',primary_key=True)
     action_name = models.CharField('委托计划名称',max_length=20,unique=True)
@@ -40,10 +54,10 @@ class FeeCod(BaseModel):
         db_table = 'c_fee'
 class FeeProtocol(BaseModel):
     id = models.IntegerField('pk',primary_key=True)
-    client_id = models.IntegerField('客户ID')
-    fee_id = models.IntegerField('费用ID')
-    contract_type = models.IntegerField('业务类型')
-    fee_cal_type = models.IntegerField('计费方式')
+    client_id = models.ForeignKey('Client',verbose_name='客户ID')
+    fee_id = models.ForeignKey('FeeCod',verbose_name='费用代码')
+    contract_type = models.ForeignKey('SysCode',verbose_name='业务类型')
+    fee_cal_type = models.ForeignKey('SysCode',verbose_name='计费方式')
     rate = models.FloatField('费率')
     free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
     class Meta:
