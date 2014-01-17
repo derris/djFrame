@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+
 class BaseModel(models.Model):
     ''''''
     remark = models.CharField('备注',blank=True,max_length=50,null=True)
