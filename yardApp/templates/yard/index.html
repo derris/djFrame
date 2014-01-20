@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>客户</title>
+    <title>堆场系统</title>
     <link href="../../static/yard/jquery-easyui/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
     <link href="../../static/yard/jquery-easyui/themes/icon.css" rel="stylesheet" type="text/css"/>
     <script src="../../static/yard/jquery-easyui/jquery.min.js" type="text/javascript"></script>
@@ -9,26 +9,17 @@
     <script src="../../static/yard/jquery-easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
     <script src="../../static/yard/App.js" type="text/javascript"></script>
     <script>
-        $(function () {
-            $('#dg').datagrid({
-                columns: [
-                    {field: 'id', hidden: true},
-                    {field: 'client_name', title: '客户名称'},
-                    {field: 'client_flag', title: '客户标识'},
-                    {field: 'remark', title: '备注'}
-                ],
-                toolbar: [
-                    {text: '增加',
-                        iconCls: 'icon-add',
-                        handler: function () {
-                        }
-                    }
-                ]
-            });
-        });
+        sy.logonPath = ""
+        sy.searchWindowUrl = ""
     </script>
 </head>
-<body>
-<table id="dg"></table>
+<body class="easyui-layout">
+    <div data-options="region:'west',title:'功能列表',split:true" style="width: 200px;" href=''>
+
+    </div>
+    <div data-options="region:'center'" href=''>
+主页面
+    </div>
+
 </body>
 </html>

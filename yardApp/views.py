@@ -4,10 +4,10 @@ from django.template import loader,RequestContext
 
 from yardApp import models
 # Create your views here.
-def client_index(request):
+def index(request):
+    #template = loader.get_template("yard/index.html")
+    #context = RequestContext(request)
+    return render(request,"yard/index.html")
 
-    template = loader.get_template("yard/clientindex.html")
-    context = RequestContext(request)
-    return HttpResponse(template.render(context))
 def clientquery(request):
     return HttpResponse("客户查询")
