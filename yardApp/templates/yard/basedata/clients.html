@@ -1,0 +1,146 @@
+<script>
+    Namespace.register('basedata.clientsview');
+    $(function () {
+        basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
+            border: false,
+            columns: [
+                [
+                    {field:'insert_flag',hidden:true},
+                    {field: 'id', hidden: true},
+                    {field: 'client_name',
+                        width: 100,
+                        title: '客户名称',
+                        editor: {
+                            type: 'validatebox',
+                            options: {
+                                required: true
+                            }
+                        }
+                    },
+
+                    {field: 'client_flag',
+                        title: '客户标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {field: 'custom_flag',
+                        title: '报关行标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {field: 'ship_corp_flag',
+                        title: '船公司标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {field: 'yard_flag',
+                        title: '场站标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {field: 'port_flag',
+                        title: '码头标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {field: 'financial_flag',
+                        title: '财务往来单位标识',
+                        editor: {
+                            type: 'checkbox',
+                            options: {
+                                on: 'True',
+                                off: 'False'
+                            }
+                        }
+                    },
+                    {
+                        field: 'remark',
+                        title: '备注'
+                    }
+                ]
+            ],
+            fit: true,
+            idField: 'id',
+            method: 'post',
+            rownumbers: true,
+            singleSelect: true,
+            toolbar:[
+                {text:'增加',
+                 iconCls : 'icon-add',
+                 handler:function(){
+                 basedata.clientsview.datagrid.datagrid('insertData',{
+                     insert_flag:true,
+                     client_name:'新客户名称'
+                 });
+                 }},
+                {text:'保存',
+                 iconCls:'icon-save',
+                 handler:function(){
+                      if (basedata.clientsview.datagrid.datagrid('preSave') == 1) {
+                        var deleteArray = new Array();
+                        var deletedRows = system.listopersview.datagrid.datagrid('getChanges', 'deleted');
+                        for (var i = 0 ; i < deletedRows.length; i++) {
+                            deleteArray.push(deletedRows[i].oper_cod);
+                        }
+                        var p = {
+                            i: system.listopersview.datagrid.datagrid('getChanges', 'inserted'),
+                            d: deleteArray,
+                            u: system.listopersview.datagrid.datagrid('getChanges', 'updated'),
+                        };
+                        $.ajax({
+                            url : '@Url.Action("ManagerOpers","system")',
+                            type : 'POST',
+                            data: JSON.stringify(p),
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            success : function (r, t, a) {
+                                $.ajaxSettings.success(r, t, a);
+                                if (r && r.status == 32) {
+                                    system.listopersview.datagrid.datagrid('afterSave');
+                                }
+                            }
+                        });
+                    } else {
+                        console.info('失败');
+                    }
+                 }}
+            ],
+            url: '',
+            onDblClickRow: function (rowIndex, rowData) {
+
+                basedata.clientsview.datagrid.datagrid('dbClick',rowIndex);
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-client-datagrid" border="false">
+        </table>
+    </div>
+</div>
