@@ -39,5 +39,5 @@ def getClients(request):
         t.append(item['fields'])
     return HttpResponse(json.dumps({'total':2,'rows':t},ensure_ascii = False))
     #return HttpResponse('321')
-def insertclients(request):
-    return None
+def updateClients(request):
+    return HttpResponse('321')

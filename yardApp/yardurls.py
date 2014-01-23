@@ -6,5 +6,6 @@ urlpatterns = patterns('',
     url(r'^$',views.index,name='index'),
     url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
     url(r'^clients/$',views.clients,name='clients'),
-    url(r'^clients/getclients/$',views.getClients,name='getclients')
+    url(r'^clients/getclients/$',views.getClients,name='getclients'),
+    url(r'^clients/updateclients/$',views.updateClients,name='updateclients')
 )

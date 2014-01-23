@@ -27,15 +27,14 @@ Namespace.register = function (fullNS) {
 Namespace.register('sy');
 
 
-
 //***************全局用到的对象**********************
 /*
-    sy.logonPath 登录窗口路径
-    sy.searchWindowData 向通用查询窗口传入的列信息
-    sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
-* */
+ sy.logonPath 登录窗口路径
+ sy.searchWindowData 向通用查询窗口传入的列信息
+ sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
+ * */
 sy.logonPath = '';
-sy.onLoadError = function(mes) {
+sy.onLoadError = function (mes) {
     var defaultMsg = '系统错误,重新登录？';
 
     $.messager.confirm('提示', mes || defaultMsg, function (r) {
@@ -49,9 +48,9 @@ sy.searchWindow = undefined;
 //sy.searchWindowSourceData = undefined;
 sy.searchWindowData = [];
 sy.searchWindowReturnData = {
-    refreshFlag:false,
+    refreshFlag: false,
     filters: [],
-    sorts : []
+    sorts: []
 };
 sy.createSearchWindow = function (datagrid) {
     sy.searchWindowData.length = 0;
@@ -67,22 +66,22 @@ sy.createSearchWindow = function (datagrid) {
         //console.info('undefined');
     }
     var columns = datagrid.datagrid('options').columns;
-    for (var j = 0 ; j < columns.length; j++) {
-        for (var i = 0 ; i < columns[j].length; i++) {
+    for (var j = 0; j < columns.length; j++) {
+        for (var i = 0; i < columns[j].length; i++) {
             if (columns[j][i].hidden != true) {
                 sy.searchWindowData.push({ cod: columns[j][i].field, text: columns[j][i].title, editor: columns[j][i].editor });
             }
         }
     }
     var columns = datagrid.datagrid('options').fitColumns;
-    for (var j = 0 ; j < columns.length; j++) {
-        for (var i = 0 ; i < columns[j].length; i++) {
+    for (var j = 0; j < columns.length; j++) {
+        for (var i = 0; i < columns[j].length; i++) {
             if (columns[j][i].hidden != true) {
                 sy.searchWindowData.push({ cod: columns[j][i].field, text: columns[j][i].title, editor: columns[j][i].editor });
             }
         }
     }
-   sy.searchWindow = $('<div></div>').window({
+    sy.searchWindow = $('<div></div>').window({
         href: sy.searchWindowUrl,
         title: '查询',
         width: window.innerWidth * 0.8,
@@ -108,7 +107,7 @@ sy.createSearchWindow = function (datagrid) {
         }
     });
 }
-sy.createPopWindow = function (w,wUrl,t) {
+sy.createPopWindow = function (w, wUrl, t) {
     w = $('<div></div>').window({
         href: wUrl,
         title: t,
@@ -121,12 +120,11 @@ sy.createPopWindow = function (w,wUrl,t) {
         closable: true,
         onClose: function () {
             w.window('destroy');
-            w = null;            
+            w = null;
         }
     });
 }
 //***************全局用到的对象**********************//
-
 
 
 //***************扩展datagrid editor ****************
@@ -145,10 +143,10 @@ $.extend($.fn.datagrid.defaults.editors, {
             return $(target).datetimebox('getValue');
         },
         setValue: function (target, value) {
-            $(target).datetimebox('setValue',value);
+            $(target).datetimebox('setValue', value);
         },
         resize: function (target, width) {
-            $(target).datetimebox('resize',width);
+            $(target).datetimebox('resize', width);
         },
         destroy: function (target) {
             $(target).datetimebox('destroy');
@@ -161,10 +159,10 @@ $.extend($.fn.datagrid.defaults.editors, {
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
     editRow: undefined,
-    deleteUrl:undefined,
-    insertUrl:undefined,
-    updateUrl:undefined,
-    loader: function (param,success,error) {
+    deleteUrl: undefined,
+    insertUrl: undefined,
+    updateUrl: undefined,
+    loader: function (param, success, error) {
         //console.info('loaderFunction');
         var that = $(this);
         var opts = that.datagrid('options');
@@ -181,12 +179,12 @@ $.extend($.fn.datagrid.defaults, {
                 //console.info(r);
                 //console.info(t);
                 //console.info(a);
-                $.ajaxSettings.success(r, t, a);                
+                $.ajaxSettings.success(r, t, a);
                 success(r);
             },
             error: function () {
                 //console.info('error');
-                error.apply(this,arguments);
+                error.apply(this, arguments);
             }
         });
     }
@@ -196,7 +194,7 @@ $.extend($.fn.datagrid.methods, {
         return $(jq).data("datagrid").originalRows;
     },
     //param {要插入对象}}
-    insertData : function(jq,param){
+    insertData: function (jq, param) {
         //console.info(jq.editRow);        
         if (jq.editRow == undefined) {
             null;
@@ -208,8 +206,8 @@ $.extend($.fn.datagrid.methods, {
             }
         }
         jq.datagrid('insertRow', {
-            index : 0,
-            row : param
+            index: 0,
+            row: param
         });
         jq.datagrid('selectRow', 0);
         jq.datagrid('beginEdit', 0);
@@ -254,7 +252,7 @@ $.extend($.fn.datagrid.methods, {
             null;
         } else {
             if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit',jq.editRow);
+                jq.datagrid('endEdit', jq.editRow);
             } else {
                 return;
             }
@@ -293,9 +291,9 @@ $.extend($.fn.datagrid.methods, {
     },
 
     //ajax提交之前调用，param 为null
-    preSave: function (jq, param) {        
+    preSave: function (jq, param) {
         if (jq.editRow == undefined) {
-            return 1;            
+            return 1;
         } else {
             if (jq.datagrid('validateRow', jq.editRow)) {
                 jq.datagrid('endEdit', jq.editRow);
@@ -310,7 +308,7 @@ $.extend($.fn.datagrid.methods, {
     afterSave: function (jq, param) {
         //将所有row的insert_flag字段设为false
         var rows = jq.datagrid('getChanges', 'inserted')
-        $.each(rows,function(index,item){
+        $.each(rows, function (index, item) {
             item.insert_flag = false;
         });
         jq.datagrid('acceptChanges');
@@ -338,6 +336,59 @@ $.extend($.fn.datagrid.methods, {
             var e = $(jq).datagrid('getColumnOption', param);
             e.editor = {};
         }
+    },
+    //调用方式 datagrid('postUpdateData')
+    postUpdateData: function (jq) {
+        if ($(jq).datagrid('preSave') == 1) {
+            //删除只传id值
+            var deleteArray = new Array();
+            var deletedRows = $(jq).datagrid('getChanges', 'deleted');
+            for (var i = 0; i < deletedRows.length; i++) {
+                deleteArray.push(deletedRows[i].id);
+            }
+            var updateArray = new Array();
+            var updateRows = $(jq).datagrid('getChanges', 'updated');
+            var oriRows = $(jq).datagrid('getOriginalRows');
+            for (var i = 0 ; i < updateRows.length ; i++ ){
+                var u_id = updateRows[i].id;
+                var find_flag = false;
+                for (var j = 0 ; j < oriRows.length ; j++){
+                    if (u_id == oriRows[j].id){
+                        updateArray.push({
+                            old_data:oriRows[j],
+                            new_data:updateRows[i]
+                        });
+                        find_flag = true;
+                        break;
+                    }
+                }
+                if (!find_flag){
+                    console.info('未找到原始值');
+                    return -1;
+                }
+            }
+            var p = {
+                i: $(jq).datagrid('getChanges', 'inserted'),
+                d: deleteArray,
+                u: updateArray
+            };
+            $.ajax({
+                url: $(jq).datagrid('options').updateUrl,
+                type: 'POST',
+                data: JSON.stringify(p),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (r, t, a) {
+                    $.ajaxSettings.success(r, t, a);
+                    if (r && r.status == 32) {
+                        $(jq).datagrid('afterSave');
+                    }
+                }
+            });
+        } else {
+            console.info('失败');
+        }
+
     }
 
 });
@@ -368,19 +419,21 @@ $.extend($.fn.datagrid.methods, {
 (function ($) {
 
     /**
-	 * Displays loading mask over selected element(s). Accepts both single and multiple selectors.
-	 *
-	 * @param label Text message that will be displayed on top of the mask besides a spinner (optional). 
-	 * 				If not provided only mask will be displayed without a label or a spinner.  	
-	 * @param delay Delay in milliseconds before element is masked (optional). If unmask() is called 
-	 *              before the delay times out, no mask is displayed. This can be used to prevent unnecessary 
-	 *              mask display for quick processes.   	
-	 */
+     * Displays loading mask over selected element(s). Accepts both single and multiple selectors.
+     *
+     * @param label Text message that will be displayed on top of the mask besides a spinner (optional).
+     *                If not provided only mask will be displayed without a label or a spinner.
+     * @param delay Delay in milliseconds before element is masked (optional). If unmask() is called
+     *              before the delay times out, no mask is displayed. This can be used to prevent unnecessary
+     *              mask display for quick processes.
+     */
     $.fn.mask = function (label, delay) {
         $(this).each(function () {
             if (delay !== undefined && delay > 0) {
                 var element = $(this);
-                element.data("_mask_timeout", setTimeout(function () { $.maskElement(element, label) }, delay));
+                element.data("_mask_timeout", setTimeout(function () {
+                    $.maskElement(element, label)
+                }, delay));
             } else {
                 $.maskElement($(this), label);
             }
@@ -388,8 +441,8 @@ $.extend($.fn.datagrid.methods, {
     };
 
     /**
-	 * Removes mask from the element(s). Accepts both single and multiple selectors.
-	 */
+     * Removes mask from the element(s). Accepts both single and multiple selectors.
+     */
     $.fn.unmask = function () {
         $(this).each(function () {
             $.unmaskElement($(this));
@@ -397,8 +450,8 @@ $.extend($.fn.datagrid.methods, {
     };
 
     /**
-	 * Checks if a single element is masked. Returns false if mask is delayed or not displayed. 
-	 */
+     * Checks if a single element is masked. Returns false if mask is delayed or not displayed.
+     */
     $.fn.isMasked = function () {
         return this.hasClass("masked");
     };
@@ -466,14 +519,12 @@ $.extend($.fn.datagrid.methods, {
 })(jQuery);
 
 
-
-
 //***************扩展JQuery**************************//
 
 //***************设置Ajax默认参数********************
 
-$.ajaxSetup({    
-    async : false,
+$.ajaxSetup({
+    async: false,
     success: function (r, t, a) {
         if (r.error_rows == undefined) {
             return;
@@ -508,7 +559,7 @@ $.ajaxSetup({
                 });
                 return;
             }
-            if (r.status > 10 && r.status < 20){
+            if (r.status > 10 && r.status < 20) {
                 //$.messager.alert('提示', error_msg);
                 //sy.onLoadError();
             }
@@ -517,9 +568,9 @@ $.ajaxSetup({
                 sy.onLoadError(error_msg);
                 return;
             }
-            $.messager.alert('提示',error_msg);
+            $.messager.alert('提示', error_msg);
         }
-    }   
+    }
 });
 
 //***************设置Ajax默认参数********************//
@@ -527,10 +578,10 @@ $.ajaxSetup({
 $.fn.datagrid.defaults.onLoadError = sy.onLoadError;
 $.ajaxSettings.error = sy.onLoadError;
 
-$(document).bind('ajaxStart', function (event) {    
+$(document).bind('ajaxStart', function (event) {
     $('body').mask('加载数据......');
 });
 
-$(document).bind('ajaxStop', function () {    
+$(document).bind('ajaxStop', function () {
     $('body').unmask();
 });

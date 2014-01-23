@@ -132,6 +132,14 @@
                         field: 'remark',
                         title: '备注',
                         width: 400
+                    },
+                    {
+                        field:'rec_tim',
+                        title:'shijian',
+                        editor:{
+                            type:'datetimebox',
+                            options:{}
+                        }
                     }
                 ]
             ],
@@ -155,36 +163,11 @@
                 {text: '保存',
                     iconCls: 'icon-save',
                     handler: function () {
-                        if (basedata.clientsview.datagrid.datagrid('preSave') == 1) {
-                            var deleteArray = new Array();
-                            var deletedRows = basedata.clientsview.datagrid.datagrid('getChanges', 'deleted');
-                            for (var i = 0; i < deletedRows.length; i++) {
-                                deleteArray.push(deletedRows[i].id);
-                            }
-                            var p = {
-                                i: basedata.clientsview.datagrid.datagrid('getChanges', 'inserted'),
-                                d: deleteArray,
-                                u: basedata.clientsview.datagrid.datagrid('getChanges', 'updated'),
-                            };
-                            $.ajax({
-                                url: '',
-                                type: 'POST',
-                                data: JSON.stringify(p),
-                                contentType: 'application/json',
-                                dataType: 'json',
-                                success: function (r, t, a) {
-                                    $.ajaxSettings.success(r, t, a);
-                                    if (r && r.status == 32) {
-                                        basedata.clientsview.datagrid.datagrid('afterSave');
-                                    }
-                                }
-                            });
-                        } else {
-                            console.info('失败');
-                        }
+                        basedata.clientsview.datagrid.datagrid('postUpdateData');
                     }}
             ],
             url: "{% url 'getclients' %}",
+            updateUrl:"{% url 'updateclients' %}",
             onDblClickRow: function (rowIndex, rowData) {
                 basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
             },
