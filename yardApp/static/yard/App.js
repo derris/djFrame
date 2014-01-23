@@ -161,7 +161,11 @@ $.extend($.fn.datagrid.defaults.editors, {
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
     editRow: undefined,
+    deleteUrl:undefined,
+    insertUrl:undefined,
+    updateUrl:undefined,
     loader: function (param,success,error) {
+        //console.info('loaderFunction');
         var that = $(this);
         var opts = that.datagrid('options');
         if (!opts.url) {
@@ -174,7 +178,9 @@ $.extend($.fn.datagrid.defaults, {
             contentType: 'application/json',
             dataType: 'json',
             success: function (r, t, a) {
-                //console.info('success');
+                //console.info(r);
+                //console.info(t);
+                //console.info(a);
                 $.ajaxSettings.success(r, t, a);                
                 success(r);
             },
@@ -185,17 +191,9 @@ $.extend($.fn.datagrid.defaults, {
         });
     }
 });
-function my_01(_569) {
-    //console.info(_569);
-    console.info($.data(_569, "datagrid").originalRows);
-}
 $.extend($.fn.datagrid.methods, {
     getOriginalRows: function (jq) {
-        //console.info($.data(jq, "datagrid"));
-        return jq.each(function () {
-            //console.info(this);
-            my_01(this);
-        });
+        return $(jq).data("datagrid").originalRows;
     },
     //param {要插入对象}}
     insertData : function(jq,param){
@@ -251,6 +249,7 @@ $.extend($.fn.datagrid.methods, {
     },
     //双击事件调用 先调用执行动态editor代码 再调用此函数 param 为onDblClickRow事件rowIndex
     dbClick: function (jq, param) {
+        //console.info('dbClick begin' + '/' + jq.editRow);
         if (jq.editRow == undefined) {
             null;
         } else {
@@ -262,9 +261,11 @@ $.extend($.fn.datagrid.methods, {
         }
         jq.editRow = param;
         jq.datagrid('beginEdit', param);
+        //console.info('dbClickend' + '/' + jq.editRow);
     },
     //单击事件调用, param 为onClickRow事件rowIndex
     click: function (jq, param) {
+        //console.info('click begin' + '/' + jq.editRow);
         if (jq.editRow != undefined) {
             if (jq.datagrid('validateRow', jq.editRow)) {
                 jq.datagrid('endEdit', jq.editRow);
@@ -275,6 +276,7 @@ $.extend($.fn.datagrid.methods, {
                 return;
             }
         }
+        //console.info('click end' + '/' + jq.editRow);
     },
     //手动对datagrid进行编辑完成操作，一般在‘确定’按钮中进行调用 param无传入值
     manualEndEdit: function (jq, param) {

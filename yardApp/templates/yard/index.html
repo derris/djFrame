@@ -10,16 +10,17 @@
     <script src="../../static/yard/jquery-easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
     <script src="../../static/yard/App.js" type="text/javascript"></script>
     <script>
-        sy.logonPath = ""
+        sy.logonPath = "{% url 'logon' %}"
         sy.searchWindowUrl = ""
     </script>
 </head>
 <body class="easyui-layout">
-    <div data-options="region:'west',title:'功能列表',split:true" style="width: 200px;" href=''>
+    <div data-options="region:'west',title:'功能列表',split:true"
+         style="width: 200px" href="{% url 'mainmenu' %}">
 
     </div>
-    <div data-options="region:'center'" href=''>
-主页面
+    <div data-options="region:'center'" href="{% url 'clients' %}">
+
     </div>
 
 </body>

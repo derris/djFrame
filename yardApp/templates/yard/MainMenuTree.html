@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    Namespace.register('system.mainmenu');
+    system.mainmenu.treedata = [
+        {id : '1',text:'功能1'},
+        {id : '2',text:'功能2'}
+    ];
+    $(function () {
+        system.mainmenu.tree = $('#main-menu-tree').tree({
+            data: system.mainmenu.treedata,
+            lines: true,
+            onDblClick: function (node) {
+                if ($(this).tree('isLeaf', node.target)) {                    
+                    if (system.maintabs.tabs.tabs('exists', node.text)) {                        
+                        system.maintabs.tabs.tabs('select', node.text);
+                    } else {                        
+                        system.maintabs.tabs.tabs('add', {
+                            title: node.text,
+                            href: node.attributes,
+                            closable: true
+                        });
+                    }
+                } 
+            }
+        });
+        if (system.mainmenu.treedata == null) {            
+            window.location.href = sy.logonPath;
+        }
+    });
+</script>
+<ul id="main-menu-tree"></ul>
