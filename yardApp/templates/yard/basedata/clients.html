@@ -5,7 +5,6 @@
             border: false,
             columns: [
                 [
-                    {field: 'insert_flag', hidden: true},
                     {field: 'id', hidden: true},
                     {field: 'client_name',
                         title: '客户名称',
@@ -156,7 +155,7 @@
                     iconCls: 'icon-add',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('insertData', {
-                            insert_flag: true,
+
                             client_name: '新客户名称'
                         });
                     }},

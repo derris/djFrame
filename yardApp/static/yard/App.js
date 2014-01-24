@@ -176,14 +176,10 @@ $.extend($.fn.datagrid.defaults, {
             contentType: 'application/json',
             dataType: 'json',
             success: function (r, t, a) {
-                //console.info(r);
-                //console.info(t);
-                //console.info(a);
                 $.ajaxSettings.success(r, t, a);
                 success(r);
             },
             error: function () {
-                //console.info('error');
                 error.apply(this, arguments);
             }
         });
