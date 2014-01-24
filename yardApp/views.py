@@ -32,7 +32,15 @@ def clients(request):
 #@require_http_methods(["GET", "POST"])
 def getClients(request):
     #return HttpResponse(serializers.serialize('json',models.Client.objects.all(),ensure_ascii = False))
-    d = json.loads(serializers.serialize('json',models.Client.objects.all(),ensure_ascii = False))
+    d = json.loads(serializers.serialize('json',
+        models.Client.objects.raw("select id,client_name,"
+                                  "case client_flag when true then 'true' else 'false' end client_flag,"
+                                  "case custom_flag when true then 'true' else 'false' end custom_flag,"
+                                  "case ship_corp_flag when true then 'true' else 'false' end ship_corp_flag,"
+                                  "case yard_flag when true then 'true' else 'false' end yard_flag,"
+                                  "case port_flag when true then 'true' else 'false' end port_flag,"
+                                  "case financial_flag when true then 'true' else 'false' end financial_flag,"
+                                  "remark from c_client"),ensure_ascii = False))
     t = []
     for item in d:
         item['fields']['id'] = item['pk']
