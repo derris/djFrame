@@ -28,6 +28,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#test settings. here donghai add to test work together.
+aGlobal = "here is a test string."
 
 # Application definition
 
