@@ -92,9 +92,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-import datetime
+from datetime import datetime
 def logger(aMsg, alogFile = BASE_DIR + 'djgw.log'):
-    lMsg = datetime.datetime.now().strftime('%y-%m-%d %H:%M:%S -> ') + aMsg + os.linesep
+    lMsg = datetime.now().strftime('%y-%m-%d %H:%M:%S -> ') + aMsg + os.linesep
     print(lMsg)
     if DEBUG:
         a = open(alogFile, 'a+')
