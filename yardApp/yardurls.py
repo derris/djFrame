@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
     url(r'^clients/$',views.clients,name='clients'),
     url(r'^clients/getclients/$',views.getClients,name='getclients'),
-    url(r'^clients/updateclients/$',views.updateClients,name='updateclients')
+    url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
+    url(r'lab/$', 'zlab.lab'),
 )
