@@ -185,6 +185,7 @@ $.extend($.fn.datagrid.defaults, {
         });
     }
 });
+
 $.extend($.fn.datagrid.methods, {
     getOriginalRows: function (jq) {
         return $(jq).data("datagrid").originalRows;
