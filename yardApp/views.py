@@ -49,3 +49,6 @@ def getClients(request):
     #return HttpResponse('321')
 def updateClients(request):
     return HttpResponse('321')
+
+def getCommonSearchTemplate(request):
+    return render(request,"commonSearchTemplate.html")
