@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+if BASE_DIR[-1] != '/':
+    BASE_DIR = BASE_DIR + '/'
+# 确保最右边是‘/’结尾。
 
-# this is a test from donghai to test update file 4 settings .
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -89,3 +91,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+import datetime
+def logger(aMsg, alogFile = BASE_DIR + 'djgw.log'):
+    lMsg = datetime.datetime.now().strftime('%y-%m-%d %H:%M:%S -> ') + aMsg + os.linesep
+    print(lMsg)
+    if DEBUG:
+        a = open(alogFile, 'a+')
+        a.write(lMsg)
+        a.close()
+    # if os.path.exists(alogFile): raise Exception("our system log file does not exist") 直接写。
+
+
+
