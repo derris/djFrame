@@ -10,5 +10,7 @@ urlpatterns = patterns('',
     url(r'^clients/getclients/$',views.getClients,name='getclients'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
     url(r'^lab/$',"yardApp.lab.index", name='labindex'),
+    url(r'^lab/getJson1/$',"yardApp.lab.getJson1", name='labgetJson1'),
+
 
 )
