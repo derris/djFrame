@@ -304,10 +304,12 @@ $.extend($.fn.datagrid.methods, {
     //ajax提交保存成功之后调用，param 为null
     afterSave: function (jq, param) {
         //将所有row的insert_flag字段设为false
+        /*
         var rows = jq.datagrid('getChanges', 'inserted')
         $.each(rows, function (index, item) {
             item.insert_flag = false;
         });
+        */
         jq.datagrid('acceptChanges');
     },
     //调用方式 datagrid('addEditor',[{field : 'column名称',editor : {type : 'text'}}]) 可传数组
@@ -377,8 +379,9 @@ $.extend($.fn.datagrid.methods, {
                 dataType: 'json',
                 success: function (r, t, a) {
                     $.ajaxSettings.success(r, t, a);
+                    $(jq).datagrid('afterSave');
                     if (r && r.status == 32) {
-                        $(jq).datagrid('afterSave');
+                        //$(jq).datagrid('afterSave');
                     }
                 }
             });

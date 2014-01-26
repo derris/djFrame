@@ -133,14 +133,6 @@
                         field: 'remark',
                         title: '备注',
                         width: 400
-                    },
-                    {
-                        field:'rec_tim',
-                        title:'shijian',
-                        editor:{
-                            type:'datetimebox',
-                            options:{}
-                        }
                     }
                 ]
             ],
@@ -157,15 +149,22 @@
                     iconCls: 'icon-add',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('insertData', {
-
                             client_name: '新客户名称'
                         });
-                    }},
+                    }
+                },'-',
+                {text:'删除',
+                    iconCls:'icon-remove',
+                    handler:function(){
+                        basedata.clientsview.datagrid.datagrid('deleteData');
+                    }
+                },'-',
                 {text: '保存',
                     iconCls: 'icon-save',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('postUpdateData');
-                    }}
+                    }
+                }
             ],
 
             url: "{% url 'getclients' %}",
