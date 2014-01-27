@@ -9,7 +9,7 @@
                     {field: 'id', hidden: true},
                     {field: 'client_name',
                         title: '客户名称',
-                        align:'center',
+                        align: 'center',
                         width: 100,
                         editor: {
                             type: 'validatebox',
@@ -20,11 +20,11 @@
                     },
                     {field: 'client_flag',
                         title: '客户标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
-                                on:'true',
+                                on: 'true',
                                 off: 'false'
                             }
                         },
@@ -39,7 +39,7 @@
                     },
                     {field: 'custom_flag',
                         title: '报关行标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
@@ -59,7 +59,7 @@
                     },
                     {field: 'ship_corp_flag',
                         title: '船公司标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
@@ -77,7 +77,7 @@
                     },
                     {field: 'yard_flag',
                         title: '场站标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
@@ -95,7 +95,7 @@
                     },
                     {field: 'port_flag',
                         title: '码头标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
@@ -113,7 +113,7 @@
                     },
                     {field: 'financial_flag',
                         title: '财务往来单位标识',
-                        align:'center',
+                        align: 'center',
                         editor: {
                             type: 'checkbox',
                             options: {
@@ -145,6 +145,13 @@
             rownumbers: true,
             singleSelect: true,
             toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.clientsview.datagrid);
+                    }
+                },
+                '-',
                 {text: '增加',
                     iconCls: 'icon-add',
                     handler: function () {
@@ -152,13 +159,15 @@
                             client_name: '新客户名称'
                         });
                     }
-                },'-',
-                {text:'删除',
-                    iconCls:'icon-remove',
-                    handler:function(){
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
                         basedata.clientsview.datagrid.datagrid('deleteData');
                     }
-                },'-',
+                },
+                '-',
                 {text: '保存',
                     iconCls: 'icon-save',
                     handler: function () {
@@ -167,17 +176,16 @@
                 }
             ],
             url: "{% url 'getclients' %}",
-            updateUrl:"{% url 'updateclients' %}",
+            updateUrl: "{% url 'updateclients' %}",
             onDblClickRow: function (rowIndex, rowData) {
                 basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
             },
             onClickRow: function (rowIndex, rowData) {
-                basedata.clientsview.datagrid.datagrid('click',rowIndex);
+                basedata.clientsview.datagrid.datagrid('click', rowIndex);
             }
         });
     });
 </script>
-{% csrf_token %}
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="center" border="false">
         <table id="basedata-client-datagrid" border="false">
