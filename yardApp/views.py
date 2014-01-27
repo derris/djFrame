@@ -1,5 +1,6 @@
 import json
 
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader,RequestContext
@@ -30,6 +31,7 @@ def clients(request):
     return render(request,"yard/basedata/clients.html",{'r':request})
 
 #@require_http_methods(["GET", "POST"])
+@csrf_exempt
 def getClients(request):
     #return HttpResponse(serializers.serialize('json',models.Client.objects.all(),ensure_ascii = False))
     d = json.loads(serializers.serialize('json',
@@ -49,3 +51,6 @@ def getClients(request):
     #return HttpResponse('321')
 def updateClients(request):
     return HttpResponse('321')
+
+def getCommonSearchTemplate(request):
+    return render(request,"commonSearchTemplate.html")
