@@ -6,7 +6,14 @@
       <jdbc-url>jdbc:postgresql://127.0.0.1:5432/yard</jdbc-url>
       <user-name>yardAdmin</user-name>
       <user-password>dfd0dfc2dfdedf81dfcedfc2df97dfd9dfdbdfc6df98</user-password>
-      <libraries />
+      <libraries>
+        <library>
+          <url>file://$USER_HOME$/.PyCharm30/config/jdbc-drivers/postgresql-driver-license.txt</url>
+        </library>
+        <library>
+          <url>jar://$USER_HOME$/.PyCharm30/config/jdbc-drivers/postgresql-9.2-1002.jdbc4.jar!/</url>
+        </library>
+      </libraries>
     </data-source>
   </component>
 </project>
