@@ -8,5 +8,9 @@ urlpatterns = patterns('',
     url(r'^clients/$',views.clients,name='clients'),
     url(r'^clients/getclients/$',views.getClients,name='getclients'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
-    url(r'lab/$', 'zlab.lab'),
+    
+    # 实验室
+    url(r'^lab/$',"yardApp.lab.index", name='labindex'),
+    url(r'^lab/getfunc/$',"yardApp.lab.getfunc", name='labgetfunc'),
+    # http://127.0.0.1:8000/yard/lab/getfunc/?func=getJson1&&args=%22aaa%22
 )
