@@ -54,3 +54,18 @@ def updateClients(request):
 
 def getCommonSearchTemplate(request):
     return render(request,"commonSearchTemplate.html")
+
+from zdCommon.dbhelp import rawsql2json
+
+@csrf_exempt
+def getclients2(request):
+    jsonData = rawsql2json("select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark from c_client")
+    # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
+    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+
+@csrf_exempt
+def getclients3(request):
+    ls_rtn = '''
+        {"total": 2, "rows": [{"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "外代", "id": 2, "client_flag": "true", "custom_flag": "true"}, {"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "港湾", "id": 1, "client_flag": "false", "custom_flag": "true"}]}
+    '''
+    return HttpResponse(ls_rtn)

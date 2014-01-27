@@ -35,7 +35,7 @@ sy.logonPath = '';
 sy.onLoadError = function (mes) {
     var defaultMsg = '系统错误,重新登录？';
 
-    $.messager.confirm('提示', mes || defaultMsg, function (r) {
+    $.messager.confirm('提示3', mes || defaultMsg, function (r) {
         if (r) {
             window.location.href = sy.logonPath;
         }
@@ -542,7 +542,7 @@ $.ajaxSetup({
             }
             if (r.status > 30) { //正确
                 $.messager.show({
-                    title: '提示',
+                    title: '提示1',
                     msg: msg,
                     timeout: 4000,
                     showType: 'slide'
@@ -558,7 +558,7 @@ $.ajaxSetup({
                 sy.onLoadError(error_msg);
                 return;
             }
-            $.messager.alert('提示', error_msg);
+            $.messager.alert('提示2', error_msg);
         }
     }
 });
