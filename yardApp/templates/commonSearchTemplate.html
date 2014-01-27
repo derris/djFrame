@@ -205,6 +205,10 @@ $(function () {
                 sy.searchWindowData[i].editor.options.required = false;
                 sy.searchWindowData[i].editor2.options.required = false;
             }
+            if (sy.searchWindowData[i].editor.type == 'combobox'){
+                sy.searchWindowData[i].editor.options.valueField = 'value';
+                sy.searchWindowData[i].editor2.options.valueField = 'value';
+            }
             if (sy.searchWindowData[i].editor.type == 'checkbox') {
                 sy.searchWindowData[i].editor = {
                     type: 'combobox',
