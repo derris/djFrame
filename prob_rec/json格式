@@ -24,3 +24,28 @@
    i:新增加记录数组
    d:要删除记录id数组
    u:修改对象记录数组,old_data原始数据，new_data修改后数据
+三、前台向后台提交查询：
+  {
+     'page':1,
+     'rows':10,
+     'filter':[{
+        'cod':'client_name',
+        'operatorTyp':'等于',
+        'value1':'值1',
+        'value2':'值2'
+
+     }],
+     'sort':[{
+       'cod':'client_name',
+       'order_typ':'升序'
+     }]
+  }
+  page:当前页数
+  rows:每页显示记录数
+  filter:过滤条件数组,cod-字段名
+                    operatorTyp-过滤条件有等于、不等于、大于、大于等于、
+                               小于、小于等于、包含、不包含、指定范围
+                    value1:参数值1
+                    value2:参数值2
+  sort:排序条件数组,cod-字段名
+                  order_typ 排序方式 升序和将序
