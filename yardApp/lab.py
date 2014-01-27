@@ -11,7 +11,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
-    return render(request,"lab/index.html")
+    return render(request,"lab/lab.html")
 
 @csrf_exempt
 def getJson1(request):
@@ -34,6 +34,22 @@ def getJson1(request):
 def getfunc(request):
     ls_func = request.GET.get('func')
     ls_args = request.GET.get('args')
-    ls_t = ls_func + '(request,' + ls_args + ')'
+    if not ls_args :
+        ls_args = ''
+    else:
+        ls_args = ',' + ls_args
+    ls_t = ls_func + '(request' + ls_args + ')'
     print(ls_t)
     return eval(ls_t)
+
+
+from yardApp import models
+
+def getJson2(request):
+    xx = models.Client.objects.raw("select id,client_name,client_flag, remark,rec_tim from c_client")
+    # tt = serializers.serialize('json', xx)
+    tt = serializers.serialize('xml', xx ,ensure_ascii = False)
+    return HttpResponse(tt)
+
+
+
