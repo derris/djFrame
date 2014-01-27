@@ -1,6 +1,4 @@
-﻿/// <reference path="../jquery-easyui/jquery-1.8.0.min.js" />
-/// <reference path="../jquery-easyui/jquery.easyui.min.js" />
-
+﻿
 
 //**************全局对象管理******************
 // 声明一个全局对象Namespace，用来注册命名空间
@@ -69,7 +67,12 @@ sy.createSearchWindow = function (datagrid) {
     for (var j = 0; j < columns.length; j++) {
         for (var i = 0; i < columns[j].length; i++) {
             if (columns[j][i].hidden != true) {
-                sy.searchWindowData.push({ cod: columns[j][i].field, text: columns[j][i].title, editor: columns[j][i].editor });
+                sy.searchWindowData.push({
+                    cod: columns[j][i].field,
+                    text: columns[j][i].title,
+                    editor: columns[j][i].editor,
+                    editor2:columns[j][i].editor
+                });
             }
         }
     }
@@ -77,7 +80,10 @@ sy.createSearchWindow = function (datagrid) {
     for (var j = 0; j < columns.length; j++) {
         for (var i = 0; i < columns[j].length; i++) {
             if (columns[j][i].hidden != true) {
-                sy.searchWindowData.push({ cod: columns[j][i].field, text: columns[j][i].title, editor: columns[j][i].editor });
+                sy.searchWindowData.push({
+                    cod: columns[j][i].field,
+                    text: columns[j][i].title,
+                    editor: columns[j][i].editor });
             }
         }
     }
@@ -93,8 +99,8 @@ sy.createSearchWindow = function (datagrid) {
         closable: true,
         onClose: function () {
             //console.info('onClose');                        
-            home.createsearchform.filterdatagrid = null;
-            home.createsearchform.sorterdatagrid = null;
+            common.createsearchform.filterdatagrid = null;
+            common.createsearchform.sorterdatagrid = null;
             sy.searchWindow.window('destroy');
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
@@ -107,23 +113,7 @@ sy.createSearchWindow = function (datagrid) {
         }
     });
 }
-sy.createPopWindow = function (w, wUrl, t) {
-    w = $('<div></div>').window({
-        href: wUrl,
-        title: t,
-        width: window.innerWidth * 0.8,
-        height: window.innerHeight * 0.8,
-        modal: true,
-        collapsible: false,
-        minimizable: false,
-        maximizable: false,
-        closable: true,
-        onClose: function () {
-            w.window('destroy');
-            w = null;
-        }
-    });
-}
+
 //***************全局用到的对象**********************//
 
 
