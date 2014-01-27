@@ -5,10 +5,10 @@ urlpatterns = patterns('',
     url(r'^logon/$',views.logon,name='logon'),
     url(r'^$',views.index,name='index'),
     url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
+    url(r'^commonsearch/$',views.getCommonSearchTemplate,name='commonsearchtemplate'),
     url(r'^clients/$',views.clients,name='clients'),
     url(r'^clients/getclients/$',views.getClients,name='getclients'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
-    
     # 实验室
     url(r'^lab/$',"yardApp.lab.index", name='labindex'),
     url(r'^lab/getfunc/$',"yardApp.lab.getfunc", name='labgetfunc'),
