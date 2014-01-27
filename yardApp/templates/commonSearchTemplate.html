@@ -1,0 +1,313 @@
+<script type="text/javascript">
+Namespace.register('common.createsearchform');
+$(function () {
+    common.createsearchform.filterdatagrid = $('#common-createsearchform-filterdatagrid').datagrid({
+        columns: [
+            [
+                {
+                    field: 'text',
+                    title: '属性',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'operatorTyp',
+                    title: '条件',
+                    width: 100,
+                    align: 'center',
+                    editor: {
+                        type: 'combobox',
+                        options: {
+                            data: [
+                                {
+                                    value: '等于'
+                                },
+                                {
+                                    value: '不等于'
+                                },
+                                {
+                                    value: '大于'
+                                },
+                                {
+                                    value: '大于等于'
+                                },
+                                {
+                                    value: '小于'
+                                },
+                                {
+                                    value: '小于等于'
+                                },
+                                {
+                                    value: '包含'
+                                },
+                                {
+                                    value: '不包含'
+                                },
+                                {
+                                    value: '指定范围'
+                                }
+                            ],
+                            valueField: 'value',
+                            textField: 'value',
+                            editable: false,
+                            panelHeight: 190
+                        }
+                    }
+                },
+                {
+                    field: 'value1',
+                    title: '值1',
+                    width: 100,
+                    align: 'right'
+                },
+                {
+                    field: 'value2',
+                    title: '值2',
+                    width: 100,
+                    align: 'right'
+                },
+                {
+                    field: 'editor',
+                    hidden: true
+                },
+                {
+                    field: 'editor2',
+                    hidden: true
+                },
+                {
+                    field: 'cod',
+                    hidden: true
+                }
+            ]
+        ],
+        idField: 'cod',
+        fit: true,
+        border: false,
+        singleSelect: true,
+        onDblClickRow: function (rowIndex, rowData) {
+            //console.info(rowData);
+            common.createsearchform.filterdatagrid.datagrid('removeEditor', ['value1', 'value2']);
+            common.createsearchform.filterdatagrid.datagrid('addEditor', [
+                {
+                    field: 'value1',
+                    editor: rowData.editor
+                },
+                {
+                    field: 'value2',
+                    editor: rowData.editor2
+                    //editor: $.extend(true,{},rowData.eidtor)
+                }
+            ]);
+            common.createsearchform.filterdatagrid.datagrid('dbClick', rowIndex);
+        },
+        onClickRow: function (rowIndex, rowData) {
+            common.createsearchform.filterdatagrid.datagrid('click', rowIndex);
+        }
+
+    });
+    common.createsearchform.sorterdatagrid = $('#common-createsearchform-sorterdatagrid').datagrid({
+        columns: [
+            [
+                {
+                    field: 'text',
+                    title: '属性',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'order_typ',
+                    title: '排序类型',
+                    width: 100,
+                    align: 'center',
+                    editor: {
+                        type: 'combobox',
+                        options: {
+                            data: [
+                                {
+                                    value: '升序'
+                                },
+                                {
+                                    value: '降序'
+                                }
+                            ],
+                            valueField: 'value',
+                            textField: 'value',
+                            editable: false,
+                            panelHeight: 40
+                        }
+                    }
+                },
+                {
+                    field: 'cod',
+                    hidden: true
+                }
+            ]
+        ],
+        toolbar: [
+            {
+                text: '上移',
+                iconCls: '',
+                handler: function () {
+                    common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
+                    var newRow = common.createsearchform.sorterdatagrid.datagrid('getSelected');
+                    if (newRow) {
+                        var index = common.createsearchform.sorterdatagrid.datagrid('getRowIndex', newRow);
+                        if (index > 0) {
+                            common.createsearchform.sorterdatagrid.datagrid('insertRow', {
+                                index: index - 1,
+                                row: newRow
+                            });
+                            common.createsearchform.sorterdatagrid.datagrid('deleteRow', index + 1);
+                            common.createsearchform.sorterdatagrid.datagrid('unselectAll');
+                            common.createsearchform.sorterdatagrid.datagrid('selectRow', index - 1);
+                        }
+                    }
+                }
+            },
+            '-',
+            {
+                text: '下移',
+                iconCls: '',
+                handler: function () {
+                    common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
+                    var newRow = common.createsearchform.sorterdatagrid.datagrid('getSelected');
+                    if (newRow) {
+                        var index = common.createsearchform.sorterdatagrid.datagrid('getRowIndex', newRow);
+                        var rowCount = common.createsearchform.sorterdatagrid.datagrid('getRows').length;
+                        if (index < rowCount - 1) {
+                            common.createsearchform.sorterdatagrid.datagrid('insertRow', {
+                                index: index + 2,
+                                row: newRow
+                            });
+                            common.createsearchform.sorterdatagrid.datagrid('deleteRow', index);
+                            common.createsearchform.sorterdatagrid.datagrid('unselectAll');
+                            common.createsearchform.sorterdatagrid.datagrid('selectRow', index + 1);
+                        }
+                    }
+                }
+            },'-'
+        ],
+        idField: 'cod',
+        fit: true,
+        border: false,
+        singleSelect: true,
+        onDblClickRow: function (rowIndex, rowData) {
+            common.createsearchform.sorterdatagrid.datagrid('dbClick', rowIndex);
+        },
+        onClickRow: function (rowIndex, rowData) {
+            common.createsearchform.sorterdatagrid.datagrid('click', rowIndex);
+        }
+
+    });
+    for (var i = 0; i < sy.searchWindowData.length; i++) {
+        if (sy.searchWindowData[i].editor) {
+            if (sy.searchWindowData[i].editor.type == 'validatebox' && sy.searchWindowData[i].editor.options.required == true) {
+                sy.searchWindowData[i].editor.options.required = false;
+                sy.searchWindowData[i].editor2.options.required = false;
+            }
+            if (sy.searchWindowData[i].editor.type == 'checkbox') {
+                sy.searchWindowData[i].editor = {
+                    type: 'combobox',
+                    options: {
+                        data: [
+                            { cod: 'true', value: '是' },
+                            { cod: 'false', value: '否' }
+                        ],
+                        valueField: 'value',
+                        textField: 'value',
+                        editable: false,
+                        panelHeight: 40
+                    }
+                };
+                sy.searchWindowData[i].editor2 = {
+                    type: 'combobox',
+                    options: {
+                        data: [
+                            { cod: 'true', value: '是' },
+                            { cod: 'false', value: '否' }
+                        ],
+                        valueField: 'value',
+                        textField: 'value',
+                        editable: false,
+                        panelHeight: 40
+                    }
+                };
+            }
+        } else {
+            sy.searchWindowData[i].editor = { type: 'text' };
+            sy.searchWindowData[i].editor2 = { type: 'text' };
+        }
+        common.createsearchform.filterdatagrid.datagrid('appendRow', {
+            'cod': sy.searchWindowData[i].cod,
+            'text': sy.searchWindowData[i].text,
+            'editor': sy.searchWindowData[i].editor,
+            'editor2':sy.searchWindowData[i].editor2
+        });
+        common.createsearchform.sorterdatagrid.datagrid('appendRow', {
+            'cod': sy.searchWindowData[i].cod,
+            'text': sy.searchWindowData[i].text
+        });
+    }
+
+    $('#common-createsearchform-ok').bind('click', function () {
+        common.createsearchform.filterdatagrid.datagrid('manualEndEdit');
+        common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
+        var rows = common.createsearchform.filterdatagrid.datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].operatorTyp && rows[i].value1) {
+                if (rows[i].operatorTyp == '指定范围') {
+                    if (rows[i].value2) {
+                    } else {
+                        $.messager.alert('提示', '第' + (i + 1) + '行条件数据不完整!');
+                        return;
+                    }
+                }
+                sy.searchWindowReturnData.filters.push(
+                        {
+                            cod: rows[i].cod,
+                            operatorTyp: rows[i].operatorTyp,
+                            value1: rows[i].value1,
+                            value2: rows[i].value2
+                        });
+            }
+        }
+        ;
+        var rows = common.createsearchform.sorterdatagrid.datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].order_typ) {
+                sy.searchWindowReturnData.sorts.push(
+                        {
+                            cod: rows[i].cod,
+                            order_typ: rows[i].order_typ
+                        });
+            }
+        }
+        ;
+        //console.info(sy.searchWindowReturnData.filters);
+        sy.searchWindowReturnData.refreshFlag = true,
+                sy.searchWindow.window('close');
+    });
+});
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false" data-options="fit:true">
+
+        <div class="easyui-tabs" data-options="fit:true,border:false">
+            <div title="过滤">
+                <table id="common-createsearchform-filterdatagrid" data-options="fit:true,border:false">
+                </table>
+            </div>
+            <div title="排序">
+                <table id="common-createsearchform-sorterdatagrid" data-options="fit:true,border:false">
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div region="south" border="false" style="height:25px;">
+        <a id="common-createsearchform-ok" href="#" class="easyui-linkbutton">确定</a>
+    </div>
+</div>
+
+
