@@ -47,8 +47,18 @@ def rawsql2json(aSql, aParm=None):
             l_dictSub.update( {l_keys[j].name: correctjsonfield(i[j], l_keys[j].type_code) })
         l_sum.append( l_dictSub )
         l_count += 1
+
+    ls_sqlcount =  aSql[aSql.find('from'): (aSql.find('limit') if aSql.find('limit') > 0 else None)]
+    ls_sqlcount = ls_sqlcount[: (aSql.find('order') if aSql.find('order') > 0 else None)]
+
+    ls_sqlcount = "select count(*) " + ls_sqlcount
+
+
+    l_cur.execute(ls_sqlcount)
+    l_sqlcount = l_cur.fetchone()[0]
+
     l_rtn = {}
-    l_rtn.update( {"msg": "", "stateCod":"", "total":2, "rows": l_sum } )
+    l_rtn.update( {"msg": "", "stateCod":"", "total":l_sqlcount, "rows": l_sum } )
     # l_rtn =  '{"total":' + str(l_count) + ', "rows":' + str( l_sum) + '}'
     return l_rtn
 

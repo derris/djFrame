@@ -61,32 +61,31 @@ from zdCommon.dbhelp import rawsql2json
 def getclients2(request):
     ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark from c_client"
     #得到post的参数
-    print(request.POST, request.GET, request.REQUEST)
     if request.method == 'GET':
         pass
     else:
-        l_post = request.POST
-        print(request.POST.values)
-        print(str(l_post), request.REQUEST, request.GET, request.POST)
-        l_page = l_post['page'] if l_post['page'] else 1
-        l_rows = l_post['rows'] if l_post['rows'] else 10
-        l_sort = str(l_post['sort']) if str(l_post['sort']) else ' order by id desc '
+        ls_t = str(request.body.decode('utf8'))
+        print(ls_t, type(ls_t))
+        l_post = json.loads(ls_t)
+        print(l_post)
+        l_page = l_post.get('page') if l_post.get('page') else 1
+        l_rows = l_post.get('rows') if l_post.get('rows') else 10
+        l_sort = str(l_post.get('sort')) if l_post.get('sort') else ' order by id desc '
         if l_sort.index(' id ') > 0:
             pass
         else:
             l_sort += ', id desc '
-        l_filter = str(request.POST.get('filter', ''))
+        l_filter = str(l_post.get('filter')) if l_post.get('filter') else ''
         ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-        if len(l_filter) > 0 :
+        if len(l_filter.strip(' ')) > 3:
             l_dictwhere = json.loads(l_filter)
             # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
             ls_where = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
-            ls_sql += ls_where
+            ls_sql += ls_where if ls_where else ""
         if len(l_sort) > 0:
             ls_sql += l_sort
-        if len(l_sort) > 0:
+        if len(ls_offset) > 0:
             ls_sql += ls_offset
-
         print(ls_sql)
 
     jsonData = rawsql2json(ls_sql)
