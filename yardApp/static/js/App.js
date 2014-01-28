@@ -159,11 +159,14 @@ $.extend($.fn.datagrid.defaults, {
         if (!opts.url) {
             return false;
         }
+
         $.ajax({
             url: opts.url,
             type: 'POST',
-            data: JSON.stringify(param),
-            contentType: 'application/json',
+            //data: JSON.stringify(param),
+            data:param,
+            //contentType: 'application/json',
+            contentType:'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
                 $.ajaxSettings.success(r, t, a);
@@ -173,6 +176,8 @@ $.extend($.fn.datagrid.defaults, {
                 error.apply(this, arguments);
             }
         });
+
+        //$.post(opts.url,param);
     }
 });
 
@@ -364,8 +369,10 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: JSON.stringify(p),
-                contentType: 'application/json',
+                //data: JSON.stringify(p),
+                data:p,
+                //contentType: 'application/json',
+                contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (r, t, a) {
                     $.ajaxSettings.success(r, t, a);
