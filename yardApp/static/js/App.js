@@ -163,8 +163,8 @@ $.extend($.fn.datagrid.defaults, {
         $.ajax({
             url: opts.url,
             type: 'POST',
-            //data: JSON.stringify(param),
-            data:param,
+            data: JSON.stringify(param),
+            //data:param,
             //contentType: 'application/json',
             contentType:'application/x-www-form-urlencoded',
             dataType: 'json',
@@ -369,8 +369,7 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                //data: JSON.stringify(p),
-                data:p,
+                data: JSON.stringify(p),
                 //contentType: 'application/json',
                 contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
