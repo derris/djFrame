@@ -370,7 +370,6 @@ $.extend($.fn.datagrid.methods, {
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
                 data: JSON.stringify(p),
-                //data:p,
                 //contentType: 'application/json',
                 contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
