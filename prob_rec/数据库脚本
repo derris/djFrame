@@ -1,4 +1,8 @@
 
+>>> l_cur.execute('select * from c_client where client_name in %s', [("外1","外2"),])
+>>> a = l_cur.fetchall()
+
+
 insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
 values(3, '外1', TRUE , '1', now());
 insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)

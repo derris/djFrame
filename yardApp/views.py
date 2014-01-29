@@ -82,6 +82,12 @@ def getclients2(request):
              }]
         }
         '''
+        print(request.POST)
+        if 'page' in dict(request.POST).keys():
+            pass
+        else:
+            raise Exception('there is no page keys')
+
         l_page = int(request.POST.get('page', 1))
         l_rows = int(request.POST.get('rows', 10))
         l_sort = str(request.POST.get('sort', ''))
@@ -103,7 +109,9 @@ def getclients2(request):
         ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
         ls_sql += ls_offset
 
+    print(ls_sql)
     jsonData = rawsql2json(ls_sql)
+
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
 
