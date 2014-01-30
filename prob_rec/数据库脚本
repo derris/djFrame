@@ -1,0 +1,29 @@
+
+>>> l_cur.execute('select * from c_client where client_name in %s', [("外1","外2"),])
+>>> a = l_cur.fetchall()
+
+
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(3, '外1', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(4, '外2', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(5, '外3', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(6, '外4', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(7, '外5', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(8, '外6', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(9, '外7', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(10, '外8', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(11, '外9', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(12, '外10', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(13, '外11', TRUE , '1', now());
+insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
+values(14, '外12', TRUE , '1', now());

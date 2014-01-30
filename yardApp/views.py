@@ -1,5 +1,3 @@
-import json
-
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -7,7 +5,7 @@ from django.template import loader,RequestContext
 from django.views.decorators.http import require_http_methods
 
 from django.core import serializers
-
+import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from yardApp import models
@@ -64,31 +62,56 @@ def getclients2(request):
     if request.method == 'GET':
         pass
     else:
-        ls_t = str(request.body.decode('utf8'))
-        print(ls_t, type(ls_t))
-        l_post = json.loads(ls_t)
-        print(l_post)
-        l_page = l_post.get('page') if l_post.get('page') else 1
-        l_rows = l_post.get('rows') if l_post.get('rows') else 10
-        l_sort = str(l_post.get('sort')) if l_post.get('sort') else ' order by id desc '
-        if l_sort.index(' id ') > 0:
+        # ls_t = str(request.body.decode('utf8'))   l_post = json.loads(ls_t)
+        # l_page = l_post.get('page') if l_post.get('page') else 1
+        # l_rows = l_post.get('rows') if l_post.get('rows') else 10
+        ls_prompt = '''
+        {
+             'page':1,
+             'rows':10,
+             'filter':[{
+                'cod':'client_name',
+                'operatorTyp':'等于',
+                'value1':'值1',
+                'value2':'值2'
+
+             }],
+             'sort':[{
+               'cod':'client_name',
+               'order_typ':'升序'
+             }]
+        }
+        '''
+        print(request.POST)
+        if 'page' in dict(request.POST).keys():
             pass
         else:
-            l_sort += ', id desc '
-        l_filter = str(l_post.get('filter')) if l_post.get('filter') else ''
-        ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-        if len(l_filter.strip(' ')) > 3:
+            raise Exception('there is no page keys')
+
+        l_page = int(request.POST.get('page', 1))
+        l_rows = int(request.POST.get('rows', 10))
+        l_sort = str(request.POST.get('sort', ''))
+        l_filter = str(request.POST.get('filter', ''))
+
+        '''
+        if len(l_filter) > 3:
             l_dictwhere = json.loads(l_filter)
             # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
+
             ls_where = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
             ls_sql += ls_where if ls_where else ""
-        if len(l_sort) > 0:
-            ls_sql += l_sort
-        if len(ls_offset) > 0:
-            ls_sql += ls_offset
-        print(ls_sql)
+        if len(l_sort)> 3:
+            l_dictsort = json.loads(l_sort)
+        else:
+            ls_sort = ' order by id desc '
+        '''
 
+        ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
+        ls_sql += ls_offset
+
+    print(ls_sql)
     jsonData = rawsql2json(ls_sql)
+
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
 

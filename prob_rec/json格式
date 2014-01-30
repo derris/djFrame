@@ -28,17 +28,17 @@
   {
      'page':1,
      'rows':10,
-     'filter':[{
+     'filter':'[{
         'cod':'client_name',
         'operatorTyp':'等于',
         'value1':'值1',
         'value2':'值2'
 
-     }],
-     'sort':[{
+     }]',
+     'sort':'[{
        'cod':'client_name',
        'order_typ':'升序'
-     }]
+     }]'
   }
   page:当前页数
   rows:每页显示记录数

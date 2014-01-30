@@ -105,8 +105,8 @@ sy.createSearchWindow = function (datagrid) {
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
                 datagrid.datagrid('load', {
-                    filter: sy.searchWindowReturnData.filters,
-                    sort: sy.searchWindowReturnData.sorts
+                    filter: JSON.stringify(sy.searchWindowReturnData.filters),
+                    sort: JSON.stringify(sy.searchWindowReturnData.sorts)
                 });
             }
             //console.info(sy.searchWindowReturnData);
