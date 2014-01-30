@@ -284,6 +284,12 @@ $.extend($.fn.datagrid.methods, {
 
     //ajax提交之前调用，param 为null
     preSave: function (jq, param) {
+
+        var s = jq.datagrid('getSelected')
+        if (s != null){
+            jq.editRow = jq.datagrid('getRowIndex', s.id);
+        }
+
         if (jq.editRow == undefined) {
             return 1;
         } else {
@@ -369,8 +375,8 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                //data: JSON.stringify(p),
-                data:p,
+                data: JSON.stringify(p),
+                //data:p,
                 //contentType: 'application/json',
                 contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
