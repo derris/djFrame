@@ -368,15 +368,15 @@ $.extend($.fn.datagrid.methods, {
                 }
             }
             var p = {
-                i: $(jq).datagrid('getChanges', 'inserted'),
-                d: deleteArray,
-                u: updateArray
+                i: JSON.stringify($(jq).datagrid('getChanges', 'inserted')),
+                d: JSON.stringify(deleteArray),
+                u: JSON.stringify(updateArray)
             };
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: JSON.stringify(p),
-                //data:p,
+                //data: JSON.stringify(p),
+                data:p,
                 //contentType: 'application/json',
                 contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
