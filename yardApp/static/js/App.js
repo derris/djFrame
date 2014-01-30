@@ -105,8 +105,8 @@ sy.createSearchWindow = function (datagrid) {
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
                 datagrid.datagrid('load', {
-                    filter: sy.searchWindowReturnData.filters,
-                    sort: sy.searchWindowReturnData.sorts
+                    filter: JSON.stringify(sy.searchWindowReturnData.filters),
+                    sort: JSON.stringify(sy.searchWindowReturnData.sorts)
                 });
             }
             //console.info(sy.searchWindowReturnData);
@@ -163,8 +163,8 @@ $.extend($.fn.datagrid.defaults, {
         $.ajax({
             url: opts.url,
             type: 'POST',
-            data: JSON.stringify(param),
-            //data:param,
+            //data: JSON.stringify(param),
+            data:param,
             //contentType: 'application/json',
             contentType:'application/x-www-form-urlencoded',
             dataType: 'json',
@@ -369,7 +369,8 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: JSON.stringify(p),
+                //data: JSON.stringify(p),
+                data:p,
                 //contentType: 'application/json',
                 contentType:'application/x-www-form-urlencoded',
                 dataType: 'json',
