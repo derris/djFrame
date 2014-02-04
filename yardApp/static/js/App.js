@@ -571,7 +571,7 @@ $.ajaxSetup({
                 sy.onLoadError(error_msg);
                 return;
             }
-            $.messager.alert('提示2', error_msg);
+            $.messager.alert('ajax提示1', error_msg);
         }
     }
 });

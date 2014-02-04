@@ -82,7 +82,7 @@ def getclients2(request):
              }]
         }
         '''
-        print(request.POST)
+        print('得到post参数', request.POST)
         if 'page' in dict(request.POST).keys():
             pass
         else:

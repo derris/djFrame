@@ -44,7 +44,7 @@ $.fn.datagrid.defaults.loadMsg = '加载中....';
  */
 var easyuiErrorFunction = function(XMLHttpRequest) {
 	$.messager.progress('close');
-	$.messager.alert('错误', XMLHttpRequest.responseText);
+	$.messager.alert('请求错误1', XMLHttpRequest.responseText);
 };
 $.fn.datagrid.defaults.onLoadError = easyuiErrorFunction;
 $.fn.treegrid.defaults.onLoadError = easyuiErrorFunction;
@@ -331,6 +331,6 @@ $.ajaxSetup({
 	type : 'POST',
 	error : function(XMLHttpRequest, textStatus, errorThrown) {
 		$.messager.progress('close');
-		$.messager.alert('错误', XMLHttpRequest.responseText);
+		$.messager.alert('POST错误1', XMLHttpRequest.responseText);
 	}
 });
