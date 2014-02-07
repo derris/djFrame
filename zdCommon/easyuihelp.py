@@ -35,7 +35,7 @@ class EasyuiFieldUI:
     def __init__(self,model=None,field=None,title=None,width=None,rowspan=None,colspan=None,
                  align='right',halign='center',sortable=None,order=None,resizable=None,
                  fixed=None,hidden=None,checkbox=None,formatter=None,styler=None,
-                 sorter=None,editor=None):
+                 sorter=None,editor=None,readonly=False):
         self.model = model
         self.field = field
         if (self.model is None or self.field is None):
@@ -75,6 +75,7 @@ class EasyuiFieldUI:
             self.sorter = sorter
         if editor is not None:
             self.editor = editor
+        self.readonly = readonly
     def defaultAttribute(self):
         self.title = self.fObj.verbose_name
         self.align = 'right'
@@ -178,7 +179,7 @@ class EasyuiFieldUI:
             strUI = strUI + "styler: " + self.styler + ",\n"
         if ('sorter' in self.__dict__):
             strUI = strUI + "sorter: " + self.sorter + ",\n"
-        if ('editor' in self.__dict__):
+        if ('editor' in self.__dict__ and (not self.readonly)):
             strUI = strUI + "editor: " + str(self.editor) + ",\n"
         strUI = strUI.strip().rstrip(',') + "}"
         return strUI
