@@ -49,11 +49,10 @@ def rawsql4request(aSql, aRequest):
     l_sort = str(ldict_req.get('sort', ''))
     l_filter = str(ldict_req.get('filter', ''))
 
-    #============================= 处理得到的where条件。
+    #============================= 处理得到的where条件。============
+    ls_wheresum = ''
     if len(l_filter) > 3:
-
         # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
-        ls_opersum = ''
         for i in json.loads(l_filter):
             l_dictwhere = i
             ls_oper = ''
@@ -73,39 +72,91 @@ def rawsql4request(aSql, aRequest):
                 ls_oper = 'between'
             else:
                 raise Exception("无法识别的操作符号，请通知管理员")
-
             ls_value =  l_dictwhere['value1']
             ls_getwhere = ''
             if ls_oper == 'between':
                 ls_getwhere = l_dictwhere['cod'] + ' between ' + ls_value.split(',')[0] + ' and ' + ls_value.split(',')[1]
             elif ls_oper == 'in':
                 ls_getwhere = l_dictwhere['cod'] + ' in (' + ls_value + ')'
+            elif ls_oper == 'not in':
+                ls_getwhere = l_dictwhere['cod'] + ' not in (' + ls_value + ')'
             else:
                 ls_getwhere = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
-            ls_opersum = ls_opersum + ls_getwhere
-        # ls_opersum
-        #------------------------------ get where ------------------------------
+            ls_wheresum = ls_wheresum + ' ' +  ls_getwhere + ' and'
+        ls_wheresum = ls_wheresum[:-3]
+    #------------------------------ get where ------------------------------
 
-     #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
+    # ============================================= order here ===========
+    ls_ordersum = ''
     if len(l_sort)> 3:
-        l_dictsort = json.loads(l_sort)
-    else:
-        ls_sort = ' order by id desc '
+    #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
+        for i in json.loads(l_filter):
+            l_dictsort = i
+            ltmp_sort = ''
+            if l_dictsort['order_typ'] == '升序':
+                ltmp_sort = ' asc '
+            elif l_dictsort['order_typ'] == '降序':
+                ltmp_sort = ' desc '
+            else:
+                raise Exception("无法识别的排序符号")
+            ls_ordersum = ls_ordersum + ' ' + ltmp_sort + ' ,'
+        ls_ordersum = ls_ordersum[:-1]
+    #------------------------------ get order ------------------------------
+
+
+    ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。 where group order limit
+    ls_rewhere = r'(\bwhere\b.*?)(\border\b|\bgroup\b|\blimit\b|;)'
+    ls_regroup = r'(\bgroup\b.*?)(\border\b|\blimit\b|;)'
+    ls_reorder = r'(\border\b.*?)(\bgroup\b|\blimit\b|;)'
+    ls_reselect = r'(.*?)(\bwhere\b|\blimit\b|\border\b|\bgroup\b|;)'
+
+    l_tmp = re.search(ls_reselect, ls_sql, re.IGNORECASE)
+    if l_tmp:
+        ls_select = l_tmp.group(1)
+
+    l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
+    if l_tmp:
+        ls_where =  l_tmp.group(1)
+
+    l_tmp =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
+    if l_tmp:
+        ls_group =  l_tmp.group(1)
+
+    l_tmp = re.search(ls_reorder, ls_sql, re.IGNORECASE)
+    if l_tmp:
+        ls_orders = l_tmp.group(1)
 
     '''
-    ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。
-    ls_rewhere = r'(\bwhere\b.*?)(\border\b|\bgroup\b|\blimit\b|;)'
-    ls_reorder = r'(\border\b.*?)(\bgroup\b|\blimit\b|;)'
-    ls_regroup = r'(\bgroup\b.*?)(\border\b|\blimit\b|;)'
-    ls_relimit = r'(\blimit\b.*?);'
-    ls_reselect = r'(.*?)(\bwhere\b|\blimit\b|\border\b|\bgroup\b|;)'
-    ls_select = re.search(ls_reselect, ls_sql, re.IGNORECASE)
-    ls_where =  re.search(ls_rewhere, ls_sql, re.IGNORECASE)
-    ls_order =  re.search(ls_reorder, ls_sql, re.IGNORECASE)
-    ls_group =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
-    ls_limit =  re.search(ls_relimit, ls_sql, re.IGNORECASE)
-'''
+    ls_countsql = l_tmp
+    ls_sqlcount = "select count(*) " + ls_sqlcount
+    '''
 
+    ls_finwhere = ''
+    if ls_where:
+        ls_finwhere = ls_where + ' and ' + ls_wheresum
+    elif len(ls_wheresum.strip(' ')) > 4:
+        ls_finwhere = ' where ' + ls_wheresum
+
+    ls_finorder = ''
+    if ls_order:
+        ls_finorder = ls_order + ' , ' + ls_ordersum
+    elif len(ls_ordersum.strip(' ')) > 4:
+        ls_finorder = ' order by  ' + ls_ordersum
+
+    if ls_finorder.find(' id ') > 0 :
+        pass
+    elif ls_finorder.find( ' order ') > 0 :
+        ls_finorder = ls_finorder + ', id desc'  #默认排序id倒置
+    else:
+        ls_finorder = ' order by id desc '
+
+    ls_finSql = ls_select
+    if ls_finwhere:
+        ls_finSql += ls_finwhere
+    if ls_finorder:
+        ls_finSql += ls_finorder
+    if ls_group:
+        ls_finSql += ls_group
 
 
 def rawsql2json(aSql, aParm=None):
