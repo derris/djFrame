@@ -3,6 +3,7 @@ __author__ = 'dh'
 import json
 from datetime import date,datetime
 from django.db import connection
+import re
 
 def correctjsonfield(obj, atypecode):
     if obj:
@@ -30,6 +31,81 @@ def correctjsonfield(obj, atypecode):
         else:
             raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
             return 0
+
+
+def rawsql4request(aSql, aRequest):
+    '''
+        根据aRequest来的参数，生成aSql语句。
+        select * from t where a = b and c = d order by c1 desc group by c2 limit 10 offset 1;
+    '''
+    ldict_req = {}
+    if aRequest.method == 'GET':
+        ldict_req =   dict(aRequest.Get)
+    else:
+        ldict_req =   dict(aRequest.POST)
+
+    l_page = int(ldict_req.get('page', 1))
+    l_rows = int(ldict_req.get('rows', 10))
+    l_sort = str(ldict_req.get('sort', ''))
+    l_filter = str(ldict_req.get('filter', ''))
+
+    #============================= 处理得到的where条件。
+    if len(l_filter) > 3:
+
+        # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
+        ls_opersum = ''
+        for i in json.loads(l_filter):
+            l_dictwhere = i
+            ls_oper = ''
+            if l_dictwhere['operatorTyp'] == '等于':
+                ls_oper = '='
+            elif  l_dictwhere['operatorTyp'] == '大于':
+                ls_oper = '='
+            elif l_dictwhere['operatorTyp'] == '小于':
+                ls_oper = '='
+            elif l_dictwhere['operatorTyp'] == '大于等于':
+                ls_oper = '='
+            elif l_dictwhere['operatorTyp'] == '小于等于':
+                ls_oper = '='
+            elif l_dictwhere['operatorTyp'] == 'in':
+                ls_oper = 'in'
+            elif l_dictwhere['operatorTyp'] == 'between':
+                ls_oper = 'between'
+            else:
+                raise Exception("无法识别的操作符号，请通知管理员")
+
+            ls_value =  l_dictwhere['value1']
+            ls_getwhere = ''
+            if ls_oper == 'between':
+                ls_getwhere = l_dictwhere['cod'] + ' between ' + ls_value.split(',')[0] + ' and ' + ls_value.split(',')[1]
+            elif ls_oper == 'in':
+                ls_getwhere = l_dictwhere['cod'] + ' in (' + ls_value + ')'
+            else:
+                ls_getwhere = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
+            ls_opersum = ls_opersum + ls_getwhere
+        # ls_opersum
+        #------------------------------ get where ------------------------------
+
+     #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
+    if len(l_sort)> 3:
+        l_dictsort = json.loads(l_sort)
+    else:
+        ls_sort = ' order by id desc '
+
+    '''
+    ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。
+    ls_rewhere = r'(\bwhere\b.*?)(\border\b|\bgroup\b|\blimit\b|;)'
+    ls_reorder = r'(\border\b.*?)(\bgroup\b|\blimit\b|;)'
+    ls_regroup = r'(\bgroup\b.*?)(\border\b|\blimit\b|;)'
+    ls_relimit = r'(\blimit\b.*?);'
+    ls_reselect = r'(.*?)(\bwhere\b|\blimit\b|\border\b|\bgroup\b|;)'
+    ls_select = re.search(ls_reselect, ls_sql, re.IGNORECASE)
+    ls_where =  re.search(ls_rewhere, ls_sql, re.IGNORECASE)
+    ls_order =  re.search(ls_reorder, ls_sql, re.IGNORECASE)
+    ls_group =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
+    ls_limit =  re.search(ls_relimit, ls_sql, re.IGNORECASE)
+'''
+
 
 
 def rawsql2json(aSql, aParm=None):
