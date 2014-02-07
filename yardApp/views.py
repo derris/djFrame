@@ -30,7 +30,7 @@ def clients(request):
     #return render(request,"yard/basedata/clients.html",{'r':request})
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
     clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag',align='center')
-    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',align='center')
+    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',align='center',readonly=True)
     shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag',align='center')
     yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag',align='center')
     portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag',align='center')
