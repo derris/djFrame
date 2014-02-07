@@ -1,0 +1,77 @@
+<script>
+    Namespace.register('basedata.clientsview');
+    //测试lab_zht_1.html
+    $(function () {
+        basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
+            border: false,
+            columns: [
+                [
+                    {field: 'id', hidden: true},
+                    {% autoescape off %}
+                    {{ clientName.writeUI|safe|escape }},
+                    {{ clientFlag.writeUI|safe|escape }},
+                    {{ customFlag.writeUI|safe|escape }},
+                    {{ shipcorpFlag.writeUI|safe|escape }},
+                    {{ yardFlag.writeUI|safe|escape }},
+                    {{ portFlag.writeUI|safe|escape }},
+                    {{ financialFlag.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            fit: true,
+            idField: 'id',
+            method: 'post',
+            pageList: [10, 20, 30, 40],
+            pageSize: 10,
+            pagination: true,
+            rownumbers: true,
+            singleSelect: true,
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.clientsview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('insertData', {
+                            client_name: '新客户名称'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('postUpdateData');
+                    }
+                }
+            ],
+            url: "{% url 'getclients2' %}",
+            updateUrl: "{% url 'updateclients' %}",
+            onDblClickRow: function (rowIndex, rowData) {
+                basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
+            },
+            onClickRow: function (rowIndex, rowData) {
+                basedata.clientsview.datagrid.datagrid('click', rowIndex);
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-client-datagrid" border="false">
+        </table>
+    </div>
+</div>
