@@ -17,4 +17,6 @@ urlpatterns = patterns('',
 
     url(r'^clients/getclients2/$',views.getclients2,name='getclients2'),
     url(r'^clients/getclients3/$',views.getclients3,name='getclients3'),
+
+
 )
