@@ -30,7 +30,6 @@
                         },
                         formatter: function (value, rowData, rowIndex) {
                             if (value != null && String(value) == 'true') {
-                                //return '<span class="icon icon-enable"></span>';
                                 return '<input type="checkbox" disabled="true" value="true" checked="checked" />';
                             } else {
                                 return '<input type="checkbox" disabled="true" value="false"/>';
@@ -48,9 +47,7 @@
                             }
                         },
                         formatter: function (value, rowData, rowIndex) {
-
                             if (value != null && value.toString() == "true") {
-
                                 return '<input type="checkbox" disabled="true" checked="checked" />';
                             } else {
                                 return '<input type="checkbox" disabled="true" />';
