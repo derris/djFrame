@@ -8,6 +8,7 @@ from django.core import serializers
 import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
+from zdCommon import easyuihelp
 from yardApp import models
 
 # Create your views here.
@@ -26,7 +27,25 @@ def mainmenutreeview(request):
 
 
 def clients(request):
-    return render(request,"yard/basedata/clients.html",{'r':request})
+    #return render(request,"yard/basedata/clients.html",{'r':request})
+    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
+    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag',align='center')
+    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',align='center')
+    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag',align='center')
+    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag',align='center')
+    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag',align='center')
+    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag',align='center')
+    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark',align='center')
+    #print(cObj.writeUI())
+    return render(request,"lab/lab_zht_1.html",{'r':request,
+                                                'clientName':clientNameObj,
+                                                'clientFlag':clientFlagObj,
+                                                'customFlag':customFlagObj,
+                                                'shipcorpFlag':shipcorpFlagObj,
+                                                'yardFlag':yardFlagObj,
+                                                'portFlag':portFlagObj,
+                                                'financialFlag':financialFlagObj,
+                                                'remark':remarkObj})
 
 #@require_http_methods(["GET", "POST"])
 @csrf_exempt
@@ -121,3 +140,4 @@ def getclients3(request):
         {"total": 2, "rows": [{"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "外代", "id": 2, "client_flag": "true", "custom_flag": "true"}, {"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "港湾", "id": 1, "client_flag": "false", "custom_flag": "true"}]}
     '''
     return HttpResponse(ls_rtn)
+
