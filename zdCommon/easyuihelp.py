@@ -176,6 +176,8 @@ class EasyuiFieldUI:
                     }
                 }
             else:
+                if (self.editor['type'] == 'text'):
+                    self.editor['type'] = 'validatebox'
                 if ('options' in self.editor):
                     self.editor.options.update({'required':'true'})
                 else:
