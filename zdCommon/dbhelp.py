@@ -33,22 +33,31 @@ def correctjsonfield(obj, atypecode):
             return 0
 
 
-def rawsql4request(aSql, aRequest):
+def rawsql4request(aSql, aRequestDict):
     '''
         根据aRequest来的参数，生成aSql语句。
         select * from t where a = b and c = d group by c2 order by c1 desc limit 10 offset 1;
         select count(*) from t where a = b and c = d group by c2
+
+        if request.method == 'GET':
+            ldict_req =   dict(request.Get)
+        else:
+            ldict_req =   dict(request.POST)
+
+        l_testPost =
+            {
+                'page':1,
+                'rows':10,
+                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value1':'值' }]",
+                'sort':"[{ 'cod':'client_name', 'order_typ':'升序' }]"
+            }
     '''
     ldict_req = {}
-    if aRequest.method == 'GET':
-        ldict_req =   dict(aRequest.Get)
-    else:
-        ldict_req =   dict(aRequest.POST)
-
+    ldict_req = aRequestDict
     l_page = int(ldict_req.get('page', 1))
     l_rows = int(ldict_req.get('rows', 10))
-    l_sort = str(ldict_req.get('sort', ''))
-    l_filter = str(ldict_req.get('filter', ''))
+    l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')
+    l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
 
     #============================= 处理得到的where条件。============
     ls_wheresum = ''
@@ -91,7 +100,7 @@ def rawsql4request(aSql, aRequest):
     ls_ordersum = ''
     if len(l_sort)> 3:
     #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
-        for i in json.loads(l_filter):
+        for i in json.loads(l_sort):
             l_dictsort = i
             ltmp_sort = ''
             if l_dictsort['order_typ'] == '升序':
@@ -116,16 +125,13 @@ def rawsql4request(aSql, aRequest):
         ls_select = l_tmp.group(1)
 
     l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
-    if l_tmp:
-        ls_where =  l_tmp.group(1)
+    ls_where = l_tmp.group(1) if l_tmp else None
 
     l_tmp =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
-    if l_tmp:
-        ls_group =  l_tmp.group(1)
+    ls_group = l_tmp.group(1) if l_tmp else None
 
     l_tmp = re.search(ls_reorder, ls_sql, re.IGNORECASE)
-    if l_tmp:
-        ls_order = l_tmp.group(1)
+    ls_order = l_tmp.group(1) if l_tmp else None
 
     ls_finwhere = ''
     if ls_where:
@@ -147,15 +153,19 @@ def rawsql4request(aSql, aRequest):
         ls_finorder = ' order by id desc '
 
     ls_finSql = ls_select
+    ls_tablename = re.search(r'\bfrom\b\s*(\w*)', ls_sql).group(1)
+    ls_sqlcount = "select count(*) from " + ls_tablename
+
     if ls_finwhere:
         ls_finSql += ls_finwhere
+        ls_sqlcount += ls_finwhere
     if ls_finorder:
         ls_finSql += ls_finorder
     if ls_group:
         ls_finSql += ls_group
+        ls_sqlcount += ls_group
 
-    ls_tablename = re.search(r'\bfrom\b\s*(\w*)', ls_sql).group(1)
-    ls_sqlcount = "select count(*) from " + ls_tablename + " " + ls_finwhere + ' ' + ls_group
+
 
     return( (ls_finSql, ls_sqlcount) )
 
