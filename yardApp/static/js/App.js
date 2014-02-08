@@ -70,8 +70,7 @@ sy.createSearchWindow = function (datagrid) {
                 sy.searchWindowData.push({
                     cod: columns[j][i].field,
                     text: columns[j][i].title,
-                    editor: columns[j][i].editor,
-                    editor2:columns[j][i].editor
+                    editor: columns[j][i].editor
                 });
             }
         }
@@ -83,8 +82,7 @@ sy.createSearchWindow = function (datagrid) {
                 sy.searchWindowData.push({
                     cod: columns[j][i].field,
                     text: columns[j][i].title,
-                    editor: columns[j][i].editor,
-                    editor2:columns[j][i].editor
+                    editor: columns[j][i].editor
                 });
             }
         }
