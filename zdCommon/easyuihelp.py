@@ -132,7 +132,7 @@ class EasyuiFieldUI:
             }
         if isinstance(self.fObj,(models.CharField,)):
             self.editor = {
-                'type':'validatebox'
+                'type':'text'
             }
         if (not (self.fObj.null and self.fObj.blank)):
             if self.editor is None:

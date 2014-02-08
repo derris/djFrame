@@ -31,9 +31,7 @@
      'filter':'[{
         'cod':'client_name',
         'operatorTyp':'等于',
-        'value1':'值1',
-        'value2':'值2'
-
+        'value':'值'
      }]',
      'sort':'[{
        'cod':'client_name',
@@ -44,9 +42,9 @@
   rows:每页显示记录数
   filter:过滤条件数组,cod-字段名
                     operatorTyp-过滤条件有等于、不等于、大于、大于等于、
-                               小于、小于等于、包含、不包含、指定范围
-                    value1:参数值1
-                    value2:参数值2
+                               小于、小于等于、包含、不包含、属于、不属于指定范围
+                    value:参数值,多个值以','分隔
+
   sort:排序条件数组,cod-字段名
                   order_typ 排序方式 升序和将序
 四、
