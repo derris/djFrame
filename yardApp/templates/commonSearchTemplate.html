@@ -56,7 +56,16 @@ $(function () {
                             valueField: 'value',
                             textField: 'value',
                             editable: true,
-                            panelHeight: 250
+                            panelHeight: 250,
+                            onChange: function (newData, oldData) {
+                                console.info(newData);
+                                if (newData.length == 0) {
+                                    var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = '';
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = '';
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].display_value = '';
+                                }
+                            }
                         }
                     }
                 },
@@ -91,7 +100,7 @@ $(function () {
         singleSelect: true,
         striped: true,
         onDblClickRow: function (rowIndex, rowData) {
-            if (rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox'){
+            if (rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox') {
                 common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = '';
             }
             common.createsearchform.filterdatagrid.datagrid('removeEditor', ['display_value']);
@@ -295,7 +304,7 @@ $(function () {
                                     common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
                                 }
                             }
-                       }
+                        }
                     }
                 };
             }
@@ -306,9 +315,10 @@ $(function () {
             'cod': sy.searchWindowData[i].cod,
             'text': sy.searchWindowData[i].text,
             'editor': sy.searchWindowData[i].editor,
-            'value':'',
-            'display_value':'',
-            'value_text':''
+            'value': '',
+            'display_value': '',
+            'value_text': '',
+            'operatorTyp': ''
         });
         common.createsearchform.sorterdatagrid.datagrid('appendRow', {
             'cod': sy.searchWindowData[i].cod,
