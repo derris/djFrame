@@ -218,8 +218,6 @@ $(function () {
 
             var commEditorTypes = "text,validatebox,combobox,checkbox";
             if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0){
-                console.info(sy.searchWindowData[i].editor.type);
-                console.info(sy.searchWindowData[i].text);
                 sy.searchWindowData[i].editor.type = 'text';
                 sy.searchWindowData[i].editor.options = {};
             }
