@@ -63,7 +63,7 @@ $(function () {
                 {
                     field: 'display_value',
                     title: "值,多值用','分隔",
-                    width: 200,
+                    width: 400,
                     align: 'right'
                 },
                 {
@@ -91,7 +91,9 @@ $(function () {
         singleSelect: true,
         striped: true,
         onDblClickRow: function (rowIndex, rowData) {
-            //console.info(rowData);
+            if (rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox'){
+                common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = '';
+            }
             common.createsearchform.filterdatagrid.datagrid('removeEditor', ['display_value']);
             common.createsearchform.filterdatagrid.datagrid('addEditor', [
                 {
@@ -105,9 +107,7 @@ $(function () {
             common.createsearchform.filterdatagrid.datagrid('click', rowIndex);
         },
         onAfterEdit: function (rowIndex, rowData, changes) {
-            //console.info(rowIndex);
-            //console.info(rowData);
-            if (rowData.editor.type == 'combobox') {
+            if (rowData.editor.type == 'combobox' || rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox') {
                 common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = rowData.value_text;
                 common.createsearchform.filterdatagrid.datagrid('refreshRow', rowIndex);
             }
@@ -216,14 +216,18 @@ $(function () {
     for (var i = 0; i < sy.searchWindowData.length; i++) {
         if (sy.searchWindowData[i].editor) {
 
-            var commEditorTypes = "text,validatebox,combobox,checkbox";
-            if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0){
+            var commEditorTypes = "text,validatebox,combobox,checkbox,datebox,datetimebox";
+            if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0) {
                 sy.searchWindowData[i].editor.type = 'text';
                 sy.searchWindowData[i].editor.options = {};
             }
-            if (sy.searchWindowData[i].editor.type == 'validatebox' && sy.searchWindowData[i].editor.options.required == true) {
+            if (sy.searchWindowData[i].editor.options && sy.searchWindowData[i].editor.options.required) {
                 sy.searchWindowData[i].editor.options.required = false;
             }
+            /*
+             if (sy.searchWindowData[i].editor.type == 'validatebox' && sy.searchWindowData[i].editor.options.required == true) {
+             sy.searchWindowData[i].editor.options.required = false;
+             }*/
             if (sy.searchWindowData[i].editor.type == 'combobox') {
                 //sy.searchWindowData[i].editor.options.valueField = 'value';
                 sy.searchWindowData[i].editor.options.multiple = true;
@@ -255,13 +259,56 @@ $(function () {
                     }
                 };
             }
+            if (sy.searchWindowData[i].editor.type == 'datetimebox') {
+                sy.searchWindowData[i].editor = {
+                    type: 'datetimebox',
+                    options: {
+                        required: false,
+                        onChange: function (newDate, oldDate) {
+                            var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                            if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
+                                if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
+                                } else {
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+            if (sy.searchWindowData[i].editor.type == 'datebox') {
+                sy.searchWindowData[i].editor = {
+                    type: 'datebox',
+                    options: {
+                        required: false,
+                        onChange: function (newDate, oldDate) {
+                            var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                            if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
+                                if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
+                                } else {
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
+                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
+                                }
+                            }
+                       }
+                    }
+                };
+            }
         } else {
             sy.searchWindowData[i].editor = { type: 'text' };
         }
         common.createsearchform.filterdatagrid.datagrid('appendRow', {
             'cod': sy.searchWindowData[i].cod,
             'text': sy.searchWindowData[i].text,
-            'editor': sy.searchWindowData[i].editor
+            'editor': sy.searchWindowData[i].editor,
+            'value':'',
+            'display_value':'',
+            'value_text':''
         });
         common.createsearchform.sorterdatagrid.datagrid('appendRow', {
             'cod': sy.searchWindowData[i].cod,
