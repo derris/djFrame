@@ -1,136 +1,23 @@
 <script>
     Namespace.register('basedata.clientsview');
-    //测试
+    //测试lab_zht_1.html
     $(function () {
         basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
             border: false,
             columns: [
                 [
                     {field: 'id', hidden: true},
-                    {field: 'client_name',
-                        title: '客户名称',
-                        align: 'center',
-                        width: 100,
-                        editor: {
-                            type: 'validatebox',
-                            options: {
-                                required: true
-                            }
-                        }
-                    },
-                    {field: 'client_flag',
-                        title: '客户标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && String(value) == 'true') {
-                                return '<input type="checkbox" disabled="true" value="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" value="false"/>';
-                            }
-                        }
-                    },
-                    {field: 'custom_flag',
-                        title: '报关行标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && value.toString() == "true") {
-                                return '<input type="checkbox" disabled="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" />';
-                            }
-                        }
-                    },
-                    {field: 'ship_corp_flag',
-                        title: '船公司标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && value.toString() == "true") {
-                                return '<input type="checkbox" disabled="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" />';
-                            }
-                        }
-                    },
-                    {field: 'yard_flag',
-                        title: '场站标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && value.toString() == "true") {
-                                return '<input type="checkbox" disabled="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" />';
-                            }
-                        }
-                    },
-                    {field: 'port_flag',
-                        title: '码头标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && value.toString() == "true") {
-                                return '<input type="checkbox" disabled="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" />';
-                            }
-                        }
-                    },
-                    {field: 'financial_flag',
-                        title: '财务往来单位标识',
-                        align: 'center',
-                        editor: {
-                            type: 'checkbox',
-                            options: {
-                                on: 'true',
-                                off: 'false'
-                            }
-                        },
-                        formatter: function (value, rowData, rowIndex) {
-                            if (value != null && value.toString() == "true") {
-                                return '<input type="checkbox" disabled="true" checked="checked" />';
-                            } else {
-                                return '<input type="checkbox" disabled="true" />';
-                            }
-                        }
-                    },
-                    {
-                        field: 'remark',
-                        title: '备注',
-                        width: 400
-                    }
+                    {% autoescape off %}
+                    {{ clientName.writeUI|safe|escape }},
+                    {{ clientFlag.writeUI|safe|escape }},
+                    {{ customFlag.writeUI|safe|escape }},
+                    {{ shipcorpFlag.writeUI|safe|escape }},
+                    {{ yardFlag.writeUI|safe|escape }},
+                    {{ portFlag.writeUI|safe|escape }},
+                    {{ financialFlag.writeUI|safe|escape }},
+                    {{ recTim.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
                 ]
             ],
             fit: true,

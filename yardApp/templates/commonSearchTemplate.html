@@ -215,8 +215,9 @@ $(function () {
     });
     for (var i = 0; i < sy.searchWindowData.length; i++) {
         if (sy.searchWindowData[i].editor) {
-            var commEditorTypes = new Array('text','validatebox','combobox','checkbox');
-            if (! sy.searchWindowData[i].editor.type in commEditorTypes){
+
+            var commEditorTypes = "text,validatebox,combobox,checkbox";
+            if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0){
                 sy.searchWindowData[i].editor.type = 'text';
                 sy.searchWindowData[i].editor.options = {};
             }

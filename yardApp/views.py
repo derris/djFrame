@@ -29,15 +29,18 @@ def mainmenutreeview(request):
 def clients(request):
     #return render(request,"yard/basedata/clients.html",{'r':request})
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
-    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag',align='center')
-    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',align='center',readonly=True)
-    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag',align='center')
-    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag',align='center')
-    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag',align='center')
-    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag',align='center')
-    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark',align='center')
+    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
+    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',readonly=True)
+    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
+    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
+    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
+    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
+    recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
+    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
+
+
     #print(cObj.writeUI())
-    return render(request,"lab/lab_zht_1.html",{'r':request,
+    return render(request,"yard/basedata/clients.html",{'r':request,
                                                 'clientName':clientNameObj,
                                                 'clientFlag':clientFlagObj,
                                                 'customFlag':customFlagObj,
@@ -45,6 +48,7 @@ def clients(request):
                                                 'yardFlag':yardFlagObj,
                                                 'portFlag':portFlagObj,
                                                 'financialFlag':financialFlagObj,
+                                                'recTim':recTimObj,
                                                 'remark':remarkObj})
 
 #@require_http_methods(["GET", "POST"])
@@ -76,7 +80,7 @@ from zdCommon.dbhelp import rawsql2json
 
 @csrf_exempt
 def getclients2(request):
-    ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark from c_client"
+    ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
     #得到post的参数
     if request.method == 'GET':
         pass
