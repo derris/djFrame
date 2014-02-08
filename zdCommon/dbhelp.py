@@ -36,7 +36,8 @@ def correctjsonfield(obj, atypecode):
 def rawsql4request(aSql, aRequest):
     '''
         根据aRequest来的参数，生成aSql语句。
-        select * from t where a = b and c = d order by c1 desc group by c2 limit 10 offset 1;
+        select * from t where a = b and c = d group by c2 order by c1 desc limit 10 offset 1;
+        select count(*) from t where a = b and c = d group by c2
     '''
     ldict_req = {}
     if aRequest.method == 'GET':
@@ -124,12 +125,7 @@ def rawsql4request(aSql, aRequest):
 
     l_tmp = re.search(ls_reorder, ls_sql, re.IGNORECASE)
     if l_tmp:
-        ls_orders = l_tmp.group(1)
-
-    '''
-    ls_countsql = l_tmp
-    ls_sqlcount = "select count(*) " + ls_sqlcount
-    '''
+        ls_order = l_tmp.group(1)
 
     ls_finwhere = ''
     if ls_where:
@@ -143,9 +139,9 @@ def rawsql4request(aSql, aRequest):
     elif len(ls_ordersum.strip(' ')) > 4:
         ls_finorder = ' order by  ' + ls_ordersum
 
-    if ls_finorder.find(' id ') > 0 :
+    if ls_finorder.find(' id ') > 0:
         pass
-    elif ls_finorder.find( ' order ') > 0 :
+    elif ls_finorder.find( ' order ') > 0:
         ls_finorder = ls_finorder + ', id desc'  #默认排序id倒置
     else:
         ls_finorder = ' order by id desc '
@@ -158,6 +154,10 @@ def rawsql4request(aSql, aRequest):
     if ls_group:
         ls_finSql += ls_group
 
+    ls_tablename = re.search(r'\bfrom\b\s*(\w*)', ls_sql).group(1)
+    ls_sqlcount = "select count(*) from " + ls_tablename + " " + ls_finwhere + ' ' + ls_group
+
+    return( (ls_finSql, ls_sqlcount) )
 
 def rawsql2json(aSql, aParm=None):
     l_cur = connection.cursor()
