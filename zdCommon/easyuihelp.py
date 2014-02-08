@@ -2,7 +2,28 @@ __author__ = 'zhangtao'
 from django.db import models
 class EasyuiFieldUI:
     '''
-    生成easyui datagrid的columns字段类
+    生成easyui datagrid的columns字段类 通过writeUI方法写出
+    初始化参数：
+    model:django.db.models.model类型 字段所属model 必填
+    field:字符 model中字段名称
+    title:字符 列标题
+    width:数值 列显示宽度,
+    rowspan:数值 列跨行数
+    colspan:数值 列跨列数,
+    align:字符('left','right','center') 列对齐
+    halign:字符('left','right','center') 列标题对齐
+    sortable:布尔 列可排序
+    order:字符('asc','desc') 排序方式
+    resizable:布尔 是否允许调整列尺寸
+    fixed:布尔 冻结列是否冻结
+    hidden:布尔 是否隐藏列
+    checkbox:布尔 列是否为checkbox类型
+    formatter:字符 javascript函数，格式化显示
+    styler:字符 javascript函数，列style,
+    sorter:字符 javascript函数，本地排序函数,
+    editor:对象 列editor
+    readonly：布尔 False设置editor为None
+
     '''
     # def __init__(self,model=None,field=None,**kwargs):
     #     self.model = model
@@ -33,7 +54,7 @@ class EasyuiFieldUI:
     #     self..update(kwargs)
 
     def __init__(self,model=None,field=None,title=None,width=None,rowspan=None,colspan=None,
-                 align='right',halign='center',sortable=None,order=None,resizable=None,
+                 align=None,halign=None,sortable=None,order=None,resizable=None,
                  fixed=None,hidden=None,checkbox=None,formatter=None,styler=None,
                  sorter=None,editor=None,readonly=False):
         self.model = model
@@ -77,9 +98,12 @@ class EasyuiFieldUI:
             self.editor = editor
         self.readonly = readonly
     def defaultAttribute(self):
-        self.title = self.fObj.verbose_name
+        '''
+        根据字段类型设置默认的editor 默认隐藏field='id'的字段
+        '''
         self.align = 'right'
         self.halign = 'center'
+        self.title = self.fObj.verbose_name
         if (self.field.upper() == 'ID' or self.fObj.primary_key):
             self.hidden = True
         if isinstance(self.fObj,models.AutoField):
@@ -88,11 +112,13 @@ class EasyuiFieldUI:
                                  models.BigIntegerField,
                                  models.SmallIntegerField,
                                  models.CommaSeparatedIntegerField)):
+            self.width = 50
             self.editor = {
                 'type':'numberbox'
             }
         if isinstance(self.fObj,(models.PositiveSmallIntegerField,
                                  models.PositiveIntegerField)):
+            self.width = 50
             self.editor = {
                 'type':'numberbox',
                 'options':{
@@ -100,6 +126,7 @@ class EasyuiFieldUI:
                 }
             }
         if isinstance(self.fObj,(models.DecimalField,models.FloatField)):
+            self.width = 100
             self.editor = {
                 'type':'numberbox',
                 'options':{
@@ -108,6 +135,9 @@ class EasyuiFieldUI:
             }
         if isinstance(self.fObj,(models.BooleanField,
                                  models.NullBooleanField)):
+            self.align = 'center'
+            self.halign = 'center'
+            self.width = len(self.title) * 18
             self.editor = {
                 'type':'checkbox',
                 'options':{
@@ -123,14 +153,17 @@ class EasyuiFieldUI:
                             }
                         }'''
         if isinstance(self.fObj,(models.DateField,)):
+            self.width = 100
             self.editor = {
                 'type':'datebox'
             }
         if isinstance(self.fObj,(models.DateTimeField,)):
+            self.width = 180
             self.editor = {
                 'type':'datetimebox'
             }
         if isinstance(self.fObj,(models.CharField,)):
+            self.width = self.fObj.max_length * 5
             self.editor = {
                 'type':'text'
             }
@@ -152,9 +185,11 @@ class EasyuiFieldUI:
 
     def writeUI(self):
         strUI = "{field: '" + self.field + "',\n" + \
-                "title: '" + self.title + "',\n" + \
-                "align: '" + self.align + "',\n" + \
-                "halign: '" + self.halign + "',\n"
+                "title: '" + self.title + "',\n"
+        if ('align' in self.__dict__):
+            strUI = strUI + "align: '" + str(self.align) + "',\n"
+        if ('halign' in self.__dict__):
+            strUI = strUI + "halign: '" + str(self.halign) + "',\n"
         if ('width' in self.__dict__):
             strUI = strUI + "width: " + str(self.width) + ",\n"
         if ('colspan' in self.__dict__):
