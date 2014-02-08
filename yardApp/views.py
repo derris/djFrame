@@ -25,6 +25,8 @@ def index(request):
 def mainmenudata(request):
     return HttpResponse("主菜单")
 
+def maintab(request):
+    return render(request,"yard/MainTab.html")
 def mainmenutreeview(request):
     return render(request,"yard/MainMenuTree.html")
 
