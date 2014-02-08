@@ -9,6 +9,9 @@ import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from zdCommon import easyuihelp
+from zdCommon.dbhelp import rawsql2json, rawsql4request
+
+
 from yardApp import models
 
 # Create your views here.
@@ -76,7 +79,7 @@ def updateClients(request):
 def getCommonSearchTemplate(request):
     return render(request,"commonSearchTemplate.html")
 
-from zdCommon.dbhelp import rawsql2json
+
 
 @csrf_exempt
 def getclients2(request):
@@ -85,55 +88,13 @@ def getclients2(request):
     if request.method == 'GET':
         pass
     else:
-        # ls_t = str(request.body.decode('utf8'))   l_post = json.loads(ls_t)
-        # l_page = l_post.get('page') if l_post.get('page') else 1
-        # l_rows = l_post.get('rows') if l_post.get('rows') else 10
-        ls_prompt = '''
-        {
-             'page':1,
-             'rows':10,
-             'filter':[{
-                'cod':'client_name',
-                'operatorTyp':'等于',
-                'value1':'值1',
-                'value2':'值2'
-
-             }],
-             'sort':[{
-               'cod':'client_name',
-               'order_typ':'升序'
-             }]
-        }
-        '''
         print('得到post参数', request.POST)
         if 'page' in dict(request.POST).keys():
             pass
         else:
             raise Exception('there is no page keys')
 
-        l_page = int(request.POST.get('page', 1))
-        l_rows = int(request.POST.get('rows', 10))
-        l_sort = str(request.POST.get('sort', ''))
-        l_filter = str(request.POST.get('filter', ''))
-
-        '''
-        if len(l_filter) > 3:
-            l_dictwhere = json.loads(l_filter)
-            # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
-
-            ls_where = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
-            ls_sql += ls_where if ls_where else ""
-        if len(l_sort)> 3:
-            l_dictsort = json.loads(l_sort)
-        else:
-            ls_sort = ' order by id desc '
-        '''
-
-        ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-        ls_sql += ls_offset
-
-    print(ls_sql)
-    jsonData = rawsql2json(ls_sql)
+    jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
 
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。

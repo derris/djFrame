@@ -44,11 +44,10 @@ def rawsql4request(aSql, aRequestDict):
         else:
             ldict_req =   dict(request.POST)
 
-        l_testPost =
-            {
-                'page':1,
-                'rows':10,
-                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value1':'值' }]",
+        l_testPost =   {
+                'page':2,
+                'rows':12,
+                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value':'值' }]",
                 'sort':"[{ 'cod':'client_name', 'order_typ':'升序' }]"
             }
     '''
@@ -59,7 +58,7 @@ def rawsql4request(aSql, aRequestDict):
     l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')
     l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
 
-    #============================= 处理得到的where条件。============
+    #============================= filter 处理得到 where条件。============
     ls_wheresum = ''
     if len(l_filter) > 3:
         # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
@@ -69,34 +68,43 @@ def rawsql4request(aSql, aRequestDict):
             if l_dictwhere['operatorTyp'] == '等于':
                 ls_oper = '='
             elif  l_dictwhere['operatorTyp'] == '大于':
-                ls_oper = '='
+                ls_oper = '>'
             elif l_dictwhere['operatorTyp'] == '小于':
-                ls_oper = '='
+                ls_oper = '<'
             elif l_dictwhere['operatorTyp'] == '大于等于':
-                ls_oper = '='
+                ls_oper = '>='
             elif l_dictwhere['operatorTyp'] == '小于等于':
-                ls_oper = '='
-            elif l_dictwhere['operatorTyp'] == 'in':
-                ls_oper = 'in'
-            elif l_dictwhere['operatorTyp'] == 'between':
-                ls_oper = 'between'
+                ls_oper = '<='
+            elif l_dictwhere['operatorTyp'] == '不等于':
+                ls_oper = '<>'
+            elif l_dictwhere['operatorTyp'] == '包含':
+                ls_oper = ' like '
+            elif l_dictwhere['operatorTyp'] == '不包含':
+                ls_oper = ' not like '
+            elif l_dictwhere['operatorTyp'] == '属于':
+                ls_oper = ' in '
+            elif l_dictwhere['operatorTyp'] == '不属于':
+                ls_oper = ' not in '
+            elif l_dictwhere['operatorTyp'] == '介于':
+                ls_oper = ' between '
             else:
                 raise Exception("无法识别的操作符号，请通知管理员")
-            ls_value =  l_dictwhere['value1']
+
+            ls_value =  l_dictwhere['value']
             ls_getwhere = ''
-            if ls_oper == 'between':
-                ls_getwhere = l_dictwhere['cod'] + ' between ' + ls_value.split(',')[0] + ' and ' + ls_value.split(',')[1]
-            elif ls_oper == 'in':
-                ls_getwhere = l_dictwhere['cod'] + ' in (' + ls_value + ')'
-            elif ls_oper == 'not in':
-                ls_getwhere = l_dictwhere['cod'] + ' not in (' + ls_value + ')'
+            if ls_oper == ' between ':
+                ls_getwhere = l_dictwhere['cod'] + " between '" + ls_value.split(',')[0] + "' and '" + ls_value.split(',')[1] + "'"
+            elif ls_oper in (' in ', ' not in '):
+                ls_getwhere = l_dictwhere['cod'] + ls_oper + "('" + ls_value.replace(",", "','") + "')"
+            elif ls_oper in (' not like ', ' like '):
+                ls_getwhere = l_dictwhere['cod'] + ls_oper + "'%" + ls_value + "%'"
             else:
-                ls_getwhere = l_dictwhere['cod'] + l_dictwhere['operatorTyp'] + l_dictwhere['value1']
+                ls_getwhere = l_dictwhere['cod'] + ls_oper + "'" +  ls_value + "'"
             ls_wheresum = ls_wheresum + ' ' +  ls_getwhere + ' and'
         ls_wheresum = ls_wheresum[:-3]
-    #------------------------------ get where ------------------------------
+    #------------------------------filter 2 where  ->  ls_wheresum ------------------------------
 
-    # ============================================= order here ===========
+    # =============================================sort 2 order ===========
     ls_ordersum = ''
     if len(l_sort)> 3:
     #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
@@ -109,11 +117,11 @@ def rawsql4request(aSql, aRequestDict):
                 ltmp_sort = ' desc '
             else:
                 raise Exception("无法识别的排序符号")
-            ls_ordersum = ls_ordersum + ' ' + ltmp_sort + ' ,'
+            ls_ordersum += l_dictsort['cod'] + ltmp_sort + ' ,'
         ls_ordersum = ls_ordersum[:-1]
-    #------------------------------ get order ------------------------------
+    #------------------------------sort -> order -> ls_ordersum ------------------------------
 
-
+    # 处理原来的sql语句，准备加上新的条件。
     ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。 where group order limit
     ls_rewhere = r'(\bwhere\b.*?)(\border\b|\bgroup\b|\blimit\b|;)'
     ls_regroup = r'(\bgroup\b.*?)(\border\b|\blimit\b|;)'
@@ -123,6 +131,9 @@ def rawsql4request(aSql, aRequestDict):
     l_tmp = re.search(ls_reselect, ls_sql, re.IGNORECASE)
     if l_tmp:
         ls_select = l_tmp.group(1)
+    else:
+        ls_select = ''
+        raise Exception("得不到sql主体语句，请与管理员联系")
 
     l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
     ls_where = l_tmp.group(1) if l_tmp else None
@@ -159,22 +170,19 @@ def rawsql4request(aSql, aRequestDict):
     if ls_finwhere:
         ls_finSql += ls_finwhere
         ls_sqlcount += ls_finwhere
-    if ls_finorder:
-        ls_finSql += ls_finorder
     if ls_group:
         ls_finSql += ls_group
         ls_sqlcount += ls_group
+    if ls_finorder:
+        ls_finSql += ls_finorder
 
-
+    ls_finSql += (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
 
     return( (ls_finSql, ls_sqlcount) )
 
-def rawsql2json(aSql, aParm=None):
+def rawsql2json(aSql, aSqlCount):
     l_cur = connection.cursor()
-    if aParm:
-        l_cur.execute(aSql, aParm)
-    else:
-        l_cur.execute(aSql)
+    l_cur.execute(aSql)
     l_keys = [i for i in l_cur.description ]
     l_sum = []
     l_count = 0
@@ -184,14 +192,7 @@ def rawsql2json(aSql, aParm=None):
             l_dictSub.update( {l_keys[j].name: correctjsonfield(i[j], l_keys[j].type_code) })
         l_sum.append( l_dictSub )
         l_count += 1
-
-    ls_sqlcount =  aSql[aSql.find('from'): (aSql.find('limit') if aSql.find('limit') > 0 else None)]
-    ls_sqlcount = ls_sqlcount[: (aSql.find('order') if aSql.find('order') > 0 else None)]
-
-    ls_sqlcount = "select count(*) " + ls_sqlcount
-
-
-    l_cur.execute(ls_sqlcount)
+    l_cur.execute(aSqlCount)
     l_sqlcount = l_cur.fetchone()[0]
 
     l_rtn = {}
