@@ -40,7 +40,7 @@ def clients(request):
 
 
     #print(cObj.writeUI())
-    return render(request,"basedata/clients.html",{'r':request,
+    return render(request,"yard/basedata/clients.html",{'r':request,
                                                 'clientName':clientNameObj,
                                                 'clientFlag':clientFlagObj,
                                                 'customFlag':customFlagObj,
