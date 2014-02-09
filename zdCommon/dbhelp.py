@@ -19,13 +19,15 @@ def correctjsonfield(obj, atypecode):
         if atypecode == 1043:    # varchar
             return ""
         elif atypecode == 1082:  # date
-            return "1899-01-01"
+            return "1800-01-01"
         elif atypecode == 1083:  # time
             return "00:00:00"
         elif atypecode == 16:    # bool
             return "false"
         elif atypecode == 18:  # char            :
             return ""
+        elif atypecode == 1114:  # datetime/ timestamp
+            return "1800-01-01 00:00:00"
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
             return 0
         else:
@@ -194,13 +196,39 @@ def rawsql2json(aSql, aSqlCount):
         l_count += 1
     l_cur.execute(aSqlCount)
     l_sqlcount = l_cur.fetchone()[0]
-
+    l_cur.close()
     l_rtn = {}
     l_rtn.update( {"msg": "", "stateCod":"", "total":l_sqlcount, "rows": l_sum } )
     # l_rtn =  '{"total":' + str(l_count) + ', "rows":' + str( l_sum) + '}'
     return l_rtn
 
-
+def getTableInfo(aTableName):
+    ls_sql = ("select col.attname, col.atttypid, col_description(col.attrelid, col.attnum) from pg_class as tb, pg_attribute as col \
+        where tb.relname = '%s' and col.attrelid = tb.oid and col.attnum > 0" % aTableName)
+    l_cur = connection.cursor()
+    l_cur.execute(ls_sql)
+    l_desc = l_cur.fetchall()
+    l_dict = {}
+    for i in l_desc:
+        atypecode = i[1]
+        if atypecode == 1043:    # varchar
+            ls = "char"
+        elif atypecode == 1082:  # date
+            ls = 'date'
+        elif atypecode == 1083:  # time
+            ls = 'time'
+        elif atypecode == 16:    # bool
+            ls = 'bool'
+        elif atypecode == 18:  # char            :
+            ls = 'char'
+        elif atypecode == 1114:  # datetime/ timestamp
+            ls = 'datetime'
+        elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
+            ls = 'int'
+        else:
+            raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
+        l_dict.update({ i[0] : ls  })
+    return l_dict
 
 
 

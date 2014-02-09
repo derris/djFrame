@@ -1,4 +1,4 @@
-__author__ = 'collector'
+__author__ = 'donghai'
 
 import os
 from datetime import datetime
