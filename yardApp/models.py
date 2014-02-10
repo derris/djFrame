@@ -12,7 +12,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 class Client(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     client_name = models.CharField('客户名称',max_length=50,unique=True)
     client_flag = models.NullBooleanField('委托方标识')
     custom_flag = models.NullBooleanField('报关行标识')
@@ -25,7 +25,7 @@ class Client(BaseModel):
     class Meta:
         db_table = 'c_client'
 class Contract(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     bill_no = models.CharField('提单号',max_length=25,unique=True)
     cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
     origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
@@ -51,7 +51,7 @@ class Contract(BaseModel):
     class Meta:
         db_table = 'contract'
 class contractAction(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     contract_id = models.ForeignKey('Contract',verbose_name='委托id')
     action_id = models.ForeignKey('ContractActionCod',verbose_name='委托计划id')
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
@@ -59,14 +59,14 @@ class contractAction(BaseModel):
     class Meta:
         db_table = 'contract_action'
 class ContractActionCod(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     action_name = models.CharField('委托计划名称',max_length=20,unique=True)
     def __str__(self):
         return self.action_name
     class Meta:
         db_table = 'c_contract_action'
 class FeeCod(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     fee_name = models.CharField('费用名称',max_length=20,unique=True)
     protocol_flag = models.NullBooleanField('协议费用标识')
     def __str__(self):
@@ -74,7 +74,7 @@ class FeeCod(BaseModel):
     class Meta:
         db_table = 'c_fee'
 class FeeProtocol(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     client_id = models.ForeignKey('Client',verbose_name='客户ID')
     fee_id = models.ForeignKey('FeeCod',verbose_name='费用代码')
     contract_type = models.ForeignKey('SysCode',related_name='fee_contract_type',verbose_name='业务类型')
@@ -84,7 +84,7 @@ class FeeProtocol(BaseModel):
     class Meta:
         db_table = 'c_fee_protocol'
 class SysCode(BaseModel):
-    id = models.IntegerField('pk',primary_key=True)
+    id = models.AutoField('pk',primary_key=True)
     fld_eng = models.CharField('英文字段名',max_length=20)
     fld_chi = models.CharField('中文字段名',max_length=30)
     cod_name = models.CharField('值名称',max_length=20)
