@@ -89,12 +89,14 @@ def rawsql4request(aSql, aRequestDict):
                 ls_oper = ' not in '
             elif l_dictwhere['operatorTyp'] == '介于':
                 ls_oper = ' between '
+            elif l_dictwhere['operatorTyp'] == '不介于':
+                ls_oper = ' not between '
             else:
                 raise Exception("无法识别的操作符号，请通知管理员")
 
             ls_value =  l_dictwhere['value']
             ls_getwhere = ''
-            if ls_oper == ' between ':
+            if ls_oper == (' between ', ' not between '):
                 ls_getwhere = l_dictwhere['cod'] + " between '" + ls_value.split(',')[0] + "' and '" + ls_value.split(',')[1] + "'"
             elif ls_oper in (' in ', ' not in '):
                 ls_getwhere = l_dictwhere['cod'] + ls_oper + "('" + ls_value.replace(",", "','") + "')"
@@ -183,6 +185,9 @@ def rawsql4request(aSql, aRequestDict):
     return( (ls_finSql, ls_sqlcount) )
 
 def rawsql2json(aSql, aSqlCount):
+    '''
+        根据sql语句，返回数据和记录总数。.
+    '''
     l_cur = connection.cursor()
     l_cur.execute(aSql)
     l_keys = [i for i in l_cur.description ]
@@ -203,6 +208,9 @@ def rawsql2json(aSql, aSqlCount):
     return l_rtn
 
 def getTableInfo(aTableName):
+    '''
+        根据表名，通过查询postgresql数据库系统表，得到信息。返回字典。dict['字段名'] 就可以得到字段类型:char, date, time, bool, datetime.
+    '''
     ls_sql = ("select col.attname, col.atttypid, col_description(col.attrelid, col.attnum) from pg_class as tb, pg_attribute as col \
         where tb.relname = '%s' and col.attrelid = tb.oid and col.attnum > 0" % aTableName)
     l_cur = connection.cursor()
