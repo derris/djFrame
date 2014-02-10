@@ -106,8 +106,10 @@ class EasyuiFieldUI:
         self.title = self.fObj.verbose_name
         if (self.field.upper() == 'ID' or self.fObj.primary_key):
             self.hidden = True
+            return
         if isinstance(self.fObj,models.AutoField):
             self.hidden = True
+            return
         if isinstance(self.fObj,(models.IntegerField,
                                  models.BigIntegerField,
                                  models.SmallIntegerField,
@@ -168,7 +170,7 @@ class EasyuiFieldUI:
                 'type':'text'
             }
         if (not (self.fObj.null and self.fObj.blank)):
-            if self.editor is None:
+            if (('editor' not in self.__dict__) or self.editor is None):
                 self.editor = {
                     'type':'validatebox',
                     'options':{
