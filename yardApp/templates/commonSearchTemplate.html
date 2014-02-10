@@ -336,7 +336,7 @@ $(function () {
         for (var i = 0; i < rows.length; i++) {
             if (rows[i].operatorTyp && rows[i].value) {
                 if (rows[i].operatorTyp == '介于' || rows[i].operatorTyp == '不介于') {
-                    if (rows[i].value.indexOf(',') > 0) {
+                    if (rows[i].value.indexOf(',') > 0){
                     } else {
                         //$.messager.alert('提示', '第' + (i + 1) + '行条件数据不完整!');
                         $.messager.alert('提示', "'" + rows[i].text + "'" + '条件,提供数据不完整!');
