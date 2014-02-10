@@ -6,8 +6,9 @@
             border: false,
             columns: [
                 [
-                    {field: 'id', hidden: true},
+
                     {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
                     {{ clientName.writeUI|safe|escape }},
                     {{ clientFlag.writeUI|safe|escape }},
                     {{ customFlag.writeUI|safe|escape }},
