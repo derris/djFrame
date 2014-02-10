@@ -61,7 +61,6 @@ $(function () {
                             editable: true,
                             panelHeight: 250,
                             onChange: function (newData, oldData) {
-                                console.info(newData);
                                 if (newData.length == 0) {
                                     var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
                                     common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = '';
