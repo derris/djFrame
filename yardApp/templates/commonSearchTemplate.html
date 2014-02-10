@@ -51,6 +51,9 @@ $(function () {
                                 },
                                 {
                                     value: '介于'
+                                },
+                                {
+                                    value: '不介于'
                                 }
                             ],
                             valueField: 'value',
@@ -332,7 +335,7 @@ $(function () {
         var rows = common.createsearchform.filterdatagrid.datagrid('getRows');
         for (var i = 0; i < rows.length; i++) {
             if (rows[i].operatorTyp && rows[i].value) {
-                if (rows[i].operatorTyp == '介于') {
+                if (rows[i].operatorTyp == '介于' || rows[i].operatorTyp == '不介于') {
                     if (rows[i].value.indexOf(',') > 0) {
                     } else {
                         //$.messager.alert('提示', '第' + (i + 1) + '行条件数据不完整!');
