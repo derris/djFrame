@@ -1,0 +1,77 @@
+<script>
+    Namespace.register('sysdata.syscodview');
+    //测试lab_zht_1.html
+    $(function () {
+        sysdata.syscodview.datagrid = $('#sysdata-syscod-datagrid').datagrid({
+            border: false,
+            columns: [
+                [
+
+                    {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ fldEng.writeUI|safe|escape }},
+                    {{ fldChi.writeUI|safe|escape }},
+                    {{ codName.writeUI|safe|escape }},
+                    {{ fldExt1.writeUI|safe|escape }},
+                    {{ fldExt2.writeUI|safe|escape }},
+                    {{ seq.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            fit: true,
+            idField: 'id',
+            method: 'post',
+            pageList: [10, 20, 30, 40],
+            pageSize: 10,
+            pagination: true,
+            rownumbers: true,
+            singleSelect: true,
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    handler: function () {
+                        sy.createSearchWindow(sysdata.syscodview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        sysdata.syscodview.datagrid.datagrid('insertData', {
+                            cod_name: '值名称'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        sysdata.syscodview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    handler: function () {
+                        sysdata.syscodview.datagrid.datagrid('postUpdateData');
+                    }
+                }
+            ],
+            url: "{% url 'getsyscod' %}",
+            updateUrl: "{% url 'updateclients' %}",
+            onDblClickRow: function (rowIndex, rowData) {
+                basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
+            },
+            onClickRow: function (rowIndex, rowData) {
+                basedata.clientsview.datagrid.datagrid('click', rowIndex);
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="sysdata-syscod-datagrid" border="false">
+        </table>
+    </div>
+</div>
