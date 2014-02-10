@@ -33,6 +33,7 @@ def mainmenutreeview(request):
 
 def clients(request):
     #return render(request,"yard/basedata/clients.html",{'r':request})
+    idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
     clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
     customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',readonly=True)
@@ -46,6 +47,7 @@ def clients(request):
 
     #print(cObj.writeUI())
     return render(request,"yard/basedata/clients.html",{'r':request,
+                                                'id':idObj,
                                                 'clientName':clientNameObj,
                                                 'clientFlag':clientFlagObj,
                                                 'customFlag':customFlagObj,
@@ -108,3 +110,45 @@ def getclients3(request):
     '''
     return HttpResponse(ls_rtn)
 
+def syscod(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')
+    fldEng = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_eng')
+    fldChi = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_chi')
+    codName = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='cod_name')
+    fldExt1 = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_ext1')
+    fldExt2 = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_ext2')
+    seq = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='seq')
+    remark = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='remark')
+    return render(request,"yard/sysdata/syscod.html",{'r':request,
+                                                      'id':id,
+                                                      'fldEng':fldEng,
+                                                      'fldChi':fldChi,
+                                                      'codName':codName,
+                                                      'fldExt1':fldExt1,
+                                                      'fldExt2':fldExt2,
+                                                      'seq':seq,
+                                                      'remark':remark
+                                                      })
+@csrf_exempt
+def getsyscod(request):
+    ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
+    #得到post的参数
+    if request.method == 'GET':
+        pass
+    else:
+        if 'page' in dict(request.POST).keys():
+            pass
+        else:
+            raise Exception('there is no page keys')
+
+        l_page = int(request.POST.get('page', 1))
+        l_rows = int(request.POST.get('rows', 10))
+        l_sort = str(request.POST.get('sort', ''))
+        l_filter = str(request.POST.get('filter', ''))
+
+        ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
+        ls_sql += ls_offset
+    jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
+
+    # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
+    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
