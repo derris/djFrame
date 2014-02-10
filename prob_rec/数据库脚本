@@ -27,3 +27,9 @@ insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
 values(13, '外11', TRUE , '1', now());
 insert into c_client(id, client_name, client_flag, rec_nam,rec_tim)
 values(14, '外12', TRUE , '1', now());
+
+2014-02-10 修改sys_code表
+ALTER TABLE sys_code RENAME "FLD_ENG"  TO fld_eng;
+ALTER TABLE sys_code RENAME "FLD_CHI"  TO fld_chi;
+ALTER TABLE sys_code RENAME "FLD_EXT1"  TO fld_ext1;
+ALTER TABLE sys_code RENAME "FLD_EXT2"  TO fld_ext2;
