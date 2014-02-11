@@ -2,7 +2,8 @@
     Namespace.register('system.mainmenu');
     system.mainmenu.treedata = [
         {id : '1',text:'客户维护',attributes:"{% url 'clients' %}"},
-        {id : '2',text:'系统参数维护',attributes:"{% url 'syscod' %}"}
+        {id : '2',text:'系统参数维护',attributes:"{% url 'syscod' %}"},
+        {id : '3',text:'委托维护',attributes:"{% url 'contract' %}"}
     ];
     $(function () {
         system.mainmenu.tree = $('#main-menu-tree').tree({
