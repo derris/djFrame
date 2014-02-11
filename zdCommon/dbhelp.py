@@ -103,7 +103,7 @@ def rawsql4request(aSql, aRequestDict):
             elif ls_oper in (' not like ', ' like '):
                 ls_getwhere = l_dictwhere['cod'] + ls_oper + "'%" + ls_value + "%'"
             else:
-                ls_getwhere = l_dictwhere['cod'] + ls_oper + "'" +  ls_value + "'"
+                ls_getwhere = l_dictwhere['cod'] + ls_oper + "'" + ls_value + "'"
             ls_wheresum = ls_wheresum + ' ' +  ls_getwhere + ' and'
         ls_wheresum = ls_wheresum[:-3]
     #------------------------------filter 2 where  ->  ls_wheresum ------------------------------
