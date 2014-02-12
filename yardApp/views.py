@@ -33,10 +33,11 @@ def mainmenutreeview(request):
 
 def clients(request):
     #return render(request,"yard/basedata/clients.html",{'r':request})
+    #增加 根据权限 判断是否有查询功能 设置datagrid.url
     idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
     clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
-    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag',readonly=True)
+    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag')
     shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
     yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
     portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
@@ -141,14 +142,10 @@ def getsyscod(request):
         else:
             raise Exception('there is no page keys')
 
-        l_page = int(request.POST.get('page', 1))
-        l_rows = int(request.POST.get('rows', 10))
-        l_sort = str(request.POST.get('sort', ''))
-        l_filter = str(request.POST.get('filter', ''))
-
-        ls_offset = (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-        ls_sql += ls_offset
     jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
 
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+
+def contract(request):
+    return render(request,'yard/contract/contract.html')
