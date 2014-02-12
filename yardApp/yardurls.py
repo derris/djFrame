@@ -21,4 +21,6 @@ urlpatterns = patterns('',
 
     url(r'^sysdata/syscod/$',views.syscod,name='syscod'),
     url(r'^sysdata/getsyscod/$',views.getsyscod,name='getsyscod'),
+
+    url(r'^contract/contract/$',views.contract,name='contract'),
 )
