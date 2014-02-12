@@ -64,7 +64,7 @@ ins（‘客户’， json（插入客户数据））
 del（‘客户’， json（'id'））
 upd（‘客户’， json（'id', newvalue, oldvalue））   // 所有数据库字段都是非空。传递的数值用None来表示没变化，或者没有插入数值。
 
-级联数据的操作方法如下：check it out
+级联数据的操作方法如下：
 op：update，
 num: xx
 【
@@ -158,5 +158,6 @@ upd{‘客户’， json（更新客户数据3）, subs: {num:xx, upd:...}
              }
          返回：   state: 'ok' / 'fail' , error: '' , effectnum:xx,
                 rows {'uuid':'xxxx', 'id': xxx,  'subs' { rows: [递归]}}
+
 
   }
