@@ -94,17 +94,23 @@ upd{‘客户’， json（更新客户数据3）, subs: {num:xx, upd:...}
             'order_typ':'升序'
         }]'
      }
-     args: # update （）
-     {
+     args: update
+---------------------------------------------------------------------
         'rows': [
             {
                 'op': 'insert',
-                'table': '客户',  # 这个我们会维护一个对应表。
+                'table': 'c_client',
                 'cols': [{'col1':'value1', 'cold2':'value2', 'c3':'value3'....}],
                 'uuid': 'xxxx',
-                'id': '0',
-                'subs': {rows: [递归]}
-            },       -- 返回  { state: 'ok' / 'fail' ,error:'', effectnum:xx,  rows {'uuid':'xxxx', 'id': xxx, 'subs' { rows: [递归]}}      }
+                'id': -1,
+                'subs': { rows: [递归] } //没有就空着
+            },
+-------------------------------------------------------------------------
+            -- 返回  { state: 0 / -100,-10分层 ,error:['',''],
+            effectnum:xx, // 校验一下对不对。
+            changeids {'uuid':id1, 'uuid2': id2}
+
+
             {
                 'op': 'update',
                 'table':'客户'
@@ -162,3 +168,9 @@ upd{‘客户’， json（更新客户数据3）, subs: {num:xx, upd:...}
 
 
   }
+
+
+子表单独select。
+update和insert的时候返回id的一个字典就行 changedid｛uuid1：id， uuid2：id2｝。
+
+

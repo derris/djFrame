@@ -1,0 +1,52 @@
+2014-2-12： (更改完成以后，把前面的星星去掉)
+-----------------------------------------------------------------
+****前台select ：
+    更改select的ajax，post，格式：
+    {
+         'reqtype':'query'      -----增加一个新字段。
+         'page':1,
+         'rows':10,
+          'cols':['colname1','colname2','colname3], ---- 增加一个新字段。
+         'filter':'[{
+            'cod':'client_name',
+            'operatorTyp':'等于',
+            'value':'值'
+         }]',
+         'sort':'[{
+           'cod':'client_name',
+           'order_typ':'升序'
+         }]'
+    }
+****后台返回select：
+    {
+     "msg":"",
+     "stateCod":0 、 -10、 -100、-1000 。
+     "error": ['', '', '']....
+     "total":22,
+     "rows":[{},{},{}]
+   }
+------------------------------------------------------------------
+
+****前台insert：
+    增加insert的ajax，post，格式：
+    ｛
+       'reqtype':'insert'      -----增加一个新字段。
+       'rows': [
+            {
+                'op': 'insert',
+                'table': 'c_client',
+                'cols': [{'col1':'value1', 'cold2':'value2', 'c3':'value3'....}],
+                'uuid': 'xxxx',
+                'id': -1,
+                'subs': { rows: [递归] } //没有就空着
+            },
+    ｝
+****后台返回insert：
+    {
+     "msg":"",
+     "stateCod":0 、 -10、 -100、-1000 。
+     "error": ['', '', '']....
+     "effectnum": xx ,
+     "changeid":{'uuid1':'id1', 'uuid2':'id2'...}
+   }
+------------------------------------------------------------------
