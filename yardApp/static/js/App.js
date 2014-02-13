@@ -194,6 +194,7 @@ sy.createSearchWindow = function (datagrid) {
         collapsible: false,
         minimizable: false,
         maximizable: false,
+
         closable: true,
         onClose: function () {
             //console.info('onClose');                        
