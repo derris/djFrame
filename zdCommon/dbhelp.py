@@ -238,5 +238,30 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
+def json2insert(aJsonDict):
+    '''
+      { 'reqtype':'insert'      -----增加一个新字段。
+       'rows': [
+            {
+                'op': 'insert',
+                'table': 'c_client',
+                'cols': {'col1':'value1', 'cold2':'value2', 'c3':'value3'....},
+                'uuid': 'xxxx',
+                'id': -1,
+                'subs': { rows: [递归] } //没有就空着
+            },   }
+    '''
+    l_rows = aJsonDict['rows']
+    for i_row in l_rows:  # insert into table(a,b,c,d,e)  values('a','b','c','d','e')
+        ls_sql = "insert into %s" % i_row['table']
+        ls_col = ls_val = ''
+        for icol,ival in i_row['cols'].items():
+            ls_col += icol + ','
+            ls_val += "'" + ival + "',"
+        ls_col = ls_col[:-1]
+        ls_val = ls_val[:-1]
+        i_row['uuid']
+        i_row['id']
+        i_row['subs']
 
 
