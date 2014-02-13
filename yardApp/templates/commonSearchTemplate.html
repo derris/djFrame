@@ -98,6 +98,7 @@ $(function () {
         idField: 'cod',
         fit: true,
         border: false,
+        pagination:false,
         showHeader: true,
         singleSelect: true,
         striped: true,
@@ -114,9 +115,7 @@ $(function () {
             ]);
             common.createsearchform.filterdatagrid.datagrid('dbClick', rowIndex);
         },
-        onClickRow: function (rowIndex, rowData) {
-            common.createsearchform.filterdatagrid.datagrid('click', rowIndex);
-        },
+
         onAfterEdit: function (rowIndex, rowData, changes) {
             if (rowData.editor.type == 'combobox' || rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox') {
                 common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = rowData.value_text;
@@ -216,125 +215,147 @@ $(function () {
         fit: true,
         border: false,
         singleSelect: true,
-        onDblClickRow: function (rowIndex, rowData) {
-            common.createsearchform.sorterdatagrid.datagrid('dbClick', rowIndex);
-        },
-        onClickRow: function (rowIndex, rowData) {
-            common.createsearchform.sorterdatagrid.datagrid('click', rowIndex);
-        }
+        pagination:false
+    });
+    common.createsearchform.colsdatagrid = $('#common-createsearchform-colsdatagrid').datagrid({
+        columns: [
+            [
+                {field: 'text', title: '列', align: 'center', width: 100},
+                {field: 'cod', checkbox: true}
+            ]
+        ],
+        idField: 'cod',
+        fit: true,
+        border: false,
+        pagination:false,
+        showHeader: true,
+        singleSelect:false,
+        striped: true
 
     });
     for (var i = 0; i < sy.searchWindowData.length; i++) {
-        if (sy.searchWindowData[i].editor) {
-            var commEditorTypes = "text,validatebox,combobox,checkbox,datebox,datetimebox";
-            if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0) {
-                sy.searchWindowData[i].editor.type = 'text';
-                sy.searchWindowData[i].editor.options = {};
-            }
-            if (sy.searchWindowData[i].editor.options && sy.searchWindowData[i].editor.options.required) {
-                sy.searchWindowData[i].editor.options.required = false;
-            }
-            /*
-             if (sy.searchWindowData[i].editor.type == 'validatebox' && sy.searchWindowData[i].editor.options.required == true) {
-             sy.searchWindowData[i].editor.options.required = false;
-             }*/
-            if (sy.searchWindowData[i].editor.type == 'combobox') {
-                //sy.searchWindowData[i].editor.options.valueField = 'value';
-                sy.searchWindowData[i].editor.options.multiple = true;
-                sy.searchWindowData[i].editor.options.onSelect = function (record) {
-                    var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
-                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
-                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
-
-                }
-            }
-            if (sy.searchWindowData[i].editor.type == 'checkbox') {
-                sy.searchWindowData[i].editor = {
-                    type: 'combobox',
-                    options: {
-                        data: [
-                            { cod: 'true', value: '是' },
-                            { cod: 'false', value: '否' }
-                        ],
-                        valueField: 'cod',
-                        textField: 'value',
-                        editable: true,
-                        panelHeight: 40,
-                        multiple: false,
-                        onSelect: function (record) {
-                            var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
-                            common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
-                            common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
-                        }
-                    }
-                };
-            }
-            if (sy.searchWindowData[i].editor.type == 'datetimebox') {
-                sy.searchWindowData[i].editor = {
-                    type: 'datetimebox',
-                    options: {
-                        required: false,
-                        onChange: function (newDate, oldDate) {
-                            var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
-                            if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
-                                if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
-                                } else {
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-            if (sy.searchWindowData[i].editor.type == 'datebox') {
-                sy.searchWindowData[i].editor = {
-                    type: 'datebox',
-                    options: {
-                        required: false,
-                        onChange: function (newDate, oldDate) {
-                            var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
-                            if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
-                                if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
-                                } else {
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
-                                    common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-        } else {
-            sy.searchWindowData[i].editor = { type: 'text' };
+        if (sy.searchWindowData[i].cod == 'id'){
+            continue;
         }
-        common.createsearchform.filterdatagrid.datagrid('appendRow', {
-            'cod': sy.searchWindowData[i].cod,
-            'text': sy.searchWindowData[i].text,
-            'editor': sy.searchWindowData[i].editor,
-            'value': '',
-            'display_value': '',
-            'value_text': '',
-            'operatorTyp': ''
-        });
-        common.createsearchform.sorterdatagrid.datagrid('appendRow', {
+        if (sy.searchWindowData[i].hidden != true) {
+            if (sy.searchWindowData[i].editor) {
+                var commEditorTypes = "text,validatebox,combobox,checkbox,datebox,datetimebox";
+                if (commEditorTypes.indexOf(sy.searchWindowData[i].editor.type) < 0) {
+                    sy.searchWindowData[i].editor.type = 'text';
+                    sy.searchWindowData[i].editor.options = {};
+                }
+                if (sy.searchWindowData[i].editor.options && sy.searchWindowData[i].editor.options.required) {
+                    sy.searchWindowData[i].editor.options.required = false;
+                }
+                /*
+                 if (sy.searchWindowData[i].editor.type == 'validatebox' && sy.searchWindowData[i].editor.options.required == true) {
+                 sy.searchWindowData[i].editor.options.required = false;
+                 }*/
+                if (sy.searchWindowData[i].editor.type == 'combobox') {
+                    //sy.searchWindowData[i].editor.options.valueField = 'value';
+                    sy.searchWindowData[i].editor.options.multiple = true;
+                    sy.searchWindowData[i].editor.options.onSelect = function (record) {
+                        var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
+                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
+
+                    }
+                }
+                if (sy.searchWindowData[i].editor.type == 'checkbox') {
+                    sy.searchWindowData[i].editor = {
+                        type: 'combobox',
+                        options: {
+                            data: [
+                                { cod: 'true', value: '是' },
+                                { cod: 'false', value: '否' }
+                            ],
+                            valueField: 'cod',
+                            textField: 'value',
+                            editable: true,
+                            panelHeight: 40,
+                            multiple: false,
+                            onSelect: function (record) {
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
+                                common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
+                            }
+                        }
+                    };
+                }
+                if (sy.searchWindowData[i].editor.type == 'datetimebox') {
+                    sy.searchWindowData[i].editor = {
+                        type: 'datetimebox',
+                        options: {
+                            required: false,
+                            onChange: function (newDate, oldDate) {
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
+                                    if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
+                                    } else {
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+                if (sy.searchWindowData[i].editor.type == 'datebox') {
+                    sy.searchWindowData[i].editor = {
+                        type: 'datebox',
+                        options: {
+                            required: false,
+                            onChange: function (newDate, oldDate) {
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
+                                    if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text + ',' + newDate;
+                                    } else {
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = newDate;
+                                        common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = newDate;
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+            } else {
+                sy.searchWindowData[i].editor = { type: 'text' };
+            }
+            common.createsearchform.filterdatagrid.datagrid('appendRow', {
+                'cod': sy.searchWindowData[i].cod,
+                'text': sy.searchWindowData[i].text,
+                'editor': sy.searchWindowData[i].editor,
+                'value': '',
+                'display_value': '',
+                'value_text': '',
+                'operatorTyp': ''
+            });
+            common.createsearchform.sorterdatagrid.datagrid('appendRow', {
+                'cod': sy.searchWindowData[i].cod,
+                'text': sy.searchWindowData[i].text
+            });
+        }
+        common.createsearchform.colsdatagrid.datagrid('appendRow', {
             'cod': sy.searchWindowData[i].cod,
             'text': sy.searchWindowData[i].text
         });
+        common.createsearchform.colsdatagrid.datagrid('checkAll');
+
     }
 
     $('#common-createsearchform-ok').bind('click', function () {
         common.createsearchform.filterdatagrid.datagrid('manualEndEdit');
         common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
+        common.createsearchform.colsdatagrid.datagrid('manualEndEdit');
         var rows = common.createsearchform.filterdatagrid.datagrid('getRows');
         for (var i = 0; i < rows.length; i++) {
             if (rows[i].operatorTyp && rows[i].value) {
                 if (rows[i].operatorTyp == '介于' || rows[i].operatorTyp == '不介于') {
-                    if (rows[i].value.indexOf(',') > 0){
+                    if (rows[i].value.indexOf(',') > 0) {
                     } else {
                         //$.messager.alert('提示', '第' + (i + 1) + '行条件数据不完整!');
                         $.messager.alert('提示', "'" + rows[i].text + "'" + '条件,提供数据不完整!');
@@ -360,7 +381,11 @@ $(function () {
                         });
             }
         }
-        ;
+        var rows = common.createsearchform.colsdatagrid.datagrid('getChecked');
+
+        for (var i = 0; i < rows.length; i++){
+            sy.searchWindowReturnData.cols.push(rows[i].cod);
+        }
         //console.info(sy.searchWindowReturnData.filters);
         sy.searchWindowReturnData.refreshFlag = true;
         sy.searchWindow.window('close');
@@ -378,6 +403,10 @@ $(function () {
             </div>
             <div title="排序">
                 <table id="common-createsearchform-sorterdatagrid" data-options="fit:true,border:false">
+                </table>
+            </div>
+            <div title="内容">
+                <table id="common-createsearchform-colsdatagrid" data-options="fit:true,border:false">
                 </table>
             </div>
         </div>
