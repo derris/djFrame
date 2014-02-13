@@ -257,11 +257,10 @@ $.extend($.fn.datagrid.defaults.editors, {
 
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
-
-    editRow: undefined,
-    deleteUrl: undefined,
-    insertUrl: undefined,
-    updateUrl: undefined,
+    editRow: -1,
+    deleteUrl: '',
+    insertUrl: '',
+    updateUrl: '',
     border: false,
     fit: true,
     idField: 'id',
@@ -273,9 +272,11 @@ $.extend($.fn.datagrid.defaults, {
     singleSelect: true,
     remoteSort: false,
     onDblClickRow: function (rowIndex, rowData) {
+        //console.info('dbclick');
         $(this).datagrid('dbClick', rowIndex);
     },
     onClickRow: function (rowIndex, rowData) {
+        //console.info('click');
         $(this).datagrid('click', rowIndex);
     },
 
@@ -316,12 +317,13 @@ $.extend($.fn.datagrid.methods, {
     },
     //param {要插入对象}}
     insertData: function (jq, param) {
-        //console.info(jq.editRow);        
-        if (jq.editRow == undefined) {
+        //console.info(jq.editRow);
+        var opts = jq.datagrid('options');
+        if (opts.editRow == -1) {
             null;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
             } else {
                 return;
             }
@@ -332,22 +334,23 @@ $.extend($.fn.datagrid.methods, {
         });
         jq.datagrid('selectRow', 0);
         jq.datagrid('beginEdit', 0);
-        jq.editRow = 0;
+        opts.editRow = 0;
     },
     //param null
     deleteData: function (jq, param) {
         var selectRow = jq.datagrid('getSelected');
+        var opts = jq.datagrid('options');
         var index = undefined;
         if (selectRow != null) {
             index = jq.datagrid('getRowIndex', selectRow);
-            if (jq.editRow != undefined) {
-                if (jq.editRow > index) {
-                    jq.editRow = jq.editRow - 1;
+            if (opts.editRow != -1) {
+                if (opts.editRow > index) {
+                    opts.editRow = opts.editRow - 1;
                 } else {
-                    if (jq.editRow == index) {
-                        if (jq.datagrid('validateRow', jq.editRow)) {
-                            jq.datagrid('endEdit', jq.editRow);
-                            jq.editRow = undefined;
+                    if (opts.editRow == index) {
+                        if (jq.datagrid('validateRow', opts.editRow)) {
+                            jq.datagrid('endEdit', opts.editRow);
+                            opts.editRow = -1;
                         } else {
                             return;
                         }
@@ -355,57 +358,61 @@ $.extend($.fn.datagrid.methods, {
                 }
             }
             jq.datagrid('deleteRow', index);
-            if (jq.editRow != undefined) {
-                jq.datagrid('selectRow', jq.editRow);
+            if (opts.editRow != -1) {
+                jq.datagrid('selectRow', opts.editRow);
             }
         }
     },
     //param 为null
     redo: function (jq, param) {
-        jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        opts.editRow = -1;
         jq.datagrid('rejectChanges');
         jq.datagrid('unselectAll');
     },
     //双击事件调用 先调用执行动态editor代码 再调用此函数 param 为onDblClickRow事件rowIndex
     dbClick: function (jq, param) {
-        //console.info('dbClick begin' + '/' + jq.editRow);
-        if (jq.editRow == undefined) {
+        var opts = jq.datagrid('options');
+        //console.info('dbClick begin' + '/' + opts.editRow);
+        if (opts.editRow == -1) {
             null;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
             } else {
                 return;
             }
         }
-        jq.editRow = param;
+        opts.editRow = param;
         jq.datagrid('beginEdit', param);
-        //console.info('dbClickend' + '/' + jq.editRow);
+        //console.info('dbClickend' + '/' + opts.editRow);
     },
     //单击事件调用, param 为onClickRow事件rowIndex
     click: function (jq, param) {
-        //console.info('click begin' + '/' + jq.editRow);
-        if (jq.editRow != undefined) {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        //console.info('click begin' + '/' + opts.editRow);
+        if (opts.editRow != -1) {
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
             } else {
                 jq.datagrid('unselectRow', param);
-                jq.datagrid('selectRow', jq.editRow);
+                jq.datagrid('selectRow', opts.editRow);
                 return;
             }
         }
-        //console.info('click end' + '/' + jq.editRow);
+        //console.info('click end' + '/' + opts.editRow);
     },
     //手动对datagrid进行编辑完成操作，一般在‘确定’按钮中进行调用 param无传入值
     manualEndEdit: function (jq, param) {
-        if (jq.editRow != undefined) {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        if (opts.editRow != -1) {
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
             } else {
                 jq.datagrid('unselectAll');
-                jq.datagrid('selectRow', jq.editRow);
+                jq.datagrid('selectRow', opts.editRow);
                 return;
             }
         }
@@ -413,18 +420,18 @@ $.extend($.fn.datagrid.methods, {
 
     //ajax提交之前调用，param 为null
     preSave: function (jq, param) {
-
+        var opts = jq.datagrid('options');
         var s = jq.datagrid('getSelected')
         if (s != null) {
-            jq.editRow = jq.datagrid('getRowIndex', s.id);
+            opts.editRow = jq.datagrid('getRowIndex', s.id);
         }
 
-        if (jq.editRow == undefined) {
+        if (opts.editRow == -1) {
             return 1;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
                 return 1;
             } else {
                 return 0;
