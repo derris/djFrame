@@ -3,11 +3,8 @@
     //测试lab_zht_1.html
     $(function () {
         sysdata.syscodview.datagrid = $('#sysdata-syscod-datagrid').datagrid({
-            border: false,
             columns: [
-                [
-
-                    {% autoescape off %}
+                [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
                     {{ fldEng.writeUI|safe|escape }},
                     {{ fldChi.writeUI|safe|escape }},
@@ -19,14 +16,6 @@
                     {% endautoescape %}
                 ]
             ],
-            fit: true,
-            idField: 'id',
-            method: 'post',
-            pageList: [10, 20, 30, 40],
-            pageSize: 10,
-            pagination: true,
-            rownumbers: true,
-            singleSelect: true,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
