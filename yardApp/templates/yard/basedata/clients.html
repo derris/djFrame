@@ -2,6 +2,7 @@
     Namespace.register('basedata.clientsview');
     $(function () {
         basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
+            autoSave: true,
             columns: [
                 [
                     {% autoescape off %}
@@ -50,8 +51,28 @@
                 }
             ],
             url: "{% url 'getclients2' %}",
-            updateUrl: "{% url 'updateclients' %}"
-
+            updateUrl: "{% url 'updateclients' %}",
+            onAfterEdit: function (rowIndex, rowData, changes) {
+                if (basedata.clientsview.datagrid.datagrid('options').autoSave) {
+                    //console.info(changes);
+                    $.ajax({
+                        url: basedata.clientsview.datagrid.datagrid('options').updateUrl,
+                        type: 'POST',
+                        //data: JSON.stringify(p),
+                        data: p,
+                        //contentType: 'application/json',
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        success: function (r, t, a) {
+                            $.ajaxSettings.success(r, t, a);
+                            basedata.clientsview.datagrid.datagrid('afterSave');
+                            if (r && r.status == 32) {
+                                //$(jq).datagrid('afterSave');
+                            }
+                        }
+                    });
+                }
+            }
         });
     });
 </script>
