@@ -233,7 +233,7 @@ $(function () {
         striped: true
 
     });
-    for (var i = 0; i < sy.searchWindowData.length; i++) {
+    for (var i = 0,ilen = sy.searchWindowData.length;i<ilen; i++) {
         if (sy.searchWindowData[i].cod == 'id'){
             continue;
         }
@@ -352,7 +352,7 @@ $(function () {
         common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
         common.createsearchform.colsdatagrid.datagrid('manualEndEdit');
         var rows = common.createsearchform.filterdatagrid.datagrid('getRows');
-        for (var i = 0; i < rows.length; i++) {
+        for (var i = 0,ilen = rows.length; i < ilen;i++) {
             if (rows[i].operatorTyp && rows[i].value) {
                 if (rows[i].operatorTyp == '介于' || rows[i].operatorTyp == '不介于') {
                     if (rows[i].value.indexOf(',') > 0) {
@@ -372,7 +372,7 @@ $(function () {
         }
 
         var rows = common.createsearchform.sorterdatagrid.datagrid('getRows');
-        for (var i = 0; i < rows.length; i++) {
+        for (var i = 0,ilen = rows.length; i < ilen;i++) {
             if (rows[i].order_typ) {
                 sy.searchWindowReturnData.sorts.push(
                         {
@@ -383,7 +383,7 @@ $(function () {
         }
         var rows = common.createsearchform.colsdatagrid.datagrid('getChecked');
 
-        for (var i = 0; i < rows.length; i++){
+        for (var i = 0,ilen = rows.length;i<ilen; i++){
             sy.searchWindowReturnData.cols.push(rows[i].cod);
         }
         //console.info(sy.searchWindowReturnData.filters);
