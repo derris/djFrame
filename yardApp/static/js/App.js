@@ -216,9 +216,9 @@ sy.createSearchWindow = function (datagrid) {
                     }
                 }
                 datagrid.datagrid('load', {
-                    filter: JSON.stringify(sy.searchWindowReturnData.filters),
-                    sort: JSON.stringify(sy.searchWindowReturnData.sorts),
-                    cols: JSON.stringify(sy.searchWindowReturnData.cols)
+                    filter: sy.searchWindowReturnData.filters,
+                    sort: sy.searchWindowReturnData.sorts,
+                    cols: sy.searchWindowReturnData.cols
                 });
             }
         }
@@ -294,12 +294,19 @@ $.extend($.fn.datagrid.defaults, {
             reqtype: 'query',
             args: param
         };
+        if (queryParam.args.cols == undefined){
+            var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
+            queryParam.args.cols = columns;
+        }else{
+            queryParam.args.cols.push('id');
+        }
+
         //console.info(queryParam);
         $.ajax({
             url: opts.url,
             type: 'POST',
             //data: JSON.stringify(param),
-            data: param,
+            data: JSON.stringify(queryParam),
             //contentType: 'application/json',
             contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
