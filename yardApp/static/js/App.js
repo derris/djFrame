@@ -160,29 +160,29 @@ sy.createSearchWindow = function (datagrid) {
         //console.info('undefined');
     }
     var columns = datagrid.datagrid('options').columns;
-    for (var j = 0; j < columns.length; j++) {
-        for (var i = 0; i < columns[j].length; i++) {
-            //if (columns[j][i].hidden != true) {
-            sy.searchWindowData.push({
-                cod: columns[j][i].field,
-                text: columns[j][i].title,
-                editor: columns[j][i].editor,
-                hidden: columns[j][i].hidden
-            });
-            //}
+    for (var j = 0, jlen = columns.length; j < jlen; j++) {
+        for (var i = 0, ilen = columns[j].length; i < ilen; i++) {
+            if (columns[j][i].field != 'id') {
+                sy.searchWindowData.push({
+                    cod: columns[j][i].field,
+                    text: columns[j][i].title,
+                    editor: columns[j][i].editor,
+                    hidden: columns[j][i].hidden
+                });
+            }
         }
     }
     var columns = datagrid.datagrid('options').fitColumns;
-    for (var j = 0; j < columns.length; j++) {
-        for (var i = 0; i < columns[j].length; i++) {
-            //if (columns[j][i].hidden != true) {
-            sy.searchWindowData.push({
-                cod: columns[j][i].field,
-                text: columns[j][i].title,
-                editor: columns[j][i].editor,
-                hidden: columns[j][i].hidden
-            });
-            //}
+    for (var j = 0, jlen = columns.length; j < jlen; j++) {
+        for (var i = 0, ilen = columns[j].length; i < ilen; i++) {
+            if (columns[j][i].field != 'id') {
+                sy.searchWindowData.push({
+                    cod: columns[j][i].field,
+                    text: columns[j][i].title,
+                    editor: columns[j][i].editor,
+                    hidden: columns[j][i].hidden
+                });
+            }
         }
     }
     sy.searchWindow = $('<div></div>').window({
@@ -206,7 +206,7 @@ sy.createSearchWindow = function (datagrid) {
             if (sy.searchWindowReturnData.refreshFlag) {
                 var stringcols = sy.searchWindowReturnData.cols.join(',');
                 var columns = datagrid.datagrid('getColumnFields').concat(datagrid.datagrid('getColumnFields', true));
-                for (var i = 0; i < columns.length; i++) {
+                for (var i = 0, ilen = columns.length; i < ilen; i++) {
                     if (stringcols.indexOf(columns[i]) >= 0) {
                         datagrid.datagrid('showColumn', columns[i]);
                     } else {
@@ -257,6 +257,7 @@ $.extend($.fn.datagrid.defaults.editors, {
 
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
+    autoSave: false,
     editRow: -1,
     deleteUrl: '',
     insertUrl: '',
@@ -312,6 +313,7 @@ $.extend($.fn.datagrid.defaults, {
 });
 
 $.extend($.fn.datagrid.methods, {
+
     getOriginalRows: function (jq) {
         return $(jq).data("datagrid").originalRows;
     },
@@ -348,12 +350,8 @@ $.extend($.fn.datagrid.methods, {
                     opts.editRow = opts.editRow - 1;
                 } else {
                     if (opts.editRow == index) {
-                        if (jq.datagrid('validateRow', opts.editRow)) {
-                            jq.datagrid('endEdit', opts.editRow);
-                            opts.editRow = -1;
-                        } else {
-                            return;
-                        }
+                        jq.datagrid('endEdit', opts.editRow);
+                        opts.editRow = -1;
                     }
                 }
             }
@@ -479,16 +477,16 @@ $.extend($.fn.datagrid.methods, {
             //删除只传id值
             var deleteArray = new Array();
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
-            for (var i = 0; i < deletedRows.length; i++) {
+            for (var i = 0,ilen = deletedRows.length; i < ilen;i++) {
                 deleteArray.push(deletedRows[i].id);
             }
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChanges', 'updated');
             var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0; i < updateRows.length; i++) {
+            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
                 var u_id = updateRows[i].id;
                 var find_flag = false;
-                for (var j = 0; j < oriRows.length; j++) {
+                for (var j = 0, olen = oriRows.length; j < olen; j++) {
                     if (u_id == oriRows[j].id) {
                         updateArray.push({
                             old_data: oriRows[j],
@@ -504,7 +502,7 @@ $.extend($.fn.datagrid.methods, {
                 }
             }
             var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0; i < insertArray.length; i++) {
+            for (var i = 0,ilen = insertArray.length; i < ilen; i++) {
                 insertArray[i]['uuid'] = (new UUID()).id;
             }
 
