@@ -294,20 +294,16 @@ $.extend($.fn.datagrid.defaults, {
             reqtype: 'query',
             args: param
         };
-        if (queryParam.args.cols == undefined){
+        if (queryParam.args.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
             queryParam.args.cols = columns;
-        }else{
+        } else {
             queryParam.args.cols.push('id');
         }
-
-        //console.info(queryParam);
         $.ajax({
             url: opts.url,
             type: 'POST',
-            //data: JSON.stringify(param),
             data: JSON.stringify(queryParam),
-            //contentType: 'application/json',
             contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
@@ -481,12 +477,13 @@ $.extend($.fn.datagrid.methods, {
         }
     },
     //调用方式 datagrid('postUpdateData')
+
     postUpdateData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
             var deleteArray = new Array();
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
-            for (var i = 0,ilen = deletedRows.length; i < ilen;i++) {
+            for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
                 deleteArray.push(deletedRows[i].id);
             }
             var updateArray = new Array();
@@ -511,7 +508,7 @@ $.extend($.fn.datagrid.methods, {
                 }
             }
             var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0,ilen = insertArray.length; i < ilen; i++) {
+            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
                 insertArray[i]['uuid'] = (new UUID()).id;
             }
 
@@ -519,6 +516,74 @@ $.extend($.fn.datagrid.methods, {
                 i: JSON.stringify(insertArray),
                 d: JSON.stringify(deleteArray),
                 u: JSON.stringify(updateArray)
+            };
+            $.ajax({
+                url: $(jq).datagrid('options').updateUrl,
+                type: 'POST',
+                //data: JSON.stringify(p),
+                data: p,
+                //contentType: 'application/json',
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                success: function (r, t, a) {
+                    $.ajaxSettings.success(r, t, a);
+                    $(jq).datagrid('afterSave');
+                    if (r && r.status == 32) {
+                        //$(jq).datagrid('afterSave');
+                    }
+                }
+            });
+        } else {
+            console.info('失败');
+        }
+    },
+    postUpdateData_new: function (jq) {
+        if ($(jq).datagrid('preSave') == 1) {
+            //删除只传id值
+            var deleteArray = new Array();
+            var deletedRows = $(jq).datagrid('getChanges', 'deleted');
+            for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
+                deleteArray.push(deletedRows[i].id);
+            }
+            var updateArray = new Array();
+            var updateRows = $(jq).datagrid('getChanges', 'updated');
+            var oriRows = $(jq).datagrid('getOriginalRows');
+            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
+                var u_id = updateRows[i].id;
+                var find_flag = false;
+                for (var j = 0, olen = oriRows.length; j < olen; j++) {
+                    if (u_id == oriRows[j].id) {
+                        updateArray.push({
+                            old_data: oriRows[j],
+                            new_data: updateRows[i]
+                        });
+                        find_flag = true;
+                        break;
+                    }
+                }
+                if (!find_flag) {
+                    //console.info('未找到原始值');
+                    return -1;
+                }
+            }
+            var insertArray = $(jq).datagrid('getChanges', 'inserted');
+            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
+                //insertArray[i]['uuid'] = (new UUID()).id;
+            }
+
+            var p = {
+                reqtype: 'update',
+                args: {
+                    rows: [
+                        {op: 'insert',
+                            table: 'c_client',
+                            cols:[],
+                            id: -1,
+                            uuid: (new UUID()).id,
+                            subs:{}
+                        }
+                    ]
+                }
             };
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
@@ -675,7 +740,7 @@ $.extend($.fn.datagrid.methods, {
 $.ajaxSetup({
     async: false,
     crossDomain: false, // obviates need for sameOrigin test
-    beforeSend: function(xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type)) {
             xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
         }
