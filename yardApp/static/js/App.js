@@ -124,6 +124,7 @@ UUID.rand = function (max) {
  sy.logonPath 登录窗口路径
  sy.searchWindowData 向通用查询窗口传入的列信息
  sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
+ sy.csrftoken csrf令牌
  * */
 sy.logonPath = '';
 sy.onLoadError = function (mes) {
@@ -135,6 +136,7 @@ sy.onLoadError = function (mes) {
         }
     });
 }
+sy.csrftoken = getCookie('csrftoken');
 sy.searchWindowUrl = '';
 sy.searchWindow = undefined;
 //sy.searchWindowSourceData = undefined;
@@ -665,6 +667,12 @@ $.extend($.fn.datagrid.methods, {
 
 $.ajaxSetup({
     async: false,
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
+        }
+    },
     success: function (r, t, a) {
         if (r.error_rows == undefined) {
             return;
@@ -725,3 +733,26 @@ $(document).bind('ajaxStart', function (event) {
 $(document).bind('ajaxStop', function () {
     $('body').unmask();
 });
+
+
+//***************Django Ajax通过csrf**************//
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
