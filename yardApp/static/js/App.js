@@ -577,7 +577,7 @@ $.extend($.fn.datagrid.methods, {
                     rows: [
                         {op: 'insert',
                             table: 'c_client',
-                            cols:[],
+                            cols:insertArray,
                             id: -1,
                             uuid: (new UUID()).id,
                             subs:{}
@@ -588,8 +588,7 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                //data: JSON.stringify(p),
-                data: p,
+                data: JSON.stringify(p),
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
