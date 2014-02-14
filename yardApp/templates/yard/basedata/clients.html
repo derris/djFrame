@@ -1,34 +1,24 @@
 <script>
     Namespace.register('basedata.clientsview');
-    //测试lab_zht_1.html
     $(function () {
         basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
-            border: false,
+            autoSave: true,
             columns: [
                 [
-
                     {% autoescape off %}
-                    {{ id.writeUI|safe|escape }},
-                    {{ clientName.writeUI|safe|escape }},
-                    {{ clientFlag.writeUI|safe|escape }},
-                    {{ customFlag.writeUI|safe|escape }},
-                    {{ shipcorpFlag.writeUI|safe|escape }},
-                    {{ yardFlag.writeUI|safe|escape }},
-                    {{ portFlag.writeUI|safe|escape }},
-                    {{ financialFlag.writeUI|safe|escape }},
-                    {{ recTim.writeUI|safe|escape }},
-                    {{ remark.writeUI|safe|escape }}
+                        {{ id.writeUI|safe|escape }},
+                        {{ clientName.writeUI|safe|escape }},
+                        {{ clientFlag.writeUI|safe|escape }},
+                        {{ customFlag.writeUI|safe|escape }},
+                        {{ shipcorpFlag.writeUI|safe|escape }},
+                        {{ yardFlag.writeUI|safe|escape }},
+                        {{ portFlag.writeUI|safe|escape }},
+                        {{ financialFlag.writeUI|safe|escape }},
+                        {{ recTim.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            fit: true,
-            idField: 'id',
-            method: 'post',
-            pageList: [10, 20, 30, 40],
-            pageSize: 10,
-            pagination: true,
-            rownumbers: true,
-            singleSelect: true,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
@@ -62,11 +52,26 @@
             ],
             url: "{% url 'getclients2' %}",
             updateUrl: "{% url 'updateclients' %}",
-            onDblClickRow: function (rowIndex, rowData) {
-                basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
-            },
-            onClickRow: function (rowIndex, rowData) {
-                basedata.clientsview.datagrid.datagrid('click', rowIndex);
+            onAfterEdit: function (rowIndex, rowData, changes) {
+                if (basedata.clientsview.datagrid.datagrid('options').autoSave) {
+                    //console.info(changes);
+                    $.ajax({
+                        url: basedata.clientsview.datagrid.datagrid('options').updateUrl,
+                        type: 'POST',
+                        //data: JSON.stringify(p),
+                        data: p,
+                        //contentType: 'application/json',
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        success: function (r, t, a) {
+                            $.ajaxSettings.success(r, t, a);
+                            basedata.clientsview.datagrid.datagrid('afterSave');
+                            if (r && r.status == 32) {
+                                //$(jq).datagrid('afterSave');
+                            }
+                        }
+                    });
+                }
             }
         });
     });

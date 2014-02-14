@@ -103,6 +103,7 @@ class EasyuiFieldUI:
         '''
         self.align = 'right'
         self.halign = 'center'
+        self.sortable = True
         self.title = self.fObj.verbose_name
         if (self.field.upper() == 'ID' or self.fObj.primary_key):
             self.hidden = True

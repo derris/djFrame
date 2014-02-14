@@ -1,6 +1,4 @@
-﻿
-
-//**************全局对象管理******************
+﻿//**************全局对象管理******************
 // 声明一个全局对象Namespace，用来注册命名空间
 Namespace = new Object();
 
@@ -29,8 +27,12 @@ function UUID() {
 }
 
 // When asked what this Object is, lie and return it's value
-UUID.prototype.valueOf = function () { return this.id; }
-UUID.prototype.toString = function () { return this.id; }
+UUID.prototype.valueOf = function () {
+    return this.id;
+}
+UUID.prototype.toString = function () {
+    return this.id;
+}
 
 //
 // INSTANCE SPECIFIC METHODS
@@ -58,10 +60,10 @@ UUID.prototype.createUUID = function () {
     // if NIC or an IP can be obtained reliably, that should be put in
     // here instead.
     var n = UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
-			UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
-			UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
-			UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
-			UUID.getIntegerBits(UUID.rand(8191), 0, 15); // this last number is two octets long
+        UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
+        UUID.getIntegerBits(UUID.rand(8191), 0, 7) +
+        UUID.getIntegerBits(UUID.rand(8191), 8, 15) +
+        UUID.getIntegerBits(UUID.rand(8191), 0, 15); // this last number is two octets long
     return tl + h + tm + h + thv + h + csar + csl + h + n;
 }
 
@@ -122,6 +124,7 @@ UUID.rand = function (max) {
  sy.logonPath 登录窗口路径
  sy.searchWindowData 向通用查询窗口传入的列信息
  sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
+ sy.csrftoken csrf令牌
  * */
 sy.logonPath = '';
 sy.onLoadError = function (mes) {
@@ -133,6 +136,7 @@ sy.onLoadError = function (mes) {
         }
     });
 }
+sy.csrftoken = getCookie('csrftoken');
 sy.searchWindowUrl = '';
 sy.searchWindow = undefined;
 //sy.searchWindowSourceData = undefined;
@@ -140,12 +144,14 @@ sy.searchWindowData = [];
 sy.searchWindowReturnData = {
     refreshFlag: false,
     filters: [],
-    sorts: []
+    sorts: [],
+    cols: []
 };
 sy.createSearchWindow = function (datagrid) {
     sy.searchWindowData.length = 0;
     sy.searchWindowReturnData.filters.length = 0;
     sy.searchWindowReturnData.sorts.length = 0;
+    sy.searchWindowReturnData.cols.length = 0;
     sy.searchWindowReturnData.refreshFlag = false;
 //  sy.searchWindowSourceData = datagrid;
     if (sy.searchWindow != undefined) {
@@ -156,25 +162,27 @@ sy.createSearchWindow = function (datagrid) {
         //console.info('undefined');
     }
     var columns = datagrid.datagrid('options').columns;
-    for (var j = 0; j < columns.length; j++) {
-        for (var i = 0; i < columns[j].length; i++) {
-            if (columns[j][i].hidden != true) {
+    for (var j = 0, jlen = columns.length; j < jlen; j++) {
+        for (var i = 0, ilen = columns[j].length; i < ilen; i++) {
+            if (columns[j][i].field != 'id') {
                 sy.searchWindowData.push({
                     cod: columns[j][i].field,
                     text: columns[j][i].title,
-                    editor: columns[j][i].editor
+                    editor: columns[j][i].editor,
+                    hidden: columns[j][i].hidden
                 });
             }
         }
     }
     var columns = datagrid.datagrid('options').fitColumns;
-    for (var j = 0; j < columns.length; j++) {
-        for (var i = 0; i < columns[j].length; i++) {
-            if (columns[j][i].hidden != true) {
+    for (var j = 0, jlen = columns.length; j < jlen; j++) {
+        for (var i = 0, ilen = columns[j].length; i < ilen; i++) {
+            if (columns[j][i].field != 'id') {
                 sy.searchWindowData.push({
                     cod: columns[j][i].field,
                     text: columns[j][i].title,
-                    editor: columns[j][i].editor
+                    editor: columns[j][i].editor,
+                    hidden: columns[j][i].hidden
                 });
             }
         }
@@ -188,20 +196,31 @@ sy.createSearchWindow = function (datagrid) {
         collapsible: false,
         minimizable: false,
         maximizable: false,
+
         closable: true,
         onClose: function () {
             //console.info('onClose');                        
             common.createsearchform.filterdatagrid = null;
             common.createsearchform.sorterdatagrid = null;
+            common.createsearchform.colsdatagrid = null;
             sy.searchWindow.window('destroy');
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
+                var stringcols = sy.searchWindowReturnData.cols.join(',');
+                var columns = datagrid.datagrid('getColumnFields').concat(datagrid.datagrid('getColumnFields', true));
+                for (var i = 0, ilen = columns.length; i < ilen; i++) {
+                    if (stringcols.indexOf(columns[i]) >= 0) {
+                        datagrid.datagrid('showColumn', columns[i]);
+                    } else {
+                        datagrid.datagrid('hideColumn', columns[i]);
+                    }
+                }
                 datagrid.datagrid('load', {
-                    filter: JSON.stringify(sy.searchWindowReturnData.filters),
-                    sort: JSON.stringify(sy.searchWindowReturnData.sorts)
+                    filter: sy.searchWindowReturnData.filters,
+                    sort: sy.searchWindowReturnData.sorts,
+                    cols: sy.searchWindowReturnData.cols
                 });
             }
-            //console.info(sy.searchWindowReturnData);
         }
     });
 }
@@ -240,25 +259,52 @@ $.extend($.fn.datagrid.defaults.editors, {
 
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
-    editRow: undefined,
-    deleteUrl: undefined,
-    insertUrl: undefined,
-    updateUrl: undefined,
+    autoSave: false,
+    editRow: -1,
+    deleteUrl: '',
+    insertUrl: '',
+    updateUrl: '',
+    border: false,
+    fit: true,
+    idField: 'id',
+    method: 'post',
+    pageList: [10, 20, 30, 40],
+    pageSize: 10,
+    pagination: true,
+    rownumbers: true,
+    singleSelect: true,
+    remoteSort: false,
+    onDblClickRow: function (rowIndex, rowData) {
+        //console.info('dbclick');
+        $(this).datagrid('dbClick', rowIndex);
+    },
+    onClickRow: function (rowIndex, rowData) {
+        //console.info('click');
+        $(this).datagrid('click', rowIndex);
+    },
+
     loader: function (param, success, error) {
-        //console.info('loaderFunction');
+        //console.info(param);
         var that = $(this);
         var opts = that.datagrid('options');
         if (!opts.url) {
             return false;
         }
-
+        var queryParam = {
+            reqtype: 'query',
+            args: param
+        };
+        if (queryParam.args.cols == undefined) {
+            var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
+            queryParam.args.cols = columns;
+        } else {
+            queryParam.args.cols.push('id');
+        }
         $.ajax({
             url: opts.url,
             type: 'POST',
-            //data: JSON.stringify(param),
-            data:param,
-            //contentType: 'application/json',
-            contentType:'application/x-www-form-urlencoded',
+            data: JSON.stringify(queryParam),
+            contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
                 $.ajaxSettings.success(r, t, a);
@@ -268,23 +314,23 @@ $.extend($.fn.datagrid.defaults, {
                 error.apply(this, arguments);
             }
         });
-
-        //$.post(opts.url,param);
     }
 });
 
 $.extend($.fn.datagrid.methods, {
+
     getOriginalRows: function (jq) {
         return $(jq).data("datagrid").originalRows;
     },
     //param {要插入对象}}
     insertData: function (jq, param) {
-        //console.info(jq.editRow);        
-        if (jq.editRow == undefined) {
+        //console.info(jq.editRow);
+        var opts = jq.datagrid('options');
+        if (opts.editRow == -1) {
             null;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
             } else {
                 return;
             }
@@ -295,80 +341,81 @@ $.extend($.fn.datagrid.methods, {
         });
         jq.datagrid('selectRow', 0);
         jq.datagrid('beginEdit', 0);
-        jq.editRow = 0;
+        opts.editRow = 0;
     },
     //param null
     deleteData: function (jq, param) {
         var selectRow = jq.datagrid('getSelected');
+        var opts = jq.datagrid('options');
         var index = undefined;
         if (selectRow != null) {
             index = jq.datagrid('getRowIndex', selectRow);
-            if (jq.editRow != undefined) {
-                if (jq.editRow > index) {
-                    jq.editRow = jq.editRow - 1;
+            if (opts.editRow != -1) {
+                if (opts.editRow > index) {
+                    opts.editRow = opts.editRow - 1;
                 } else {
-                    if (jq.editRow == index) {
-                        if (jq.datagrid('validateRow', jq.editRow)) {
-                            jq.datagrid('endEdit', jq.editRow);
-                            jq.editRow = undefined;
-                        } else {
-                            return;
-                        }
+                    if (opts.editRow == index) {
+                        jq.datagrid('endEdit', opts.editRow);
+                        opts.editRow = -1;
                     }
                 }
             }
             jq.datagrid('deleteRow', index);
-            if (jq.editRow != undefined) {
-                jq.datagrid('selectRow', jq.editRow);
+            if (opts.editRow != -1) {
+                jq.datagrid('selectRow', opts.editRow);
             }
         }
     },
     //param 为null
     redo: function (jq, param) {
-        jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        opts.editRow = -1;
         jq.datagrid('rejectChanges');
         jq.datagrid('unselectAll');
     },
     //双击事件调用 先调用执行动态editor代码 再调用此函数 param 为onDblClickRow事件rowIndex
     dbClick: function (jq, param) {
-        //console.info('dbClick begin' + '/' + jq.editRow);
-        if (jq.editRow == undefined) {
+        var opts = jq.datagrid('options');
+        //console.info('dbClick begin' + '/' + opts.editRow);
+        if (opts.editRow == -1) {
             null;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
             } else {
                 return;
             }
         }
-        jq.editRow = param;
+        opts.editRow = param;
         jq.datagrid('beginEdit', param);
-        //console.info('dbClickend' + '/' + jq.editRow);
+        //console.info('dbClickend' + '/' + opts.editRow);
     },
     //单击事件调用, param 为onClickRow事件rowIndex
     click: function (jq, param) {
-        //console.info('click begin' + '/' + jq.editRow);
-        if (jq.editRow != undefined) {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        //console.info('click begin' + '/' + opts.editRow);
+        if (opts.editRow != -1) {
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
             } else {
                 jq.datagrid('unselectRow', param);
-                jq.datagrid('selectRow', jq.editRow);
+                jq.datagrid('selectRow', opts.editRow);
                 return;
             }
         }
-        //console.info('click end' + '/' + jq.editRow);
+        //console.info('click end' + '/' + opts.editRow);
     },
     //手动对datagrid进行编辑完成操作，一般在‘确定’按钮中进行调用 param无传入值
     manualEndEdit: function (jq, param) {
-        if (jq.editRow != undefined) {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+        var opts = jq.datagrid('options');
+        if (opts.editRow != -1) {
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
             } else {
                 jq.datagrid('unselectAll');
-                jq.datagrid('selectRow', jq.editRow);
+                jq.datagrid('selectRow', opts.editRow);
                 return;
             }
         }
@@ -376,18 +423,18 @@ $.extend($.fn.datagrid.methods, {
 
     //ajax提交之前调用，param 为null
     preSave: function (jq, param) {
-
+        var opts = jq.datagrid('options');
         var s = jq.datagrid('getSelected')
-        if (s != null){
-            jq.editRow = jq.datagrid('getRowIndex', s.id);
+        if (s != null) {
+            opts.editRow = jq.datagrid('getRowIndex', s.id);
         }
 
-        if (jq.editRow == undefined) {
+        if (opts.editRow == -1) {
             return 1;
         } else {
-            if (jq.datagrid('validateRow', jq.editRow)) {
-                jq.datagrid('endEdit', jq.editRow);
-                jq.editRow = undefined;
+            if (jq.datagrid('validateRow', opts.editRow)) {
+                jq.datagrid('endEdit', opts.editRow);
+                opts.editRow = -1;
                 return 1;
             } else {
                 return 0;
@@ -398,11 +445,11 @@ $.extend($.fn.datagrid.methods, {
     afterSave: function (jq, param) {
         //将所有row的insert_flag字段设为false
         /*
-        var rows = jq.datagrid('getChanges', 'inserted')
-        $.each(rows, function (index, item) {
-            item.insert_flag = false;
-        });
-        */
+         var rows = jq.datagrid('getChanges', 'inserted')
+         $.each(rows, function (index, item) {
+         item.insert_flag = false;
+         });
+         */
         jq.datagrid('acceptChanges');
     },
     //调用方式 datagrid('addEditor',[{field : 'column名称',editor : {type : 'text'}}]) 可传数组
@@ -430,37 +477,38 @@ $.extend($.fn.datagrid.methods, {
         }
     },
     //调用方式 datagrid('postUpdateData')
+
     postUpdateData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
             var deleteArray = new Array();
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
-            for (var i = 0; i < deletedRows.length; i++) {
+            for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
                 deleteArray.push(deletedRows[i].id);
             }
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChanges', 'updated');
             var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0 ; i < updateRows.length ; i++ ){
+            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
                 var u_id = updateRows[i].id;
                 var find_flag = false;
-                for (var j = 0 ; j < oriRows.length ; j++){
-                    if (u_id == oriRows[j].id){
+                for (var j = 0, olen = oriRows.length; j < olen; j++) {
+                    if (u_id == oriRows[j].id) {
                         updateArray.push({
-                            old_data:oriRows[j],
-                            new_data:updateRows[i]
+                            old_data: oriRows[j],
+                            new_data: updateRows[i]
                         });
                         find_flag = true;
                         break;
                     }
                 }
-                if (!find_flag){
+                if (!find_flag) {
                     //console.info('未找到原始值');
                     return -1;
                 }
             }
             var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0 ; i < insertArray.length; i++){
+            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
                 insertArray[i]['uuid'] = (new UUID()).id;
             }
 
@@ -473,9 +521,9 @@ $.extend($.fn.datagrid.methods, {
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
                 //data: JSON.stringify(p),
-                data:p,
+                data: p,
                 //contentType: 'application/json',
-                contentType:'application/x-www-form-urlencoded',
+                contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (r, t, a) {
                     $.ajaxSettings.success(r, t, a);
@@ -488,9 +536,75 @@ $.extend($.fn.datagrid.methods, {
         } else {
             console.info('失败');
         }
+    },
+    postUpdateData_new: function (jq) {
+        if ($(jq).datagrid('preSave') == 1) {
+            //删除只传id值
+            var deleteArray = new Array();
+            var deletedRows = $(jq).datagrid('getChanges', 'deleted');
+            for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
+                deleteArray.push(deletedRows[i].id);
+            }
+            var updateArray = new Array();
+            var updateRows = $(jq).datagrid('getChanges', 'updated');
+            var oriRows = $(jq).datagrid('getOriginalRows');
+            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
+                var u_id = updateRows[i].id;
+                var find_flag = false;
+                for (var j = 0, olen = oriRows.length; j < olen; j++) {
+                    if (u_id == oriRows[j].id) {
+                        updateArray.push({
+                            old_data: oriRows[j],
+                            new_data: updateRows[i]
+                        });
+                        find_flag = true;
+                        break;
+                    }
+                }
+                if (!find_flag) {
+                    //console.info('未找到原始值');
+                    return -1;
+                }
+            }
+            var insertArray = $(jq).datagrid('getChanges', 'inserted');
+            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
+                //insertArray[i]['uuid'] = (new UUID()).id;
+            }
 
+            var p = {
+                reqtype: 'update',
+                args: {
+                    rows: [
+                        {op: 'insert',
+                            table: 'c_client',
+                            cols:[],
+                            id: -1,
+                            uuid: (new UUID()).id,
+                            subs:{}
+                        }
+                    ]
+                }
+            };
+            $.ajax({
+                url: $(jq).datagrid('options').updateUrl,
+                type: 'POST',
+                //data: JSON.stringify(p),
+                data: p,
+                //contentType: 'application/json',
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                success: function (r, t, a) {
+                    $.ajaxSettings.success(r, t, a);
+                    $(jq).datagrid('afterSave');
+                    if (r && r.status == 32) {
+                        //$(jq).datagrid('afterSave');
+                    }
+                }
+            });
+        } else {
+            console.info('失败');
+        }
     }
-
 });
 //***************扩展datagrid ***********************//
 
@@ -625,6 +739,12 @@ $.extend($.fn.datagrid.methods, {
 
 $.ajaxSetup({
     async: false,
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function (xhr, settings) {
+        if (!csrfSafeMethod(settings.type)) {
+            xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
+        }
+    },
     success: function (r, t, a) {
         if (r.error_rows == undefined) {
             return;
@@ -685,3 +805,26 @@ $(document).bind('ajaxStart', function (event) {
 $(document).bind('ajaxStop', function () {
     $('body').unmask();
 });
+
+
+//***************Django Ajax通过csrf**************//
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
