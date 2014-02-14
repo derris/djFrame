@@ -43,6 +43,23 @@ class autotest(unittest.TestCase):
                 print(os.linesep)
             #self.assertEqual(a, a)
 
+    def test_insert(self):
+        dict_test =   { 'reqtype':'insert', #      -----增加一个新字段。
+           'rows': [{
+                    'op': 'insert',
+                    'table': 'c_client',
+                    'cols': {'client_name':"", 'client_flag':"True", 'rec_nam':'1', 'rec_tim':"now()"},
+                    'uuid': '234546',
+                    'id': -1,
+                    'subs': {}
+                    }]
+        }
+        import dbhelp
+        print(dbhelp.json2insert(dict_test))
+
+insert into c_client(id, , , ,)
+values(8, '外6', TRUE , '1', now());
+
 
 if __name__ == '__main__':
     unittest.main()
