@@ -9,7 +9,7 @@ import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from zdCommon import easyuihelp
-from zdCommon.dbhelp import rawsql2json, rawsql4request
+from zdCommon.dbhelp import rawsql2json, rawsql4request, json2insert
 
 
 from yardApp import models
@@ -79,7 +79,10 @@ def getClients(request):
     return HttpResponse(json.dumps({'total':2,'rows':t},ensure_ascii = False))
     #return HttpResponse('321')
 def updateClients(request):
-    return HttpResponse('321')
+    s=json2insert(request.POST)
+    print(s)
+    return HttpResponse(str(s).replace("'", '"')) # js 不认识单引号。
+
 
 def getCommonSearchTemplate(request):
     return render(request,"commonSearchTemplate.html")
