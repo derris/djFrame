@@ -238,5 +238,28 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
+def json2insert(aJsonDict):
+    l_rows = aJsonDict['rows']
+    ldict_uuid2id = {}
+    for i_row in l_rows:  # insert into table(a,b,c,d,e)  values('a','b','c','d','e')
+        ls_sql = "insert into %s" % i_row['table']
+        ls_col = ls_val = ''
+        for icol,ival in i_row['cols'].items():
+            ls_col += icol + ','
+            ls_val += "'" + ival + "',"
+        ls_col = ls_col[:-1]
+        ls_val = ls_val[:-1]
+        ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") + returning id"
+        print(ls_sql)
 
+        l_cur = connection.cursor()
+        l_cur.execute(ls_sql)
+        l_insId = l_cur.fetchone()[0]
+        l_cur.close()
+        ldict_uuid2id.update({i_row["uuid"] : l_insId})
+    l_rtn = {}
+    l_rtn.update( {"error": "", "stateCod":"0",
+                       "effectnum":1 , "rows": "1",
+                       "changeid": str(ldict_uuid2id) } )
+    return l_rtn
 
