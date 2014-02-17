@@ -150,19 +150,32 @@ sy.transObjectToDjangoAjax = function (o) {
             if ($.isArray(o)) {
                 return JSON.stringify(o);
             }
-        } else {
-            if ($.isArray(o)){
-                for(var i = 0,ilen = o.length; i < ilen ; i++){
-                    o[i] = sy.transObjectToDjangoAjax(o[i]);
-                }
+            if ($.isPlainObject(o)) {
+                return o;
             }
-            if ($.isPlainObject(o)){
-                for (var p in o){
-                    o[p] = sy.transObjectToDjangoAjax(o[p]);
+        } else {
+            if ($.isArray(o)) {
+                for (var i = 0, ilen = o.length; i < ilen; i++) {
+                    //console.info(i);
+                    //console.info(o[i]);
+                    var y = sy.transObjectToDjangoAjax(o[i]);
+                    if (y != null)
+                        o[i] = y;
+                }
+                //o[i] = sy.transObjectToDjangoAjax(o[i]);
+            }
+
+            if ($.isPlainObject(o)) {
+                for (var p in o) {
+                    var y = sy.transObjectToDjangoAjax(o[p]);
+                    if (y != null) {
+                        o[p] = y;
+                    }
                 }
             }
         }
-    }else{
+    }
+    else {
         return o;
     }
 }
@@ -351,8 +364,8 @@ $.extend($.fn.datagrid.defaults, {
 
         var queryParam = {
             reqtype: 'query'
-        } ;
-        $.extend(queryParam,param);
+        };
+        $.extend(queryParam, param);
         if (queryParam.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
             queryParam.cols = columns;
@@ -640,18 +653,18 @@ $.extend($.fn.datagrid.methods, {
                     }
                 );
             }
-            console.info(newRows);
+            //console.info(newRows);
 
             var p = {
                 reqtype: 'insert',
                 rows: newRows
             }
-            console.info(p);
+            //console.info(p);
             //sy.transObjectToDjangoAjax(p)
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data:p,
+                data: JSON.stringify({jargs:p}),
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
