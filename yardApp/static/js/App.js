@@ -149,24 +149,17 @@ sy.transObjectToDjangoAjax = function (o) {
         if (sy.isBasicType(o)) {
             if ($.isArray(o)) {
                 return JSON.stringify(o);
-                //return '1';
             }
         } else {
-            /*
-            $.each(o, function (key, value) {
-                this[key] = sy.transObjectToDjangoAjax(value);
-            });*/
             if ($.isArray(o)){
                 for(var i = 0,ilen = o.length; i < ilen ; i++){
                     o[i] = sy.transObjectToDjangoAjax(o[i]);
                 }
-                return;
             }
             if ($.isPlainObject(o)){
                 for (var p in o){
                     o[p] = sy.transObjectToDjangoAjax(o[p]);
                 }
-                return;
             }
         }
     }else{
@@ -357,32 +350,23 @@ $.extend($.fn.datagrid.defaults, {
         }
 
         var queryParam = {
-            reqtype: 'query',
-            args: param
-        };
-
-        if (queryParam.args.cols == undefined) {
+            reqtype: 'query'
+        } ;
+        $.extend(queryParam,param);
+        if (queryParam.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
-            queryParam.args.cols = columns;
+            queryParam.cols = columns;
         } else {
-            queryParam.args.cols.push('id');
+            queryParam.cols.push('id');
         }
-        //queryParam.args.cols = JSON.stringify(queryParam.args.cols);
-        sy.transObjectToDjangoAjax(param);
-
-        $.each(param,function(key,value){
-            console.info("'" + key + "':" + $.isArray(value));
-        });
+        sy.transObjectToDjangoAjax(queryParam);
         $.ajax({
             url: opts.url,
             type: 'POST',
-            data: param,
-            //data: JSON.stringify(param),
+            data: queryParam,
             //data: JSON.stringify(queryParam),
             contentType: 'application/x-www-form-urlencoded',
-            //contentType:'application/json;charset=utf-8',
             dataType: 'json',
-
             success: function (r, t, a) {
                 $.ajaxSettings.success(r, t, a);
                 success(r);
@@ -661,10 +645,11 @@ $.extend($.fn.datagrid.methods, {
                 reqtype: 'insert',
                 rows: newRows
             }
+            sy.transObjectToDjangoAjax(p)
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: JSON.stringify(p),
+                data:p,
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
