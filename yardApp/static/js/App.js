@@ -119,6 +119,73 @@ UUID.rand = function (max) {
 //***************生成32位UUID**************
 
 
+//***************Django Ajax通过csrf**************//
+sy.getCookie = function (name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+sy.csrfSafeMethod = function (method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+
+//******转换对象为可提交json对象***********
+
+sy.transObjectToDjangoAjax = function (o) {
+    if ($.isPlainObject(o) || $.isArray(o)) {
+        if (sy.isBasicType(o)) {
+            if ($.isArray(o)) {
+                return JSON.stringify(o);
+                //return '1';
+            }
+        } else {
+            /*
+            $.each(o, function (key, value) {
+                this[key] = sy.transObjectToDjangoAjax(value);
+            });*/
+            if ($.isArray(o)){
+                for(var i = 0,ilen = o.length; i < ilen ; i++){
+                    o[i] = sy.transObjectToDjangoAjax(o[i]);
+                }
+                return;
+            }
+            if ($.isPlainObject(o)){
+                for (var p in o){
+                    o[p] = sy.transObjectToDjangoAjax(o[p]);
+                }
+                return;
+            }
+        }
+    }else{
+        return o;
+    }
+}
+
+sy.isBasicType = function (o) {  //o不包含对象或数组返回true
+    var t = true;
+    $.each(o, function (key, value) {
+        if ($.isPlainObject(value) || $.isArray(value)) {
+            t = false;
+            return false;
+        }
+    });
+    return t;
+}
+
+
 //***************全局用到的对象**********************
 /*
  sy.logonPath 登录窗口路径
@@ -136,7 +203,7 @@ sy.onLoadError = function (mes) {
         }
     });
 }
-sy.csrftoken = getCookie('csrftoken');
+sy.csrftoken = sy.getCookie('csrftoken');
 sy.searchWindowUrl = '';
 sy.searchWindow = undefined;
 //sy.searchWindowSourceData = undefined;
@@ -206,10 +273,9 @@ sy.createSearchWindow = function (datagrid) {
             sy.searchWindow.window('destroy');
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
-                var stringcols = sy.searchWindowReturnData.cols.join(',');
                 var columns = datagrid.datagrid('getColumnFields').concat(datagrid.datagrid('getColumnFields', true));
                 for (var i = 0, ilen = columns.length; i < ilen; i++) {
-                    if (stringcols.indexOf(columns[i]) >= 0) {
+                    if ($.inArray(columns[i], sy.searchWindowReturnData.cols) >= 0) {
                         datagrid.datagrid('showColumn', columns[i]);
                     } else {
                         datagrid.datagrid('hideColumn', columns[i]);
@@ -284,28 +350,39 @@ $.extend($.fn.datagrid.defaults, {
     },
 
     loader: function (param, success, error) {
-        //console.info(param);
         var that = $(this);
         var opts = that.datagrid('options');
         if (!opts.url) {
             return false;
         }
+
         var queryParam = {
             reqtype: 'query',
             args: param
         };
+
         if (queryParam.args.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
             queryParam.args.cols = columns;
         } else {
             queryParam.args.cols.push('id');
         }
+        //queryParam.args.cols = JSON.stringify(queryParam.args.cols);
+        sy.transObjectToDjangoAjax(param);
+
+        $.each(param,function(key,value){
+            console.info("'" + key + "':" + $.isArray(value));
+        });
         $.ajax({
             url: opts.url,
             type: 'POST',
-            data: JSON.stringify(queryParam),
+            data: param,
+            //data: JSON.stringify(param),
+            //data: JSON.stringify(queryParam),
             contentType: 'application/x-www-form-urlencoded',
+            //contentType:'application/json;charset=utf-8',
             dataType: 'json',
+
             success: function (r, t, a) {
                 $.ajaxSettings.success(r, t, a);
                 success(r);
@@ -566,25 +643,24 @@ $.extend($.fn.datagrid.methods, {
                     return -1;
                 }
             }
+            var newRows = new Array();
             var insertArray = $(jq).datagrid('getChanges', 'inserted');
             for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
-                //insertArray[i]['uuid'] = (new UUID()).id;
+                newRows.push(
+                    {op: 'insert',
+                        table: 'c_client',
+                        cols: insertArray[i],
+                        id: -1,
+                        uuid: (new UUID()).id,
+                        subs: {}
+                    }
+                );
             }
 
             var p = {
-                reqtype: 'update',
-                args: {
-                    rows: [
-                        {op: 'insert',
-                            table: 'c_client',
-                            cols:insertArray,
-                            id: -1,
-                            uuid: (new UUID()).id,
-                            subs:{}
-                        }
-                    ]
-                }
-            };
+                reqtype: 'insert',
+                rows: newRows
+            }
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
@@ -592,11 +668,18 @@ $.extend($.fn.datagrid.methods, {
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
-                success: function (r, t, a) {
-                    $.ajaxSettings.success(r, t, a);
+                success: function (returnData, returnMsg, ajaxObj) {
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
                     $(jq).datagrid('afterSave');
-                    if (r && r.status == 32) {
-                        //$(jq).datagrid('afterSave');
+                    if (r && r.changeid) {
+                        $.each(r.changeid, function (uuid, id) {
+                            $.each(newRows, function (index, value) {
+                                if (uuid == value.uuid) {
+                                    newRows[index].id
+                                }
+                            })
+
+                        });
                     }
                 }
             });
@@ -740,7 +823,7 @@ $.ajaxSetup({
     async: false,
     crossDomain: false, // obviates need for sameOrigin test
     beforeSend: function (xhr, settings) {
-        if (!csrfSafeMethod(settings.type)) {
+        if (!sy.csrfSafeMethod(settings.type)) {
             xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
         }
     },
@@ -806,24 +889,3 @@ $(document).bind('ajaxStop', function () {
 });
 
 
-//***************Django Ajax通过csrf**************//
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
