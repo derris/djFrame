@@ -818,6 +818,7 @@ $.ajaxSetup({
         if (r.error_rows == undefined) {
             return;
         }
+
         var i = 0;
         var msg = '';
         var error_msg = '';
