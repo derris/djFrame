@@ -640,12 +640,14 @@ $.extend($.fn.datagrid.methods, {
                     }
                 );
             }
+            console.info(newRows);
 
             var p = {
                 reqtype: 'insert',
                 rows: newRows
             }
-            sy.transObjectToDjangoAjax(p)
+            console.info(p);
+            //sy.transObjectToDjangoAjax(p)
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
