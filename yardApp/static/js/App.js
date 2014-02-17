@@ -664,7 +664,7 @@ $.extend($.fn.datagrid.methods, {
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: JSON.stringify({jargs:p}),
+                data: {jargs:JSON.stringify(p)},
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
