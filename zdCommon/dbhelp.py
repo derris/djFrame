@@ -239,7 +239,8 @@ def getTableInfo(aTableName):
     return l_dict
 
 def json2insert(aJsonDict):
-    l_rows = aJsonDict['rows']
+    ldict = eval(aJsonDict['jargs'])
+    l_rows = ldict['rows']
     ldict_uuid2id = {}
     for i_row in l_rows:  # insert into table(a,b,c,d,e)  values('a','b','c','d','e')
         ls_sql = "insert into %s" % i_row['table']
@@ -249,7 +250,19 @@ def json2insert(aJsonDict):
             ls_val += "'" + ival + "',"
         ls_col = ls_col[:-1]
         ls_val = ls_val[:-1]
-        ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") + returning id"
+        if 'rec_nam' in ls_col:
+            pass
+        else:
+            ls_col += " , rec_nam "
+            ls_val += ", 1"
+
+        if 'rec_tim' in ls_col:
+            pass
+        else:
+            ls_col += " , rec_tim "
+            ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
+
+        ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
         print(ls_sql)
 
         l_cur = connection.cursor()
