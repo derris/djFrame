@@ -9,7 +9,7 @@ import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from zdCommon import easyuihelp
-from zdCommon.dbhelp import rawsql2json, rawsql4request, json2insert
+from zdCommon.dbhelp import rawsql2json, rawsql4request, json2insert, json2update
 
 
 from yardApp import models
@@ -81,7 +81,12 @@ def getClients(request):
 
 @csrf_exempt
 def updateClients(request):
-    s=json2insert(request.POST)
+    ldict = request.POST
+    s = ''
+    if ldict['reqtype'] == 'insert':
+        s=json2insert(ldict)
+    else:
+        s=json2update(ldict)
     print(s)
     return HttpResponse(str(s).replace("'", '"')) # js 不认识单引号。
 

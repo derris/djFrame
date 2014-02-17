@@ -29,13 +29,14 @@
 
 ****前台insert：
     增加insert的ajax，post，格式：
+    jpargs:
     ｛
        'reqtype':'insert'      -----增加一个新字段。
        'rows': [
             {
                 'op': 'insert',
                 'table': 'c_client',
-                'cols': [{'col1':'value1', 'cold2':'value2', 'c3':'value3'....}],
+                'cols': {'col1':'value1', 'cold2':'value2', 'c3':'value3'....},
                 'uuid': 'xxxx',
                 'id': -1,
                 'subs': { rows: [递归] } //没有就空着
@@ -50,3 +51,27 @@
      "changeid":{'uuid1':'id1', 'uuid2':'id2'...}
    }
 ------------------------------------------------------------------
+------------------------------------------------------------------
+
+****前台update：
+    增加insert的ajax，post，格式：
+    jpargs:
+    ｛
+       'reqtype':'update'      -----up。
+       'rows': [
+            {
+                'op': 'update',
+                'table': 'c_client',
+                'cols': {'col1':['valueNew'，‘valueold’], 'cold2':['value2new', 'value2old']....},
+                'subs': { rows: [递归] } //没有就空着
+            },
+    ｝
+****后台返回insert：
+    {
+     "msg":"",
+     "stateCod":0 、 -10、 -100、-1000 。
+     "error": ['', '', '']....
+     "effectnum": xx ,
+     "changeid":{'uuid1':'id1', 'uuid2':'id2'...}  -- 批量更新中的insert行专用 subs里面的。
+   }
+--------

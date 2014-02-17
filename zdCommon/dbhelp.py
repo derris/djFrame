@@ -276,3 +276,50 @@ def json2insert(aJsonDict):
                        "changeid": str(ldict_uuid2id) } )
     return l_rtn
 
+def json2update(aJsonDict):
+    ldict = eval(aJsonDict['jargs'])
+    '''
+    ldict = {
+        'reqtype':'update',
+        'rows': [ {
+                'op': 'update',
+                'table': 'c_client',
+                'cols': {'col1':['valueNew','valueold'], 'cold2':['value2new', 'value2old']},
+                'subs': { }
+                } ]
+        }
+    '''
+    l_rows = ldict['rows']
+    ldict_uuid2id = {}
+    for i_row in l_rows:  # update table set a = "a", b="b" where a = "olda" and b = "oldb"
+        ls_sql = "update %s set " % i_row['table']
+        ls_set = ls_where = ''
+        for icol,ival in i_row['cols'].items():
+            ls_set += icol + '= "' + ival[0] +  '",'
+            ls_where += icol + ' = "' + ival[1] + '" and '
+        ls_set = ls_set[:-1]
+        ls_where = ls_where[:-5]
+
+        if 'upd_nam' in ls_set:
+            pass
+        else:
+            ls_set += " , upd_nam = 1 "
+
+        if 'upd_tim' in ls_set:
+            pass
+        else:
+            ls_set += " , upd_tim = current_timestamp(0) "
+
+        ls_sql += ls_set + ' where ' + ls_where
+        print(ls_sql)
+
+        l_cur = connection.cursor()
+        l_cur.execute(ls_sql)
+        l_insId = l_cur.fetchone()[0]
+        l_cur.close()
+        ldict_uuid2id.update({i_row["uuid"] : l_insId})
+    l_rtn = {}
+    l_rtn.update( {"error": "", "stateCod":"0",
+                       "effectnum":1 , "rows": "1",
+                       "changeid": str(ldict_uuid2id) } )
+    return l_rtn
