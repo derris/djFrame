@@ -51,5 +51,11 @@ def getJson2(request):
     tt = serializers.serialize('xml', xx ,ensure_ascii = False)
     return HttpResponse(tt)
 
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
+def getJsonPost(request):
+    A = request.POST['args']
+    B = eval(A)
+    print(B)
+    return  HttpResponse(str(B))

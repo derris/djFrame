@@ -78,6 +78,8 @@ def getClients(request):
         t.append(item['fields'])
     return HttpResponse(json.dumps({'total':2,'rows':t},ensure_ascii = False))
     #return HttpResponse('321')
+
+@csrf_exempt
 def updateClients(request):
     s=json2insert(request.POST)
     print(s)
@@ -89,7 +91,7 @@ def getCommonSearchTemplate(request):
 
 
 
-#@csrf_exempt
+
 def getclients2(request):
     ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
     #得到post的参数
