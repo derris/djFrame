@@ -156,25 +156,21 @@ sy.transObjectToDjangoAjax = function (o) {
         } else {
             if ($.isArray(o)) {
                 for (var i = 0, ilen = o.length; i < ilen; i++) {
-                    //console.info(i);
-                    //console.info(o[i]);
                     var y = sy.transObjectToDjangoAjax(o[i]);
                     if (y != null)
                         o[i] = y;
                 }
                 return JSON.stringify(o);
-                //o[i] = sy.transObjectToDjangoAjax(o[i]);
             }
 
             if ($.isPlainObject(o)) {
                 for (var p in o) {
-                    /*
                     var y = sy.transObjectToDjangoAjax(o[p]);
-                    if (y != null) {
+                    if (y != null){
                         o[p] = y;
-                    }*/
-                    o[p] = sy.transObjectToDjangoAjax(o[p]);
+                    }
                 }
+                return o;
             }
         }
     }
@@ -215,7 +211,7 @@ sy.onLoadError = function (mes) {
 sy.csrftoken = sy.getCookie('csrftoken');
 sy.searchWindowUrl = '';
 sy.searchWindow = undefined;
-//sy.searchWindowSourceData = undefined;
+
 sy.searchWindowData = [];
 sy.searchWindowReturnData = {
     refreshFlag: false,
@@ -335,6 +331,7 @@ $.extend($.fn.datagrid.defaults.editors, {
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
     autoSave: false,
+    dataTable: '',
     editRow: -1,
     deleteUrl: '',
     insertUrl: '',
@@ -375,7 +372,8 @@ $.extend($.fn.datagrid.defaults, {
         } else {
             queryParam.cols.push('id');
         }
-        sy.transObjectToDjangoAjax(queryParam);
+        queryParam.cols = JSON.stringify(queryParam.cols);
+        //sy.transObjectToDjangoAjax(queryParam);
         $.ajax({
             url: opts.url,
             type: 'POST',
@@ -384,8 +382,8 @@ $.extend($.fn.datagrid.defaults, {
             contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
-                $.ajaxSettings.success(r, t, a);
                 success(r);
+                $.ajaxSettings.success(r, t, a);
             },
             error: function () {
                 error.apply(this, arguments);
@@ -554,67 +552,7 @@ $.extend($.fn.datagrid.methods, {
         }
     },
     //调用方式 datagrid('postUpdateData')
-
     postUpdateData: function (jq) {
-        if ($(jq).datagrid('preSave') == 1) {
-            //删除只传id值
-            var deleteArray = new Array();
-            var deletedRows = $(jq).datagrid('getChanges', 'deleted');
-            for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
-                deleteArray.push(deletedRows[i].id);
-            }
-            var updateArray = new Array();
-            var updateRows = $(jq).datagrid('getChanges', 'updated');
-            var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
-                var u_id = updateRows[i].id;
-                var find_flag = false;
-                for (var j = 0, olen = oriRows.length; j < olen; j++) {
-                    if (u_id == oriRows[j].id) {
-                        updateArray.push({
-                            old_data: oriRows[j],
-                            new_data: updateRows[i]
-                        });
-                        find_flag = true;
-                        break;
-                    }
-                }
-                if (!find_flag) {
-                    //console.info('未找到原始值');
-                    return -1;
-                }
-            }
-            var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
-                insertArray[i]['uuid'] = (new UUID()).id;
-            }
-
-            var p = {
-                i: JSON.stringify(insertArray),
-                d: JSON.stringify(deleteArray),
-                u: JSON.stringify(updateArray)
-            };
-            $.ajax({
-                url: $(jq).datagrid('options').updateUrl,
-                type: 'POST',
-                //data: JSON.stringify(p),
-                data: p,
-                //contentType: 'application/json',
-                contentType: 'application/x-www-form-urlencoded',
-                dataType: 'json',
-                success: function (r, t, a) {
-                    $.ajaxSettings.success(r, t, a);
-                    $(jq).datagrid('afterSave');
-                    if (r && r.status == 32) {
-                        //$(jq).datagrid('afterSave');
-                    }
-                }
-            });
-        } else {
-            console.info('失败');
-        }
-    },
-    postUpdateData_new: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
             var deleteArray = new Array();
@@ -648,7 +586,7 @@ $.extend($.fn.datagrid.methods, {
             for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
                 newRows.push(
                     {op: 'insert',
-                        table: 'c_client',
+                        table: $(jq).datagrid('options').dataTable,
                         cols: insertArray[i],
                         id: -1,
                         uuid: (new UUID()).id,
@@ -656,25 +594,35 @@ $.extend($.fn.datagrid.methods, {
                     }
                 );
             }
-            //console.info(newRows);
-
             var p = {
                 reqtype: 'insert',
                 rows: newRows
             }
-            //console.info(p);
-            sy.transObjectToDjangoAjax(p)
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                //data: {jargs:JSON.stringify(p)},
-                data:p,
-                //contentType: 'application/json',
+                dataObj: $(jq),
+                data: {jargs:JSON.stringify(p)},
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (returnData, returnMsg, ajaxObj) {
+                    var stateCod = parseInt(returnData.stateCod);
+
+                    if (!isNaN(stateCod)){
+                    if (returnData.stateCod == 202) {
+                        //更新id
+                        if (returnData.changeid != null){
+                            for(var item in returnData.changeid){
+                                $.each(newRows,function(index,value){
+
+                                });
+                            }
+                        }
+                        $(jq).datagrid('afterSave');
+                    }
+
+                    }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
-                    $(jq).datagrid('afterSave');
                     if (r && r.changeid) {
                         $.each(r.changeid, function (uuid, id) {
                             $.each(newRows, function (index, value) {
@@ -686,6 +634,7 @@ $.extend($.fn.datagrid.methods, {
                         });
                     }
                 }
+
             });
         } else {
             console.info('失败');
@@ -831,53 +780,38 @@ $.ajaxSetup({
             xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
         }
     },
-    success: function (r, t, a) {
-        if (r.error_rows == undefined) {
-            return;
+    success: function (returnData, returnMsg, ajaxObj) {
+        var stateCod = parseInt(returnData.stateCod);
+        if (returnData && !isNaN(stateCod)) {
+            if (stateCod > 0) {//返回成功
+                if (stateCod >= 101 && stateCod <= 200) {
+                    $.messager.alert('提示', returnData.msg || '执行成功！', 'info');
+                }
+                if (stateCod >= 201 && stateCod <= 300) {
+                    $.messager.show({
+                        title: '',
+                        msg: returnData.msg || '执行成功!',
+                        timeout: 4000,
+                        showType: 'slide'
+                    });
+                }
+            } else {//返回错误
+                if (returnData.error.length > 0) {
+                    $.messager.show({
+                        title: '错误信息',
+                        msg: returnData.error.join('\n'),
+                        timeout: 4000,
+                        showType: 'slide'
+                    });
+                }
+                if (stateCod <= -101 && stateCod >= -200) {//系统级错误返回登录界面
+                    sy.onLoadError(returnData.msg);
+                }
+            }
         }
 
-        var i = 0;
-        var msg = '';
-        var error_msg = '';
-        for (i = 0; i < r.error_rows.length; i++) {
-            error_msg = error_msg + r.error_rows[i] + '</br>';
-        }
-        for (i = 0; i < r.msg_rows.length; i++) {
-            msg = msg + r.msg_rows[i] + '</br>';
-        }
-        if (msg.length == 0) {
-            msg = r.msg;
-        }
-        if (error_msg.length == 0) {
-            error_msg = r.msg;
-        }
-        if (r && r.success) {
-            //小于10 系统级错误
-            if (r.status < 10) {
-                sy.onLoadError();
-                return;
-            }
-            if (r.status > 30) { //正确
-                $.messager.show({
-                    title: '提示1',
-                    msg: msg,
-                    timeout: 4000,
-                    showType: 'slide'
-                });
-                return;
-            }
-            if (r.status > 10 && r.status < 20) {
-                //$.messager.alert('提示', error_msg);
-                //sy.onLoadError();
-            }
-        } else {
-            if (r && r.status < 10) {
-                sy.onLoadError(error_msg);
-                return;
-            }
-            $.messager.alert('ajax提示1', error_msg);
-        }
     }
+
 });
 
 //***************设置Ajax默认参数********************//
