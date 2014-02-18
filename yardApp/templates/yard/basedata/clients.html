@@ -19,6 +19,7 @@
                     {% endautoescape %}
                 ]
             ],
+            dataTable: 'c_client',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
@@ -46,7 +47,7 @@
                 {text: '保存',
                     iconCls: 'icon-save',
                     handler: function () {
-                        basedata.clientsview.datagrid.datagrid('postUpdateData_new');
+                        basedata.clientsview.datagrid.datagrid('postUpdateData');
                     }
                 }
             ],
