@@ -239,7 +239,7 @@ def getTableInfo(aTableName):
     return l_dict
 
 def json2insert(aJsonDict):
-    ldict = eval(aJsonDict['jargs'])
+    ldict = aJsonDict
     l_rows = ldict['rows']
     ldict_uuid2id = {}
     for i_row in l_rows:  # insert into table(a,b,c,d,e)  values('a','b','c','d','e')
@@ -277,7 +277,7 @@ def json2insert(aJsonDict):
     return l_rtn
 
 def json2update(aJsonDict):
-    ldict = eval(aJsonDict['jargs'])
+    ldict = aJsonDict
     '''
     ldict = {
         'reqtype':'update',

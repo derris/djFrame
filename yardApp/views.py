@@ -81,7 +81,7 @@ def getClients(request):
 
 @csrf_exempt
 def updateClients(request):
-    ldict = request.POST
+    ldict = json.loads( request.POST['jpargs'] )
     s = ''
     if ldict['reqtype'] == 'insert':
         s=json2insert(ldict)

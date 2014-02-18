@@ -602,7 +602,7 @@ $.extend($.fn.datagrid.methods, {
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
                 dataObj: $(jq),
-                data: {jargs:JSON.stringify(p)},
+                data: {jpargs:JSON.stringify(p)},
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (returnData, returnMsg, ajaxObj) {
