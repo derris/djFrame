@@ -162,15 +162,18 @@ sy.transObjectToDjangoAjax = function (o) {
                     if (y != null)
                         o[i] = y;
                 }
+                return JSON.stringify(o);
                 //o[i] = sy.transObjectToDjangoAjax(o[i]);
             }
 
             if ($.isPlainObject(o)) {
                 for (var p in o) {
+                    /*
                     var y = sy.transObjectToDjangoAjax(o[p]);
                     if (y != null) {
                         o[p] = y;
-                    }
+                    }*/
+                    o[p] = sy.transObjectToDjangoAjax(o[p]);
                 }
             }
         }
@@ -660,11 +663,12 @@ $.extend($.fn.datagrid.methods, {
                 rows: newRows
             }
             //console.info(p);
-            //sy.transObjectToDjangoAjax(p)
+            sy.transObjectToDjangoAjax(p)
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
-                data: { "jargs" : JSON.stringify(p) },
+                //data: {jargs:JSON.stringify(p)},
+                data:p,
                 //contentType: 'application/json',
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
