@@ -267,7 +267,7 @@ def json2insert(aJsonDict):
 
         l_cur = connection.cursor()
         l_cur.execute(ls_sql)
-        l_insId = l_cur.fetchone()[0]
+        l_insId = l_cur.fetchocne()[0]
         l_cur.close()
         ldict_uuid2id.update({i_row["uuid"] : l_insId})
     l_rtn = {}
