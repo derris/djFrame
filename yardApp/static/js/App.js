@@ -166,7 +166,7 @@ sy.transObjectToDjangoAjax = function (o) {
             if ($.isPlainObject(o)) {
                 for (var p in o) {
                     var y = sy.transObjectToDjangoAjax(o[p]);
-                    if (y != null){
+                    if (y != null) {
                         o[p] = y;
                     }
                 }
@@ -602,24 +602,20 @@ $.extend($.fn.datagrid.methods, {
                 url: $(jq).datagrid('options').updateUrl,
                 type: 'POST',
                 dataObj: $(jq),
-                data: {jargs:JSON.stringify(p)},
+                data: {jpargs: JSON.stringify(p)},
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: 'json',
                 success: function (returnData, returnMsg, ajaxObj) {
                     var stateCod = parseInt(returnData.stateCod);
 
-                    if (!isNaN(stateCod)){
-                    if (returnData.stateCod == 202) {
-                        //更新id
-                        if (returnData.changeid != null){
-                            for(var item in returnData.changeid){
-                                $.each(newRows,function(index,value){
-
-                                });
+                    if (!isNaN(stateCod)) {
+                        if (returnData.stateCod == 202) { //更新成功
+                            //更新id
+                            if (returnData.changeid != null) {
+                                //
                             }
+                            $(jq).datagrid('afterSave');
                         }
-                        $(jq).datagrid('afterSave');
-                    }
 
                     }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
