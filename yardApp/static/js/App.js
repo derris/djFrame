@@ -313,6 +313,11 @@ $.extend($.fn.datagrid.defaults, {
     onLoadError: function () {
         sy.onError('加载数据错误', false);
     },
+    onAfterEdit: function (rowIndex, rowData, changes) {
+        if ($(this).datagrid('options').autoSave){
+            $(this).datagrid('postUpdateAllData');
+        }
+    },
     loader: function (param, success, error) {
         var that = $(this);
         var opts = that.datagrid('options');
@@ -333,11 +338,7 @@ $.extend($.fn.datagrid.defaults, {
         queryParam.cols = JSON.stringify(queryParam.cols);
         $.ajax({
             url: opts.url,
-            type: 'POST',
             data: queryParam,
-            //data: JSON.stringify(queryParam),
-            contentType: 'application/x-www-form-urlencoded',
-            dataType: 'json',
             success: function (r, t, a) {
                 success(r);
                 $.ajaxSettings.success(r, t, a);
@@ -349,23 +350,23 @@ $.extend($.fn.datagrid.defaults, {
 $.extend($.fn.datagrid.methods, {
     getOriginalRows: function (jq) {
         /*
-        取datagrid的原始值 返回数组
+         取datagrid的原始值 返回数组
          */
         return $(jq).data("datagrid").originalRows;
     },
     getChangeUpdate: function (jq) {
         /*
-        取修改后的数据对数组 返回:[
-                                 {
-                                  id:nnn,
-                                  col:{
-                                    '已修改列cod':[新值,旧值]
-                                    }
-                                  },....
-                             ]
+         取修改后的数据对数组 返回:[
+         {
+         id:nnn,
+         col:{
+         '已修改列cod':[新值,旧值]
+         }
+         },....
+         ]
          */
         var updatePairArray = new Array();
-        var updateRows = jq.datagrid('getChanges','updated');
+        var updateRows = jq.datagrid('getChanges', 'updated');
         var oriRows = jq.datagrid('getOriginalRows');
         for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
             var u_id = updateRows[i].id;
@@ -373,14 +374,14 @@ $.extend($.fn.datagrid.methods, {
             for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
                 if (u_id == oriRows[j].id) {
                     var colpair = {};
-                    for (var key in updateRows[i]){
-                        if (oriRows[j].hasOwnProperty(key) && updateRows[i][key] != oriRows[j][key]){
-                            colpair[key] = [updateRows[i][key],oriRows[j][key]];
+                    for (var key in updateRows[i]) {
+                        if (oriRows[j].hasOwnProperty(key) && updateRows[i][key] != oriRows[j][key]) {
+                            colpair[key] = [updateRows[i][key], oriRows[j][key]];
                         }
                     }
                     updatePairArray.push({
-                            id:u_id,
-                            cols:colpair
+                        id: u_id,
+                        cols: colpair
                     });
                     find_flag = true;
                     break;
@@ -435,6 +436,9 @@ $.extend($.fn.datagrid.methods, {
             if (opts.editRow != -1) {
                 jq.datagrid('selectRow', opts.editRow);
             }
+        }
+        if (opts.autoSave){
+            jq.datagrid('postUpdateAllData');
         }
     },
     //param 为null
@@ -497,7 +501,7 @@ $.extend($.fn.datagrid.methods, {
         var opts = jq.datagrid('options');
         var s = jq.datagrid('getSelected')
         if (s != null) {
-            opts.editRow = jq.datagrid('getRowIndex', s.id);
+            opts.editRow = jq.datagrid('getRowIndex', s);
         }
 
         if (opts.editRow == -1) {
@@ -559,14 +563,14 @@ $.extend($.fn.datagrid.methods, {
             }
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChangeUpdate');
-            if (updateRows != null && updateRows.length > 0){
-                $.each(updateRows,function(index,data){
+            if (updateRows != null && updateRows.length > 0) {
+                $.each(updateRows, function (index, data) {
                     updateArray.push({
-                        op:'update',
-                        table:$(jq).datagrid('options').dataTable,
-                        cols:data.cols,
-                        id:data.id,
-                        sub:{}
+                        op: 'update',
+                        table: $(jq).datagrid('options').dataTable,
+                        cols: data.cols,
+                        id: data.id,
+                        subs: {}
                     });
                 });
             }
@@ -585,13 +589,13 @@ $.extend($.fn.datagrid.methods, {
             }
 
             /*
-            var p = {
-                reqtype: 'insert',
-                rows: insertArray
-            }*/
+             var p = {
+             reqtype: 'insert',
+             rows: insertArray
+             }*/
             var p = {
                 reqtype: 'update',
-                rows: updateArray
+                rows: updateArray.concat(insertArray).concat(deleteArray)
             }
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
@@ -606,7 +610,7 @@ $.extend($.fn.datagrid.methods, {
                                     if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
                                         insertArray[i].cols.id = returnData.changeid[newRows[i].uuid];
                                     } else {
-                                        sy.onError('主键更新失败',false);
+                                        sy.onError('主键更新失败', false);
                                         return;
                                     }
                                 }
