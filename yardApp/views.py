@@ -88,7 +88,7 @@ def updateClients(request):
     else:
         s=json2update(ldict)
     print(s)
-    return HttpResponse(str(s).replace("'", '"')) # js 不认识单引号。
+    return HttpResponse(str(s)) # js 不认识单引号。
 
 
 def getCommonSearchTemplate(request):
