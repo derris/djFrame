@@ -117,7 +117,7 @@ upd{‘客户’， json（更新客户数据3）, subs: {num:xx, upd:...}
                 'op': 'delete'
                 'table':'客户'
                 'id': 'xxx'
-                'subs':: {rows;递归}
+                'subs': { rows;递归 }
             } , -- 返回 { state: 'ok' / 'fail' , error: '' , effectnum:xx, rows {'uuid':'xxxx', 'id': xxx, 'subs' { rows: [递归]}}      }
 
             ...] 注意数据是分层次的，比如

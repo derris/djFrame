@@ -272,10 +272,10 @@ def json2exec(ajson, aCursor, artn):
             if i_row['op'] == 'update':
                 ls_sql = "update %s set " % i_row['table']
                 ls_set = ''
-                ls_where = ' id = ' + i_row['id'] + ' and '
+                ls_where = ' id = ' + str(i_row['id']) + ' and '
                 for icol,ival in i_row['cols'].items():
-                    ls_set += icol + '= "' + ival[0] +  '",'
-                    ls_where += icol + ' = "' + ival[1] + '" and '
+                    ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
+                    ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
                 ls_set = ls_set[:-1]
                 ls_where = ls_where[:-5]
                 if 'upd_nam' in ls_set:
@@ -300,8 +300,8 @@ def json2exec(ajson, aCursor, artn):
                     aCursor.execute(ls_sql)
                 except Exception as e:
                     raise Exception("somthing wrong: " + e.__cause__)
-            if 'rows' in i_row['subs'].keys():
-                json2exec(i_row['subs'], aCursor, artn)
+            if 'rows' in i_row['sub'].keys():
+                json2exec(i_row['sub'], aCursor, artn)
     except Exception as e:
         raise Exception("somthing wrong sum:  " + str(e.args))
 
@@ -314,13 +314,17 @@ def json2upd(aJsonDict):
              "changeid" : {'uuid1':'id1'} }
     try:
         l_cur = connection.cursor()
-        l_rtn = json2exec(aJsonDict['rows'], l_cur, l_rtn)
+        json2exec(aJsonDict, l_cur, l_rtn)
+        l_rtn.update({"stateCod": 202})
     except Exception as e:
+        l_rtn.update({"stateCod": -100})
         raise Exception( str(l_rtn['error']) + e.__cause__ )
     finally:
         l_cur.close()
     return(l_rtn)
 
+
+############################################################### 以下即将淘汰。
 def json2insert(aJsonDict):
     ldict = aJsonDict
     l_rows = ldict['rows']
