@@ -325,3 +325,24 @@ def json2update(aJsonDict):
                        "effectnum":1 , "rows": "1",
                        "changeid": str(ldict_uuid2id) } )
     return l_rtn
+
+def json2delete(aJsonDict):
+    ldict = aJsonDict
+
+    ldict = {
+        'reqtype':'update',
+        'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 25, 'subs': { }  } ]
+    }
+
+    l_rows = ldict['rows']
+    ldict_uuid2id = {}
+    for i_row in l_rows:  # delete table where id = 1"
+        if i_row['op'] == 'delete':
+            ls_sql = "delete " + i_row['table'] + " where id = " + str(i_row['id'])
+            print(ls_sql)
+            l_cur = connection.cursor()
+            # l_cur.execute(ls_sql)
+            l_cur.close()
+    l_rtn = {}
+    l_rtn.update( {"error": "", "stateCod":"0", "effectnum":1 , "rows": "1" } )
+    return l_rtn

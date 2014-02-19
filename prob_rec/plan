@@ -77,4 +77,24 @@
      "effectnum": xx ,
      "changeid":{'uuid1':'id1', 'uuid2':'id2'...}  -- 批量更新中的insert行专用 subs里面的。
    }
+
+**** 前台delete：
 --------
+    jpargs:
+    ｛
+       'reqtype':'update'      -----up。
+       'rows': [
+            {
+                'op': 'delete',
+                'table': 'c_client',
+                'id':nnnn,
+                'subs': { rows: [递归] } //没有就空着
+            },
+    ｝
+**** 后台返回 ：
+    {
+     "msg":"",
+     "stateCod":0 、 -10、 -100、-1000 。
+     "error": ['', '', '']....
+     "effectnum": xx ,
+   }
