@@ -248,8 +248,8 @@ def json2exec(ajson, aCursor, artn):
                 for icol,ival in i_row['cols'].items():
                     ls_col += icol + ','
                     ls_val += "'" + ival + "',"
-                    ls_col = ls_col[:-1]
-                    ls_val = ls_val[:-1]
+                ls_col = ls_col[:-1]
+                ls_val = ls_val[:-1]
                 if 'rec_nam' in ls_col:
                     pass
                 else:
