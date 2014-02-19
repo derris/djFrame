@@ -347,24 +347,41 @@ $.extend($.fn.datagrid.defaults, {
 });
 
 $.extend($.fn.datagrid.methods, {
-
     getOriginalRows: function (jq) {
+        /*
+        取datagrid的原始值 返回数组
+         */
         return $(jq).data("datagrid").originalRows;
     },
     getChangeUpdate: function (jq) {
+        /*
+        取修改后的数据对数组 返回:[
+                                 {
+                                  id:nnn,
+                                  col:{
+                                    '已修改列cod':[新值,旧值]
+                                    }
+                                  },....
+                             ]
+         */
         var updatePairArray = new Array();
-        var updateRows = jq.datagrid('getChanes', 'updated');
+        var updateRows = jq.datagrid('getChanges','updated');
         var oriRows = jq.datagrid('getOriginalRows');
         for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
             var u_id = updateRows[i].id;
             var find_flag = false;
             for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
                 if (u_id == oriRows[j].id) {
+                    var colpair = {};
                     for (var key in updateRows[i]){
                         if (oriRows[j].hasOwnProperty(key) && updateRows[i][key] != oriRows[j][key]){
-                            updatePairArray.push({key:[updateRows[i][key],oriRows[j][key]]});
+                            colpair[key] = [updateRows[i][key],oriRows[j][key]];
                         }
                     }
+                    updatePairArray.push({
+                            id:u_id,
+                            cols:colpair
+                    });
                     find_flag = true;
                     break;
                 }
@@ -374,6 +391,7 @@ $.extend($.fn.datagrid.methods, {
                 return null;
             }
         }
+        return updatePairArray;
     },
     //param {要插入对象}}
     insertData: function (jq, param) {
@@ -531,7 +549,7 @@ $.extend($.fn.datagrid.methods, {
     },
     //调用方式 datagrid('postUpdateData')
 
-    postUpdateData: function (jq) {
+    postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
             var deleteArray = new Array();
@@ -540,47 +558,42 @@ $.extend($.fn.datagrid.methods, {
                 deleteArray.push(deletedRows[i].id);
             }
             var updateArray = new Array();
-            var updateRows = $(jq).datagrid('getChanges', 'updated');
-            var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
-                var u_id = updateRows[i].id;
-                var find_flag = false;
-                for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
-                    if (u_id == oriRows[j].id) {
-                        updateArray.push({
-                            op: 'update',
-                            table: $(jq).datagrid('options').dataTable,
-                            cols: {},
-                            id: u_id,
-                            sub: {}
-                        });
-                        find_flag = true;
-                        break;
-                    }
-                }
-                if (!find_flag) {
-                    //console.info('未找到原始值');
-                    sy.onError('更新数据未找到原始值', false);
-                    return -1;
-                }
+            var updateRows = $(jq).datagrid('getChangeUpdate');
+            if (updateRows != null && updateRows.length > 0){
+                $.each(updateRows,function(index,data){
+                    updateArray.push({
+                        op:'update',
+                        table:$(jq).datagrid('options').dataTable,
+                        cols:data.cols,
+                        id:data.id,
+                        sub:{}
+                    });
+                });
             }
-            var newRows = new Array();
-            var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
-                newRows.push(
+            var insertArray = new Array();
+            var insertRows = $(jq).datagrid('getChanges', 'inserted');
+            for (var i = 0, ilen = insertRows.length; i < ilen; i++) {
+                insertArray.push(
                     {op: 'insert',
                         table: $(jq).datagrid('options').dataTable,
-                        cols: insertArray[i],
+                        cols: insertRows[i],
                         id: -1,
                         uuid: (new UUID()).id,
                         subs: {}
                     }
                 );
             }
+
+            /*
             var p = {
                 reqtype: 'insert',
-                rows: newRows
+                rows: insertArray
+            }*/
+            var p = {
+                reqtype: 'update',
+                rows: updateArray
             }
+
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 data: {jpargs: JSON.stringify(p)},
@@ -589,12 +602,12 @@ $.extend($.fn.datagrid.methods, {
                     if (!isNaN(stateCod)) {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
-                            if (returnData.changeid != null) {
-                                for (var i = 0, ilen = newRows.length; i < ilen; i++) {
-                                    if (returnData.changeid.hasOwnProperty(newRows[i].uuid)) {
-                                        newRows[i].cols.id = returnData.changeid[newRows[i].uuid];
+                            if (returnData.changeid != null && insertArray.length > 0) {
+                                for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
+                                    if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
+                                        insertArray[i].cols.id = returnData.changeid[newRows[i].uuid];
                                     } else {
-                                        $.messager.alert('错误', '主键更新失败,请联系管理员', 'error');
+                                        sy.onError('主键更新失败',false);
                                         return;
                                     }
                                 }
