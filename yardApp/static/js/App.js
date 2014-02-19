@@ -339,6 +339,9 @@ $.extend($.fn.datagrid.defaults, {
             contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
+                console.info(r);
+                console.info(t);
+                console.info(a);
                 success(r);
                 $.ajaxSettings.success(r, t, a);
             }
@@ -353,18 +356,23 @@ $.extend($.fn.datagrid.methods, {
     },
     getChangeUpdate: function (jq) {
         var updatePairArray = new Array();
-        var updateRows = jq.datagrid('getChanes', 'updated');
+        var updateRows = jq.datagrid('getChanges','updated');
         var oriRows = jq.datagrid('getOriginalRows');
         for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
             var u_id = updateRows[i].id;
             var find_flag = false;
             for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
                 if (u_id == oriRows[j].id) {
+                    var colpair = {};
                     for (var key in updateRows[i]){
                         if (oriRows[j].hasOwnProperty(key) && updateRows[i][key] != oriRows[j][key]){
-                            updatePairArray.push({key:[updateRows[i][key],oriRows[j][key]]});
+                            colpair[key] = [updateRows[i][key],oriRows[j][key]];
                         }
                     }
+                    updatePairArray.push({
+                            id:u_id,
+                            cols:colpair
+                    });
                     find_flag = true;
                     break;
                 }
@@ -374,6 +382,7 @@ $.extend($.fn.datagrid.methods, {
                 return null;
             }
         }
+        return updatePairArray;
     },
     //param {要插入对象}}
     insertData: function (jq, param) {
@@ -540,37 +549,25 @@ $.extend($.fn.datagrid.methods, {
                 deleteArray.push(deletedRows[i].id);
             }
             var updateArray = new Array();
-            var updateRows = $(jq).datagrid('getChanges', 'updated');
-            var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
-                var u_id = updateRows[i].id;
-                var find_flag = false;
-                for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
-                    if (u_id == oriRows[j].id) {
-                        updateArray.push({
-                            op: 'update',
-                            table: $(jq).datagrid('options').dataTable,
-                            cols: {},
-                            id: u_id,
-                            sub: {}
-                        });
-                        find_flag = true;
-                        break;
-                    }
-                }
-                if (!find_flag) {
-                    //console.info('未找到原始值');
-                    sy.onError('更新数据未找到原始值', false);
-                    return -1;
-                }
+            var updateRows = $(jq).datagrid('getChangeUpdate');
+            if (updateRows != null){
+                $.each(updateRows,function(index,data){
+                    updateArray.push({
+                        op:'update',
+                        table:$(jq).datagrid('options').dataTable,
+                        cols:data.cols,
+                        id:data.id,
+                        sub:{}
+                    });
+                });
             }
-            var newRows = new Array();
-            var insertArray = $(jq).datagrid('getChanges', 'inserted');
-            for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
-                newRows.push(
+            var insertArray = new Array();
+            var insertRows = $(jq).datagrid('getChanges', 'inserted');
+            for (var i = 0, ilen = insertRows.length; i < ilen; i++) {
+                insertArray.push(
                     {op: 'insert',
                         table: $(jq).datagrid('options').dataTable,
-                        cols: insertArray[i],
+                        cols: insertRows[i],
                         id: -1,
                         uuid: (new UUID()).id,
                         subs: {}
@@ -579,20 +576,24 @@ $.extend($.fn.datagrid.methods, {
             }
             var p = {
                 reqtype: 'insert',
-                rows: newRows
+                rows: insertArray
             }
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 data: {jpargs: JSON.stringify(p)},
                 success: function (returnData, returnMsg, ajaxObj) {
+                    console.info('postsavesuccess');
+                    console.info(returnData);
+                    console.info(returnMsg);
+                    console.info(ajaxObj);
                     var stateCod = parseInt(returnData.stateCod);
                     if (!isNaN(stateCod)) {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
                             if (returnData.changeid != null) {
-                                for (var i = 0, ilen = newRows.length; i < ilen; i++) {
-                                    if (returnData.changeid.hasOwnProperty(newRows[i].uuid)) {
-                                        newRows[i].cols.id = returnData.changeid[newRows[i].uuid];
+                                for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
+                                    if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
+                                        insertArray[i].cols.id = returnData.changeid[newRows[i].uuid];
                                     } else {
                                         $.messager.alert('错误', '主键更新失败,请联系管理员', 'error');
                                         return;
@@ -754,6 +755,7 @@ $.ajaxSetup({
     contentType: 'application/x-www-form-urlencoded',
     dataType: 'json',
     success: function (returnData, returnMsg, ajaxObj) {
+        console.info('setup.success');
         var stateCod = parseInt(returnData.stateCod);
         if (returnData && !isNaN(stateCod)) {
             if (stateCod > 0) {//返回成功
@@ -784,6 +786,10 @@ $.ajaxSetup({
         }
     },
     error: function (xhr, msg, e) {
+        console.info('error');
+        console.info(xhr);
+        console.info(msg);
+        console.info(e);
         sy.onError('服务器错误', false);
     }
 
