@@ -593,7 +593,6 @@ $.extend($.fn.datagrid.methods, {
                 reqtype: 'update',
                 rows: updateArray
             }
-
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 data: {jpargs: JSON.stringify(p)},
@@ -612,8 +611,8 @@ $.extend($.fn.datagrid.methods, {
                                     }
                                 }
                             }
-                            $(jq).datagrid('afterSave');
                         }
+                        $(jq).datagrid('afterSave');
                     }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
                 }
