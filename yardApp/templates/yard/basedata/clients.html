@@ -2,7 +2,7 @@
     Namespace.register('basedata.clientsview');
     $(function () {
         basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
-            autoSave: true,
+            autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
@@ -47,15 +47,14 @@
                 {text: '保存',
                     iconCls: 'icon-save',
                     handler: function () {
-                        basedata.clientsview.datagrid.datagrid('postUpdateData');
+                        basedata.clientsview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
             onAfterEdit: function(rowIndex,rowData,changes){
-                //console.info('onAfterEdit');
-                //console.info(rowIndex);
-                //console.info(rowData);
-                //console.info(changes);
+                console.info('onAfterEdit');
+                console.info(changes);
+
             },
             url: "{% url 'getclients2' %}",
             updateUrl: "{% url 'updateclients' %}"
