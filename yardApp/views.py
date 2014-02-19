@@ -84,6 +84,13 @@ def getClients(request):
 @transaction.atomic
 def updateClients(request):
     ldict = json.loads( request.POST['jpargs'] )
+    ''' # 测试delete。
+    ldict = { 'reqtype':'update',
+        'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 11 , 'subs': {}},
+                  {  'op': 'delete',    'table': 'c_client',  'id': 12 , 'subs': {}}
+                  ]
+        }
+    '''
     if ldict['reqtype'] in ('insert', 'update'):
         pass
     else:

@@ -247,7 +247,10 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 ls_col = ls_val = ''
                 for icol,ival in i_row['cols'].items():
                     ls_col += icol + ','
-                    ls_val += "'" + ival + "',"
+                    if icol == "rec_tim":
+                        ls_val += "'" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "',"
+                    else:
+                        ls_val += "'" + ival + "',"
                 ls_col = ls_col[:-1]
                 ls_val = ls_val[:-1]
                 if 'rec_nam' in ls_col:
@@ -263,12 +266,14 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
                 print(ls_sql)
                 try:
-                    li_t = aCursor.execute(ls_sql)
+                    aCursor.execute(ls_sql)
+                    li_t = aCursor.cursor.rowcount
                     l_insId = aCursor.fetchone()[0]
-                    artn.update({i_row["uuid"] : l_insId})
+                    artn['changeid'].update({i_row["uuid"] : l_insId})
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
-                    raise Exception("somthing wrong: " + e.__cause__)
+                    artn["error"].append(str(e.args))
+                    raise e
             #######################################################################
             if i_row['op'] == 'update':
                 ls_sql = "update %s set " % i_row['table']
@@ -290,19 +295,23 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 ls_sql += ls_set + ' where ' + ls_where
                 print(ls_sql)
                 try:
-                    li_t = aCursor.execute(ls_sql)
+                    aCursor.execute(ls_sql)
+                    li_t = aCursor.cursor.rowcount
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
-                    raise Exception("somthing wrong: " + e.__cause__)
+                    artn["error"].append(str(e.args))
+                    raise e
             #######################################################################
             if i_row['op'] == 'delete':
-                ls_sql = "delete " + i_row['table'] + " where id = " + str(i_row['id'])
+                ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
                 print(ls_sql)
                 try:
-                    li_t = aCursor.execute(ls_sql)
+                    aCursor.execute(ls_sql)
+                    li_t = aCursor.cursor.rowcount
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
-                    raise Exception("somthing wrong: " + e.__cause__)
+                    artn["error"].append(str(e.args))
+                    raise e
             if 'rows' in i_row['subs'].keys():
                 json2exec(i_row['subs'], aCursor, artn)
     except Exception as e:
@@ -321,7 +330,7 @@ def json2upd(aJsonDict):
         l_rtn.update({"stateCod": 202})
     except Exception as e:
         l_rtn.update({"stateCod": -100})
-        raise Exception( str(l_rtn['error']) + e.__cause__ )
+        raise Exception( str(l_rtn['error'])  )
     finally:
         l_cur.close()
     return(l_rtn)
@@ -418,7 +427,7 @@ def json2update(aJsonDict):
 
 def json2delete(aJsonDict):
     ldict = aJsonDict
-
+    # l_cur.cursor.rowcount
     ldict = {
         'reqtype':'update',
         'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 25, 'subs': { }  } ]
