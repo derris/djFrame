@@ -315,6 +315,7 @@ $.extend($.fn.datagrid.defaults, {
     },
     onAfterEdit: function (rowIndex, rowData, changes) {
         if ($(this).datagrid('options').autoSave){
+
             $(this).datagrid('postUpdateAllData');
         }
     },
@@ -335,10 +336,10 @@ $.extend($.fn.datagrid.defaults, {
         } else {
             queryParam.cols.push('id');
         }
-        queryParam.cols = JSON.stringify(queryParam.cols);
+        //queryParam.cols = JSON.stringify(queryParam.cols);
         $.ajax({
             url: opts.url,
-            data: queryParam,
+            data: {jpargs:JSON.stringify(queryParam)},
             success: function (r, t, a) {
                 success(r);
                 $.ajaxSettings.success(r, t, a);
