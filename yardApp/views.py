@@ -105,13 +105,14 @@ def getclients2(request):
     if request.method == 'GET':
         pass
     else:
-        print('得到post参数', request.POST)
-        if 'page' in dict(request.POST).keys():
+        ldict = json.loads( request.POST['jpargs'] )
+        print('得到post参数', ldict)
+        if 'page' in ldict.keys():
             pass
         else:
             raise Exception('there is no page keys')
 
-    jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
+    jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
 
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。

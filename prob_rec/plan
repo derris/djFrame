@@ -1,12 +1,11 @@
-2014-2-12： (更改完成以后，把前面的星星去掉)
------------------------------------------------------------------
-****前台select ：
-    更改select的ajax，post，格式：
+2014-2-12：~ 2-19
+**********************************************************前台select ：
+    jpargs:
     {
          'reqtype':'query'      -----增加一个新字段。
          'page':1,
          'rows':10,
-          'cols':['colname1','colname2','colname3], ---- 增加一个新字段。
+         'cols':['colname1','colname2','colname3'],
          'filter':'[{
             'cod':'client_name',
             'operatorTyp':'等于',
@@ -23,78 +22,44 @@
      "stateCod":0 、 -10、 -100、-1000 。
      "error": ['', '', '']....
      "total":22,
-     "rows":[{},{},{}]
+     "rows":[{},{},{}],
+     "effectnum": 1
    }
-------------------------------------------------------------------
-
-****前台insert：
-    增加insert的ajax，post，格式：
-    jpargs:
-    ｛
-       'reqtype':'insert'      -----增加一个新字段。
-       'rows': [
-            {
+****************************************************** insert, update, delete *******************
+******************************************************     后台返回统一格式。
+    {
+     "msg":"",              。 ok
+     "stateCod": > 0 正确。 。    # 1， 201， 202
+     "error": ['', '', '']....        # 错误数组。
+     "effectnum": xx ,                #  影响行数。
+     "changeid":{'uuid1':'id1', 'uuid2':'id2'. ..}     #  insert专用。
+   }
+001：查询成功,有数据
+201：查询成功,无数据
+202：修改成功
+************************************************   前台insert：
+    jpargs:｛
+       'reqtype':'insert'      ----- insert 功能发起。
+       'rows': [ {
                 'op': 'insert',
                 'table': 'c_client',
                 'cols': {'col1':'value1', 'cold2':'value2', 'c3':'value3'....},
                 'uuid': 'xxxx',
                 'id': -1,
                 'subs': { rows: [递归] } //没有就空着
-            },
-            ]
-
-    ｝
-****后台返回insert：
-    {
-     "msg":"",
-     "stateCod":0 、 -10、 -100、-1000 。
-     "error": ['', '', '']....
-     "effectnum": xx ,
-     "changeid":{'uuid1':'id1', 'uuid2':'id2'...}
-   }
-------------------------------------------------------------------
-------------------------------------------------------------------
-
-****前台update：
-    增加insert的ajax，post，格式：
-    jpargs:
-    ｛
-       'reqtype':'update'      -----up。
-       'rows': [
-            {
+            },      ] ｝
+************************************************  前台update：
+    jpargs:   {
+        'reqtype':'update',
+        'rows': [ {
                 'op': 'update',
                 'table': 'c_client',
-                'cols': {'col1':['valueNew'，‘valueold’], 'cold2':['value2new', 'value2old']....},
-                'id':nnnn,
-                'subs': { rows: [递归] } //没有就空着
-            },
-    ｝
-****后台返回update：
-    {
-     "msg":"",
-     "stateCod":0 、 -10、 -100、-1000 。
-     "error": ['', '', '']....
-     "effectnum": xx ,
-     "changeid":{'uuid1':'id1', 'uuid2':'id2'...}  -- 批量更新中的insert行专用 subs里面的。
-   }
-
-**** 前台delete：
---------
-    jpargs:
-    ｛
-       'reqtype':'update'      -----up。
-       'rows': [
-            {
-                'op': 'delete',
-                'table': 'c_client',
-                'id':nnnn,
-                'subs': { rows: [递归] } //没有就空着
-            },
-    ｝
-**** 后台返回 ：
-    {
-     "msg":"",
-     "stateCod":0 、 -10、 -100、-1000 。
-     "error": ['', '', '']....
-     "effectnum": xx ,
-   }
+                'cols': {'col1':['valueNew','valueold'], 'cold2':['value2new', 'value2old']},
+                'subs': {} ,
+                'id': 'xxx1'
+                },  {...}, ... ]    }
+**********************************************    前台delete：
+    jpargs: {
+        'reqtype':'update',
+        'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 25, 'subs': { }  } ....  ]
+    }

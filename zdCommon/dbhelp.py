@@ -203,7 +203,7 @@ def rawsql2json(aSql, aSqlCount):
     l_sqlcount = l_cur.fetchone()[0]
     l_cur.close()
     l_rtn = {}
-    l_rtn.update( {"msg": "", "stateCod":"", "total":l_sqlcount, "rows": l_sum } )
+    l_rtn.update( {"msg": "", "stateCod": 1 if l_sqlcount > 0 else 201  , "total":l_sqlcount, "rows": l_sum } )
     # l_rtn =  '{"total":' + str(l_count) + ', "rows":' + str( l_sum) + '}'
     return l_rtn
 
@@ -238,7 +238,7 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
-def json2exec(ajson, aCursor, artn):
+def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
     try:
         for i_row in  ajson['rows']:
             #循环进行处理字符串，然后更新
@@ -263,9 +263,10 @@ def json2exec(ajson, aCursor, artn):
                 ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
                 print(ls_sql)
                 try:
-                    aCursor.execute(ls_sql)
+                    li_t = aCursor.execute(ls_sql)
                     l_insId = aCursor.fetchone()[0]
                     artn.update({i_row["uuid"] : l_insId})
+                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
                     raise Exception("somthing wrong: " + e.__cause__)
             #######################################################################
@@ -289,7 +290,8 @@ def json2exec(ajson, aCursor, artn):
                 ls_sql += ls_set + ' where ' + ls_where
                 print(ls_sql)
                 try:
-                    aCursor.execute(ls_sql)
+                    li_t = aCursor.execute(ls_sql)
+                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
                     raise Exception("somthing wrong: " + e.__cause__)
             #######################################################################
@@ -297,11 +299,12 @@ def json2exec(ajson, aCursor, artn):
                 ls_sql = "delete " + i_row['table'] + " where id = " + str(i_row['id'])
                 print(ls_sql)
                 try:
-                    aCursor.execute(ls_sql)
+                    li_t = aCursor.execute(ls_sql)
+                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
                     raise Exception("somthing wrong: " + e.__cause__)
-            if 'rows' in i_row['sub'].keys():
-                json2exec(i_row['sub'], aCursor, artn)
+            if 'rows' in i_row['subs'].keys():
+                json2exec(i_row['subs'], aCursor, artn)
     except Exception as e:
         raise Exception("somthing wrong sum:  " + str(e.args))
 
@@ -309,8 +312,8 @@ def json2exec(ajson, aCursor, artn):
 def json2upd(aJsonDict):
     l_rtn = {"error": [""],
              "msg":"",
-             "stateCod":  0,
-             "effectnum": 1 ,
+             "stateCod":  0 ,
+             "effectnum": 0 ,
              "changeid" : {'uuid1':'id1'} }
     try:
         l_cur = connection.cursor()
@@ -431,7 +434,7 @@ def json2delete(aJsonDict):
             # l_cur.execute(ls_sql)
             l_cur.close()
     l_rtn = {}
-    l_rtn.update( {"error": "", "stateCod":"0", "effectnum":1 , "rows": "1" } )
+    l_rtn.update( {"error": "", "stateCod":"0", "effectnum":1  } )
     return l_rtn
 
 '''
