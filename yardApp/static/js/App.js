@@ -1,4 +1,4 @@
-﻿﻿//**************全局对象管理******************
+﻿//**************全局对象管理******************
 // 声明一个全局对象Namespace，用来注册命名空间
 Namespace = new Object();
 
@@ -142,54 +142,6 @@ sy.csrfSafeMethod = function (method) {
 }
 
 
-//******转换对象为可提交json对象***********
-
-sy.transObjectToDjangoAjax = function (o) {
-    if ($.isPlainObject(o) || $.isArray(o)) {
-        if (sy.isBasicType(o)) {
-            if ($.isArray(o)) {
-                return JSON.stringify(o);
-            }
-            if ($.isPlainObject(o)) {
-                return o;
-            }
-        } else {
-            if ($.isArray(o)) {
-                for (var i = 0, ilen = o.length; i < ilen; i++) {
-                    var y = sy.transObjectToDjangoAjax(o[i]);
-                    if (y != null)
-                        o[i] = y;
-                }
-                return JSON.stringify(o);
-            }
-
-            if ($.isPlainObject(o)) {
-                for (var p in o) {
-                    var y = sy.transObjectToDjangoAjax(o[p]);
-                    if (y != null) {
-                        o[p] = y;
-                    }
-                }
-                return o;
-            }
-        }
-    }
-    else {
-        return o;
-    }
-}
-
-sy.isBasicType = function (o) {  //o不包含对象或数组返回true
-    var t = true;
-    $.each(o, function (key, value) {
-        if ($.isPlainObject(value) || $.isArray(value)) {
-            t = false;
-            return false;
-        }
-    });
-    return t;
-}
-
 
 //***************全局用到的对象**********************
 /*
@@ -199,14 +151,15 @@ sy.isBasicType = function (o) {  //o不包含对象或数组返回true
  sy.csrftoken csrf令牌
  * */
 sy.logonPath = '';
-sy.onLoadError = function (mes) {
-    var defaultMsg = '系统错误,重新登录？';
-
-    $.messager.confirm('提示3', mes || defaultMsg, function (r) {
-        if (r) {
+sy.onError = function(msg,logout) {
+    /*msg:错误信息
+      logout:true 退出系统
+     */
+    var defaultMsg = '系统错误,请联系管理员.错误原因：\n' + msg ;
+    $.messager.alert('错误',defaultMsg,'error');
+    if (logout) {
             window.location.href = sy.logonPath;
-        }
-    });
+    }
 }
 sy.csrftoken = sy.getCookie('csrftoken');
 sy.searchWindowUrl = '';
@@ -330,12 +283,16 @@ $.extend($.fn.datagrid.defaults.editors, {
 
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
-    autoSave: false,
-    dataTable: '',
-    editRow: -1,
-    deleteUrl: '',
-    insertUrl: '',
-    updateUrl: '',
+    //以下为扩展属性
+    autoSave: false, //true 在onAfterEdit()中提交'insert'和'update',在deleteData()中提交‘delete’
+    childDatagrid: [],//关联的子datagrid
+    parentDatagrid:null,//关联的父datagrid
+    dataTable: '', //此datagrid关联的table名称
+    editRow: -1,   //当前正在编辑的行index
+    deleteUrl: '', //delete的url
+    insertUrl: '',  //insert的url
+    updateUrl: '', //update的url
+    //以上为扩展属性
     border: false,
     fit: true,
     idField: 'id',
@@ -354,7 +311,9 @@ $.extend($.fn.datagrid.defaults, {
         //console.info('click');
         $(this).datagrid('click', rowIndex);
     },
-
+    onLoadError:function(){
+        sy.onError('加载数据错误',false);
+    },
     loader: function (param, success, error) {
         var that = $(this);
         var opts = that.datagrid('options');
@@ -373,7 +332,6 @@ $.extend($.fn.datagrid.defaults, {
             queryParam.cols.push('id');
         }
         queryParam.cols = JSON.stringify(queryParam.cols);
-        //sy.transObjectToDjangoAjax(queryParam);
         $.ajax({
             url: opts.url,
             type: 'POST',
@@ -384,9 +342,6 @@ $.extend($.fn.datagrid.defaults, {
             success: function (r, t, a) {
                 success(r);
                 $.ajaxSettings.success(r, t, a);
-            },
-            error: function () {
-                error.apply(this, arguments);
             }
         });
     }
@@ -552,6 +507,7 @@ $.extend($.fn.datagrid.methods, {
         }
     },
     //调用方式 datagrid('postUpdateData')
+
     postUpdateData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
@@ -563,12 +519,14 @@ $.extend($.fn.datagrid.methods, {
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChanges', 'updated');
             var oriRows = $(jq).datagrid('getOriginalRows');
-            for (var i = 0, ulen = updateRows.length; i < ulen; i++) {
+            for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
                 var u_id = updateRows[i].id;
                 var find_flag = false;
-                for (var j = 0, olen = oriRows.length; j < olen; j++) {
+                for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
                     if (u_id == oriRows[j].id) {
                         updateArray.push({
+                            op:'update',
+                            table:$(jq).datagrid('options').dataTable,
                             old_data: oriRows[j],
                             new_data: updateRows[i]
                         });
@@ -578,6 +536,7 @@ $.extend($.fn.datagrid.methods, {
                 }
                 if (!find_flag) {
                     //console.info('未找到原始值');
+                    sy.onError('更新数据未找到原始值',false);
                     return -1;
                 }
             }
@@ -600,35 +559,26 @@ $.extend($.fn.datagrid.methods, {
             }
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
-                type: 'POST',
-                dataObj: $(jq),
                 data: {jpargs: JSON.stringify(p)},
-                contentType: 'application/x-www-form-urlencoded',
-                dataType: 'json',
                 success: function (returnData, returnMsg, ajaxObj) {
                     var stateCod = parseInt(returnData.stateCod);
-
                     if (!isNaN(stateCod)) {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
                             if (returnData.changeid != null) {
-                                //
+                                for (var i = 0,ilen = newRows.length;i < ilen;i++){
+                                    if (returnData.changeid.hasOwnProperty(newRows[i].uuid)){
+                                        newRows[i].cols.id = returnData.changeid[newRows[i].uuid];
+                                    }else{
+                                        $.messager.alert('错误','主键更新失败,请联系管理员','error');
+                                        return;
+                                    }
+                                }
                             }
                             $(jq).datagrid('afterSave');
                         }
-
                     }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
-                    if (r && r.changeid) {
-                        $.each(r.changeid, function (uuid, id) {
-                            $.each(newRows, function (index, value) {
-                                if (uuid == value.uuid) {
-                                    newRows[index].id
-                                }
-                            })
-
-                        });
-                    }
                 }
 
             });
@@ -776,6 +726,9 @@ $.ajaxSetup({
             xhr.setRequestHeader("X-CSRFToken", sy.csrftoken);
         }
     },
+    type: 'POST',
+    contentType: 'application/x-www-form-urlencoded',
+    dataType: 'json',
     success: function (returnData, returnMsg, ajaxObj) {
         var stateCod = parseInt(returnData.stateCod);
         if (returnData && !isNaN(stateCod)) {
@@ -805,16 +758,14 @@ $.ajaxSetup({
                 }
             }
         }
-
+    },
+    error : function(xhr,msg,e){
+        sy.onError('ajax提交数据错误',true);
     }
 
 });
 
 //***************设置Ajax默认参数********************//
-
-$.fn.datagrid.defaults.onLoadError = sy.onLoadError;
-$.ajaxSettings.error = sy.onLoadError;
-
 $(document).bind('ajaxStart', function (event) {
     $('body').mask('加载数据......');
 });
