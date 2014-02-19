@@ -347,11 +347,23 @@ $.extend($.fn.datagrid.defaults, {
 });
 
 $.extend($.fn.datagrid.methods, {
-
     getOriginalRows: function (jq) {
+        /*
+        取datagrid的原始值 返回数组
+         */
         return $(jq).data("datagrid").originalRows;
     },
     getChangeUpdate: function (jq) {
+        /*
+        取修改后的数据对数组 返回:[
+                                 {
+                                  id:nnn,
+                                  col:{
+                                    '已修改列cod':[新值,旧值]
+                                    }
+                                  },....
+                             ]
+         */
         var updatePairArray = new Array();
         var updateRows = jq.datagrid('getChanges','updated');
         var oriRows = jq.datagrid('getOriginalRows');
@@ -537,7 +549,7 @@ $.extend($.fn.datagrid.methods, {
     },
     //调用方式 datagrid('postUpdateData')
 
-    postUpdateData: function (jq) {
+    postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值
             var deleteArray = new Array();
@@ -547,7 +559,7 @@ $.extend($.fn.datagrid.methods, {
             }
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChangeUpdate');
-            if (updateRows != null){
+            if (updateRows != null && updateRows.length > 0){
                 $.each(updateRows,function(index,data){
                     updateArray.push({
                         op:'update',
@@ -570,7 +582,9 @@ $.extend($.fn.datagrid.methods, {
                         subs: {}
                     }
                 );
-            }/*
+            }
+
+            /*
             var p = {
                 reqtype: 'insert',
                 rows: insertArray
