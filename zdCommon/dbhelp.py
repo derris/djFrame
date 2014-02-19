@@ -238,6 +238,89 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
+def json2exec(ajson, aCursor, artn):
+    try:
+        for i_row in  ajson['rows']:
+            #循环进行处理字符串，然后更新
+            if i_row['op'] == 'insert':
+                ls_sql = "insert into %s" % i_row['table']
+                ls_col = ls_val = ''
+                for icol,ival in i_row['cols'].items():
+                    ls_col += icol + ','
+                    ls_val += "'" + ival + "',"
+                    ls_col = ls_col[:-1]
+                    ls_val = ls_val[:-1]
+                    if 'rec_nam' in ls_col:
+                        pass
+                    else:
+                        ls_col += " , rec_nam "
+                        ls_val += ", 1"
+                    if 'rec_tim' in ls_col:
+                        pass
+                    else:
+                        ls_col += " , rec_tim "
+                        ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
+                    ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
+                print(ls_sql)
+                try:
+                    aCursor.execute(ls_sql)
+                    l_insId = aCursor.fetchone()[0]
+                    artn.update({i_row["uuid"] : l_insId})
+                except Exception as e:
+                    raise Exception("somthing wrong: " + e.__cause__)
+            #######################################################################
+            if i_row['op'] == 'update':
+                ls_sql = "update %s set " % i_row['table']
+                ls_set = ''
+                ls_where = ' id = ' + i_row['id'] + ' and '
+                for icol,ival in i_row['cols'].items():
+                    ls_set += icol + '= "' + ival[0] +  '",'
+                    ls_where += icol + ' = "' + ival[1] + '" and '
+                ls_set = ls_set[:-1]
+                ls_where = ls_where[:-5]
+                if 'upd_nam' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_nam = 1 "
+                if 'upd_tim' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_tim = current_timestamp(0) "
+                ls_sql += ls_set + ' where ' + ls_where
+                print(ls_sql)
+                try:
+                    aCursor.execute(ls_sql)
+                except Exception as e:
+                    raise Exception("somthing wrong: " + e.__cause__)
+            #######################################################################
+            if i_row['op'] == 'delete':
+                ls_sql = "delete " + i_row['table'] + " where id = " + str(i_row['id'])
+                print(ls_sql)
+                try:
+                    aCursor.execute(ls_sql)
+                except Exception as e:
+                    raise Exception("somthing wrong: " + e.__cause__)
+            if 'rows' in i_row['subs'].keys():
+                json2exec(i_row['subs'], aCursor, artn)
+    except Exception as e:
+        raise Exception("somthing wrong sum:  " + str(e.args))
+
+
+def json2upd(aJsonDict):
+    l_rtn = {"error": [""],
+             "msg":"",
+             "stateCod":  0,
+             "effectnum": 1 ,
+             "changeid" : {'uuid1':'id1'} }
+    try:
+        l_cur = connection.cursor()
+        l_rtn = json2exec(aJsonDict['rows'], l_cur, l_rtn)
+    except Exception as e:
+        raise Exception( str(l_rtn['error']) + e.__cause__ )
+    finally:
+        l_cur.close()
+    return(l_rtn)
+
 def json2insert(aJsonDict):
     ldict = aJsonDict
     l_rows = ldict['rows']
@@ -346,3 +429,11 @@ def json2delete(aJsonDict):
     l_rtn = {}
     l_rtn.update( {"error": "", "stateCod":"0", "effectnum":1 , "rows": "1" } )
     return l_rtn
+
+'''
+
+001：查询成功,有数据
+201：查询成功,无数据
+202：修改成功
+
+'''
