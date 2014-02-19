@@ -339,9 +339,6 @@ $.extend($.fn.datagrid.defaults, {
             contentType: 'application/x-www-form-urlencoded',
             dataType: 'json',
             success: function (r, t, a) {
-                console.info(r);
-                console.info(t);
-                console.info(a);
                 success(r);
                 $.ajaxSettings.success(r, t, a);
             }
@@ -573,29 +570,30 @@ $.extend($.fn.datagrid.methods, {
                         subs: {}
                     }
                 );
-            }
+            }/*
             var p = {
                 reqtype: 'insert',
                 rows: insertArray
+            }*/
+            var p = {
+                reqtype: 'update',
+                rows: updateArray
             }
+
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,
                 data: {jpargs: JSON.stringify(p)},
                 success: function (returnData, returnMsg, ajaxObj) {
-                    console.info('postsavesuccess');
-                    console.info(returnData);
-                    console.info(returnMsg);
-                    console.info(ajaxObj);
                     var stateCod = parseInt(returnData.stateCod);
                     if (!isNaN(stateCod)) {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
-                            if (returnData.changeid != null) {
+                            if (returnData.changeid != null && insertArray.length > 0) {
                                 for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
                                     if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
                                         insertArray[i].cols.id = returnData.changeid[newRows[i].uuid];
                                     } else {
-                                        $.messager.alert('错误', '主键更新失败,请联系管理员', 'error');
+                                        sy.onError('主键更新失败',false);
                                         return;
                                     }
                                 }
@@ -755,7 +753,6 @@ $.ajaxSetup({
     contentType: 'application/x-www-form-urlencoded',
     dataType: 'json',
     success: function (returnData, returnMsg, ajaxObj) {
-        console.info('setup.success');
         var stateCod = parseInt(returnData.stateCod);
         if (returnData && !isNaN(stateCod)) {
             if (stateCod > 0) {//返回成功
@@ -786,10 +783,6 @@ $.ajaxSetup({
         }
     },
     error: function (xhr, msg, e) {
-        console.info('error');
-        console.info(xhr);
-        console.info(msg);
-        console.info(e);
         sy.onError('服务器错误', false);
     }
 
