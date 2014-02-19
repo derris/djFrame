@@ -142,7 +142,6 @@ sy.csrfSafeMethod = function (method) {
 }
 
 
-
 //***************全局用到的对象**********************
 /*
  sy.logonPath 登录窗口路径
@@ -151,14 +150,14 @@ sy.csrfSafeMethod = function (method) {
  sy.csrftoken csrf令牌
  * */
 sy.logonPath = '';
-sy.onError = function(msg,logout) {
+sy.onError = function (msg, logout) {
     /*msg:错误信息
-      logout:true 退出系统
+     logout:true 退出系统
      */
-    var defaultMsg = '系统错误,请联系管理员.错误原因：\n' + msg ;
-    $.messager.alert('错误',defaultMsg,'error');
+    var defaultMsg = '系统错误,请联系管理员.错误原因：\n' + msg;
+    $.messager.alert('错误', defaultMsg, 'error');
     if (logout) {
-            window.location.href = sy.logonPath;
+        window.location.href = sy.logonPath;
     }
 }
 sy.csrftoken = sy.getCookie('csrftoken');
@@ -286,7 +285,7 @@ $.extend($.fn.datagrid.defaults, {
     //以下为扩展属性
     autoSave: false, //true 在onAfterEdit()中提交'insert'和'update',在deleteData()中提交‘delete’
     childDatagrid: [],//关联的子datagrid
-    parentDatagrid:null,//关联的父datagrid
+    parentDatagrid: null,//关联的父datagrid
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
     deleteUrl: '', //delete的url
@@ -311,8 +310,8 @@ $.extend($.fn.datagrid.defaults, {
         //console.info('click');
         $(this).datagrid('click', rowIndex);
     },
-    onLoadError:function(){
-        sy.onError('加载数据错误',false);
+    onLoadError: function () {
+        sy.onError('加载数据错误', false);
     },
     loader: function (param, success, error) {
         var that = $(this);
@@ -351,6 +350,30 @@ $.extend($.fn.datagrid.methods, {
 
     getOriginalRows: function (jq) {
         return $(jq).data("datagrid").originalRows;
+    },
+    getChangeUpdate: function (jq) {
+        var updatePairArray = new Array();
+        var updateRows = jq.datagrid('getChanes', 'updated');
+        var oriRows = jq.datagrid('getOriginalRows');
+        for (var i = 0, ilen = updateRows.length; i < ilen; i++) {
+            var u_id = updateRows[i].id;
+            var find_flag = false;
+            for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
+                if (u_id == oriRows[j].id) {
+                    for (var key in updateRows[i]){
+                        if (oriRows[j].hasOwnProperty(key) && updateRows[i][key] != oriRows[j][key]){
+                            updatePairArray.push({key:[updateRows[i][key],oriRows[j][key]]});
+                        }
+                    }
+                    find_flag = true;
+                    break;
+                }
+            }
+            if (!find_flag) {
+                sy.onError('更新数据未找到原始值', false);
+                return null;
+            }
+        }
     },
     //param {要插入对象}}
     insertData: function (jq, param) {
@@ -525,10 +548,11 @@ $.extend($.fn.datagrid.methods, {
                 for (var j = 0, jlen = oriRows.length; j < jlen; j++) {
                     if (u_id == oriRows[j].id) {
                         updateArray.push({
-                            op:'update',
-                            table:$(jq).datagrid('options').dataTable,
-                            old_data: oriRows[j],
-                            new_data: updateRows[i]
+                            op: 'update',
+                            table: $(jq).datagrid('options').dataTable,
+                            cols: {},
+                            id: u_id,
+                            sub: {}
                         });
                         find_flag = true;
                         break;
@@ -536,7 +560,7 @@ $.extend($.fn.datagrid.methods, {
                 }
                 if (!find_flag) {
                     //console.info('未找到原始值');
-                    sy.onError('更新数据未找到原始值',false);
+                    sy.onError('更新数据未找到原始值', false);
                     return -1;
                 }
             }
@@ -566,11 +590,11 @@ $.extend($.fn.datagrid.methods, {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
                             if (returnData.changeid != null) {
-                                for (var i = 0,ilen = newRows.length;i < ilen;i++){
-                                    if (returnData.changeid.hasOwnProperty(newRows[i].uuid)){
+                                for (var i = 0, ilen = newRows.length; i < ilen; i++) {
+                                    if (returnData.changeid.hasOwnProperty(newRows[i].uuid)) {
                                         newRows[i].cols.id = returnData.changeid[newRows[i].uuid];
-                                    }else{
-                                        $.messager.alert('错误','主键更新失败,请联系管理员','error');
+                                    } else {
+                                        $.messager.alert('错误', '主键更新失败,请联系管理员', 'error');
                                         return;
                                     }
                                 }
@@ -759,8 +783,8 @@ $.ajaxSetup({
             }
         }
     },
-    error : function(xhr,msg,e){
-        sy.onError('ajax提交数据错误',true);
+    error: function (xhr, msg, e) {
+        sy.onError('服务器错误', false);
     }
 
 });
