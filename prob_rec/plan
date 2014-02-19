@@ -65,10 +65,11 @@
                 'op': 'update',
                 'table': 'c_client',
                 'cols': {'col1':['valueNew'，‘valueold’], 'cold2':['value2new', 'value2old']....},
+                'id':nnnn,
                 'subs': { rows: [递归] } //没有就空着
             },
     ｝
-****后台返回insert：
+****后台返回update：
     {
      "msg":"",
      "stateCod":0 、 -10、 -100、-1000 。
