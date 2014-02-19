@@ -248,19 +248,19 @@ def json2exec(ajson, aCursor, artn):
                 for icol,ival in i_row['cols'].items():
                     ls_col += icol + ','
                     ls_val += "'" + ival + "',"
-                    ls_col = ls_col[:-1]
-                    ls_val = ls_val[:-1]
-                    if 'rec_nam' in ls_col:
-                        pass
-                    else:
-                        ls_col += " , rec_nam "
-                        ls_val += ", 1"
-                    if 'rec_tim' in ls_col:
-                        pass
-                    else:
-                        ls_col += " , rec_tim "
-                        ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
-                    ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
+                ls_col = ls_col[:-1]
+                ls_val = ls_val[:-1]
+                if 'rec_nam' in ls_col:
+                    pass
+                else:
+                    ls_col += " , rec_nam "
+                    ls_val += ", 1"
+                if 'rec_tim' in ls_col:
+                    pass
+                else:
+                    ls_col += " , rec_tim "
+                    ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
+                ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
                 print(ls_sql)
                 try:
                     aCursor.execute(ls_sql)
