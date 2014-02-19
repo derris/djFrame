@@ -285,7 +285,8 @@ def json2update(aJsonDict):
                 'op': 'update',
                 'table': 'c_client',
                 'cols': {'col1':['valueNew','valueold'], 'cold2':['value2new', 'value2old']},
-                'subs': { }
+                'subs': {} ,
+                'id': 'xxx1'
                 } ]
         }
     '''
@@ -293,7 +294,8 @@ def json2update(aJsonDict):
     ldict_uuid2id = {}
     for i_row in l_rows:  # update table set a = "a", b="b" where a = "olda" and b = "oldb"
         ls_sql = "update %s set " % i_row['table']
-        ls_set = ls_where = ''
+        ls_set = ''
+        ls_where = ' id = ' + i_row['id'] + ' and '
         for icol,ival in i_row['cols'].items():
             ls_set += icol + '= "' + ival[0] +  '",'
             ls_where += icol + ' = "' + ival[1] + '" and '
