@@ -51,11 +51,6 @@
                     }
                 }
             ],
-            onAfterEdit: function(rowIndex,rowData,changes){
-                console.info('onAfterEdit');
-                console.info(changes);
-
-            },
             url: "{% url 'getclients2' %}",
             updateUrl: "{% url 'updateclients' %}"
         });
