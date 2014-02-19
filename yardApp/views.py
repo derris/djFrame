@@ -9,14 +9,15 @@ import json
 
 from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from zdCommon import easyuihelp
-from zdCommon.dbhelp import rawsql2json, rawsql4request, json2insert, json2update
-
+from zdCommon.dbhelp import rawsql2json, rawsql4request, json2insert, json2update, json2upd
+from django.db import transaction
 
 from yardApp import models
 
 # Create your views here.
 def logon(request):
     return render(request,"yard/logon.html")
+
 def index(request):
     #template = loader.get_template("yard/index.html")
     #context = RequestContext(request)
@@ -80,15 +81,16 @@ def getClients(request):
     #return HttpResponse('321')
 
 @csrf_exempt
+@transaction.atomic
 def updateClients(request):
     ldict = json.loads( request.POST['jpargs'] )
-    s = ''
-    if ldict['reqtype'] == 'insert':
-        s=json2insert(ldict)
+    if ldict['reqtype'] in ('insert', 'update'):
+        pass
     else:
-        s=json2update(ldict)
-    print(s)
-    return HttpResponse(str(s)) # js 不认识单引号。
+        raise Exception("不认识的标识")
+    ls_rtn = json2upd(ldict)
+
+    return HttpResponse(json.dumps(ls_rtn,ensure_ascii = False))
 
 
 def getCommonSearchTemplate(request):
