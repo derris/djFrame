@@ -57,9 +57,5 @@ class autotest(unittest.TestCase):
         import dbhelp
         print(dbhelp.json2insert(dict_test))
 
-insert into c_client(id, , , ,)
-values(8, '外6', TRUE , '1', now());
-
-
 if __name__ == '__main__':
     unittest.main()
