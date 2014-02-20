@@ -302,6 +302,7 @@ $.extend($.fn.datagrid.defaults, {
     rownumbers: true,
     singleSelect: true,
     remoteSort: false,
+
     onDblClickRow: function (rowIndex, rowData) {
         //console.info('dbclick');
         $(this).datagrid('dbClick', rowIndex);
@@ -315,8 +316,10 @@ $.extend($.fn.datagrid.defaults, {
     },
     onAfterEdit: function (rowIndex, rowData, changes) {
         if ($(this).datagrid('options').autoSave){
-
+            var datagridid = $(this)[0].id;
+            $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('disable');
             $(this).datagrid('postUpdateAllData');
+            $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('enable');
         }
     },
     loader: function (param, success, error) {
@@ -440,7 +443,10 @@ $.extend($.fn.datagrid.methods, {
             }
         }
         if (opts.autoSave){
+            var datagridid = jq[0].id;
+            $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('disable');
             jq.datagrid('postUpdateAllData');
+            $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('enable');
         }
     },
     //param 为null
@@ -597,6 +603,9 @@ $.extend($.fn.datagrid.methods, {
             var p = {
                 reqtype: 'update',
                 rows: updateArray.concat(insertArray).concat(deleteArray)
+            }
+            if (p.rows.length == 0 ){
+                return;
             }
             $.ajax({
                 url: $(jq).datagrid('options').updateUrl,

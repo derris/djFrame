@@ -157,7 +157,8 @@ def getsyscod(request):
     if request.method == 'GET':
         pass
     else:
-        if 'page' in dict(request.POST).keys():
+        ldict = json.loads( request.POST['jpargs'] )
+        if 'page' in ldict.keys():
             pass
         else:
             raise Exception('there is no page keys')

@@ -2,7 +2,7 @@
     Namespace.register('basedata.clientsview');
     $(function () {
         basedata.clientsview.datagrid = $('#basedata-client-datagrid').datagrid({
-            autoSave: false,
+            autoSave: true,
             columns: [
                 [
                     {% autoescape off %}
@@ -23,6 +23,7 @@
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
+                    group:'basedata-client-datagrid',
                     handler: function () {
                         sy.createSearchWindow(basedata.clientsview.datagrid);
                     }
@@ -30,6 +31,7 @@
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
+                    group:'basedata-client-datagrid',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('insertData', {
                             client_name: '新客户名称'
@@ -39,21 +41,16 @@
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
+                    group:'basedata-client-datagrid',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('deleteData');
                     }
                 },
                 '-',
                 {text: '保存',
-                    id:'basedata.clientsview.datagrid.savebutton',
                     iconCls: 'icon-save',
-                    disable:function(){
-                        console.info(this);
-                        //$(this).linkbutton('disable');
-                    },
+                    group:'basedata-client-datagrid',
                     handler: function () {
-                        //console.info($(this));
-                        //$(this).linkbutton('disable');
                         basedata.clientsview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
