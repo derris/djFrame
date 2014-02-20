@@ -340,6 +340,7 @@ $.extend($.fn.datagrid.defaults, {
         $.ajax({
             url: opts.url,
             data: {jpargs:JSON.stringify(queryParam)},
+            //data:queryParam,
             success: function (r, t, a) {
                 success(r);
                 $.ajaxSettings.success(r, t, a);
@@ -560,7 +561,12 @@ $.extend($.fn.datagrid.methods, {
             var deleteArray = new Array();
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
             for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
-                deleteArray.push(deletedRows[i].id);
+                deleteArray.push({
+                    op:'delete',
+                    table:$(jq).datagrid('options').dataTable,
+                    id:deletedRows[i].id,
+                    subs:{}
+                });
             }
             var updateArray = new Array();
             var updateRows = $(jq).datagrid('getChangeUpdate');
@@ -588,12 +594,6 @@ $.extend($.fn.datagrid.methods, {
                     }
                 );
             }
-
-            /*
-             var p = {
-             reqtype: 'insert',
-             rows: insertArray
-             }*/
             var p = {
                 reqtype: 'update',
                 rows: updateArray.concat(insertArray).concat(deleteArray)
@@ -609,7 +609,7 @@ $.extend($.fn.datagrid.methods, {
                             if (returnData.changeid != null && insertArray.length > 0) {
                                 for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
                                     if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
-                                        insertArray[i].cols.id = returnData.changeid[newRows[i].uuid];
+                                        insertArray[i].cols.id = returnData.changeid[insertArray[i].uuid];
                                     } else {
                                         sy.onError('主键更新失败', false);
                                         return;
