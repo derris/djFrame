@@ -3,6 +3,7 @@
     //测试lab_zht_1.html
     $(function () {
         sysdata.syscodview.datagrid = $('#sysdata-syscod-datagrid').datagrid({
+            autoSave:true,
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
@@ -16,9 +17,11 @@
                     {% endautoescape %}
                 ]
             ],
+            dataTable: 'sys_code',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
+                    group:'sysdata-syscod-datagrid',
                     handler: function () {
                         sy.createSearchWindow(sysdata.syscodview.datagrid);
                     }
@@ -26,6 +29,7 @@
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
+                    group:'sysdata-syscod-datagrid',
                     handler: function () {
                         sysdata.syscodview.datagrid.datagrid('insertData', {
                             cod_name: '值名称'
@@ -35,6 +39,7 @@
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
+                    group:'sysdata-syscod-datagrid',
                     handler: function () {
                         sysdata.syscodview.datagrid.datagrid('deleteData');
                     }
@@ -42,19 +47,14 @@
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
+                    group:'sysdata-syscod-datagrid',
                     handler: function () {
                         sysdata.syscodview.datagrid.datagrid('postUpdateData');
                     }
                 }
             ],
             url: "{% url 'getsyscod' %}",
-            updateUrl: "{% url 'updateclients' %}",
-            onDblClickRow: function (rowIndex, rowData) {
-                basedata.clientsview.datagrid.datagrid('dbClick', rowIndex);
-            },
-            onClickRow: function (rowIndex, rowData) {
-                basedata.clientsview.datagrid.datagrid('click', rowIndex);
-            }
+            updateUrl: "{% url 'updateclients' %}"
         });
     });
 </script>
