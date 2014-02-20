@@ -45,8 +45,15 @@
                 },
                 '-',
                 {text: '保存',
+                    id:'basedata.clientsview.datagrid.savebutton',
                     iconCls: 'icon-save',
+                    disable:function(){
+                        console.info(this);
+                        //$(this).linkbutton('disable');
+                    },
                     handler: function () {
+                        //console.info($(this));
+                        //$(this).linkbutton('disable');
                         basedata.clientsview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
