@@ -33,3 +33,124 @@ ALTER TABLE sys_code RENAME "FLD_ENG"  TO fld_eng;
 ALTER TABLE sys_code RENAME "FLD_CHI"  TO fld_chi;
 ALTER TABLE sys_code RENAME "FLD_EXT1"  TO fld_ext1;
 ALTER TABLE sys_code RENAME "FLD_EXT2"  TO fld_ext2;
+
+
+2014-02-20 增加权限相关表
+CREATE TABLE public.s_user
+(
+   id serial NOT NULL,
+   username character varying(10) NOT NULL,
+   password character varying(40) NOT NULL,
+   rec_nam integer NOT NULL,
+   rec_tim timestamp without time zone NOT NULL,
+   upd_nam integer,
+   upd_tim timestamp without time zone,
+   remark character varying(50),
+   CONSTRAINT pk_s_user PRIMARY KEY (id),
+   CONSTRAINT uk_s_user UNIQUE (username)
+)
+WITH (
+  OIDS = FALSE
+)
+;
+COMMENT ON COLUMN public.s_user.username IS '用户名';
+COMMENT ON COLUMN public.s_user.password IS '密码';
+COMMENT ON TABLE public.s_user
+  IS '用户表';
+
+
+CREATE TABLE public.s_post
+(
+   id serial NOT NULL,
+   postname character varying(20) NOT NULL,
+   rec_nam integer NOT NULL,
+   rec_tim timestamp without time zone NOT NULL,
+   upd_nam integer,
+   upd_tim timestamp without time zone,
+   remark character varying(50),
+   CONSTRAINT pk_s_post PRIMARY KEY (id),
+   CONSTRAINT uk_s_post UNIQUE (postname)
+)
+WITH (
+  OIDS = FALSE
+)
+;
+COMMENT ON COLUMN public.s_post.postname IS '岗位名称';
+COMMENT ON TABLE public.s_post
+  IS '岗位表';
+
+
+
+CREATE TABLE public.s_postuser
+(
+  id serial NOT NULL,
+  post_id integer NOT NULL,
+  user_id integer NOT NULL,
+  rec_nam integer NOT NULL,
+  rec_tim timestamp without time zone NOT NULL,
+  upd_nam integer,
+  upd_tim timestamp without time zone,
+  remark character varying(50),
+  CONSTRAINT pk_s_postuser PRIMARY KEY (id),
+  CONSTRAINT fk_s_postuser_post FOREIGN KEY (post_id)
+      REFERENCES s_post (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_s_postuser_user FOREIGN KEY (user_id)
+      REFERENCES s_user (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT uk_s_postuser UNIQUE (post_id, user_id)
+)
+WITH (
+  OIDS=FALSE
+);
+COMMENT ON TABLE s_postuser IS '岗位用户表';
+COMMENT ON COLUMN s_postuser.post_id IS '岗位ID';
+COMMENT ON COLUMN s_postuser.user_id IS '用户ID';
+
+
+CREATE TABLE public.sys_func
+(
+   id serial NOT NULL,
+   funcname character varying(50) NOT NULL,
+   urlname character varying(50) NOT NULL,
+   rec_nam integer NOT NULL,
+   rec_tim timestamp without time zone NOT NULL,
+   upd_nam integer,
+   upd_tim timestamp without time zone,
+   remark character varying(50),
+   CONSTRAINT pk_sys_func PRIMARY KEY (id),
+   CONSTRAINT uk_sys_func_name UNIQUE (funcname),
+   CONSTRAINT uk_sys_func_url UNIQUE (urlname)
+)
+WITH (
+  OIDS = FALSE
+)
+;
+COMMENT ON TABLE sys_func  IS '系统功能表';
+COMMENT ON COLUMN sys_func.funcname IS '功能名称';
+COMMENT ON COLUMN sys_func.urlname IS 'url name';
+
+CREATE TABLE public.s_postfunc
+(
+   id serial NOT NULL,
+   post_id integer NOT NULL,
+   func_id integer NOT NULL,
+   active boolean,
+   rec_nam integer NOT NULL,
+   rec_tim timestamp without time zone NOT NULL,
+   upd_nam integer,
+   upd_tim timestamp without time zone,
+   remark character varying(50),
+   CONSTRAINT pk_s_postfunc PRIMARY KEY (id),
+   CONSTRAINT fk_s_postfunc_post FOREIGN KEY (post_id) REFERENCES s_post (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+   CONSTRAINT fk_s_postfunc_func FOREIGN KEY (func_id) REFERENCES sys_func (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+   CONSTRAINT uk_s_postfunc UNIQUE (post_id, func_id)
+)
+WITH (
+  OIDS = FALSE
+)
+;
+COMMENT ON COLUMN public.s_postfunc.post_id IS '岗位ID';
+COMMENT ON COLUMN public.s_postfunc.func_id IS '功能ID';
+COMMENT ON COLUMN public.s_postfunc.active IS '显示(激活)';
+COMMENT ON TABLE public.s_postfunc  IS '岗位功能表';
