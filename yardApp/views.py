@@ -11,7 +11,7 @@ from zdCommon.jsonhelp import ServerToClientJsonEncoder
 from zdCommon import easyuihelp
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 #json2insert, json2update, json2upd
-from django.db import transaction
+from django.db import transaction, connection
 
 from yardApp import models
 
@@ -19,10 +19,30 @@ from yardApp import models
 
 def logonview(request):
     return render(request,"yard/logon.html")
+
+
 def logon(request):
-    return HttpResponse("321");
+    ls_user = request.POST['username']
+    ls_pass = request.POST['password']
+    l_cur = connection.cursor()
+    l_cur.execute("select id from s_user where username = %s and password = %s ", [ls_user, ls_pass ])
+    l_rtn = {}
+    if l_cur.cursor.rowcount > 0 :
+        l_userid = l_cur.fetchone()[0]
+        request.session['userid'] = l_userid
+        request.session['logon'] = True
+        l_rtn = { "stateCod" : 2}
+    else:
+        request.session['userid'] = ''
+        request.session['logon'] = False
+        l_rtn = { "stateCod": -2 }
+    return HttpResponse(json.dumps(l_rtn,ensure_ascii = False))
+
+
 def logout(request):
-    return HttpResponse("321");
+    request.session['userid'] = ''
+    request.session['logon'] = False
+    return HttpResponse(json.dumps({ "stateCod": 3 },ensure_ascii = False))
 
 def index(request):
     #template = loader.get_template("yard/index.html")
