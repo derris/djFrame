@@ -22,8 +22,9 @@ def logonview(request):
 
 
 def logon(request):
-    ls_user = request.POST['username']
-    ls_pass = request.POST['password']
+    l_get = json.loads( request.POST['jpargs'] )
+    ls_user = l_get["name"]
+    ls_pass = l_get["password"]
     l_cur = connection.cursor()
     l_cur.execute("select id from s_user where username = %s and password = %s ", [ls_user, ls_pass ])
     l_rtn = {}
