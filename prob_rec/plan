@@ -63,3 +63,22 @@
         'reqtype':'update',
         'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 25, 'subs': { }  } ....  ]
     }
+
+
+************************************************
+
+2014-02-21  返回导航菜单结构
+
+[
+    { id: menuid,
+      text: menunshowname,
+      attributes: menuname,
+      children: [
+         id: menuid,
+         text: menunshowname,
+         attributes: menuname,
+         children: []
+      ]
+    },
+    {},{}....
+]
