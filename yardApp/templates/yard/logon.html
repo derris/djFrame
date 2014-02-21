@@ -25,6 +25,7 @@
                 success: function (returnData, returnMsg, ajaxObj) {
                     var stateCod = parseInt(returnData.stateCod);
                     if (!isNaN(stateCod)) {
+                        $('input[type=password]').val(null);
                         if (returnData.stateCod == 2) { //登录成功
                             //关闭所有tabs页面，刷新菜单导航
                         }
@@ -36,6 +37,7 @@
                 }
             });
         });
+        $('input[type=password]').val(null);
     });
 </script>
 <div style="float:right">
