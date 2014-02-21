@@ -334,3 +334,24 @@ def json2upd(aJsonDict):
     finally:
         l_cur.close()
     return(l_rtn)
+
+def cursorExec(aSql):
+    '''
+        execute sql use cursor, return effect rows.
+    '''
+    l_cur = connection.cursor()
+    l_cur.execute(aSql)
+    l_rtn = l_cur.cursor.rowcount
+    l_cur.close
+    return l_rtn
+
+def cursorSelect(aSql):
+    '''
+        execute sql use cursor, return all. fetchall()
+    '''
+    l_cur = connection.cursor()
+    l_cur.execute(aSql)
+    l_rtn = l_cur.fetchall()
+    l_cur.close
+    return l_rtn
+

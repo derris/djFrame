@@ -16,7 +16,7 @@ from django.db import transaction, connection
 from yardApp import models
 
 # Create your views here.
-
+#################################################################### 基本成品功能。
 def logonview(request):
     return render(request,"yard/logon.html")
 
@@ -50,14 +50,6 @@ def index(request):
     #context = RequestContext(request)
     return render(request,"yard/index.html")
 
-def mainmenudata(request):
-    return HttpResponse("主菜单")
-
-def maintab(request):
-    return render(request,"yard/MainTab.html")
-def mainmenutreeview(request):
-    return render(request,"yard/MainMenuTree.html")
-
 
 def clients(request):
     #return render(request,"yard/basedata/clients.html",{'r':request})
@@ -73,7 +65,6 @@ def clients(request):
     recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
 
-
     #print(cObj.writeUI())
     return render(request,"yard/basedata/clients.html",{'r':request,
                                                 'id':idObj,
@@ -86,8 +77,6 @@ def clients(request):
                                                 'financialFlag':financialFlagObj,
                                                 'recTim':recTimObj,
                                                 'remark':remarkObj})
-
-
 @csrf_exempt
 @transaction.atomic
 def updateClients(request):
@@ -107,11 +96,8 @@ def updateClients(request):
 
     return HttpResponse(json.dumps(ls_rtn,ensure_ascii = False))
 
-
 def getCommonSearchTemplate(request):
     return render(request,"commonSearchTemplate.html")
-
-
 
 @csrf_exempt
 def getclients2(request):
@@ -126,18 +112,9 @@ def getclients2(request):
             pass
         else:
             raise Exception('there is no page keys')
-
     jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
-
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
-
-@csrf_exempt
-def getclients3(request):
-    ls_rtn = '''
-        {"total": 2, "rows": [{"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "外代", "id": 2, "client_flag": "true", "custom_flag": "true"}, {"ship_corp_flag": "true", "financial_flag": "false", "port_flag": "false", "yard_flag": "false", "remark": "beizhu", "client_name": "港湾", "id": 1, "client_flag": "false", "custom_flag": "true"}]}
-    '''
-    return HttpResponse(ls_rtn)
 
 def syscod(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')
@@ -170,11 +147,37 @@ def getsyscod(request):
             pass
         else:
             raise Exception('there is no page keys')
-
     jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
-
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
 
 def contract(request):
     return render(request,'yard/contract/contract.html')
+
+def mainmenudata(request):
+    return HttpResponse("主菜单")
+
+def maintab(request):
+    return render(request,"yard/MainTab.html")
+def mainmenutreeview(request):
+    return render(request,"yard/MainMenuTree.html")
+
+from zdCommon.dbhelp import cursorSelect
+from collections import OrderedDict
+
+def getMenuList(request):
+    l_menu1 = cursorSelect('select id,menuname, rec_nam from sys_menu where parent_id = 0 order by sortno;')
+    ldict_1 = []
+    if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
+        for i_m1 in l_menu1:
+            l_menu2 = cursorSelect('select id,menuname, rec_nam from sys_menu where parent_id = %d order by sortno;' % i_m1[0])
+            ldict_2 = []
+            if len(l_menu2) > 0 :
+                for i_m2 in l_menu2:
+                    ldict_2.append({"id": i_m2[0], "text": i_m2[1], "attr": i_m2[2]})
+            else:
+                pass # no child
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attr": i_m1[2], 'child': ldict_2  } )
+    else:
+        pass   # no top menu ... how that posible ....
+    return HttpResponse(json.dumps(ldict_1,ensure_ascii = False))

@@ -1,3 +1,26 @@
+*********************************************************
+2014-02-21  返回导航菜单结构
+*********************************************************
+从系统数据库里返回表数据。  sys_menu
+功能菜单估计客户会要求排序的。所以 sortno 留着。
+
+yardApp/views.getMenuList
+入口： url('^getmenulist/$', views.getMenuList),
+返回值：
+[
+    { id: menuid,
+      text: menunshowname,
+      attr: menuname,
+      child: [{
+         id: menuid,
+         text: menunshowname,
+         attr: menuname,
+         child: [{}]
+      }]
+    },
+    {},{}....
+]
+
 2014-2-12：~ 2-19
 **********************************************************前台select ：
     jpargs:
@@ -67,18 +90,3 @@
 
 ************************************************
 
-2014-02-21  返回导航菜单结构
-
-[
-    { id: menuid,
-      text: menunshowname,
-      attributes: menuname,
-      children: [
-         id: menuid,
-         text: menunshowname,
-         attributes: menuname,
-         children: []
-      ]
-    },
-    {},{}....
-]
