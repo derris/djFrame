@@ -29,7 +29,7 @@ class Contract(BaseModel):
     bill_no = models.CharField('提单号',max_length=25,unique=True)
     cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
     origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
-    client_id = models.ForeignKey('Client',related_name='client',verbose_name='客户id')
+    client_id = models.ForeignKey('Client',related_name='client',verbose_name='客户')
     contract_type = models.ForeignKey('SysCode',related_name='contract_type',verbose_name='委托类型')
     cargo_fee_type = models.ForeignKey('SysCode',related_name='cargo_fee_type',verbose_name='货物费用计费类型')
     cargo_piece = models.IntegerField('货物件数',blank=True,null=True)
@@ -38,10 +38,10 @@ class Contract(BaseModel):
     booking_date = models.DateField('接单日期',blank=True,null=True)
     in_port_date = models.DateField('到港日期',blank=True,null=True)
     return_cntr_date = models.DateField('还箱日期',blank=True,null=True)
-    custom_id = models.ForeignKey('Client',blank=True,null=True,related_name='custom',verbose_name='报关行id')
-    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,related_name='ship_corp',verbose_name='船公司id')
-    port_id = models.ForeignKey('Client',blank=True,null=True,related_name='port',verbose_name='码头id')
-    yard_id = models.ForeignKey('Client',blank=True,null=True,related_name='yard',verbose_name='场站id')
+    custom_id = models.ForeignKey('Client',blank=True,null=True,related_name='custom',verbose_name='报关行')
+    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,related_name='ship_corp',verbose_name='船公司')
+    port_id = models.ForeignKey('Client',blank=True,null=True,related_name='port',verbose_name='码头')
+    yard_id = models.ForeignKey('Client',blank=True,null=True,related_name='yard',verbose_name='场站')
     finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     cntr20_num = models.IntegerField('20尺箱量',blank=True,null=True)
@@ -52,15 +52,15 @@ class Contract(BaseModel):
         db_table = 'contract'
 class contractAction(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    contract_id = models.ForeignKey('Contract',verbose_name='委托id')
-    action_id = models.ForeignKey('ContractActionCod',verbose_name='委托计划id')
+    contract_id = models.ForeignKey('Contract',verbose_name='委托')
+    action_id = models.ForeignKey('ContractActionCod',verbose_name='委托动态')
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     class Meta:
         db_table = 'contract_action'
 class ContractActionCod(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    action_name = models.CharField('委托计划名称',max_length=20,unique=True)
+    action_name = models.CharField('委托动态名称',max_length=20,unique=True)
     def __str__(self):
         return self.action_name
     class Meta:

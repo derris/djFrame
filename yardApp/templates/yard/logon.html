@@ -1,9 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-登录
-</body>
-</html>
+<script type="text/javascript">
+    $(function(){
+        Namespace.register('logon');
+        logon.form = $('#logon-form').form({
+
+        });
+        logon.logonbutton = $('#logon-button').linkbutton({
+            plain: true
+        });
+        logon.logonbutton.bind('click', function () {
+            var param = null;
+            var url = '';
+            if (logon.logonbutton.linkbutton('options').text == '登录') {
+                url = "{% url 'logon' %}";
+                param = logon.form.serializeJson();
+            } else {
+                url = "{% url 'logout' %}";
+            }
+            if (!logon.form.form('validate')) {
+                return;
+            }
+            $.ajax({
+                url: url,
+                data: {jpargs:JSON.stringify(param)},
+                success: function (returnData, returnMsg, ajaxObj) {
+                    var stateCod = parseInt(returnData.stateCod);
+                    if (!isNaN(stateCod)) {
+                        if (returnData.stateCod == 2) { //登录成功
+                            //关闭所有tabs页面，刷新菜单导航
+                        }
+                        if (returnData.stateCod == 3 || returnData.stateCod == -1) { //注销 登录失败
+                            //关闭所有tabs页面，清空菜单导航
+                        }
+                    }
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
+                }
+            });
+        });
+    });
+</script>
+<div style="float:right">
+    <form id="logon-form" method="post">
+        <label for="name">用户:</label>
+        <input class="easyui-validatebox" type="text" name="name" data-options="required:true"/>
+        <label for="password">密码:</label>
+        <input class="easyui-validatebox" type="password" name="password" data-options="required:true"/>
+        <a id="logon-button" href="#" style="margin-left:5px;margin-right: 25px">登录</a>
+    </form>
+</div>

@@ -16,8 +16,13 @@ from django.db import transaction
 from yardApp import models
 
 # Create your views here.
-def logon(request):
+
+def logonview(request):
     return render(request,"yard/logon.html")
+def logon(request):
+    return HttpResponse("321");
+def logout(request):
+    return HttpResponse("321");
 
 def index(request):
     #template = loader.get_template("yard/index.html")

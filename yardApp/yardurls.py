@@ -3,8 +3,10 @@ from django.conf.urls import patterns, url
 from yardApp import views
 
 urlpatterns = patterns('',
-    url(r'^logon/$',views.logon,name='logon'),
     url(r'^$',views.index,name='index'),
+    url(r'^logonview/$',views.logonview,name='logonview'),
+    url(r'^logon/$',views.logon,name='logon'),
+    url(r'^logout/$',views.logout,name='logout'),
     url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
     url(r'^maintab/$',views.maintab,name='maintab'),
     url(r'^commonsearch/$',views.getCommonSearchTemplate,name='commonsearchtemplate'),

@@ -1,27 +1,72 @@
-<div class="easyui-layout" data-options="fit:true,border:true">
-    <div data-options="region:'north',title:'查询',iconCls:'icon-search'">
-        <div class="easyui-layout" data-options="border:'true',fit:'true'">
-            <div data-options="region:'north', border:'true'" style="height: 100px">
-                <form id="contract-contract-search-form" method="post">
-                    <div>
-                        <label for="name">Name:</label>
-                        <input class="easyui-validatebox" type="text" name="name" data-options="required:true"/>
-                    </div>
-                    <div>
-                        <label for="email">Email:</label>
-                        <input class="easyui-validatebox" type="text" name="email" data-options="validType:'email'"/>
-                    </div>
-                </form>
-            </div>
-            <div data-options="region:'center', border:'true'">
-                <table id="contract-contract-search-datagrid" data-options="border:'false'">
-                </table>
-            </div>
-        </div>
+<script>
+    Namespace.register('contract.contractview');
+    $(function () {
+        contract.contractview.datagrid = $('#basedata-client-datagrid').datagrid({
+            autoSave: true,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ clientName.writeUI|safe|escape }},
+                        {{ clientFlag.writeUI|safe|escape }},
+                        {{ customFlag.writeUI|safe|escape }},
+                        {{ shipcorpFlag.writeUI|safe|escape }},
+                        {{ yardFlag.writeUI|safe|escape }},
+                        {{ portFlag.writeUI|safe|escape }},
+                        {{ financialFlag.writeUI|safe|escape }},
+                        {{ recTim.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_client',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-client-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.clientsview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-client-datagrid',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('insertData', {
+                            client_name: '新客户名称'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-client-datagrid',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-client-datagrid',
+                    handler: function () {
+                        basedata.clientsview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            url: "{% url 'getclients2' %}",
+            updateUrl: "{% url 'updateclients' %}"
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'true'">
+        <table id="contract-contract-datagrid" data-options="border:false">
+        </table>
     </div>
-    <div data-options="region:'center', border:'true'">
-        center
-        <table id="contract-contract-main-form" data-options="border:'false'">
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
+        <table id="contract-contractaction-datagrid" data-options="border:'false'">
         </table>
     </div>
 </div>
