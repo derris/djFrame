@@ -14,8 +14,8 @@ yardApp/views.getMenuList
       child: [{
          id: menuid,
          text: menunshowname,
-         attr: menuname,
-         child: [{}]
+         attributes: menuname,
+         children: [{}]
       }]
     },
     {},{}....

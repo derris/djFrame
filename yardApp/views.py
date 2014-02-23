@@ -174,10 +174,10 @@ def getMenuList(request):
             ldict_2 = []
             if len(l_menu2) > 0 :
                 for i_m2 in l_menu2:
-                    ldict_2.append({"id": i_m2[0], "text": i_m2[1], "attr": i_m2[2]})
+                    ldict_2.append({"id": i_m2[0], "text": i_m2[1], "attributes": i_m2[2]})
             else:
                 pass # no child
-            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attr": i_m1[2], 'child': ldict_2  } )
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attr": i_m1[2], 'children': ldict_2  } )
     else:
         pass   # no top menu ... how that posible ....
     return HttpResponse(json.dumps(ldict_1,ensure_ascii = False))
