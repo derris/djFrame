@@ -1,0 +1,66 @@
+<script>
+    Namespace.register('sysdata.sysmenuview');
+    //测试lab_zht_1.html
+    $(function () {
+        sysdata.sysmenuview.datagrid = $('#sysdata-sysmenu-datagrid').datagrid({
+            autoSave:true,
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ fldEng.writeUI|safe|escape }},
+                    {{ fldChi.writeUI|safe|escape }},
+                    {{ codName.writeUI|safe|escape }},
+                    {{ fldExt1.writeUI|safe|escape }},
+                    {{ fldExt2.writeUI|safe|escape }},
+                    {{ seq.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'sys_menu',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'sysdata.sysmenuview.datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(sysdata.sysmenuview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'sysdata.sysmenuview.datagrid',
+                    handler: function () {
+                        sysdata.sysmenuview.datagrid.datagrid('insertData', {
+                            menuname: '新菜单'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'sysdata.sysmenuview.datagrid',
+                    handler: function () {
+                        sysdata.sysmenuview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'sysdata.sysmenuview.datagrid',
+                    handler: function () {
+                        sysdata.sysmenuview.datagrid.datagrid('postUpdateData');
+                    }
+                }
+            ],
+            url: "{% url 'getsysmenu' %}",
+            updateUrl: "{% url 'updateclients' %}"
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="sysdata-sysmenu-datagrid" border="false">
+        </table>
+    </div>
+</div>

@@ -95,3 +95,36 @@ class SysCode(BaseModel):
         return self.fld_chi + ':' + self.cod_name
     class Meta:
         db_table = 'sys_code'
+class User(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    username = models.CharField('用户',max_length=10)
+    password = models.CharField('密码',max_length=40)
+    lock = models.NullBooleanField('锁住',blank=True,null=True)
+    def __str__(self):
+        return self.username
+    class Meta:
+        db_table = 's_user'
+class Post(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    postname = models.CharField('岗位名称',max_length=20)
+    def __str__(self):
+        return self.postname
+    class Meta:
+        db_table = 's_post'
+class PostUser(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    post_id = models.ForeignKey('Post',related_name='post',verbose_name='岗位')
+    user_id = models.ForeignKey('User',related_name='user',verbose_name='用户')
+class SysMenu(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    menuname = models.CharField('功能名称',max_length=50)
+    menushowname = models.CharField('功能显示名称',max_length=50)
+    parent_id = models.ForeignKey('SysMenu',related_name='parentmenu',verbose_name='父功能')
+    sortno = models.SmallIntegerField('序号',blank=True,null=True)
+    sys_flag = models.NullBooleanField('系统功能标识',blank=True,null=True)
+    def __str__(self):
+        return self.menushowname
+    class Meta:
+        db_table = 'sys_menu'
+
+

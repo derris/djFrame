@@ -107,25 +107,28 @@ COMMENT ON COLUMN s_postuser.user_id IS '用户ID';
 
 CREATE TABLE public.sys_func
 (
-   id serial NOT NULL,
-   funcname character varying(50) NOT NULL,
-   urlname character varying(50) NOT NULL,
-   rec_nam integer NOT NULL,
-   rec_tim timestamp without time zone NOT NULL,
-   upd_nam integer,
-   upd_tim timestamp without time zone,
-   remark character varying(50),
-   CONSTRAINT pk_sys_func PRIMARY KEY (id),
-   CONSTRAINT uk_sys_func_name UNIQUE (funcname),
-   CONSTRAINT uk_sys_func_url UNIQUE (urlname)
+  id serial NOT NULL,
+  funcname character varying(50) NOT NULL,
+  rec_nam integer NOT NULL,
+  rec_tim timestamp without time zone NOT NULL,
+  upd_nam integer,
+  upd_tim timestamp without time zone,
+  remark character varying(50),
+  parent_id integer NOT NULL DEFAULT 0,
+  haschildren boolean,
+  sortno integer,
+  CONSTRAINT pk_sys_func PRIMARY KEY (id),
+  CONSTRAINT uk_sys_func_name UNIQUE (funcname)
 )
 WITH (
-  OIDS = FALSE
-)
-;
+  OIDS=FALSE
+);
 COMMENT ON TABLE sys_func  IS '系统功能表';
 COMMENT ON COLUMN sys_func.funcname IS '功能名称';
-COMMENT ON COLUMN sys_func.urlname IS 'url name';
+COMMENT ON COLUMN sys_func.parent_id IS '父功能ID';
+COMMENT ON COLUMN sys_func.haschildren IS '是否有子功能';
+COMMENT ON COLUMN sys_func.sortno IS '序号';
+
 
 CREATE TABLE public.s_postfunc
 (
@@ -151,3 +154,7 @@ COMMENT ON COLUMN public.s_postfunc.post_id IS '岗位ID';
 COMMENT ON COLUMN public.s_postfunc.func_id IS '功能ID';
 COMMENT ON COLUMN public.s_postfunc.active IS '显示(激活)';
 COMMENT ON TABLE public.s_postfunc  IS '岗位功能表';
+
+2014-02-21
+
+

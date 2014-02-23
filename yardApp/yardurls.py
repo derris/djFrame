@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
     url(r'^maintab/$',views.maintab,name='maintab'),
     url(r'^commonsearch/$',views.getCommonSearchTemplate,name='commonsearchtemplate'),
+
     url(r'^clients/$',views.clients,name='clients'),
     url(r'^clients/getclients2/$',views.getclients2,name='getclients2'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
@@ -26,7 +27,7 @@ urlpatterns = patterns('',
     # http://127.0.0.1:8000/yard/lab/getfunc/?func=getJson1&&args=%22aaa%22
 
 
-    url(r'^clients/getclients3/$',views.getclients3,name='getclients3'),
+    #url(r'^clients/getclients3/$',views.getclients3,name='getclients3'),
 
 
     url(r'^contract/contract/$',views.contract,name='contract'),

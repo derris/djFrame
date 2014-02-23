@@ -160,7 +160,9 @@ def mainmenudata(request):
 def maintab(request):
     return render(request,"yard/MainTab.html")
 def mainmenutreeview(request):
-    return render(request,"yard/MainMenuTree.html")
+    menudata = getMenuList(request)
+    print(request.path)
+    return render(request,"yard/MainMenuTree.html",locals())
 
 from zdCommon.dbhelp import cursorSelect
 from collections import OrderedDict
@@ -177,7 +179,7 @@ def getMenuList(request):
                     ldict_2.append({"id": i_m2[0], "text": i_m2[1], "attributes": i_m2[2]})
             else:
                 pass # no child
-            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attr": i_m1[2], 'children': ldict_2  } )
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attributes": i_m1[2], 'children': ldict_2  } )
     else:
         pass   # no top menu ... how that posible ....
     return HttpResponse(json.dumps(ldict_1,ensure_ascii = False))
