@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
     url(r'^sysdata/syscod/$',views.syscod,name='syscod'),
     url(r'^sysdata/getsyscod/$',views.getsyscod,name='getsyscod'),
-    # 得到页面左边导航的菜单。
-    url('^getmenulist/$', views.getMenuList),
+    # 处理页面左边导航的功能。
+    url('^dealmenureq/$', views.dealmenureq),
 
 
     # 实验室
