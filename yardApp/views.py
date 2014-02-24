@@ -157,7 +157,7 @@ def getMenuList():
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
-def dealmenureq(request):
+def dealMenuReq(request):
 
     ls_args = request.GET['menutext']
 
@@ -169,3 +169,14 @@ def dealmenureq(request):
         return(renderviews.sysmenuview(request))
     else:
         pass
+
+
+def dealPAjax(request):
+    ldict = json.loads( request.POST['jpargs'] )
+    if ldict['func'] == '客户维护':
+        return(getclients2(request))
+    elif ldict['func'] == '系统参数维护':
+        return(getsysmenu(request))
+    else:
+        pass
+
