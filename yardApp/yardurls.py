@@ -18,7 +18,8 @@ urlpatterns = patterns('',
     url(r'^sysdata/getsyscod/$',views.getsyscod,name='getsyscod'),
     url(r'^sysdata/getsysmenu/$',views.getsysmenu,name='getsysmenu'),
     # 处理页面左边导航的功能。
-    url('^dealmenureq/$', views.dealmenureq),
+    url('^dealmenureq/$', views.dealMenuReq),
+    url('^dealPAjax/$', views.dealPAjax),
 
 
     # 实验室

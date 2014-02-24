@@ -106,7 +106,7 @@ def rawsql4request(aSql, aRequestDict):
                 ls_getwhere = l_dictwhere['cod'] + ls_oper + "'" + ls_value + "'"
             ls_wheresum = ls_wheresum + ' ' +  ls_getwhere + ' and'
         ls_wheresum = ls_wheresum[:-3]
-    #------------------------------filter 2 where  ->  ls_wheresum ------------------------------
+    #--------------得到前台通用查询的where语句。-filter 2 where  ->               ls_wheresum ------------------------------
 
     # =============================================sort 2 order ===========
     ls_ordersum = ''
@@ -123,7 +123,7 @@ def rawsql4request(aSql, aRequestDict):
                 raise Exception("无法识别的排序符号")
             ls_ordersum += l_dictsort['cod'] + ltmp_sort + ' ,'
         ls_ordersum = ls_ordersum[:-1]
-    #------------------------------sort -> order -> ls_ordersum ------------------------------
+    #-----------------------------得到前台通用查询的sort 语句-sort -> order -> ls_ordersum ------------------------------
 
     # 处理原来的sql语句，准备加上新的条件。
     ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。 where group order limit
@@ -173,7 +173,7 @@ def rawsql4request(aSql, aRequestDict):
 
     if ls_finwhere:
         ls_finSql += ls_finwhere
-        ls_sqlcount += ls_finwhere
+        ls_sqlcount += ' ' + ls_finwhere
     if ls_group:
         ls_finSql += ls_group
         ls_sqlcount += ls_group
