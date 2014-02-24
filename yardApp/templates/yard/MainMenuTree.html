@@ -2,9 +2,6 @@
     Namespace.register('system.mainmenu');
 
     system.mainmenu.treedata = [
-        {'id' : '11',text:'客户维护',attributes:"{% url 'clients' %}"},
-        {'id' : '21',text:'系统参数维护',attributes:"{% url 'syscod' %}"},
-        {'id' : '31',text:'委托维护',attributes:"{% url 'contract' %}"},
         {% for imenu in menudata %}
             {{ imenu | safe}},
         {% endfor %}
@@ -21,7 +18,7 @@
                     } else {                        
                         system.maintabs.tabs.tabs('add', {
                             title: node.text,
-                            href: "./dealmenureq/?menutext=" + node.text,
+                            href: "./dealmenureq/?menutext=" + node.attributes,
                             closable: true
                         });
                     }

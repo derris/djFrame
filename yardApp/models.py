@@ -119,7 +119,7 @@ class SysMenu(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     menuname = models.CharField('功能名称',max_length=50)
     menushowname = models.CharField('功能显示名称',max_length=50)
-    parent_id = models.ForeignKey('SysMenu',related_name='parentmenu',verbose_name='父功能')
+    parent_id = models.ForeignKey('SysMenu',limit_choices_to={'parent_id':0},verbose_name='父功能',db_column='parent_id')
     sortno = models.SmallIntegerField('序号',blank=True,null=True)
     sys_flag = models.NullBooleanField('系统功能标识',blank=True,null=True)
     def __str__(self):

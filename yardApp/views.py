@@ -14,7 +14,7 @@ from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 from django.db import transaction, connection
 
 from yardApp import models
-
+from yardApp import renderviews
 # Create your views here.
 #################################################################### 基本成品功能。
 def logonview(request):
@@ -51,32 +51,7 @@ def index(request):
     return render(request,"yard/index.html")
 
 
-def clients(request):
-    #return render(request,"yard/basedata/clients.html",{'r':request})
-    #增加 根据权限 判断是否有查询功能 设置datagrid.url
-    idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
-    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
-    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
-    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag')
-    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
-    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
-    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
-    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
-    recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
-    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
 
-    #print(cObj.writeUI())
-    return render(request,"yard/basedata/clients.html",{'r':request,
-                                                'id':idObj,
-                                                'clientName':clientNameObj,
-                                                'clientFlag':clientFlagObj,
-                                                'customFlag':customFlagObj,
-                                                'shipcorpFlag':shipcorpFlagObj,
-                                                'yardFlag':yardFlagObj,
-                                                'portFlag':portFlagObj,
-                                                'financialFlag':financialFlagObj,
-                                                'recTim':recTimObj,
-                                                'remark':remarkObj})
 @csrf_exempt
 @transaction.atomic
 def updateClients(request):
@@ -116,28 +91,26 @@ def getclients2(request):
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
 
-def syscod(request):
-    id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')
-    fldEng = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_eng')
-    fldChi = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_chi')
-    codName = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='cod_name')
-    fldExt1 = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_ext1')
-    fldExt2 = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_ext2')
-    seq = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='seq')
-    remark = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='remark')
-    return render(request,"yard/sysdata/syscod.html",{'r':request,
-                                                      'id':id,
-                                                      'fldEng':fldEng,
-                                                      'fldChi':fldChi,
-                                                      'codName':codName,
-                                                      'fldExt1':fldExt1,
-                                                      'fldExt2':fldExt2,
-                                                      'seq':seq,
-                                                      'remark':remark
-                                                      })
+
 @csrf_exempt
 def getsyscod(request):
     ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
+    #得到post的参数
+    if request.method == 'GET':
+        pass
+    else:
+        ldict = json.loads( request.POST['jpargs'] )
+        if 'page' in ldict.keys():
+            pass
+        else:
+            raise Exception('there is no page keys')
+    jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
+    # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
+    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+
+
+def getsysmenu(request):
+    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
     #得到post的参数
     if request.method == 'GET':
         pass
@@ -168,7 +141,7 @@ from zdCommon.dbhelp import cursorSelect
 from collections import OrderedDict
 
 def getMenuList():
-    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 order by sortno;')
+    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
     ldict_1 = []
     if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
         for i_m1 in l_menu1:
@@ -176,10 +149,10 @@ def getMenuList():
             ldict_2 = []
             if len(l_menu2) > 0 :
                 for i_m2 in l_menu2:
-                    ldict_2.append({"id": i_m2[0], "text": i_m2[1], "attributes": i_m2[2]})
+                    ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": i_m2[1]})
             else:
                 pass # no child
-            ldict_1.append( { "id": i_m1[0], "text": i_m1[1], "attributes": i_m1[2], 'children': ldict_2  } )
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": i_m1[1], 'children': ldict_2  } )
     else:
         pass   # no top menu ... how that posible ....
     return(ldict_1)
@@ -189,8 +162,10 @@ def dealmenureq(request):
     ls_args = request.GET['menutext']
 
     if ls_args == '客户维护':
-        return(getclients2(request))
+        return(renderviews.clientview(request))
     elif ls_args == '系统参数维护':
-        return(getsyscod(request))
+        return(renderviews.syscodview(request))
+    elif ls_args == '功能维护':
+        return(renderviews.sysmenuview(request))
     else:
         pass

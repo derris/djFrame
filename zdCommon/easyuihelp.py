@@ -1,5 +1,7 @@
 __author__ = 'zhangtao'
 from django.db import models
+
+
 class EasyuiFieldUI:
     '''
     生成easyui datagrid的columns字段类 通过writeUI方法写出
@@ -23,7 +25,8 @@ class EasyuiFieldUI:
     sorter:字符 javascript函数，本地排序函数,
     editor:对象 列editor
     readonly：布尔 False设置editor为None
-
+    autoforeign:布尔 True自动转换外键显示值，前台editor为combobox
+    foreigndisplayfield:字符 关联外键的显示字段 combobox
     '''
     # def __init__(self,model=None,field=None,**kwargs):
     #     self.model = model
@@ -48,22 +51,25 @@ class EasyuiFieldUI:
     #         'formatter' : None,
     #         'styler' : None,
     #         'sorter' : None,
-    #         'editor' : None
+    #         'editor' : None,
+    #         'foreigndisplayfield':None
     #     }
     #     self.defaultAttribute()
     #     self..update(kwargs)
 
-    def __init__(self,model=None,field=None,title=None,width=None,rowspan=None,colspan=None,
-                 align=None,halign=None,sortable=None,order=None,resizable=None,
-                 fixed=None,hidden=None,checkbox=None,formatter=None,styler=None,
-                 sorter=None,editor=None,readonly=False):
+    def __init__(self, model=None, field=None, title=None, width=None, rowspan=None, colspan=None,
+                 align=None, halign=None, sortable=None, order=None, resizable=None,
+                 fixed=None, hidden=None, checkbox=None, formatter=None, styler=None,
+                 sorter=None, editor=None, readonly=False, autoforeign=None,foreigndisplayfield=None):
         self.model = model
         self.field = field
         if (self.model is None or self.field is None):
             raise Exception("model和field参数不能为空")
         self.fObj = model._meta.get_field_by_name(self.field)[0]
-
+        self.autoforeign = autoforeign
+        self.foreigndisplayfield = foreigndisplayfield
         self.defaultAttribute()
+
         if title is not None:
             self.title = title
         if width is not None:
@@ -97,6 +103,7 @@ class EasyuiFieldUI:
         if editor is not None:
             self.editor = editor
         self.readonly = readonly
+
     def defaultAttribute(self):
         '''
         根据字段类型设置默认的editor 默认隐藏field='id'的字段
@@ -108,44 +115,44 @@ class EasyuiFieldUI:
         if (self.field.upper() == 'ID' or self.fObj.primary_key):
             self.hidden = True
             return
-        if isinstance(self.fObj,models.AutoField):
+        if isinstance(self.fObj, models.AutoField):
             self.hidden = True
             return
-        if isinstance(self.fObj,(models.IntegerField,
-                                 models.BigIntegerField,
-                                 models.SmallIntegerField,
-                                 models.CommaSeparatedIntegerField)):
+        if isinstance(self.fObj, (models.IntegerField,
+                                  models.BigIntegerField,
+                                  models.SmallIntegerField,
+                                  models.CommaSeparatedIntegerField)):
             self.width = 50
             self.editor = {
-                'type':'numberbox'
+                'type': 'numberbox'
             }
-        if isinstance(self.fObj,(models.PositiveSmallIntegerField,
-                                 models.PositiveIntegerField)):
+        if isinstance(self.fObj, (models.PositiveSmallIntegerField,
+                                  models.PositiveIntegerField)):
             self.width = 50
             self.editor = {
-                'type':'numberbox',
-                'options':{
-                    'min':0
+                'type': 'numberbox',
+                'options': {
+                    'min': 0
                 }
             }
-        if isinstance(self.fObj,(models.DecimalField,models.FloatField)):
+        if isinstance(self.fObj, (models.DecimalField, models.FloatField)):
             self.width = 100
             self.editor = {
-                'type':'numberbox',
-                'options':{
-                    'precision':2
+                'type': 'numberbox',
+                'options': {
+                    'precision': 2
                 }
             }
-        if isinstance(self.fObj,(models.BooleanField,
-                                 models.NullBooleanField)):
+        if isinstance(self.fObj, (models.BooleanField,
+                                  models.NullBooleanField)):
             self.align = 'center'
             self.halign = 'center'
             self.width = len(self.title) * 18
             self.editor = {
-                'type':'checkbox',
-                'options':{
-                    'on':'true',
-                    'off':'false'
+                'type': 'checkbox',
+                'options': {
+                    'on': 'true',
+                    'off': 'false'
                 }
             }
             self.formatter = '''function (value, rowData, rowIndex) {
@@ -155,37 +162,79 @@ class EasyuiFieldUI:
                                 return '<input type="checkbox" disabled="true" value="false"/>';
                             }
                         }'''
-        if isinstance(self.fObj,(models.DateField,)):
+        if isinstance(self.fObj, (models.DateField,)):
             self.width = 100
             self.editor = {
-                'type':'datebox'
+                'type': 'datebox'
             }
-        if isinstance(self.fObj,(models.DateTimeField,)):
+        if isinstance(self.fObj, (models.DateTimeField,)):
             self.width = 180
             self.editor = {
-                'type':'datetimebox'
+                'type': 'datetimebox'
             }
-        if isinstance(self.fObj,(models.CharField,)):
+        if isinstance(self.fObj, (models.CharField,)):
             self.width = self.fObj.max_length * 5
             self.editor = {
-                'type':'text'
+                'type': 'text'
             }
+        if isinstance(self.fObj, (models.ForeignKey,)):
+            columnWidth = len(self.title)
+            if self.autoforeign is not None and self.autoforeign:
+                dataList = []
+                displayField = self.foreigndisplayfield or 'id'
+                getData = None
+                if (len(self.fObj.rel.limit_choices_to) > 0):
+                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to)
+                else:
+                    getData = self.fObj.rel.to.objects.all()
+                for item in getData:
+                    if columnWidth < len(eval('item.' + displayField)):
+                        columnWidth = len(eval('item.' + displayField))
+                    dataList.append({
+                        'value': item.id,
+                        'text': eval('item.' + displayField)
+                    })
+
+                self.editor = {
+                    'type': 'combobox',
+                    'options': {
+                        'valueField': 'value',
+                        'textField': 'text',
+                        'data': dataList
+                    }
+                }
+                self.formatter = ''' function(value,rowData,index){
+                                     for (var i = 0,ilen = this.editor.options.data.length; i < ilen ; i++){
+                                         if (this.editor.options.data[i].value == value){
+                                            return this.editor.options.data[i].text;
+                                         }
+                                     }
+                                     return value;
+                                }'''
+            else:
+                self.editor = {
+                    'type': 'text'
+                }
+            self.width = columnWidth * 18
+
         if (not (self.fObj.null and self.fObj.blank)):
             if (('editor' not in self.__dict__) or self.editor is None):
                 self.editor = {
-                    'type':'validatebox',
-                    'options':{
-                        'required':'true'
+                    'type': 'validatebox',
+                    'options': {
+                        'required': 'true'
                     }
                 }
             else:
                 if (self.editor['type'] == 'text'):
                     self.editor['type'] = 'validatebox'
+                # if (self.editor['type'] == 'combobox'):
+                #      pass
                 if ('options' in self.editor):
-                    self.editor.options.update({'required':'true'})
+                    self.editor['options'].update({'required': 'true'})
                 else:
-                    self.editor.update({'options':{
-                      'required':'true'
+                    self.editor.update({'options': {
+                        'required': 'true'
                     }})
 
     def writeUI(self):
@@ -223,6 +272,7 @@ class EasyuiFieldUI:
             strUI = strUI + "editor: " + str(self.editor) + ",\n"
         strUI = strUI.strip().rstrip(',') + "}"
         return strUI
+
     # def writeUI(self):
     #     for key,value in self.attributes.items():
     #         if value is None:

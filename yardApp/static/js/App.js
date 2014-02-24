@@ -790,7 +790,7 @@ $.ajaxSetup({
                     $.messager.show({
                         title: '',
                         msg: returnData.msg || '执行成功!',
-                        timeout: 4000,
+                        timeout: 3000,
                         showType: 'slide'
                     });
                 }
@@ -799,7 +799,7 @@ $.ajaxSetup({
                     $.messager.show({
                         title: '错误信息',
                         msg: returnData.error.join('\n'),
-                        timeout: 4000,
+                        timeout: 3000,
                         showType: 'slide'
                     });
                 }

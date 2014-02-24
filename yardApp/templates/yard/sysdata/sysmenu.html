@@ -3,16 +3,15 @@
     //测试lab_zht_1.html
     $(function () {
         sysdata.sysmenuview.datagrid = $('#sysdata-sysmenu-datagrid').datagrid({
-            autoSave:true,
+            autoSave:false,
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
-                    {{ fldEng.writeUI|safe|escape }},
-                    {{ fldChi.writeUI|safe|escape }},
-                    {{ codName.writeUI|safe|escape }},
-                    {{ fldExt1.writeUI|safe|escape }},
-                    {{ fldExt2.writeUI|safe|escape }},
-                    {{ seq.writeUI|safe|escape }},
+                    {{ menuname.writeUI|safe|escape }},
+                    {{ menushowname.writeUI|safe|escape }},
+                    {{ parent_id.writeUI|safe|escape }},
+                    {{ sortno.writeUI|safe|escape }},
+                    {{ sys_flag.writeUI|safe|escape }},
                     {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
@@ -49,7 +48,7 @@
                     iconCls: 'icon-save',
                     group:'sysdata.sysmenuview.datagrid',
                     handler: function () {
-                        sysdata.sysmenuview.datagrid.datagrid('postUpdateData');
+                        sysdata.sysmenuview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
