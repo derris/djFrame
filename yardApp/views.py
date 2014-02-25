@@ -14,7 +14,7 @@ from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 from zdCommon.dbhelp import cursorSelect
 
 from yardApp import models
-from yardApp import renderviews
+#from yardApp import renderviews
 # Create your views here.
 #################################################################### 基本成品功能。
 
@@ -104,7 +104,7 @@ def getsyscod(request):
 
 
 def getsysmenu(request):
-    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu where id <> 0 "
+    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
     #得到post的参数
     if request.method == 'GET':
         pass
@@ -117,11 +117,6 @@ def getsysmenu(request):
     jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
-
-
-
-
-
 
 def getMenuList():
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -140,25 +135,7 @@ def getMenuList():
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
-def dealMenuReq(request):
 
-    ls_args = request.GET['menutext']
-    if ls_args == '主窗口':
-        return(renderviews.maintabview(request))
-    elif ls_args == '登录窗口':
-        return(renderviews.logonview(request))
-    elif ls_args == '导航菜单':
-        return(renderviews.mainmenutreeview(request))
-    elif ls_args == '通用查询':
-        return(renderviews.getcommonsearchview(request))
-    elif ls_args == '客户维护':
-        return(renderviews.clientview(request))
-    elif ls_args == '系统参数维护':
-        return(renderviews.syscodview(request))
-    elif ls_args == '功能维护':
-        return(renderviews.sysmenuview(request))
-    else:
-        pass
 
 
 def dealPAjax(request):

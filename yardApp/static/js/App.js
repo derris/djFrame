@@ -295,13 +295,13 @@ $.extend($.fn.datagrid.defaults, {
     fit: true,
     idField: 'id',
     method: 'post',
-    pageList: [10, 20, 30, 40],
-    pageSize: 10,
+    pageList: [20, 40, 60, 80,100],
+    pageSize: 20,
     pagination: true,
     rownumbers: true,
     singleSelect: true,
     remoteSort: false,
-    url: "{% url 'dealPAjax' %}",
+    url: "./dealPAjax/",
     onDblClickRow: function (rowIndex, rowData) {
         //console.info('dbclick');
         $(this).datagrid('dbClick', rowIndex);
@@ -339,7 +339,6 @@ $.extend($.fn.datagrid.defaults, {
         } else {
             queryParam.cols.push('id');
         }
-        //queryParam.cols = JSON.stringify(queryParam.cols);
         $.ajax({
             url: opts.url,
             data: {jpargs:JSON.stringify(queryParam)},
@@ -562,6 +561,7 @@ $.extend($.fn.datagrid.methods, {
     //调用方式 datagrid('postUpdateAllData')
     postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
+            var opts = jq.datagrid('options');
             //删除只传id值
             var deleteArray = new Array();
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
@@ -601,13 +601,14 @@ $.extend($.fn.datagrid.methods, {
             }
             var p = {
                 reqtype: 'update',
+                func:opts.updateFuncName,
                 rows: updateArray.concat(insertArray).concat(deleteArray)
             }
             if (p.rows.length == 0 ){
                 return;
             }
             $.ajax({
-                url: $(jq).datagrid('options').updateUrl,
+                url: opts.url,
                 data: {jpargs: JSON.stringify(p)},
                 success: function (returnData, returnMsg, ajaxObj) {
                     var stateCod = parseInt(returnData.stateCod);

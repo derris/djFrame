@@ -2,8 +2,7 @@ __author__ = 'zhangtao'
 # render 前台界面
 from django.shortcuts import render
 
-from yardApp import models
-from yardApp import views
+from yardApp import models,views
 
 from zdCommon import easyuihelp
 
@@ -27,7 +26,7 @@ def sysmenuview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='id')
     menuname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menuname')
     menushowname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menushowname')
-    parent_id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='parent_id',foreigndisplayfield='menushowname')
+    parent_id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='parent_id',autoforeign=True,foreigndisplayfield='menushowname')
     sortno = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='sortno')
     sys_flag = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='sys_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='remark')
@@ -54,3 +53,22 @@ def clientview(request):
     recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
     return render(request,"yard/basedata/clients.html",locals())
+def dealMenuReq(request):
+
+    ls_args = request.GET['menutext']
+    if ls_args == '主窗口':
+        return(maintabview(request))
+    elif ls_args == '登录窗口':
+        return(logonview(request))
+    elif ls_args == '导航菜单':
+        return(mainmenutreeview(request))
+    elif ls_args == '通用查询':
+        return(getcommonsearchview(request))
+    elif ls_args == '客户维护':
+        return(clientview(request))
+    elif ls_args == '系统参数维护':
+        return(syscodview(request))
+    elif ls_args == '功能维护':
+        return(sysmenuview(request))
+    else:
+        pass
