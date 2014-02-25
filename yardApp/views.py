@@ -3,22 +3,21 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader,RequestContext
 from django.views.decorators.http import require_http_methods
+from collections import OrderedDict
+
+from django.db import transaction, connection
 
 from django.core import serializers
 import json
 
-from zdCommon.jsonhelp import ServerToClientJsonEncoder
-from zdCommon import easyuihelp
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
-#json2insert, json2update, json2upd
-from django.db import transaction, connection
+from zdCommon.dbhelp import cursorSelect
 
 from yardApp import models
 from yardApp import renderviews
 # Create your views here.
 #################################################################### 基本成品功能。
-def logonview(request):
-    return render(request,"yard/logon.html")
+
 
 
 def logon(request):
@@ -45,10 +44,6 @@ def logout(request):
     request.session['logon'] = False
     return HttpResponse(json.dumps({ "stateCod": 3 },ensure_ascii = False))
 
-def index(request):
-    #template = loader.get_template("yard/index.html")
-    #context = RequestContext(request)
-    return render(request,"yard/index.html")
 
 
 
@@ -71,8 +66,7 @@ def updateClients(request):
 
     return HttpResponse(json.dumps(ls_rtn,ensure_ascii = False))
 
-def getCommonSearchTemplate(request):
-    return render(request,"commonSearchTemplate.html")
+
 
 @csrf_exempt
 def getclients2(request):
@@ -110,7 +104,7 @@ def getsyscod(request):
 
 
 def getsysmenu(request):
-    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
+    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu where id <> 0 "
     #得到post的参数
     if request.method == 'GET':
         pass
@@ -124,21 +118,10 @@ def getsysmenu(request):
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
     return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
 
-def contract(request):
-    return render(request,'yard/contract/contract.html')
 
-def mainmenudata(request):
-    return HttpResponse("主菜单")
 
-def maintab(request):
-    return render(request,"yard/MainTab.html")
-def mainmenutreeview(request):
-    menudata = getMenuList()
-    request.path
-    return render(request,"yard/MainMenuTree.html",locals())
 
-from zdCommon.dbhelp import cursorSelect
-from collections import OrderedDict
+
 
 def getMenuList():
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -160,8 +143,15 @@ def getMenuList():
 def dealMenuReq(request):
 
     ls_args = request.GET['menutext']
-
-    if ls_args == '客户维护':
+    if ls_args == '主窗口':
+        return(renderviews.maintabview(request))
+    elif ls_args == '登录窗口':
+        return(renderviews.logonview(request))
+    elif ls_args == '导航菜单':
+        return(renderviews.mainmenutreeview(request))
+    elif ls_args == '通用查询':
+        return(renderviews.getcommonsearchview(request))
+    elif ls_args == '客户维护':
         return(renderviews.clientview(request))
     elif ls_args == '系统参数维护':
         return(renderviews.syscodview(request))
@@ -173,10 +163,14 @@ def dealMenuReq(request):
 
 def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
-    if ldict['func'] == '客户维护':
-        return(getclients2(request))
-    elif ldict['func'] == '系统参数维护':
+    if ldict['func'] == '功能查询':
         return(getsysmenu(request))
+    elif ldict['func'] == '功能维护':
+        return(updateClients(request))
+    elif ldict['func'] == '客户查询':
+        return(getclients2(request))
+    elif ldict['func'] == '客户维护':
+        return(updateClients(request))
     else:
         pass
 

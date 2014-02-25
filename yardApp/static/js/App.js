@@ -288,9 +288,8 @@ $.extend($.fn.datagrid.defaults, {
     parentDatagrid: null,//关联的父datagrid
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
-    deleteUrl: '', //delete的url
-    insertUrl: '',  //insert的url
-    updateUrl: '', //update的url
+    queryFuncName:'',
+    updateFuncName:'',
     //以上为扩展属性
     border: false,
     fit: true,
@@ -302,7 +301,7 @@ $.extend($.fn.datagrid.defaults, {
     rownumbers: true,
     singleSelect: true,
     remoteSort: false,
-
+    url: "{% url 'dealPAjax' %}",
     onDblClickRow: function (rowIndex, rowData) {
         //console.info('dbclick');
         $(this).datagrid('dbClick', rowIndex);
@@ -330,7 +329,8 @@ $.extend($.fn.datagrid.defaults, {
         }
 
         var queryParam = {
-            reqtype: 'query'
+            reqtype: 'query',
+            func:opts.queryFuncName
         };
         $.extend(queryParam, param);
         if (queryParam.cols == undefined) {
@@ -559,8 +559,7 @@ $.extend($.fn.datagrid.methods, {
             e.editor = {};
         }
     },
-    //调用方式 datagrid('postUpdateData')
-
+    //调用方式 datagrid('postUpdateAllData')
     postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             //删除只传id值

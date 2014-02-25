@@ -3,7 +3,25 @@ __author__ = 'zhangtao'
 from django.shortcuts import render
 
 from yardApp import models
+from yardApp import views
+
 from zdCommon import easyuihelp
+
+def logonview(request):
+    return render(request,"yard/logon.html")
+
+def indexview(request):
+    return render(request,"yard/index.html")
+
+def maintabview(request):
+    return render(request,"yard/MainTab.html")
+
+def mainmenutreeview(request):
+    #menudata = views.getMenuList()
+    return render(request,"yard/MainMenuTree.html",locals())
+
+def getcommonsearchview(request):
+    return render(request,"commonSearchTemplate.html")
 
 def sysmenuview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='id')

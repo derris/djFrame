@@ -1,25 +1,23 @@
 __author__ = 'zhangtao'
 from django.conf.urls import patterns, url
 from yardApp import views
+from yardApp import renderviews
 
 urlpatterns = patterns('',
-    url(r'^$',views.index,name='index'),
-    url(r'^logonview/$',views.logonview,name='logonview'),
+    url(r'^$',renderviews.indexview,name='index'),
+
     url(r'^logon/$',views.logon,name='logon'),
     url(r'^logout/$',views.logout,name='logout'),
-    url(r'^mainmenu/$',views.mainmenutreeview,name='mainmenu'),
-    url(r'^maintab/$',views.maintab,name='maintab'),
-    url(r'^commonsearch/$',views.getCommonSearchTemplate,name='commonsearchtemplate'),
 
-    url(r'^clients/$',views.clients,name='clients'),
+
     url(r'^clients/getclients2/$',views.getclients2,name='getclients2'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
-    url(r'^sysdata/syscod/$',views.syscod,name='syscod'),
+
     url(r'^sysdata/getsyscod/$',views.getsyscod,name='getsyscod'),
     url(r'^sysdata/getsysmenu/$',views.getsysmenu,name='getsysmenu'),
     # 处理页面左边导航的功能。
-    url('^dealmenureq/$', views.dealMenuReq),
-    url('^dealPAjax/$', views.dealPAjax),
+    url('^dealmenureq/$', views.dealMenuReq,name='dealmenureq'),
+    url('^dealPAjax/$', views.dealPAjax,name='dealPAjax'),
 
 
     # 实验室
@@ -28,9 +26,4 @@ urlpatterns = patterns('',
     url(r'^lab/post/$',"yardApp.lab.getJsonPost", name='labpost'),
     # http://127.0.0.1:8000/yard/lab/getfunc/?func=getJson1&&args=%22aaa%22
 
-
-    #url(r'^clients/getclients3/$',views.getclients3,name='getclients3'),
-
-
-    url(r'^contract/contract/$',views.contract,name='contract'),
 )
