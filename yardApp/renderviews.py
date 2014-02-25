@@ -17,7 +17,7 @@ def maintabview(request):
     return render(request,"yard/MainTab.html")
 
 def mainmenutreeview(request):
-    #menudata = views.getMenuList()
+    menudata = views.getMenuList()
     return render(request,"yard/MainMenuTree.html",locals())
 
 def getcommonsearchview(request):
