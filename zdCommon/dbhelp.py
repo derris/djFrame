@@ -35,6 +35,9 @@ def correctjsonfield(obj, atypecode):
             return 0
 
 
+def strip(aStr):
+    return aStr.strip(" ") if aStr else ""
+
 def rawsql4request(aSql, aRequestDict):
     '''
         根据aRequest来的参数，生成aSql语句。
@@ -106,7 +109,7 @@ def rawsql4request(aSql, aRequestDict):
                 ls_getwhere = l_dictwhere['cod'] + ls_oper + "'" + ls_value + "'"
             ls_wheresum = ls_wheresum + ' ' +  ls_getwhere + ' and'
         ls_wheresum = ls_wheresum[:-3]
-    #--------------得到前台通用查询的where语句。-filter 2 where  ->               ls_wheresum ------------------------------
+    #--------------得到前台通用查询的where语句。-filter 2 where  ->    ls_wheresum通用的。 ------------------------------
 
     # =============================================sort 2 order ===========
     ls_ordersum = ''
@@ -132,7 +135,7 @@ def rawsql4request(aSql, aRequestDict):
     ls_reorder = r'(\border\b.*?)(\bgroup\b|\blimit\b|;)'
     ls_reselect = r'(.*?)(\bwhere\b|\blimit\b|\border\b|\bgroup\b|;)'
 
-    l_tmp = re.search(ls_reselect, ls_sql, re.IGNORECASE)
+    l_tmp = re.search(ls_reselect, ls_sql, re.IGNORECASE)   # 得到select主题语句
     if l_tmp:
         ls_select = l_tmp.group(1)
     else:
@@ -140,7 +143,7 @@ def rawsql4request(aSql, aRequestDict):
         raise Exception("得不到sql主体语句，请与管理员联系")
 
     l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
-    ls_where = l_tmp.group(1) if l_tmp else None
+    ls_where = l_tmp.group(1) if l_tmp else None   # 后台的sql语句。where条件。
 
     l_tmp =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
     ls_group = l_tmp.group(1) if l_tmp else None
@@ -149,15 +152,20 @@ def rawsql4request(aSql, aRequestDict):
     ls_order = l_tmp.group(1) if l_tmp else None
 
     ls_finwhere = ''
-    if ls_where:
-        ls_finwhere = ls_where + ' and ' + ls_wheresum
-    elif len(ls_wheresum.strip(' ')) > 4:
-        ls_finwhere = ' where ' + ls_wheresum
+
+    if len(strip(ls_where)) > 3:
+        ls_finwhere = ls_where
+        if len(strip(ls_wheresum)) > 3:
+            ls_finwhere += ' and ' + ls_wheresum
+    elif len(strip(ls_wheresum)) > 3:
+        ls_finwhere += ' where ' + ls_wheresum
 
     ls_finorder = ''
-    if ls_order:
-        ls_finorder = ls_order + ' , ' + ls_ordersum
-    elif len(ls_ordersum.strip(' ')) > 4:
+    if len(strip(ls_order)) > 3:
+        ls_finorder = ls_order
+        if len(strip(ls_ordersum)) > 4:
+            ls_finorder = ls_order + ' , ' + ls_ordersum
+    elif len(strip(ls_ordersum)) > 3:
         ls_finorder = ' order by  ' + ls_ordersum
 
     if ls_finorder.find(' id ') > 0:
@@ -181,7 +189,7 @@ def rawsql4request(aSql, aRequestDict):
         ls_finSql += ls_finorder
 
     ls_finSql += (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-
+    print(ls_finSql, ls_sqlcount)
     return( (ls_finSql, ls_sqlcount) )
 
 def rawsql2json(aSql, aSqlCount):

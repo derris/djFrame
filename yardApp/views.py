@@ -83,7 +83,8 @@ def getclients2(request):
             raise Exception('there is no page keys')
     jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
-    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+    #return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+    return HttpResponse(json.dumps(jsonData,ensure_ascii = False))
 
 
 @csrf_exempt
@@ -100,12 +101,17 @@ def getsyscod(request):
             raise Exception('there is no page keys')
     jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
     # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
-    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+    #return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+    return HttpResponse(json.dumps(jsonData,ensure_ascii = False))
 
+def getAuth(request):
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getsysmenu(request):
-    ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
     #得到post的参数
+    ldict = {}
     if request.method == 'GET':
         pass
     else:
@@ -114,9 +120,10 @@ def getsysmenu(request):
             pass
         else:
             raise Exception('there is no page keys')
-    jsonData = rawsql2json(*rawsql4request(ls_sql, request.POST))
-    # jsonData.update({ "msg": "", "stateCod":"" }) 可以在这里更新
-    return HttpResponse(str(jsonData).replace("'", '"')) # js 不认识单引号。
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
+    #ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
+    jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
+    return HttpResponse(json.dumps(jsonData,ensure_ascii = False))
 
 def getMenuList():
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -142,6 +149,9 @@ def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
     if ldict['func'] == '功能查询':
         return(getsysmenu(request))
+    elif ldict['func'] == '权限维护':
+        return(getAuth(request))
+
     elif ldict['func'] == '功能维护':
         return(updateClients(request))
     elif ldict['func'] == '客户查询':
