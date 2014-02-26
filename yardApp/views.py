@@ -70,6 +70,7 @@ def updateClients(request):
 
 @csrf_exempt
 def getclients2(request):
+    '''客户查询'''
     ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
     #得到post的参数
     if request.method == 'GET':
@@ -89,8 +90,8 @@ def getclients2(request):
 
 @csrf_exempt
 def getsyscod(request):
+    '''系统参数查询'''
     ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
-    #得到post的参数
     if request.method == 'GET':
         pass
     else:
@@ -110,7 +111,7 @@ def getAuth(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getsysmenu(request):
-    #得到post的参数
+    '''功能查询'''
     ldict = {}
     if request.method == 'GET':
         pass
@@ -120,12 +121,28 @@ def getsysmenu(request):
             pass
         else:
             raise Exception('there is no page keys')
-    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where id <> 0 "
+    #ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
+    jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
+    return HttpResponse(json.dumps(jsonData,ensure_ascii = False))
+def getsysfunc(request):
+    '''权限查询'''
+    ldict = {}
+    if request.method == 'GET':
+        pass
+    else:
+        ldict = json.loads( request.POST['jpargs'] )
+        if 'page' in ldict.keys():
+            pass
+        else:
+            raise Exception('there is no page keys')
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_func where id <> 0 "
     #ls_sql = "select id,menuname,menushowname,parent_id,sortno,sys_flag,remark from sys_menu "
     jsonData = rawsql2json(*rawsql4request(ls_sql, ldict))
     return HttpResponse(json.dumps(jsonData,ensure_ascii = False))
 
 def getMenuList():
+    '''导航菜单 返回除根节点外的所有节点对象数组'''
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
     ldict_1 = []
     if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
@@ -149,10 +166,12 @@ def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
     if ldict['func'] == '功能查询':
         return(getsysmenu(request))
-    elif ldict['func'] == '权限维护':
-        return(getAuth(request))
-
     elif ldict['func'] == '功能维护':
+        return(updateClients(request))
+    elif ldict['func'] == '权限查询':
+        return(getsysfunc(request))
+    elif ldict['func'] == '权限维护':
+         #return(getAuth(request))
         return(updateClients(request))
     elif ldict['func'] == '客户查询':
         return(getclients2(request))

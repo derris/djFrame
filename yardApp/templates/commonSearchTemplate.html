@@ -102,6 +102,7 @@ $(function () {
         showHeader: true,
         singleSelect: true,
         striped: true,
+        url:'',
         onDblClickRow: function (rowIndex, rowData) {
             if (rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox') {
                 common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = '';
@@ -215,7 +216,8 @@ $(function () {
         fit: true,
         border: false,
         singleSelect: true,
-        pagination:false
+        pagination:false,
+        url:''
     });
     common.createsearchform.colsdatagrid = $('#common-createsearchform-colsdatagrid').datagrid({
         columns: [
@@ -230,8 +232,8 @@ $(function () {
         pagination:false,
         showHeader: true,
         singleSelect:false,
-        striped: true
-
+        striped: true,
+        url:''
     });
     for (var i = 0,ilen = sy.searchWindowData.length;i<ilen; i++) {
         if (sy.searchWindowData[i].cod == 'id'){

@@ -1,0 +1,60 @@
+<script>
+    Namespace.register('sysdata.sysfuncview');
+    $(function () {
+        sysdata.sysfuncview.datagrid = $('#sysdata-sysfunc-datagrid').datagrid({
+            autoSave:false,
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ funcname.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'sys_func',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'sysdata.sysfuncview.datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(sysdata.sysfuncview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'sysdata.sysfuncview.datagrid',
+                    handler: function () {
+                        sysdata.sysfuncview.datagrid.datagrid('insertData', {
+                            funcname: '新权限'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'sysdata.sysfuncview.datagrid',
+                    handler: function () {
+                        sysdata.sysfuncview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'sysdata.sysfuncview.datagrid',
+                    handler: function () {
+                        sysdata.sysfuncview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'权限查询',
+            updateFuncName:'权限维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="sysdata-sysfunc-datagrid" border="false">
+        </table>
+    </div>
+</div>

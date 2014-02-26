@@ -1,9 +1,8 @@
 <script>
-    Namespace.register('sysdata.sysmenuview');
+    Namespace.register('sysdata.sysmenufuncview');
     $(function () {
         //$.getScript("../../../static/js/datagridgroupview.js");
-        sysdata.sysmenuview.datagrid = $('#sysdata-sysmenu-datagrid').datagrid({
-            autoSave: false,
+        sysdata.sysmenufuncview.menudatagrid = $('#sysdata-sysmenufunc-menudatagrid').datagrid({
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
@@ -29,11 +28,7 @@
                 }
                 return value;
             },
-            view: $.extend(groupview,{
-                onAfterRender:function(){
-                    sysdata.sysmenuview.datagrid.datagrid('collapseGroup');
-                }
-            }),
+            view: groupview,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
@@ -72,12 +67,17 @@
             queryFuncName: '功能查询',
             updateFuncName: '功能维护'
         });
-
     });
 </script>
+
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div region="center" border="false">
-        <table id="sysdata-sysmenu-datagrid" border="false">
+    <div region="north" border="false">
+        <table id="sysdata-sysmenufunc-menudatagrid" border="false">
         </table>
     </div>
+    <div region="center" border="false">
+        <table id="sysdata-sysmenufunc-menufuncdatagrid" border="false">
+        </table>
+    </div>
+
 </div>

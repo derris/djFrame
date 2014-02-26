@@ -31,6 +31,11 @@ def sysmenuview(request):
     sys_flag = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='sys_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='remark')
     return render(request,'yard/sysdata/sysmenu.html',locals())
+def sysfuncview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='id')
+    funcname = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='funcname')
+    remark = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='remark')
+    return render(request,'yard/sysdata/sysfunc.html',locals())
 def syscodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')
     fldEng = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_eng')
@@ -64,11 +69,13 @@ def dealMenuReq(request):
         return(mainmenutreeview(request))
     elif ls_args == '通用查询':
         return(getcommonsearchview(request))
-    elif ls_args == '客户维护':
-        return(clientview(request))
-    elif ls_args == '系统参数维护':
-        return(syscodview(request))
     elif ls_args == '功能维护':
         return(sysmenuview(request))
+    elif ls_args == '权限维护':
+        return(sysfuncview(request))
+    elif ls_args == '系统参数维护':
+        return(syscodview(request))
+    elif ls_args == '客户维护':
+        return(clientview(request))
     else:
         pass

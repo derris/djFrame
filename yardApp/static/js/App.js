@@ -288,14 +288,15 @@ $.extend($.fn.datagrid.defaults, {
     parentDatagrid: null,//关联的父datagrid
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
-    queryFuncName:'',
-    updateFuncName:'',
+    sortFields: [],  //排序字段，自动传入查询参数
+    queryFuncName: '',
+    updateFuncName: '',
     //以上为扩展属性
     border: false,
     fit: true,
     idField: 'id',
     method: 'post',
-    pageList: [20, 40, 60, 80,100],
+    pageList: [20, 40, 60, 80, 100],
     pageSize: 20,
     pagination: true,
     rownumbers: true,
@@ -314,7 +315,7 @@ $.extend($.fn.datagrid.defaults, {
         sy.onError('加载数据错误', false);
     },
     onAfterEdit: function (rowIndex, rowData, changes) {
-        if ($(this).datagrid('options').autoSave){
+        if ($(this).datagrid('options').autoSave) {
             var datagridid = $(this)[0].id;
             $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('disable');
             $(this).datagrid('postUpdateAllData');
@@ -330,9 +331,28 @@ $.extend($.fn.datagrid.defaults, {
 
         var queryParam = {
             reqtype: 'query',
-            func:opts.queryFuncName
+            func: opts.queryFuncName
         };
         $.extend(queryParam, param);
+        if (opts.sortFields.length != 0) {
+            if (queryParam.sort == undefined) {
+                queryParam.sort = new Array();
+            }
+            var sortFields = opts.sortFields.reverse();
+            $.each(opts.sortFields, function (index, data) {
+                for (var i = 0, ilen = queryParam.sort.length; i < ilen; i++) {
+                    if (queryParam.sort[i].cod == data) {
+                        queryParam.sort.splice(i, 1);
+                        break;
+                    }
+                }
+                queryParam.sort.splice(0, 0, {
+                    cod: data,
+                    order_typ: '升序'
+                });
+
+            });
+        }
         if (queryParam.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
             queryParam.cols = columns;
@@ -341,7 +361,7 @@ $.extend($.fn.datagrid.defaults, {
         }
         $.ajax({
             url: opts.url,
-            data: {jpargs:JSON.stringify(queryParam)},
+            data: {jpargs: JSON.stringify(queryParam)},
             //data:queryParam,
             success: function (r, t, a) {
                 success(r);
@@ -411,13 +431,15 @@ $.extend($.fn.datagrid.methods, {
                 return;
             }
         }
-        jq.datagrid('insertRow', {
+        /*jq.datagrid('insertRow', {
             index: 0,
             row: param
-        });
-        jq.datagrid('selectRow', 0);
-        jq.datagrid('beginEdit', 0);
-        opts.editRow = 0;
+        });*/
+        jq.datagrid('appendRow',param);
+        var lastRow = jq.datagrid('getRows').length;
+        jq.datagrid('selectRow', lastRow - 1 );
+        jq.datagrid('beginEdit', lastRow - 1);
+        opts.editRow = lastRow - 1;
     },
     //param null
     deleteData: function (jq, param) {
@@ -441,7 +463,7 @@ $.extend($.fn.datagrid.methods, {
                 jq.datagrid('selectRow', opts.editRow);
             }
         }
-        if (opts.autoSave){
+        if (opts.autoSave) {
             var datagridid = jq[0].id;
             $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('disable');
             jq.datagrid('postUpdateAllData');
@@ -567,10 +589,10 @@ $.extend($.fn.datagrid.methods, {
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
             for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
                 deleteArray.push({
-                    op:'delete',
-                    table:$(jq).datagrid('options').dataTable,
-                    id:deletedRows[i].id,
-                    subs:{}
+                    op: 'delete',
+                    table: $(jq).datagrid('options').dataTable,
+                    id: deletedRows[i].id,
+                    subs: {}
                 });
             }
             var updateArray = new Array();
@@ -601,10 +623,10 @@ $.extend($.fn.datagrid.methods, {
             }
             var p = {
                 reqtype: 'update',
-                func:opts.updateFuncName,
+                func: opts.updateFuncName,
                 rows: updateArray.concat(insertArray).concat(deleteArray)
             }
-            if (p.rows.length == 0 ){
+            if (p.rows.length == 0) {
                 return;
             }
             $.ajax({
@@ -636,6 +658,7 @@ $.extend($.fn.datagrid.methods, {
             console.info('失败');
         }
     }
+
 });
 //***************扩展datagrid ***********************//
 

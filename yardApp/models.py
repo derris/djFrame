@@ -126,5 +126,18 @@ class SysMenu(BaseModel):
         return self.menushowname
     class Meta:
         db_table = 'sys_menu'
-
-
+class SysFunc(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    funcname = models.CharField('权限名称',max_length=50)
+    def __str__(self):
+        return self.funcname
+    class Meta:
+        db_table = 'sys_func'
+class SysMenuFunc(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    menu_id = models.ForeignKey('SysMenu',verbose_name='功能',db_column='menu_id')
+    func_id = models.ForeignKey('SysFunc',verbose_name='权限',db_column='func_id')
+    def __str__(self):
+        return self.menu_id + '/' + self.func_id
+    class Meta:
+        db_table = 'sys_menu_func'
