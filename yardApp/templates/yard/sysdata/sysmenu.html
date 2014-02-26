@@ -17,7 +17,7 @@
                 ]
             ],
             dataTable: 'sys_menu',
-            sortFields: ['parent_id'],
+            sortFields: ['parent_id','sortno'],
             groupField: 'parent_id',
             groupFormatter: function (value, rows) {
                 var groupField = $(this).datagrid('options').groupField;
