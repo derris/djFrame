@@ -384,6 +384,12 @@ $.extend($.fn.datagrid.defaults, {
         } else {
             queryParam.cols.push('id');
         }
+        if (queryParam.page == undefined){
+            queryParam.page = -1;
+        }
+        if (queryParam.rows == undefined){
+            queryParam.rows = -1;
+        }
         opts.loadNumber++;
         if (opts.autoLoad == false && opts.loadNumber == 1){
             return false;

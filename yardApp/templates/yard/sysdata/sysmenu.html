@@ -16,9 +16,13 @@
                 ]
             ],
             dataTable: 'sys_menu',
+            filterFields: [
+                {cod: 'id', operatorTyp: '不等于', value: 0}
+            ],
             sortFields: [
-                {cod:'parent_id',order_typ:'升序'},
-                {cod:'sortno',order_typ:'升序'}],
+                {cod: 'parent_id', order_typ: '升序'},
+                {cod: 'sortno', order_typ: '升序'}
+            ],
             groupField: 'parent_id',
             groupFormatter: function (value, rows) {
                 var groupField = $(this).datagrid('options').groupField;
@@ -30,7 +34,7 @@
                 }
                 return value;
             },
-            view:groupview,
+            view: groupview,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
