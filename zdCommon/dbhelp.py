@@ -97,7 +97,7 @@ def rawsql4request(aSql, aRequestDict):
             else:
                 raise Exception("无法识别的操作符号，请通知管理员")
 
-            ls_value =  l_dictwhere['value']
+            ls_value =  str(l_dictwhere['value'])
             ls_getwhere = ''
             if ls_oper == (' between ', ' not between '):
                 ls_getwhere = l_dictwhere['cod'] + " between '" + ls_value.split(',')[0] + "' and '" + ls_value.split(',')[1] + "'"

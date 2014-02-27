@@ -12,7 +12,7 @@ from zdCommon.dbhelp import cursorSelect
 def getsysmenu(request):
     '''功能查询'''
     ldict = json.loads( request.POST['jpargs'] )
-    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where id <> 0 "
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where id <> 0 and parent_id <> 0 "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getsysfunc(request):
     '''权限查询'''
