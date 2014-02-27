@@ -67,8 +67,8 @@ def clientview(request):
     recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
     return render(request,"yard/basedata/clients.html",locals())
-def dealMenuReq(request):
 
+def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
         return(maintabview(request))

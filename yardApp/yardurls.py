@@ -1,7 +1,7 @@
 __author__ = 'zhangtao'
 from django.conf.urls import patterns, url
 from yardApp import views
-from yardApp import renderviews
+from yardApp import renderviews, ajaxResp
 
 urlpatterns = patterns('',
     url(r'^$',renderviews.indexview,name='index'),
@@ -13,11 +13,10 @@ urlpatterns = patterns('',
     url(r'^clients/getclients2/$',views.getclients2,name='getclients2'),
     url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),
 
-    url(r'^sysdata/getsyscod/$',views.getsyscod,name='getsyscod'),
     url(r'^sysdata/getsysmenu/$',views.getsysmenu,name='getsysmenu'),
     # 处理页面左边导航的功能。
     url('^dealmenureq/$', renderviews.dealMenuReq,name='dealmenureq'),
-    url('^dealPAjax/$', views.dealPAjax,name='dealPAjax'),
+    url('^dealPAjax/$', ajaxResp.dealPAjax,name='dealPAjax'),
 
 
     # 实验室
