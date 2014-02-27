@@ -16,7 +16,7 @@
                 ]
             ],
             dataTable: 'sys_menu',
-            sortFields: ['parent_id','sortno'],
+            sortFields: [{cod:'parent_id',order_typ:'升序'},{cod:'sortno',order_typ:'升序'}],
             groupField: 'parent_id',
             groupFormatter: function (value, rows) {
                 var groupField = $(this).datagrid('options').groupField;

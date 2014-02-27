@@ -290,8 +290,17 @@ $.extend($.fn.datagrid.defaults, {
     parentDatagrid: null,//关联的父datagrid
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
-    filterFields:[], //过滤字段，自动传入查询参数
-    sortFields: [],  //排序字段，自动传入查询参数
+    filterFields:[], /*过滤字段，自动传入查询参数
+                        {
+                          'cod':'client_name',
+                          'operatorTyp':'等于',
+                          'value':'值'
+                        }
+                      */
+    sortFields: [],  /*排序字段，自动传入查询参数{
+                           'cod':'client_name',
+                           'order_typ':'升序'
+                       }*/
     queryFuncName: '' , //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
     updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
     //以上为扩展属性
@@ -337,27 +346,34 @@ $.extend($.fn.datagrid.defaults, {
             func: opts.queryFuncName
         };
         $.extend(queryParam, param);
-        if (opts.filterFields.length != 0){
-            //if (queryParam.filter)
+        if (opts.filterFields.length != 0){  //强制增加手动设置过滤条件
+            if (queryParam.filter == undefined) {
+                queryParam.filter = new Array();
+            }
+            $.each(opts.filterFields, function (index, data) {
+                for (var i = 0, ilen = queryParam.filter.length; i < ilen; i++) {
+                    if (queryParam.filter[i].cod == data.cod) {
+                        queryParam.filter.splice(i, 1);
+                        break;
+                    }
+                }
+                queryParam.filter.splice(0, 0, data);
+            });
         }
-        if (opts.sortFields.length != 0) {
+        if (opts.sortFields.length != 0) { //强制增加手动设置排序条件
             if (queryParam.sort == undefined) {
                 queryParam.sort = new Array();
             }
             var sortFields = opts.sortFields.reverse();
             $.each(opts.sortFields, function (index, data) {
                 for (var i = 0, ilen = queryParam.sort.length; i < ilen; i++) {
-                    if (queryParam.sort[i].cod == data) {
+                    if (queryParam.sort[i].cod == data.cod) {
                         queryParam.sort.splice(i, 1);
                         break;
                     }
                 }
-                queryParam.sort.splice(0, 0, {
-                    cod: data,
-                    order_typ: '升序'
-                });
-
             });
+            queryParam.sort.splice(0, 0, data);
         }
         if (queryParam.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
