@@ -7,13 +7,18 @@
                     {{ menuid.writeUI|safe|escape }},
                     {{ menuname.writeUI|safe|escape }},
                     {{ menu_parent_id.writeUI|safe|escape }}
-                    {% endautoescape %}
+                {% endautoescape %}
                 ]
             ],
             //dataTable: 'sys_menu',
+            filterFields: [
+                {cod: 'id', operatorTyp: '不等于', value: 0},
+                {cod: 'parent_id', operatorTyp: '不等于', value: 0}
+            ],
             sortFields: [
-                {cod:'parent_id',order_typ:'升序'},
-                {cod:'sortno',order_typ:'升序'}],
+                {cod: 'parent_id', order_typ: '升序'},
+                {cod: 'sortno', order_typ: '升序'}
+            ],
             groupField: 'parent_id',
             groupFormatter: function (value, rows) {
                 var groupField = $(this).datagrid('options').groupField;
@@ -25,31 +30,69 @@
                 }
                 return value;
             },
-            pagination:true,
+            pagination: false,
             view: groupview,
             queryFuncName: '功能查询',
-            onDblClickRow:function(rowIndex,rowData){
+            onDblClickRow: function (rowIndex, rowData) {
                 return;
             },
-            onClickRow:function(rowIndex,rowData){
+            onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
                 var opts = sysdata.sysmenufuncview.menufuncdg.datagrid('options');
-                opts.filterFields = [{cod:'menu_id',operatorTyp:'等于',value:id}];
+                opts.filterFields = [
+                    {cod: 'menu_id', operatorTyp: '等于', value: id}
+                ];
                 sysdata.sysmenufuncview.menufuncdg.datagrid('reload');
             }
         });
         sysdata.sysmenufuncview.menufuncdg = $('#sysdata-sysmenufunc-menufuncdatagrid').datagrid({
-            autoLoad:false,
+            autoLoad: false,
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
                     {{ menu_id.writeUI|safe|escape }},
                     {{ func_id.writeUI|safe|escape }},
                     {{ remark.writeUI|safe|escape }}
-                    {% endautoescape %}
+                {% endautoescape %}
                 ]
             ],
-            queryFuncName:'功能权限查询'
+            dataTable: 'sys_menu_func',
+            pagination: false,
+            toolbar: [
+
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group: 'sysdata.sysmenufuncview.menufuncdg',
+                    handler: function () {
+                        var menuRow = sysdata.sysmenufuncview.menudg.datagrid('getSelected');
+                        if (menuRow != null && menuRow.id != null) {
+                            sysdata.sysmenufuncview.menufuncdg.datagrid('insertData', {
+                                menu_id: menuRow.id
+                            });
+                        } else {
+                            $.messager.alert('提示', '请选择功能', 'info');
+                        }
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group: 'sysdata.sysmenufuncview.menufuncdg',
+                    handler: function () {
+                        sysdata.sysmenufuncview.menufuncdg.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group: 'sysdata.sysmenufuncview.menufuncdg',
+                    handler: function () {
+                        sysdata.sysmenufuncview.menufuncdg.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName: '功能权限查询',
+            updateFuncName: '功能权限维护'
         });
     });
 </script>

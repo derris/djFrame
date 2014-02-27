@@ -12,12 +12,17 @@ from zdCommon.dbhelp import cursorSelect
 def getsysmenu(request):
     '''功能查询'''
     ldict = json.loads( request.POST['jpargs'] )
-    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where id <> 0 and parent_id <> 0 "
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu  "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getsysfunc(request):
     '''权限查询'''
     ldict = json.loads( request.POST['jpargs'] )
-    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_func where id <> 0 "
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_func "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getsysmenufunc(request):
+    '''权限查询'''
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu_func "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 @csrf_exempt
 def getclients(request):
@@ -53,6 +58,8 @@ def dealPAjax(request):
         return(getsysmenu(request))
     elif ldict['func'] == '权限查询':
         return(getsysfunc(request))
+    elif ldict['func'] == '功能权限查询':
+        return(getsysmenufunc(request))
     elif ldict['func'] == '客户查询':
         return(getclients(request))
     elif ldict['func'] == '系统代码':
@@ -61,6 +68,8 @@ def dealPAjax(request):
     elif ldict['func'] == '功能维护':
         return(updateClients(request))
     elif ldict['func'] == '权限维护':
+        return(updateClients(request))
+    elif ldict['func'] == '功能权限维护':
         return(updateClients(request))
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
