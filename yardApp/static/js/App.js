@@ -364,16 +364,19 @@ $.extend($.fn.datagrid.defaults, {
             if (queryParam.sort == undefined) {
                 queryParam.sort = new Array();
             }
-            var sortFields = opts.sortFields.reverse();
-            $.each(opts.sortFields, function (index, data) {
+            var ver = $.grep(opts.sortFields,function(data,index){
+                return true;
+            }).reverse();
+            $.each(ver, function (index, data) {
                 for (var i = 0, ilen = queryParam.sort.length; i < ilen; i++) {
                     if (queryParam.sort[i].cod == data.cod) {
                         queryParam.sort.splice(i, 1);
                         break;
                     }
                 }
+                queryParam.sort.splice(0, 0, data);
             });
-            queryParam.sort.splice(0, 0, data);
+
         }
         if (queryParam.cols == undefined) {
             var columns = that.datagrid('getColumnFields').concat(that.datagrid('getColumnFields', true));
