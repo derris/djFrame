@@ -60,16 +60,19 @@ def dealPAjax(request):
         return(getsysfunc(request))
     elif ldict['func'] == '功能权限查询':
         return(getsysmenufunc(request))
+    elif ldict['func'] == '系统参数查询':
+        return(getsyscod(request))
     elif ldict['func'] == '客户查询':
         return(getclients(request))
-    elif ldict['func'] == '系统代码':
-        return(getsyscod(request))
+
     ################################################## update
     elif ldict['func'] == '功能维护':
         return(updateClients(request))
     elif ldict['func'] == '权限维护':
         return(updateClients(request))
     elif ldict['func'] == '功能权限维护':
+        return(updateClients(request))
+    elif ldict['func'] == '系统参数维护':
         return(updateClients(request))
     elif ldict['func'] == '客户维护':
         return(updateClients(request))

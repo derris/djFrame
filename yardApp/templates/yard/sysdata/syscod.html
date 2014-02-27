@@ -1,9 +1,7 @@
 <script>
     Namespace.register('sysdata.syscodview');
-    //测试lab_zht_1.html
     $(function () {
         sysdata.syscodview.datagrid = $('#sysdata-syscod-datagrid').datagrid({
-            autoSave:true,
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},
@@ -49,12 +47,12 @@
                     iconCls: 'icon-save',
                     group:'sysdata-syscod-datagrid',
                     handler: function () {
-                        sysdata.syscodview.datagrid.datagrid('postUpdateData');
+                        sysdata.syscodview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
-            url: "{% url 'getsyscod' %}",
-            updateUrl: "{% url 'updateclients' %}"
+            queryFuncName: '系统参数查询',
+            updateFuncName: '系统参数维护'
         });
     });
 </script>
