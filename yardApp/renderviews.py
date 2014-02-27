@@ -1,10 +1,9 @@
 __author__ = 'zhangtao'
 # render 前台界面
 from django.shortcuts import render
-
 from yardApp import models,views
-
 from zdCommon import easyuihelp
+from django.http import HttpResponse
 
 def logonview(request):
     return render(request,"yard/logon.html")
@@ -89,4 +88,4 @@ def dealMenuReq(request):
     elif ls_args == '客户维护':
         return(clientview(request))
     else:
-        pass
+        return HttpResponse("找不到功能名，请联系管理员")

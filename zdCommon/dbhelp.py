@@ -168,13 +168,6 @@ def rawsql4request(aSql, aRequestDict):
     elif len(strip(ls_ordersum)) > 3:
         ls_finorder = ' order by  ' + ls_ordersum
 
-    if ls_finorder.find(' id ') > 0:
-        pass
-    elif ls_finorder.find( ' order ') > 0:
-        ls_finorder = ls_finorder + ', id desc'  #默认排序id倒置
-    else:
-        ls_finorder = ' order by id desc '
-
     ls_finSql = ls_select
     ls_tablename = re.search(r'\bfrom\b\s*(\w*)', ls_sql).group(1)
     ls_sqlcount = "select count(*) from " + ls_tablename

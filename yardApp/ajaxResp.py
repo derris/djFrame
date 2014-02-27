@@ -65,5 +65,5 @@ def dealPAjax(request):
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
     else:
-        pass
+        return("no data")
 
