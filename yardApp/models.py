@@ -44,8 +44,6 @@ class Contract(BaseModel):
     yard_id = models.ForeignKey('Client',blank=True,null=True,related_name='yard',verbose_name='场站')
     finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
-    cntr20_num = models.IntegerField('20尺箱量',blank=True,null=True)
-    cntr40_num = models.IntegerField('40尺箱量',blank=True,null=True)
     def __str__(self):
         return self.bill_no
     class Meta:
