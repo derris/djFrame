@@ -181,7 +181,8 @@ def rawsql4request(aSql, aRequestDict):
     if ls_finorder:
         ls_finSql += ls_finorder
 
-    ls_finSql += (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
+    if l_rows > 0:
+        ls_finSql += (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
     print(ls_finSql, ls_sqlcount)
     return( (ls_finSql, ls_sqlcount) )
 
