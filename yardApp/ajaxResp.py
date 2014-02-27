@@ -42,7 +42,7 @@ def getAuth(request):
 @transaction.atomic
 def updateClients(request):
     ''' 客户维护  '''
-    return HttpResponse(json.dumps(json2upd(ldict = json.loads( request.POST['jpargs'] )),ensure_ascii = False))
+    return HttpResponse(json.dumps(json2upd(json.loads( request.POST['jpargs'] )),ensure_ascii = False))
 
 #####################################################  common interface ----------
 def dealPAjax(request):
