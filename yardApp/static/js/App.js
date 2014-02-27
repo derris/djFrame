@@ -283,14 +283,17 @@ $.extend($.fn.datagrid.defaults.editors, {
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
     //以下为扩展属性
+    autoLoad: true,  //true render完页面后，主动load数据
+    loadNumber:0,    //自datagrid创建以来load的次数，结合autoLoad，限制自动加载。
     autoSave: false, //true 在onAfterEdit()中提交'insert'和'update',在deleteData()中提交‘delete’
     childDatagrid: [],//关联的子datagrid
     parentDatagrid: null,//关联的父datagrid
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
+    filterFields:[], //过滤字段，自动传入查询参数
     sortFields: [],  //排序字段，自动传入查询参数
-    queryFuncName: '',
-    updateFuncName: '',
+    queryFuncName: '' , //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
+    updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
     //以上为扩展属性
     border: false,
     fit: true,
@@ -334,6 +337,9 @@ $.extend($.fn.datagrid.defaults, {
             func: opts.queryFuncName
         };
         $.extend(queryParam, param);
+        if (opts.filterFields.length != 0){
+            //if (queryParam.filter)
+        }
         if (opts.sortFields.length != 0) {
             if (queryParam.sort == undefined) {
                 queryParam.sort = new Array();
@@ -358,6 +364,10 @@ $.extend($.fn.datagrid.defaults, {
             queryParam.cols = columns;
         } else {
             queryParam.cols.push('id');
+        }
+        opts.loadNumber++;
+        if (opts.autoLoad == false && opts.loadNumber == 1){
+            return false;
         }
         $.ajax({
             url: opts.url,

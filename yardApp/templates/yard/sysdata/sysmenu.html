@@ -1,7 +1,6 @@
 <script>
     Namespace.register('sysdata.sysmenuview');
     $(function () {
-        //$.getScript("../../../static/js/datagridgroupview.js");
         sysdata.sysmenuview.datagrid = $('#sysdata-sysmenu-datagrid').datagrid({
             autoSave: false,
             columns: [
@@ -29,11 +28,7 @@
                 }
                 return value;
             },
-            view: $.extend(groupview,{
-                onAfterRender:function(){
-                    sysdata.sysmenuview.datagrid.datagrid('collapseGroup');
-                }
-            }),
+            view:groupview,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',

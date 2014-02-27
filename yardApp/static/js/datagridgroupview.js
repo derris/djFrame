@@ -138,8 +138,13 @@ var groupview = $.extend({}, $.fn.datagrid.defaults.view, {
 				);
 			}
 		}
-	}
-
+	},
+    onAfterRender:function(target){
+        //console.info('onAfterRender');
+        var state = $.data(target, 'datagrid');
+		var opts = state.options;
+        $('#' + opts.id).datagrid('collapseGroup');
+    }
 });
 
 $.extend($.fn.datagrid.methods, {

@@ -36,6 +36,15 @@ def sysfuncview(request):
     funcname = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='funcname')
     remark = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='remark')
     return render(request,'yard/sysdata/sysfunc.html',locals())
+def sysmenufuncview(request):
+    menuid = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='id')
+    menuname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menuname')
+    menu_parent_id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='parent_id',autoforeign=True,foreigndisplayfield='menushowname',hidden=True)
+    id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='id')
+    menu_id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='menu_id',hidden=True)
+    func_id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='func_id',autoforeign=True,foreigndisplayfield='funcname')
+    remark = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='remark')
+    return render(request,'yard/sysdata/sysmenufunc.html',locals())
 def syscodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')
     fldEng = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='fld_eng')
@@ -73,6 +82,8 @@ def dealMenuReq(request):
         return(sysmenuview(request))
     elif ls_args == '权限维护':
         return(sysfuncview(request))
+    elif ls_args == '功能权限维护':
+        return(sysmenufuncview(request))
     elif ls_args == '系统参数维护':
         return(syscodview(request))
     elif ls_args == '客户维护':

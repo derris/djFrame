@@ -1,22 +1,17 @@
 <script>
     Namespace.register('sysdata.sysmenufuncview');
     $(function () {
-        //$.getScript("../../../static/js/datagridgroupview.js");
-        sysdata.sysmenufuncview.menudatagrid = $('#sysdata-sysmenufunc-menudatagrid').datagrid({
+        sysdata.sysmenufuncview.menudg = $('#sysdata-sysmenufunc-menudatagrid').datagrid({
             columns: [
                 [   {% autoescape off %}
-                    {{ id.writeUI|safe|escape }},
+                    {{ menuid.writeUI|safe|escape }},
                     {{ menuname.writeUI|safe|escape }},
-                    {{ menushowname.writeUI|safe|escape }},
-                    {{ parent_id.writeUI|safe|escape }},
-                    {{ sortno.writeUI|safe|escape }},
-                    {{ sys_flag.writeUI|safe|escape }},
-                    {{ remark.writeUI|safe|escape }}
-                {% endautoescape %}
+                    {{ menu_parent_id.writeUI|safe|escape }}
+                    {% endautoescape %}
                 ]
             ],
-            dataTable: 'sys_menu',
-            sortFields: ['parent_id'],
+            //dataTable: 'sys_menu',
+            sortFields: ['parent_id','sortno'],
             groupField: 'parent_id',
             groupFormatter: function (value, rows) {
                 var groupField = $(this).datagrid('options').groupField;
@@ -28,50 +23,28 @@
                 }
                 return value;
             },
+            pagination:true,
             view: groupview,
-            toolbar: [
-                {text: '查询',
-                    iconCls: 'icon-search',
-                    group: 'sysdata.sysmenuview.datagrid',
-                    handler: function () {
-                        sy.createSearchWindow(sysdata.sysmenuview.datagrid);
-                    }
-                },
-                '-',
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: 'sysdata.sysmenuview.datagrid',
-                    handler: function () {
-                        sysdata.sysmenuview.datagrid.datagrid('insertData', {
-                            menuname: '新菜单'
-                        });
-                    }
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: 'sysdata.sysmenuview.datagrid',
-                    handler: function () {
-                        sysdata.sysmenuview.datagrid.datagrid('deleteData');
-                    }
-                },
-                '-',
-                {text: '保存',
-                    iconCls: 'icon-save',
-                    group: 'sysdata.sysmenuview.datagrid',
-                    handler: function () {
-                        sysdata.sysmenuview.datagrid.datagrid('postUpdateAllData');
-                    }
-                }
+            queryFuncName: '功能查询'
+        });
+        sysdata.sysmenufuncview.menufuncdg = $('#sysdata-sysmenufunc-menufuncdatagrid').datagrid({
+            autoLoad:false,
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ menu_id.writeUI|safe|escape }},
+                    {{ func_id.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
             ],
-            queryFuncName: '功能查询',
-            updateFuncName: '功能维护'
+            queryFuncName:'功能权限查询'
         });
     });
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div region="north" border="false">
+    <div region="north" border="false" style="height: 200px" data-options="split:true">
         <table id="sysdata-sysmenufunc-menudatagrid" border="false">
         </table>
     </div>

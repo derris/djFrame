@@ -173,6 +173,8 @@ def dealPAjax(request):
     elif ldict['func'] == '权限维护':
          #return(getAuth(request))
         return(updateClients(request))
+    elif ldict['func'] == '功能权限查询':
+        return(updateClients(request))
     elif ldict['func'] == '客户查询':
         return(getclients2(request))
     elif ldict['func'] == '客户维护':
