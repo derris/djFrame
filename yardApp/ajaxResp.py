@@ -20,9 +20,22 @@ def getsysfunc(request):
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_func "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getsysmenufunc(request):
-    '''权限查询'''
+    '''功能权限查询'''
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu_func "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getuser(request):
+    ''''''
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from s_user "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getpost(request):
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from s_post "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getpostuser(request):
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from s_postuser "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 @csrf_exempt
 def getclients(request):
@@ -62,6 +75,12 @@ def dealPAjax(request):
         return(getsysmenufunc(request))
     elif ldict['func'] == '系统参数查询':
         return(getsyscod(request))
+    elif ldict['func'] == '用户查询':
+        return(getuser(request))
+    elif ldict['func'] == '岗位查询':
+        return(getpost(request))
+    elif ldict['func'] == '岗位用户查询':
+        return(getpostuser(request))
     elif ldict['func'] == '客户查询':
         return(getclients(request))
 
@@ -74,6 +93,13 @@ def dealPAjax(request):
         return(updateClients(request))
     elif ldict['func'] == '系统参数维护':
         return(updateClients(request))
+    elif ldict['func'] == '用户维护':
+        return(updateClients(request))
+    elif ldict['func'] == '岗位维护':
+        return(updateClients(request))
+    elif ldict['func'] == '岗位用户维护':
+        return(updateClients(request))
+
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
     else:

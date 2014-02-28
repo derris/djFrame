@@ -54,6 +54,26 @@ def syscodview(request):
     seq = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='seq')
     remark = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='remark')
     return render(request,"yard/sysdata/syscod.html",locals())
+def userview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.User,field='id')
+    username = easyuihelp.EasyuiFieldUI(model=models.User,field='username')
+    password = easyuihelp.EasyuiFieldUI(model=models.User,field='password',hidden=True)
+    lock = easyuihelp.EasyuiFieldUI(model=models.User,field='lock')
+    remark = easyuihelp.EasyuiFieldUI(model = models.User,field='remark')
+    return render(request,"yard/basedata/user.html",locals())
+def postview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
+    postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Post,field='remark')
+    return render(request,"yard/basedata/post.html",locals())
+def postuserview(request):
+    postid = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
+    postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
+    id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='id')
+    post_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='post_id',hidden=True)
+    user_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='user_id',autoforeign=True,foreigndisplayfield='username')
+    remark = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='remark')
+    return render(request,"yard/basedata/postuser.html",locals())
 def clientview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
@@ -85,6 +105,13 @@ def dealMenuReq(request):
         return(sysmenufuncview(request))
     elif ls_args == '系统参数维护':
         return(syscodview(request))
+    elif ls_args == '用户维护':
+        return(userview(request))
+    elif ls_args == '岗位维护':
+        return(postview(request))
+    elif ls_args == '岗位用户维护':
+        return(postuserview(request))
+
     elif ls_args == '客户维护':
         return(clientview(request))
     else:
