@@ -29,19 +29,19 @@ class Contract(BaseModel):
     bill_no = models.CharField('提单号',max_length=25,unique=True)
     cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
     origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
-    client_id = models.ForeignKey('Client',related_name='client',verbose_name='客户')
-    contract_type = models.ForeignKey('SysCode',related_name='contract_type',verbose_name='委托类型')
-    cargo_fee_type = models.ForeignKey('SysCode',related_name='cargo_fee_type',verbose_name='货物费用计费类型')
+    client_id = models.ForeignKey('Client',verbose_name='客户',db_column='client_id')
+    contract_type = models.ForeignKey('SysCode',verbose_name='委托类型',db_column='contract_type')
+    cargo_fee_type = models.ForeignKey('SysCode',verbose_name='货物费用计费类型',db_column='cargo_fee_type')
     cargo_piece = models.IntegerField('货物件数',blank=True,null=True)
     cargo_weight = models.DecimalField('货物重量',blank=True,decimal_places=2,max_digits=13,null=True)
     cargo_volume = models.DecimalField('货物体积',blank=True,decimal_places=3,max_digits=13,null=True)
     booking_date = models.DateField('接单日期',blank=True,null=True)
     in_port_date = models.DateField('到港日期',blank=True,null=True)
     return_cntr_date = models.DateField('还箱日期',blank=True,null=True)
-    custom_id = models.ForeignKey('Client',blank=True,null=True,related_name='custom',verbose_name='报关行')
-    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,related_name='ship_corp',verbose_name='船公司')
-    port_id = models.ForeignKey('Client',blank=True,null=True,related_name='port',verbose_name='码头')
-    yard_id = models.ForeignKey('Client',blank=True,null=True,related_name='yard',verbose_name='场站')
+    custom_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='报关行',db_column='custom_id')
+    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='船公司',db_column='ship_corp_id')
+    port_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='码头',db_column='port_id')
+    yard_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='场站',db_column='yard_id')
     finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     def __str__(self):
@@ -75,8 +75,8 @@ class FeeProtocol(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     client_id = models.ForeignKey('Client',verbose_name='客户ID')
     fee_id = models.ForeignKey('FeeCod',verbose_name='费用代码')
-    contract_type = models.ForeignKey('SysCode',related_name='fee_contract_type',verbose_name='业务类型')
-    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type',verbose_name='计费方式')
+    contract_type = models.ForeignKey('SysCode',verbose_name='业务类型')
+    fee_cal_type = models.ForeignKey('SysCode',verbose_name='计费方式')
     rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
     free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
     class Meta:
@@ -111,8 +111,10 @@ class Post(BaseModel):
         db_table = 's_post'
 class PostUser(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    post_id = models.ForeignKey('Post',related_name='post',verbose_name='岗位')
-    user_id = models.ForeignKey('User',related_name='user',verbose_name='用户')
+    post_id = models.ForeignKey('Post',verbose_name='岗位',db_column='post_id')
+    user_id = models.ForeignKey('User',verbose_name='用户',db_column='user_id')
+    def __str__(self):
+        return self.post_id.postname + '/' + self.user_id.username
 class SysMenu(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     menuname = models.CharField('功能名称',max_length=50)
@@ -136,6 +138,6 @@ class SysMenuFunc(BaseModel):
     menu_id = models.ForeignKey('SysMenu',verbose_name='功能',db_column='menu_id')
     func_id = models.ForeignKey('SysFunc',verbose_name='权限',db_column='func_id')
     def __str__(self):
-        return self.menu_id + '/' + self.func_id
+        return self.menu_id.menuname + '/' + self.func_id.funcname
     class Meta:
         db_table = 'sys_menu_func'
