@@ -17,8 +17,8 @@ def logger(aMsg, alogFile = BASE_DIR + 'djgw.log'):
 目的：dump任何对象到文件中保存起来。可以load出来。
 使用方法：
 >>> import zdCommon.utils
->>> zdCommon.utils.dump2file('sdfs', 'aa.txt')
->>> b = zdCommon.utils.load4file('aa.txt')
+>>> dump2file('sdfs', 'aa.txt')
+>>> b = load4file('aa.txt')
 '''
 
 from pickle import dump, load, dumps

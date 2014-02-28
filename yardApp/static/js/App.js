@@ -154,8 +154,8 @@ sy.onError = function (msg, logout) {
     /*msg:错误信息
      logout:true 退出系统
      */
-    var defaultMsg = '系统错误,请联系管理员.错误原因：\n' + msg;
-    $.messager.alert('错误', defaultMsg, 'error');
+    var defaultMsg = '系统错误,请通知管理员：\n' + msg;
+    $.messager.alert('注意', defaultMsg, 'error');
     if (logout) {
         window.location.href = sy.logonPath;
     }
@@ -868,7 +868,7 @@ $.ajaxSetup({
         }
     },
     error: function (xhr, msg, e) {
-        sy.onError('服务器错误', false);
+        sy.onError('服务器错误：' + msg, false);
     }
 
 });

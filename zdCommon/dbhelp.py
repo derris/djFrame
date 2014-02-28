@@ -39,30 +39,12 @@ def strip(aStr):
     return aStr.strip(" ") if aStr else ""
 
 def rawsql4request(aSql, aRequestDict):
-    '''
-        根据aRequest来的参数，生成aSql语句。
-        select * from t where a = b and c = d group by c2 order by c1 desc limit 10 offset 1;
-        select count(*) from t where a = b and c = d group by c2
-
-        if request.method == 'GET':
-            ldict_req =   dict(request.Get)
-        else:
-            ldict_req =   dict(request.POST)
-
-        l_testPost =   {
-                'page':2,
-                'rows':12,
-                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value':'值' }]",
-                'sort':"[{ 'cod':'client_name', 'order_typ':'升序' }]"
-            }
-    '''
     ldict_req = {}
     ldict_req = aRequestDict
     l_page = int(ldict_req.get('page', 1))
     l_rows = int(ldict_req.get('rows', 10))
     l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')
     l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
-
     #============================= filter 处理得到 where条件。============
     ls_wheresum = ''
     if len(l_filter) > 3:
@@ -317,7 +299,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
             if 'rows' in i_row['subs'].keys():
                 json2exec(i_row['subs'], aCursor, artn)
     except Exception as e:
-        raise Exception("somthing wrong sum:  " + str(e.args))
+        raise Exception("操作失败:  " + str(e.args))
 
 
 def json2upd(aJsonDict):
@@ -331,8 +313,7 @@ def json2upd(aJsonDict):
         json2exec(aJsonDict, l_cur, l_rtn)
         l_rtn.update({"stateCod": 202})
     except Exception as e:
-        l_rtn.update({"stateCod": -100})
-        raise Exception( str(l_rtn['error'])  )
+        l_rtn.update({"stateCod": -100, "error": str(l_rtn['error']), "msg":"执行失败" })
     finally:
         l_cur.close()
     return(l_rtn)
