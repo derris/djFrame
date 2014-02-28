@@ -1,63 +1,61 @@
 <script>
-    Namespace.register('basedata.userview');
+    Namespace.register('basedata.postview');
     $(function () {
-        basedata.userview.datagrid = $('#basedata-user-datagrid').datagrid({
+        basedata.postview.datagrid = $('#basedata-post-datagrid').datagrid({
             columns: [
                 [
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
-                        {{ username.writeUI|safe|escape }},
-                        {{ password.writeUI|safe|escape }},
-                        {{ lock.writeUI|safe|escape }},
+                        {{ postname.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            dataTable: 's_user',
+            dataTable: 's_post',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-user-datagrid',
+                    group:'basedata-post-datagrid',
                     handler: function () {
-                        sy.createSearchWindow(basedata.userview.datagrid);
+                        console.info(this);
+                        sy.createSearchWindow(basedata.postview.datagrid);
                     }
                 },
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-user-datagrid',
+                    group:'basedata-post-datagrid',
                     handler: function () {
-                        basedata.userview.datagrid.datagrid('insertData', {
-                            username: '新用户',
-                            password:'ok'
+                        basedata.postview.datagrid.datagrid('insertData', {
+                            postname: '新岗位'
                         });
                     }
                 },
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-user-datagrid',
+                    group:'basedata-post-datagrid',
                     handler: function () {
-                        basedata.userview.datagrid.datagrid('deleteData');
+                        basedata.postview.datagrid.datagrid('deleteData');
                     }
                 },
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-user-datagrid',
+                    group:'basedata-post-datagrid',
                     handler: function () {
-                        basedata.userview.datagrid.datagrid('postUpdateAllData');
+                        basedata.postview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
-            queryFuncName:'用户查询',
-            updateFuncName:'用户维护'
+            queryFuncName:'岗位查询',
+            updateFuncName:'岗位维护'
         });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="center" border="false">
-        <table id="basedata-user-datagrid" border="false">
+        <table id="basedata-post-datagrid" border="false">
         </table>
     </div>
 </div>
