@@ -237,11 +237,11 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 ls_sql = "insert into %s" % i_row['table']
                 ls_col = ls_val = ''
                 for icol,ival in i_row['cols'].items():
-                    ls_col += icol + ','
+                    ls_col += str(icol) + ','
                     if icol == "rec_tim":
                         ls_val += "'" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "',"
                     else:
-                        ls_val += "'" + ival + "',"
+                        ls_val += "'" + str(ival) + "',"
                 ls_col = ls_col[:-1]
                 ls_val = ls_val[:-1]
                 if 'rec_nam' in ls_col:
