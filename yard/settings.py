@@ -92,15 +92,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-from datetime import datetime
-def logErr(aMsg, alogFile = BASE_DIR + 'djgwerr.log'):
-    lMsg = datetime.now().strftime('%y-%m-%d %H:%M:%S -> ') + aMsg + os.linesep
-    print(lMsg)  #控制台打印error
-    if DEBUG:
-        a = open(alogFile, 'a+')
-        a.write(lMsg)
-        a.close()
-    # if os.path.exists(alogFile): raise Exception("our system log file does not exist") 直接写。
-
 
 

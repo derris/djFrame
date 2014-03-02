@@ -4,6 +4,8 @@ import json
 from datetime import date,datetime
 from django.db import connection
 import re
+from zdCommon.utils import logErr
+
 
 def correctjsonfield(obj, atypecode):
     if obj:
@@ -31,7 +33,8 @@ def correctjsonfield(obj, atypecode):
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
             return 0
         else:
-            raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
+            logErr("无法识别的数据库对象类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
+            raise Exception("无法识别的数据库对象类型，请通知管理员。")
             return 0
 
 
@@ -77,6 +80,7 @@ def rawsql4request(aSql, aRequestDict):
             elif l_dictwhere['operatorTyp'] == '不介于':
                 ls_oper = ' not between '
             else:
+                logErr("无法识别的操作符号%s" % l_dictwhere['operatorTyp'])
                 raise Exception("无法识别的操作符号，请通知管理员")
 
             ls_value =  str(l_dictwhere['value'])
@@ -105,7 +109,8 @@ def rawsql4request(aSql, aRequestDict):
             elif l_dictsort['order_typ'] == '降序':
                 ltmp_sort = ' desc '
             else:
-                raise Exception("无法识别的排序符号")
+                logErr("无法识别排序符号：%s" % l_dictsort['order_typ'])
+                raise Exception("无法识别的排序符号，请通知管理员")
             ls_ordersum += l_dictsort['cod'] + ltmp_sort + ' ,'
         ls_ordersum = ls_ordersum[:-1]
     #-----------------------------得到前台通用查询的sort 语句-sort -> order -> ls_ordersum ------------------------------
@@ -122,6 +127,7 @@ def rawsql4request(aSql, aRequestDict):
         ls_select = l_tmp.group(1)
     else:
         ls_select = ''
+        logErr("得不到sql主体语句：%s" % ls_sql)
         raise Exception("得不到sql主体语句，请与管理员联系")
 
     l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
@@ -225,6 +231,7 @@ def getTableInfo(aTableName):
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
             ls = 'int'
         else:
+            logErr("遇到不认识的数据库类型代码%d" % atypecode)
             raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
         l_dict.update({ i[0] : ls  })
     return l_dict
@@ -263,6 +270,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     artn['changeid'].update({i_row["uuid"] : l_insId})
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
+                    logErr("数据库执行错误：%s" % str(e.args))
                     artn["error"].append(str(e.args))
                     raise e
             #######################################################################
@@ -290,6 +298,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     li_t = aCursor.cursor.rowcount
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
+                    logErr("数据库执行错误：%s" % str(e.args))
                     artn["error"].append(str(e.args))
                     raise e
             #######################################################################
@@ -301,11 +310,13 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     li_t = aCursor.cursor.rowcount
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
+                    logErr("数据库执行错误：%s" % str(e.args))
                     artn["error"].append(str(e.args))
                     raise e
             if 'rows' in i_row['subs'].keys():
                 json2exec(i_row['subs'], aCursor, artn)
     except Exception as e:
+        logErr("批量数据库执行失败：%s" % str(e.args))
         raise Exception("操作失败:  " + str(e.args))
 
 
@@ -320,6 +331,7 @@ def json2upd(aJsonDict):
         json2exec(aJsonDict, l_cur, l_rtn)
         l_rtn.update({"stateCod": 202})
     except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
         l_rtn.update({"stateCod": -100, "error": str(l_rtn['error']), "msg":"执行失败" })
     finally:
         l_cur.close()
@@ -329,19 +341,30 @@ def cursorExec(aSql):
     '''
         execute sql use cursor, return effect rows.
     '''
-    l_cur = connection.cursor()
-    l_cur.execute(aSql)
-    l_rtn = l_cur.cursor.rowcount
-    l_cur.close
+    l_rtn = -1
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql)
+        l_rtn = l_cur.cursor.rowcount
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+    finally:
+        l_cur.close
+
     return l_rtn
 
 def cursorSelect(aSql):
     '''
         execute sql use cursor, return all. fetchall()
     '''
-    l_cur = connection.cursor()
-    l_cur.execute(aSql)
-    l_rtn = l_cur.fetchall()
-    l_cur.close
+    l_rtn = -1
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql)
+        l_rtn = l_cur.fetchall()
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+    finally:
+        l_cur.close
     return l_rtn
 
