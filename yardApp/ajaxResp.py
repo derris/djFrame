@@ -9,6 +9,22 @@ from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 from zdCommon.dbhelp import cursorSelect
 
 ##########################################################        GET    ----
+# 查询参数 json string。
+#    jpargs:  '''
+#               { 'reqtype':'query'    #  类型。
+#               'rows':10,          #  -1 表示不分页。返回全部的数据。
+#               'page':1,           #  当前页码数。
+#               'cols':['colname1','colname2','colname3'],    # 查询栏目。
+#               'filter':[{                       # 前台传递的查询条件参数。
+#                          'cod':'client_name',
+#                          'operatorTyp':'等于',
+#                          'value':'值'
+#                       },...],
+#               'sort':[{                        # 前台传递过来的排序参数。
+#                       'cod':'client_name',     # 排序字段，
+#                       'order_typ':'升序'       # 排序升降
+#                       }, ... ]'
+#               }   '''
 def getsysmenu(request):
     '''功能查询'''
     ldict = json.loads( request.POST['jpargs'] )

@@ -93,9 +93,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 from datetime import datetime
-def logger(aMsg, alogFile = BASE_DIR + 'djgw.log'):
+def logErr(aMsg, alogFile = BASE_DIR + 'djgwerr.log'):
     lMsg = datetime.now().strftime('%y-%m-%d %H:%M:%S -> ') + aMsg + os.linesep
-    print(lMsg)
+    print(lMsg)  #控制台打印error
     if DEBUG:
         a = open(alogFile, 'a+')
         a.write(lMsg)

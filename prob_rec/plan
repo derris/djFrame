@@ -33,11 +33,11 @@ yardApp/views.getMenuList
             'cod':'client_name',
             'operatorTyp':'等于',
             'value':'值'
-         }]',
+         }, ... ]',
          'sort':'[{
            'cod':'client_name',
            'order_typ':'升序'
-         }]'
+         }, ...]'
     }
 ****后台返回select：
     {

@@ -1,26 +1,27 @@
 __author__ = 'dh'
 
 import unittest
+import json
+
+
 
 class autotest(unittest.TestCase):
+    jpargs =""" {   "reqtype":"query",
+            "rows":20,
+            "page":2,
+            "cols":["col1","col2","col3"],
+            "filter": [ {"cod": "colnam1", "operatorTyp": "等于","value": "CLI1"},
+                        {"cod": "colnam2", "operatorTyp": "不等于","value": "CLI2"}
+                      ] ,
+            "sort": [ { "cod":"colsort1", "order_typ":"升序"},
+                      { "cod":"colsort2", "order_typ":"降序"}
+                    ]
+        }
+    """
 
-    l_query1 =   {
-                'page':1,
-                'rows':12,
-                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value':'值' }]",
-                'sort':"[{ 'cod':'client_name', 'order_typ':'升序' }]"
-            }
-    l_query2 =   {
-                'page':22,
-                'rows':22,
-                'filter':"[{ 'cod':'client_name', 'operatorTyp':'等于', 'value':'值' }, { 'cod':'client_name2', 'operatorTyp':'等于', 'value':'值2'}]",
-                'sort':"[{ 'cod':'client1', 'order_typ':'升序' }, { 'cod':'client2', 'order_typ':'降序' }]"
-            }
-
-    l_query3 =   {
-                'page':22,
-                'rows':12
-            }
+    l_query1 = json.loads( jpargs)
+    l_query2 =   { 'reqtype':'query', 'page':10, 'rows':-1   }
+    l_query3 =   { 'reqtype':'query', 'page':100, 'rows':12   }
     l_query = []
     l_query.append(l_query1)
     l_query.append(l_query2)
@@ -29,8 +30,13 @@ class autotest(unittest.TestCase):
     l_sql = []
     l_sql.append('select * from table1')
     l_sql.append('select * from table1 where c1 = a ')
-    l_sql.append('select * from table1 where c1 = a and c2 = b order by id desc ')
-    l_sql.append('select * from table1 where c1 = a  group by cc')
+    l_sql.append('select * from table1 where c1 = a group by cc')
+    l_sql.append('select * from table1 where c1 = a order by c2 asc ')
+    l_sql.append('select * from table1 where c1 = a and  c2 <> 1')
+    l_sql.append('select * from table1 where c1 = a and  c2 <> 1 order by c3 desc')
+    l_sql.append('select * from table1 where c1 = a and  c2 <> 1 group by c3 having c2 > 0')
+    l_sql.append('select * from table1 group by c3 having c2 > 0')
+    l_sql.append('select * from table1 order by c2')
     l_sql.append('select * from table1 where c1 = a  group by cc, dd order by dd desc, c asc ')
 
     def test_rawsql4request(self):
@@ -44,7 +50,7 @@ class autotest(unittest.TestCase):
             #self.assertEqual(a, a)
 
     def test_insert(self):
-        dict_test =   { 'reqtype':'insert', #      -----增加一个新字段。
+        dict_test =   { 'reqtype':'update', #      -----增加一个新字段。
            'rows': [{
                     'op': 'insert',
                     'table': 'c_client',
