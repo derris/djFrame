@@ -195,12 +195,12 @@ def rawsql2json(aSql, aSqlCount):
         l_sqlcount = l_cur.fetchone()[0]
     except Exception as e:
         l_rtn["error"].append(str(e.args))
-        l_rtn["msg"] = str(e.args[1])
+        logErr("查询失败：%s" % str(e.args))
         raise e
     finally:
         l_cur.close()
 
-    l_rtn.update( {"stateCod": 1 if l_sqlcount > 0 else 201  , "total":l_sqlcount, "rows": l_sum } )
+    l_rtn.update( {"msg":"查询失败",  "stateCod": 1 if l_sqlcount > 0 else 201  , "total":l_sqlcount, "rows": l_sum } )
     # l_rtn =  '{"total":' + str(l_count) + ', "rows":' + str( l_sum) + '}'
     return l_rtn
 
