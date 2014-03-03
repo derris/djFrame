@@ -38,7 +38,8 @@ def getMenuPrivilege():
                     ldict_3 = []
                     if len(l_menu3) > 0 :
                         for i_m3 in l_menu3:
-                            ldict_3.append({ "id": "m" + str(i_m2[0]) + "f" + str(i_m3[0]), "text": l_func[ i_m3[1], "checked": False ] })   #把菜单有的权限列出来
+
+                            ldict_3.append({ "id": "m" + str(i_m2[0]) + "f" + str(i_m3[0]), "text": l_func[ i_m3[1] ] , "checked": False })   #把菜单有的权限列出来
                             # cursorSelect('select count() from sys_postmenufunc where menu_id = %d and func_id = %d' % (i_m2[0], ixxx ) )
                             # 有则check \== true
                     else:
