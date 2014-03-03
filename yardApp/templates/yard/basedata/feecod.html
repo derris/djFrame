@@ -1,60 +1,63 @@
 <script>
-    Namespace.register('basedata.postview');
+    Namespace.register('basedata.feecodview');
     $(function () {
-        basedata.postview.datagrid = $('#basedata-post-datagrid').datagrid({
+        basedata.feecodview.datagrid = $('#basedata-feecod-datagrid').datagrid({
             columns: [
                 [
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
-                        {{ postname.writeUI|safe|escape }},
+                        {{ fee_name.writeUI|safe|escape }},
+                        {{ fee_group_id.writeUI|safe|escape }},
+                        {{ pair_flag.writeUI|safe|escape }},
+                        {{ protocol_flag.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            dataTable: 's_post',
+            dataTable: 'c_fee',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-feecod-datagrid',
                     handler: function () {
-                        sy.createSearchWindow(basedata.postview.datagrid);
+                        sy.createSearchWindow(basedata.feecodview.datagrid);
                     }
                 },
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-feecod-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('insertData', {
-                            postname: '新岗位'
+                        basedata.feecodview.datagrid.datagrid('insertData', {
+                            fee_name: '新费用'
                         });
                     }
                 },
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-feecod-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('deleteData');
+                        basedata.feecodview.datagrid.datagrid('deleteData');
                     }
                 },
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-feecod-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('postUpdateAllData');
+                        basedata.feecodview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
-            queryFuncName:'岗位查询',
-            updateFuncName:'岗位维护'
+            queryFuncName:'费用名称查询',
+            updateFuncName:'费用名称维护'
         });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="center" border="false">
-        <table id="basedata-post-datagrid" border="false">
+        <table id="basedata-feecod-datagrid" border="false">
         </table>
     </div>
 </div>

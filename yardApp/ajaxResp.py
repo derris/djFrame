@@ -69,6 +69,26 @@ def getAuth(request):
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcntrtype(request):
+    '''箱型查询'''
+    ls_sql = "select id,cntr_type,cntr_type_name,remark from c_cntr_type"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+def getaction(request):
+    '''动态类型查询'''
+    ls_sql = "select id,action_name,require_flag,sortno,remark from c_contract_action"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+def getfeegroup(request):
+    '''费用分组类型查询'''
+    ls_sql = "select id,group_name,remark from c_fee_group"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+def getfeecod(request):
+    '''费用名称查询'''
+    ls_sql = "select id,fee_name,fee_group_id,pair_flag,protocol_flag,remark from c_fee"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
 
 
 #############################################################    UPDATE    -----
@@ -97,6 +117,15 @@ def dealPAjax(request):
         return(getpost(request))
     elif ldict['func'] == '岗位用户查询':
         return(getpostuser(request))
+    elif ldict['func'] == '箱型查询':
+        return(getcntrtype(request))
+    elif ldict['func'] == '动态类型查询':
+        return(getaction(request))
+    elif ldict['func'] == '费用分组类型查询':
+        return(getfeegroup(request))
+    elif ldict['func'] == '费用名称查询':
+        return(getfeecod(request))
+
     elif ldict['func'] == '客户查询':
         return(getclients(request))
 
@@ -114,6 +143,14 @@ def dealPAjax(request):
     elif ldict['func'] == '岗位维护':
         return(updateClients(request))
     elif ldict['func'] == '岗位用户维护':
+        return(updateClients(request))
+    elif ldict['func'] == '箱型维护':
+        return(updateClients(request))
+    elif ldict['func'] == '动态类型维护':
+        return(updateClients(request))
+    elif ldict['func'] == '费用分组类型维护':
+        return(updateClients(request))
+    elif ldict['func'] == '费用名称维护':
         return(updateClients(request))
 
     elif ldict['func'] == '客户维护':

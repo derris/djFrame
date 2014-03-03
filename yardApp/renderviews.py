@@ -90,7 +90,32 @@ def clientview(request):
     recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
     return render(request,"yard/basedata/clients.html",locals())
-
+def cntrtypeview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='id')
+    cntrtype = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type',width=100)
+    cntrtypename = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type_name')
+    remark = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='remark')
+    return render(request,"yard/basedata/cntrtype.html",locals())
+def actionview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Action,field='id')
+    action_name = easyuihelp.EasyuiFieldUI(model=models.Action,field='action_name')
+    require_flag = easyuihelp.EasyuiFieldUI(model=models.Action,field='require_flag')
+    sortno = easyuihelp.EasyuiFieldUI(model=models.Action,field='sortno')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Action,field='remark')
+    return render(request,"yard/basedata/action.html",locals())
+def feegroupview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='id')
+    group_name = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='group_name',width=120)
+    remark = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='remark')
+    return render(request,"yard/basedata/feegroup.html",locals())
+def feeview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
+    fee_name = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name')
+    fee_group_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_group_id')
+    pair_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='pair_flag')
+    protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
+    remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark')
+    return render(request,"yard/basedata/feecod.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -117,6 +142,15 @@ def dealMenuReq(request):
         return(postuserview(request))
     elif ls_args == '岗位权限维护':
         return(postmenufuncview(request))
+    elif ls_args == '箱型维护':
+        return(cntrtypeview(request))
+    elif ls_args == '委托动态类型维护':
+        return(actionview(request))
+    elif ls_args == '费用分组类型维护':
+        return(feegroupview(request))
+    elif ls_args == '费用名称维护':
+        return(feecodview(request))
+
     elif ls_args == '客户维护':
         return(clientview(request))
     else:

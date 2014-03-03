@@ -1,60 +1,62 @@
 <script>
-    Namespace.register('basedata.postview');
+    Namespace.register('basedata.actionview');
     $(function () {
-        basedata.postview.datagrid = $('#basedata-post-datagrid').datagrid({
+        basedata.actionview.datagrid = $('#basedata-action-datagrid').datagrid({
             columns: [
                 [
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
-                        {{ postname.writeUI|safe|escape }},
+                        {{ action_name.writeUI|safe|escape }},
+                        {{ require_flag.writeUI|safe|escape }},
+                        {{ sortno.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            dataTable: 's_post',
+            dataTable: 'c_contract_action',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-action-datagrid',
                     handler: function () {
-                        sy.createSearchWindow(basedata.postview.datagrid);
+                        sy.createSearchWindow(basedata.actionview.datagrid);
                     }
                 },
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-action-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('insertData', {
-                            postname: '新岗位'
+                        basedata.actionview.datagrid.datagrid('insertData', {
+                            action_name: '新动态'
                         });
                     }
                 },
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-action-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('deleteData');
+                        basedata.actionview.datagrid.datagrid('deleteData');
                     }
                 },
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-post-datagrid',
+                    group:'basedata-action-datagrid',
                     handler: function () {
-                        basedata.postview.datagrid.datagrid('postUpdateAllData');
+                        basedata.actionview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
-            queryFuncName:'岗位查询',
-            updateFuncName:'岗位维护'
+            queryFuncName:'动态类型查询',
+            updateFuncName:'动态类型维护'
         });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="center" border="false">
-        <table id="basedata-post-datagrid" border="false">
+        <table id="basedata-action-datagrid" border="false">
         </table>
     </div>
 </div>

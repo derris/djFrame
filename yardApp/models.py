@@ -51,36 +51,11 @@ class Contract(BaseModel):
 class contractAction(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     contract_id = models.ForeignKey('Contract',related_name='contract_contractaction',verbose_name='委托')
-    action_id = models.ForeignKey('ContractActionCod',related_name='action_contractaction',verbose_name='委托动态')
+    action_id = models.ForeignKey('Action',related_name='action_contractaction',verbose_name='委托动态')
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     class Meta:
         db_table = 'contract_action'
-class ContractActionCod(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    action_name = models.CharField('委托动态名称',max_length=20,unique=True)
-    def __str__(self):
-        return self.action_name
-    class Meta:
-        db_table = 'c_contract_action'
-class FeeCod(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    fee_name = models.CharField('费用名称',max_length=20,unique=True)
-    protocol_flag = models.NullBooleanField('协议费用标识')
-    def __str__(self):
-        return self.fee_name
-    class Meta:
-        db_table = 'c_fee'
-class FeeProtocol(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',verbose_name='客户ID')
-    fee_id = models.ForeignKey('FeeCod',verbose_name='费用代码')
-    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',verbose_name='业务类型')
-    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',verbose_name='计费方式')
-    rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
-    free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
-    class Meta:
-        db_table = 'c_fee_protocol'
 class SysCode(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     fld_eng = models.CharField('英文字段名',max_length=20)
@@ -150,3 +125,47 @@ class SysMenuFunc(BaseModel):
         return self.menu_id.menuname + '/' + self.func_id.funcname
     class Meta:
         db_table = 'sys_menu_func'
+class CntrType(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    cntr_type = models.CharField('箱型',max_length=4)
+    cntr_type_name = models.CharField('箱型描述',max_length=20)
+    def __str__(self):
+        return self.cntr_type
+    class Meta:
+        db_table = 'c_cntr_type'
+class Action(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    action_name = models.CharField('动态名称',max_length=20)
+    require_flag = models.NullBooleanField('必有标识',blank=True,null=True)
+    sortno = models.SmallIntegerField('序号')
+    def __str__(self):
+        return self.action_name
+    class Meta:
+        db_table = 'c_contract_action'
+class FeeGroup(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    group_name = models.CharField('分组名称',max_length=10)
+    def __str__(self):
+        return self.group_name
+    class Meta:
+        db_table = 'c_fee_group'
+class FeeCod(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    fee_name = models.CharField('费用名称',max_length=20)
+    protocol_flag = models.NullBooleanField('协议费用标识')
+    fee_group_id = models.ForeignKey('FeeGroup',related_name='feegroup_feecod',verbose_name='费用分组',db_column='fee_group_id')
+    pair_flag = models.NullBooleanField('代付标识',blank=True,null=True)
+    def __str__(self):
+        return self.fee_name
+    class Meta:
+        db_table = 'c_fee'
+class FeeProtocol(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户ID')
+    fee_id = models.ForeignKey('FeeCod',related_name='feecod_feeprotocol',verbose_name='费用代码')
+    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',verbose_name='业务类型')
+    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',verbose_name='计费方式')
+    rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
+    free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
+    class Meta:
+        db_table = 'c_fee_protocol'
