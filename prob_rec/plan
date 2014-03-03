@@ -3,9 +3,9 @@
 ******************************************************
 从sys_menu_func中返回所有数据
 {
-    id: menu_id或者func_id,会有重复id加个前缀'M'/'F'
+    id: menu_id或者func_id,会有重复id加个前缀'M'/'F',
     text: menu_name或者func_name,
-    checked: true 岗位有此功能或权限, 从sys_postmenu和sys_postfunc中取数
+    checked: true 岗位有此功能或权限, 从sys_postmenu和sys_postfunc中取数,
     children: 循环
 }
 
