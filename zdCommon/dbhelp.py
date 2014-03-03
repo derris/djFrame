@@ -181,6 +181,7 @@ def rawsql2json(aSql, aSqlCount):
     l_cur = connection.cursor()
     l_rtn = {"msg": "查询成功", "error":[] }
     ls_msg = "查询完毕"
+    l_state = 0
     try:
         l_cur.execute(aSql)
         l_keys = [i for i in l_cur.description ]
@@ -198,6 +199,7 @@ def rawsql2json(aSql, aSqlCount):
         l_rtn["error"].append(str(e.args))
         logErr("查询失败：%s" % str(e.args))
         ls_msg = "查询失败"
+        l_state = -1
         raise e
     finally:
         l_cur.close()

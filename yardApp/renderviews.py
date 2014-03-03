@@ -4,6 +4,7 @@ from django.shortcuts import render
 from yardApp import models,views
 from zdCommon import easyuihelp
 from django.http import HttpResponse
+from zdCommon.sysjson import getMenuList
 
 def logonview(request):
     return render(request,"yard/logon.html")
@@ -15,7 +16,7 @@ def maintabview(request):
     return render(request,"yard/MainTab.html")
 
 def mainmenutreeview(request):
-    menudata = views.getMenuList()
+    menudata = getMenuList()
     return render(request,"yard/MainMenuTree.html",locals())
 
 def getcommonsearchview(request):
