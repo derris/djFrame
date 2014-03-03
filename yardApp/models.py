@@ -50,8 +50,8 @@ class Contract(BaseModel):
         db_table = 'contract'
 class contractAction(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    contract_id = models.ForeignKey('Contract',verbose_name='委托')
-    action_id = models.ForeignKey('ContractActionCod',verbose_name='委托动态')
+    contract_id = models.ForeignKey('Contract',related_name='contract_contractaction',verbose_name='委托')
+    action_id = models.ForeignKey('ContractActionCod',related_name='action_contractaction',verbose_name='委托动态')
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     class Meta:
@@ -111,15 +111,24 @@ class Post(BaseModel):
         db_table = 's_post'
 class PostUser(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    post_id = models.ForeignKey('Post',verbose_name='岗位',db_column='post_id')
-    user_id = models.ForeignKey('User',verbose_name='用户',db_column='user_id')
+    post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postuser',db_column='post_id')
+    user_id = models.ForeignKey('User',verbose_name='用户',related_name='user_postuser',db_column='user_id')
     def __str__(self):
         return self.post_id.postname + '/' + self.user_id.username
+class PostMenu(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postmenu',db_column='post_id')
+    menu_id = models.ForeignKey('SysMenu',verbose_name='功能',related_name='menu_postmenu',db_column='menu_id')
+    active = models.NullBooleanField('显示',blank=True,null=True)
+class PostFunc(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postfunc',db_column='post_id')
+    func_id = models.ForeignKey('SysFunc',verbose_name='权限',related_name='func_postfunc',db_column='func_id')
 class SysMenu(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     menuname = models.CharField('功能名称',max_length=50)
     menushowname = models.CharField('功能显示名称',max_length=50)
-    parent_id = models.ForeignKey('SysMenu',limit_choices_to={'parent_id':0},verbose_name='父功能',db_column='parent_id')
+    parent_id = models.ForeignKey('SysMenu',limit_choices_to={'parent_id':0},related_name='menu_sysmenu',verbose_name='父功能',db_column='parent_id')
     sortno = models.SmallIntegerField('序号',blank=True,null=True)
     sys_flag = models.NullBooleanField('系统功能标识',blank=True,null=True)
     def __str__(self):
@@ -135,8 +144,8 @@ class SysFunc(BaseModel):
         db_table = 'sys_func'
 class SysMenuFunc(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    menu_id = models.ForeignKey('SysMenu',verbose_name='功能',db_column='menu_id')
-    func_id = models.ForeignKey('SysFunc',verbose_name='权限',db_column='func_id')
+    menu_id = models.ForeignKey('SysMenu',verbose_name='功能',related_name='menu_sysmenufunc',db_column='menu_id')
+    func_id = models.ForeignKey('SysFunc',verbose_name='权限',related_name='func_sysmenufunc',db_column='func_id')
     def __str__(self):
         return self.menu_id.menuname + '/' + self.func_id.funcname
     class Meta:

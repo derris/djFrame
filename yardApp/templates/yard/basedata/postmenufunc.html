@@ -1,0 +1,39 @@
+<script>
+    Namespace.register('basedata.postmenufuncview');
+    $(function () {
+        basedata.postmenufuncview.postdg = $('#basedata-postmenufunc-postdg').datagrid({
+            columns: [
+                [   {% autoescape off %}
+                    {{ postid.writeUI|safe|escape }},
+                    {{ postname.writeUI|safe|escape }},
+                {% endautoescape %}
+                ]
+            ],
+            pagination: false,
+            queryFuncName: '岗位查询',
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                var id = rowData.id;
+                basedata.postmenufuncview.menufunctree.reload();
+            }
+        });
+        basedata.postmenufuncview.menufunctree = $('#basedata-postmenufunc-menufunctree').tree({
+            url:'',
+            checkbox:true,
+            lines:true
+        });
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="north" border="false" style="height: 200px" data-options="split:true">
+        <table id="basedata-postmenufunc-postdg" border="false">
+        </table>
+    </div>
+    <div region="center" border="false">
+        <ul id="basedata-postmenufunc-menufunctree"></ul>
+    </div>
+
+</div>

@@ -39,10 +39,22 @@
             onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
                 var opts = sysdata.sysmenufuncview.menufuncdg.datagrid('options');
-                opts.filterFields = [
-                    {cod: 'menu_id', operatorTyp: '等于', value: id}
-                ];
-                sysdata.sysmenufuncview.menufuncdg.datagrid('reload');
+                if (sysdata.sysmenufuncview.menufuncdg.datagrid('getChanges').length > 0) {
+                    $.messager.confirm('确认', '数据已改变,是否保存?', function (r) {
+                        if (r) {
+                            sysdata.sysmenufuncview.menufuncdg.datagrid('options').toolbar[4].handler();
+                        }
+                        opts.filterFields = [
+                            {cod: 'menu_id', operatorTyp: '等于', value: id}
+                        ];
+                        sysdata.sysmenufuncview.menufuncdg.datagrid('reload');
+                    });
+                } else {
+                    opts.filterFields = [
+                        {cod: 'menu_id', operatorTyp: '等于', value: id}
+                    ];
+                    sysdata.sysmenufuncview.menufuncdg.datagrid('reload');
+                }
             }
         });
         sysdata.sysmenufuncview.menufuncdg = $('#sysdata-sysmenufunc-menufuncdatagrid').datagrid({
@@ -87,13 +99,38 @@
                     iconCls: 'icon-save',
                     group: 'sysdata.sysmenufuncview.menufuncdg',
                     handler: function () {
-                        sysdata.sysmenufuncview.menufuncdg.datagrid('postUpdateAllData');
+                        console.info(1);
+                        if (sysdata.sysmenufuncview.menufuncdg.datagrid('preSave') == 1) {
+                            if (sysdata.sysmenufuncview.menufuncdg.validateAllData() == 1) {
+                                sysdata.sysmenufuncview.menufuncdg.datagrid('postUpdateAllData');
+                            }
+                        } else {
+                            $.messager.alert('提示', '检验失败', 'info');
+                        }
                     }
                 }
             ],
             queryFuncName: '功能权限查询',
             updateFuncName: '功能权限维护'
         });
+        sysdata.sysmenufuncview.menufuncdg.validateAllData = function () {
+            var rows = sysdata.sysmenufuncview.menufuncdg.datagrid('getRows');
+            var find = false;
+            $.each(rows, function (index, data) {
+                for (var i = index + 1, ilen = rows.length; i < ilen; i++) {
+                    if (data.func_id == rows[i].func_id) {
+                        find = true;
+                        return false;
+                    }
+                }
+            });
+            if (find == true) {
+                $.messager.alert('提示', '权限重复', 'info');
+                return 0;
+            } else {
+                return 1;
+            }
+        }
     });
 </script>
 

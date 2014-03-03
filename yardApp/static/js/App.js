@@ -303,6 +303,7 @@ $.extend($.fn.datagrid.defaults, {
                        }*/
     queryFuncName: '' , //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
     updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
+
     //以上为扩展属性
     border: false,
     fit: true,
@@ -559,7 +560,6 @@ $.extend($.fn.datagrid.methods, {
             }
         }
     },
-
     //ajax提交之前调用，param 为null
     preSave: function (jq, param) {
         var opts = jq.datagrid('options');
@@ -574,7 +574,7 @@ $.extend($.fn.datagrid.methods, {
             if (jq.datagrid('validateRow', opts.editRow)) {
                 jq.datagrid('endEdit', opts.editRow);
                 opts.editRow = -1;
-                return 1;
+                return 1;;
             } else {
                 return 0;
             }

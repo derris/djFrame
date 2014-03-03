@@ -17,10 +17,22 @@
             onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
                 var opts = basedata.postuserview.postuserdg.datagrid('options');
-                opts.filterFields = [
-                    {cod: 'post_id', operatorTyp: '等于', value: id}
-                ];
-                basedata.postuserview.postuserdg.datagrid('reload');
+                if (basedata.postuserview.postuserdg.datagrid('getChanges').length > 0) {
+                    $.messager.confirm('确认', '数据已改变,是否保存?', function (r) {
+                        if (r) {
+                            basedata.postuserview.postuserdg.datagrid('options').toolbar[4].handler();
+                        }
+                        opts.filterFields = [
+                            {cod: 'post_id', operatorTyp: '等于', value: id}
+                        ];
+                        basedata.postuserview.postuserdg.datagrid('reload');
+                    });
+                } else {
+                    opts.filterFields = [
+                        {cod: 'post_id', operatorTyp: '等于', value: id}
+                    ];
+                    basedata.postuserview.postuserdg.datagrid('reload');
+                }
             }
         });
         basedata.postuserview.postuserdg = $('#basedata-postuser-postuserdg').datagrid({
@@ -63,13 +75,37 @@
                     iconCls: 'icon-save',
                     group: 'basedata.postuserview.postuserdg',
                     handler: function () {
-                        basedata.postuserview.postuserdg.datagrid('postUpdateAllData');
+                        if (basedata.postuserview.postuserdg.datagrid('preSave') == 1){
+                            if (basedata.postuserview.postuserdg.validateAllData() == 1){
+                                basedata.postuserview.postuserdg.datagrid('postUpdateAllData');
+                            }
+                        }else{
+                            $.messager.alert('提示','检验失败','info');
+                        }
                     }
                 }
             ],
             queryFuncName: '岗位用户查询',
             updateFuncName: '岗位用户维护'
         });
+        basedata.postuserview.postuserdg.validateAllData = function () {
+            var rows = basedata.postuserview.postuserdg.datagrid('getRows');
+            var find = false;
+            $.each(rows, function (index, data) {
+                for (var i = index + 1, ilen = rows.length; i < ilen; i++) {
+                    if (data.user_id == rows[i].user_id) {
+                        find = true;
+                        return false;
+                    }
+                }
+            });
+            if (find == true) {
+                $.messager.alert('提示', '用户重复', 'info');
+                return 0;
+            } else {
+                return 1;
+            }
+        }
     });
 </script>
 

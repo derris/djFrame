@@ -74,6 +74,10 @@ def postuserview(request):
     user_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='user_id',autoforeign=True,foreigndisplayfield='username')
     remark = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='remark')
     return render(request,"yard/basedata/postuser.html",locals())
+def postmenufuncview(request):
+    postid = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
+    postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
+    return render(request,"yard/basedata/postmenufunc.html",locals())
 def clientview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
     clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
@@ -111,7 +115,8 @@ def dealMenuReq(request):
         return(postview(request))
     elif ls_args == '岗位用户维护':
         return(postuserview(request))
-
+    elif ls_args == '岗位权限维护':
+        return(postmenufuncview(request))
     elif ls_args == '客户维护':
         return(clientview(request))
     else:
