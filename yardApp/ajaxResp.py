@@ -1,12 +1,11 @@
 __author__ = 'Administrator'
 
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
 from django.http import HttpResponse
 import json
-from django.db import transaction, connection
+from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
-from zdCommon.dbhelp import cursorSelect
+from zdCommon.sysjson import getMenuPrivilege
 
 ##########################################################        GET    ----
 # 查询参数 json string。
@@ -99,7 +98,9 @@ def getpaytype(request):
     ls_sql = "select id,pay_name,remark from c_pay_type"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
-
+def getprivilege(request):
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(getMenuPrivilege(ldict['postid']),ensure_ascii = False))
 
 #############################################################    UPDATE    -----
 @csrf_exempt
@@ -142,6 +143,8 @@ def dealPAjax(request):
 
     elif ldict['func'] == '客户查询':
         return(getclients(request))
+    elif ldict['func'] == '岗位权限查询':
+        return(getprivilege(request))
 
     ################################################## update
     elif ldict['func'] == '功能维护':
