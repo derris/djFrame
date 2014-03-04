@@ -67,17 +67,19 @@ def getMenuPrivilege(aPostid):
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
-'''
-select * from sys_menu_fun  into  tree; 生成tree
-for node in tree{ 遍历tree
-     if node is menu{  如果是功能
-        select count(1) into from s_postmenu where postid = 指定岗位id and menuid = node.id
-        if 存在记录
-           node.checked = true
-        不存在
-           node.checked = false
-     }else{  权限
-        select count(1) from s_postfunc where postid = 指定岗位id and funcid = node.id
-        同上
+def setMenuPrivilege(aJson):
+    '''
+    这样传有没有问题？
+    jpargs: {  'reqtype':'update'      ----- insert 功能发起。
+       'rows': [ {
+                'op': 'insert',   / "delete"      // 添加 或者 取消授权。   显示 或者 隐藏 菜单。
+                'table': 'menu',   /  'func'
+                'menuid' : mid
+                "funcid' : fid
+                "postid", : pid
+            },]
+        ｝
+    '''
+    pass
 
-'''
+

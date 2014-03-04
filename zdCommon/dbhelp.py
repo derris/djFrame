@@ -46,7 +46,7 @@ def rawsql4request(aSql, aRequestDict):
     ldict_req = aRequestDict
     l_page = int(ldict_req.get('page', 1))
     l_rows = int(ldict_req.get('rows', 10))
-    l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')        # json必须是双引号。。
+    l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')        # json必须是双引号。否则loads错误。
     l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
     #============================= filter 处理得到 where条件。============
     ls_wheresum = ''
