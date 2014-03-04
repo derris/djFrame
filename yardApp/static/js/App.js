@@ -682,8 +682,9 @@ $.extend($.fn.datagrid.methods, {
                                     }
                                 }
                             }
+                            $(jq).datagrid('afterSave');
                         }
-                        $(jq).datagrid('afterSave');
+
                     }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
                 }

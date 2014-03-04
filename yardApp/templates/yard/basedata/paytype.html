@@ -1,0 +1,60 @@
+<script>
+    Namespace.register('basedata.paytypeview');
+    $(function () {
+        basedata.paytypeview.datagrid = $('#basedata-paytype-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ pay_name.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_pay_type',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-paytype-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.paytypeview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-paytype-datagrid',
+                    handler: function () {
+                        basedata.paytypeview.datagrid.datagrid('insertData', {
+                            pay_name:"新付款方式"
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-paytype-datagrid',
+                    handler: function () {
+                        basedata.paytypeview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-paytype-datagrid',
+                    handler: function () {
+                        basedata.paytypeview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'付款方式查询',
+            updateFuncName:'付款方式维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-paytype-datagrid" border="false">
+        </table>
+    </div>
+</div>

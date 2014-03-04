@@ -174,13 +174,20 @@ class FeeCod(BaseModel):
         db_table = 'c_fee'
 class FeeProtocol(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户ID',db_column='client_id')
+    client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户',db_column='client_id')
     fee_id = models.ForeignKey('FeeCod',related_name='feecod_feeprotocol',verbose_name='费用代码',db_column='fee_id')
-    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',verbose_name='业务类型',db_column='contract_type')
-    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',verbose_name='计费方式',db_column='fee_cal_type')
+    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',limit_choices_to={'fld_eng':'contract_type'},verbose_name='业务类型',db_column='contract_type')
+    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',limit_choices_to={'fld_eng':'fee_cal_type'},verbose_name='计费方式',db_column='fee_cal_type')
     rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
     free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
     def __str__(self):
         return self.client_id.client_name + '/' + self.fee_id.fee_name
     class Meta:
         db_table = 'c_fee_protocol'
+class PayType(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    pay_name = models.CharField('付款方式',max_length=20)
+    def __str__(self):
+        return self.pay_name
+    class Meta:
+        db_table = 'c_pay_type'

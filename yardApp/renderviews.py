@@ -117,6 +117,21 @@ def feecodview(request):
     protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark')
     return render(request,"yard/basedata/feecod.html",locals())
+def feeprotocolview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='id')
+    client_id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    fee_id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name')
+    contract_type = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='contract_type',autoforeign=True,foreigndisplayfield='cod_name')
+    fee_cal_type = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_cal_type',autoforeign=True,foreigndisplayfield='cod_name')
+    rate = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='rate')
+    free_day = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='free_day')
+    remark = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='remark')
+    return render(request,"yard/basedata/feeprotocol.html",locals())
+def paytypeview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.PayType,field='id')
+    pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
+    remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
+    return render(request,"yard/basedata/paytype.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -151,6 +166,10 @@ def dealMenuReq(request):
         return(feegroupview(request))
     elif ls_args == '费用名称维护':
         return(feecodview(request))
+    elif ls_args == '协议费率维护':
+        return(feeprotocolview(request))
+    elif ls_args == '付款方式维护':
+        return(paytypeview(request))
 
     elif ls_args == '客户维护':
         return(clientview(request))
