@@ -1,29 +1,37 @@
 <script>
     Namespace.register('contract.contractview');
     $(function () {
-        contract.contractview.datagrid = $('#basedata-client-datagrid').datagrid({
+        contract.contractview.datagrid = $('#contract-contract-datagrid').datagrid({
             autoSave: true,
             columns: [
                 [
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
-                        {{ clientName.writeUI|safe|escape }},
-                        {{ clientFlag.writeUI|safe|escape }},
-                        {{ customFlag.writeUI|safe|escape }},
-                        {{ shipcorpFlag.writeUI|safe|escape }},
-                        {{ yardFlag.writeUI|safe|escape }},
-                        {{ portFlag.writeUI|safe|escape }},
-                        {{ financialFlag.writeUI|safe|escape }},
-                        {{ recTim.writeUI|safe|escape }},
+                        {{ bill_no.writeUI|safe|escape }},
+                        {{ cargo_name.writeUI|safe|escape }},
+                        {{ origin_place.writeUI|safe|escape }},
+                        {{ client_id.writeUI|safe|escape }},
+                        {{ cargo_piece.writeUI|safe|escape }},
+                        {{ cargo_weight.writeUI|safe|escape }},
+                        {{ cargo_volume.writeUI|safe|escape }},
+                        {{ booking_date.writeUI|safe|escape }},
+                        {{ in_port_date.writeUI|safe|escape }},
+                        {{ return_cntr_date.writeUI|safe|escape }},
+                        {{ custom_id.writeUI|safe|escape }},
+                        {{ ship_corp_id.writeUI|safe|escape }},
+                        {{ port_id.writeUI|safe|escape }},
+                        {{ yard_id.writeUI|safe|escape }},
+                        {{ finish_flag.writeUI|safe|escape }},
+                        {{ finish_tim.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            dataTable: 'c_client',
+            dataTable: 'contract',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-client-datagrid',
+                    group: 'contract-contract-datagrid',
                     handler: function () {
                         sy.createSearchWindow(basedata.clientsview.datagrid);
                     }
@@ -31,7 +39,7 @@
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-client-datagrid',
+                    group: 'contract-contract-datagrid',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('insertData', {
                             client_name: '新客户名称'
@@ -41,7 +49,7 @@
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-client-datagrid',
+                    group: 'contract-contract-datagrid',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('deleteData');
                     }
@@ -49,14 +57,13 @@
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-client-datagrid',
+                    group: 'contract-contract-datagrid',
                     handler: function () {
                         basedata.clientsview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
-            ],
-            url: "{% url 'getclients2' %}",
-            updateUrl: "{% url 'updateclients' %}"
+            ]
+
         });
     });
 </script>
@@ -66,7 +73,11 @@
         </table>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
-        <table id="contract-contractaction-datagrid" data-options="border:'false'">
-        </table>
+        <div id="tt" class="easyui-tabs" style="width:500px;height:250px;">
+            <div title="Tab1">
+                <table id="contract-contractaction-datagrid" data-options="border:'false'">
+                </table>
+            </div>
+        </div>
     </div>
 </div>

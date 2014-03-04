@@ -132,6 +132,26 @@ def paytypeview(request):
     pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
     return render(request,"yard/basedata/paytype.html",locals())
+def contractview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
+    bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no')
+    cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name')
+    origin_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place')
+    client_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    cargo_piece = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_piece')
+    cargo_weight = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_weight')
+    cargo_volume = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_volume')
+    booking_date = easyuihelp.EasyuiFieldUI(model=models.Contract,field='booking_date')
+    in_port_date = easyuihelp.EasyuiFieldUI(model=models.Contract,field='in_port_date')
+    return_cntr_date = easyuihelp.EasyuiFieldUI(model=models.Contract,field='return_cntr_date')
+    custom_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_id',autoforeign=True,foreigndisplayfield='client_name')
+    ship_corp_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name')
+    port_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name')
+    yard_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name')
+    finish_tim = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_tim')
+    finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
+    return render(request,"yard/contract/contract.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':

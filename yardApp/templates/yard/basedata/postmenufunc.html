@@ -16,16 +16,29 @@
             },
             onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
-                basedata.postmenufuncview.menufunctree.reload();
+                var param = {
+                    type:'query',
+                    func:'查询岗位权限',
+                    postid:id
+                }
+                $.ajax({
+                    url: "./dealPAjax/",
+                    data: {jpargs: JSON.stringify(param)},
+                    success: function (r, t, a) {
+                        console.info(r);
+                        $.ajaxSettings.success(r, t, a);
+                    }
+                });
+                //basedata.postmenufuncview.menufunctree.reload();
             }
         });
         basedata.postmenufuncview.menufunctree = $('#basedata-postmenufunc-menufunctree').tree({
-            url:'',
-            checkbox:true,
-            lines:true,
-            onCheck:function(node,checked){
+            checkbox: true,
+            lines: true
 
-            }
+        });
+        $('#basedata-postmenufunc-savebutton').bind('click',function(){
+
         });
     });
 </script>
@@ -38,5 +51,7 @@
     <div region="center" border="false">
         <ul id="basedata-postmenufunc-menufunctree"></ul>
     </div>
-
+<div region="south" border="false" style="height:25px;">
+        <a id="basedata-postmenufunc-savebutton" href="#" class="easyui-linkbutton">保存</a>
+    </div>
 </div>
