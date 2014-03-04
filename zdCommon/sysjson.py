@@ -22,6 +22,7 @@ def getMenuList():
     return(ldict_1)
 
 def getMenuPrivilege(aPostid):
+    l_postid = int(aPostid)
     l_func = dict(cursorSelect('select id, funcname from sys_func'))
     #l_funcid = [i[0] for i in l_func]       # 得到功能id 的list
     #l_funcname = [i[1] for i in l_func]       # 得到功能名称 的list
@@ -39,7 +40,7 @@ def getMenuPrivilege(aPostid):
                     if len(l_menu3) > 0 :
                         for i_m3 in l_menu3:   # 列出menu下的func权限，看看当前post有没有这个权限。
                             l_oldval = "false"
-                            l_countfunc = cursorSelect('select count(1) from s_postmenufunc where post_id=%d and menu_id=%d and func_id=%d' % (aPostid, i_m2[0], i_m3[0]))  # menu下的func功能。
+                            l_countfunc = cursorSelect('select count(1) from s_postmenufunc where post_id=%d and menu_id=%d and func_id=%d' % (l_postid, i_m2[0], i_m3[0]))  # menu下的func功能。
                             if l_countfunc[0][0] > 0 :
                                 l_oldval = "true"
                             l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
@@ -49,7 +50,7 @@ def getMenuPrivilege(aPostid):
                         pass
 
                     l_oldval = "false"
-                    l_countmenu2 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (aPostid, i_m2[0]))  # menu下的func功能。
+                    l_countmenu2 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
                     if l_countmenu2[0][0] > 0 :
                         l_oldval = "true"
                     l_attr = { "type": "menu", "id": str(i_m2[0]), "oldval": l_oldval }
@@ -57,7 +58,7 @@ def getMenuPrivilege(aPostid):
             else:
                 pass # no child
             l_oldval = "false"
-            l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (aPostid, i_m2[0]))  # menu下的func功能。
+            l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
             if l_countmenu1[0][0] > 0 :
                 l_oldval = "true"
             l_attr = { "type": "menu", "id": str(i_m1[0]), "oldval": l_oldval }

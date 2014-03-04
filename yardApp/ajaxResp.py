@@ -98,11 +98,10 @@ def getpaytype(request):
     ls_sql = "select id,pay_name,remark from c_pay_type"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
-@csrf_exempt
+
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
-    ldmp = json.dumps(getMenuPrivilege(ldict['postid']))
-    return HttpResponse(ldmp)
+    return HttpResponse(json.dumps( getMenuPrivilege(ldict['postid']),ensure_ascii = False) )
 
 #############################################################    UPDATE    -----
 @csrf_exempt
