@@ -63,7 +63,7 @@ def getsyscod(request):
     '''系统参数查询'''
     ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getAuth(request):
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
@@ -72,32 +72,32 @@ def getcntrtype(request):
     '''箱型查询'''
     ls_sql = "select id,cntr_type,cntr_type_name,remark from c_cntr_type"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getaction(request):
     '''动态类型查询'''
     ls_sql = "select id,action_name,require_flag,sortno,remark from c_contract_action"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getfeegroup(request):
     '''费用分组类型查询'''
     ls_sql = "select id,group_name,remark from c_fee_group"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getfeecod(request):
     '''费用名称查询'''
     ls_sql = "select id,fee_name,fee_group_id,pair_flag,protocol_flag,remark from c_fee"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getfeeprotocol(request):
     '''费用名称查询'''
     ls_sql = "select id,client_id,fee_id,contract_type,fee_cal_type,rate,free_day,remark from c_fee_protocol"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getpaytype(request):
     '''付款方式查询'''
     ls_sql = "select id,pay_name,remark from c_pay_type"
     ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, request.POST)),ensure_ascii = False))
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
