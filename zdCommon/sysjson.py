@@ -42,7 +42,7 @@ def getMenuPrivilege(aPostid):
                             l_countfunc = cursorSelect('select count(1) from s_postmenufunc where post_id=%d and menu_id=%d and func_id=%d' % (aPostid, i_m2[0], i_m3[0]))  # menu下的func功能。
                             if l_countfunc[0][0] > 0 :
                                 l_oldval = "true"
-                            l_attr = { "typ": "func", "id": str(i_m3[0]), "oldval": l_oldval }
+                            l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
                             l_id = "m" + str(i_m2[0]) + "f" + str(i_m3[0])
                             ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": False, "attributes": l_attr } )   #把菜单有的权限列出来
                     else:
@@ -52,7 +52,7 @@ def getMenuPrivilege(aPostid):
                     l_countmenu2 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (aPostid, i_m2[0]))  # menu下的func功能。
                     if l_countmenu2[0][0] > 0 :
                         l_oldval = "true"
-                    l_attr = { "typ": "menu", "id": str(i_m2[0]), "oldval": l_oldval }
+                    l_attr = { "type": "menu", "id": str(i_m2[0]), "oldval": l_oldval }
                     ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": l_attr, "children": ldict_3 , "checked": l_oldval  }  )
             else:
                 pass # no child
@@ -60,7 +60,7 @@ def getMenuPrivilege(aPostid):
             l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (aPostid, i_m2[0]))  # menu下的func功能。
             if l_countmenu1[0][0] > 0 :
                 l_oldval = "true"
-            l_attr = { "typ": "menu", "id": str(i_m1[0]), "oldval": l_oldval }
+            l_attr = { "type": "menu", "id": str(i_m1[0]), "oldval": l_oldval }
             ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2, "checked": l_oldval  } )
     else:
         pass   # no top menu ... how that posible ....
