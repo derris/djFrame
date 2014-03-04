@@ -54,6 +54,8 @@ class contractAction(BaseModel):
     action_id = models.ForeignKey('Action',related_name='action_contractaction',verbose_name='委托动态')
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
+    def __str__(self):
+        return self.contract_id.bill_no + '/' + self.action_id.action_name
     class Meta:
         db_table = 'contract_action'
 class SysCode(BaseModel):
@@ -90,15 +92,26 @@ class PostUser(BaseModel):
     user_id = models.ForeignKey('User',verbose_name='用户',related_name='user_postuser',db_column='user_id')
     def __str__(self):
         return self.post_id.postname + '/' + self.user_id.username
+    class Meta:
+        db_table = 's_postuser'
 class PostMenu(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postmenu',db_column='post_id')
     menu_id = models.ForeignKey('SysMenu',verbose_name='功能',related_name='menu_postmenu',db_column='menu_id')
     active = models.NullBooleanField('显示',blank=True,null=True)
-class PostFunc(BaseModel):
+    def __str__(self):
+        return self.post_id.postname + '/' + self.menu_id.menuname
+    class Meta:
+        db_table = 's_postmenu'
+class PostMenuFunc(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postfunc',db_column='post_id')
-    func_id = models.ForeignKey('SysFunc',verbose_name='权限',related_name='func_postfunc',db_column='func_id')
+    post_id = models.ForeignKey('Post',verbose_name='岗位',related_name='post_postmenufunc',db_column='post_id')
+    menu_id = models.ForeignKey('SysMenu',verbose_name='功能',related_name='menu_postmenufunc',db_column='menu_id')
+    func_id = models.ForeignKey('SysFunc',verbose_name='权限',related_name='func_postmenufunc',db_column='func_id')
+    def __str__(self):
+        return self.post_id.postname + '/' + self.menu_id.menuname + '/' + self.func_id.funcname
+    class Meta:
+        db_table = 's_postmenufunc'
 class SysMenu(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     menuname = models.CharField('功能名称',max_length=50)
@@ -161,11 +174,13 @@ class FeeCod(BaseModel):
         db_table = 'c_fee'
 class FeeProtocol(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户ID')
-    fee_id = models.ForeignKey('FeeCod',related_name='feecod_feeprotocol',verbose_name='费用代码')
-    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',verbose_name='业务类型')
-    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',verbose_name='计费方式')
+    client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户ID',db_column='client_id')
+    fee_id = models.ForeignKey('FeeCod',related_name='feecod_feeprotocol',verbose_name='费用代码',db_column='fee_id')
+    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',verbose_name='业务类型',db_column='contract_type')
+    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',verbose_name='计费方式',db_column='fee_cal_type')
     rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
     free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
+    def __str__(self):
+        return self.client_id.client_name + '/' + self.fee_id.fee_name
     class Meta:
         db_table = 'c_fee_protocol'

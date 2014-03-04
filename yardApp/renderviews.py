@@ -109,10 +109,10 @@ def feegroupview(request):
     group_name = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='group_name',width=120)
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='remark')
     return render(request,"yard/basedata/feegroup.html",locals())
-def feeview(request):
+def feecodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
     fee_name = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name')
-    fee_group_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_group_id')
+    fee_group_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_group_id',autoforeign=True,foreigndisplayfield='group_name')
     pair_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='pair_flag')
     protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark')
