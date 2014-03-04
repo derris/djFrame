@@ -16,7 +16,7 @@ def correctjsonfield(obj, atypecode):
         elif isinstance(obj,bool):
             return "true"
         else:
-            return obj
+            return str(obj)
     else:
         if atypecode == 1043:    # varchar
             return ""
