@@ -46,13 +46,16 @@ def rawsql4request(aSql, aRequestDict):
     ldict_req = aRequestDict
     l_page = int(ldict_req.get('page', 1))
     l_rows = int(ldict_req.get('rows', 10))
-    l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')        # json必须是双引号。否则loads错误。
-    l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
+    #l_sort = str(ldict_req.get('sort', '')).replace("'", '\"')        # json必须是双引号。否则loads错误。
+    #l_filter = str(ldict_req.get('filter', '')).replace("'", '\"')
+    l_sort = ldict_req.get('sort', {})
+    l_filter = ldict_req.get('filter', {})
     #============================= filter 处理得到 where条件。============
     ls_wheresum = ''
-    if len(l_filter) > 3:
+    if len(str(l_filter)) > 10:
         # { 'cod':'client_name','operatorTyp':'等于','value1':'值1','value2':'值2'  }
-        for i in json.loads(l_filter):
+        #for i in json.loads(l_filter):
+        for i in l_filter:
             l_dictwhere = i
             ls_oper = ''
             if l_dictwhere['operatorTyp'] == '等于':
@@ -99,9 +102,10 @@ def rawsql4request(aSql, aRequestDict):
 
     # =============================================sort 2 order ===========
     ls_ordersum = ''
-    if len(l_sort)> 3:
+    if len(str(l_sort))> 3:
     #  'sort':'[{ 'cod':'client_name', 'order_typ':'升序' }]'
-        for i in json.loads(l_sort):
+        #for i in json.loads(l_sort):
+        for i in l_sort:
             l_dictsort = i
             ltmp_sort = ''
             if l_dictsort['order_typ'] == '升序':
