@@ -1,7 +1,7 @@
 __author__ = 'dh'
 
 from zdCommon.dbhelp import cursorSelect
-
+from django.db import connection
 
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
@@ -79,7 +79,47 @@ def setMenuPrivilege(aJson):
                 "postid", : pid
             },]
         ｝
+    #-----------------------------或者这样。------------------
+    jpargs: {  'reqtype':'sysfunc'      ----- insert 功能发起。
+       'rows': [ {
+                'op': 'change',
+                'func': 'menufuncpost',   /  'func'
+                "newval" :  "true" / "false"
+                "oldval" : "true" / "false"
+                'menuid' : mid
+                "funcid' : fid
+                "postid", : pid            },]             ｝
     '''
-    pass
-
+    l_rtn = {   "error": [""],
+                "msg":"",
+                "stateCod":  0 ,
+                "effectnum": 0 ,
+                "changeid" : {'uuid1':'id1'} }
+    l_JsonRows = aJson['rows']
+    lb_err  = False
+    li_count = 0
+    try:
+        l_cur = connection.cursor()
+        for i_row in  l_JsonRows:
+            ls_sql = ""
+            if i_row['newval'] == True:      # insert
+                pass
+                ls_sql = "insert into sys_postmenufunc()"
+            else:
+                ls_sql = "delete from sys_postmenufunc where"
+                l_cur.execute(ls_sql)
+                li_count += l_cur.cursor.rowcount
+    except Exception as e:
+        l_rtn["error"].append("注意：" + str(e.args))
+        lb_ok = False
+    finally:
+        l_cur.close()
+    if lb_err :
+        l_rtn["msg"] = "执行失败。"
+        l_rtn["stateCod"] = -1
+    else:
+        l_rtn["msg"] = "执行成功。"
+        l_rtn["stateCod"] = 202
+    l_rtn["effectnum"] = str(li_count)
+    return(l_rtn)
 
