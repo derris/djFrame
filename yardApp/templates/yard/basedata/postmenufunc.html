@@ -16,30 +16,113 @@
             },
             onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
+                basedata.postmenufuncview.postdg.refreshFunc(id);
+            }
+        });
+        basedata.postmenufuncview.postdg.refreshFunc = function (postid) {
                 var param = {
-                    type:'query',
-                    func:'岗位权限查询',
-                    postid:id
+                    type: 'query',
+                    func: '岗位权限查询',
+                    postid: postid
                 }
                 $.ajax({
                     url: "./dealPAjax/",
                     data: {jpargs: JSON.stringify(param)},
                     success: function (r, t, a) {
-                        console.info(r);
-                        basedata.postmenufuncview.menufunctree.tree('loadData',r);
+                        //console.info(r);
+                        basedata.postmenufuncview.menufunctree.tree('loadData', r);
                         basedata.postmenufuncview.menufunctree.tree('collapseAll');
                         $.ajaxSettings.success(r, t, a);
                     }
                 });
-                //basedata.postmenufuncview.menufunctree.reload();
             }
-        });
         basedata.postmenufuncview.menufunctree = $('#basedata-postmenufunc-menufunctree').tree({
             checkbox: true,
             lines: true
         });
-        $('#basedata-postmenufunc-savebutton').bind('click',function(){
+        $('#basedata-postmenufunc-savebutton').bind('click', function () {
+            var rootNodes = basedata.postmenufuncview.menufunctree.tree('getRoots');
+            var postid = basedata.postmenufuncview.postdg.datagrid('getSelected').id;
+            var optype = '';
+            var rows = new Array();
+            for (var i = 0, ilen = rootNodes.length; i < ilen; i++) {
+                var rootid = rootNodes[i].attributes.id;
+                if (!basedata.postmenufuncview.menufunctree.tree('isLeaf', rootNodes[i].target)) {
+                    var menuNodes = basedata.postmenufuncview.menufunctree.tree('getChildren', rootNodes[i].target);
+                    for (j = 0, jlen = menuNodes.length; j < jlen; j++) {
+                        var menuid = menuNodes[j].attributes.id;
+                        if (!basedata.postmenufuncview.menufunctree.tree('isLeaf', menuNodes[j].target)) {
+                            var funcNodes = basedata.postmenufuncview.menufunctree.tree('getChildren', menuNodes[j].target);
+                            for (f = 0, flen = funcNodes.length; f < flen; f++) {
+                                if (funcNodes[f].checked != (funcNodes[f].attributes.oldval == 'checked' ? true : false)) {
+                                    if (funcNodes[f].checked) {
+                                        optype = 'insert';
+                                    } else {
+                                        optype = 'delete'
+                                    }
+                                    rows.push({
+                                        op: optype,
+                                        table: 'func',
+                                        menuid: menuid,
+                                        funcid: funcNodes[f].attributes.id,
+                                        postid: postid
+                                    });
+                                }
+                            }
+                        }
+                        if (menuNodes[j].checked != (menuNodes[j].attributes.oldval == 'checked' ? true : false)) {
+                            if (menuNodes[j].checked) {
+                                optype = 'insert';
+                            } else {
+                                optype = 'delete';
+                            }
+                            rows.push({
+                                op: optype,
+                                table: 'menu',
+                                menuid: menuid,
+                                funcid: -1,
+                                postid: postid
+                            });
+                        }
+                    }
 
+                }
+                if (rootNodes[i].checked != (rootNodes[i].attributes.oldval == 'checked' ? true : false)) {
+                    if (rootNodes[i].checked) {
+                        optype = 'insert';
+                    } else {
+                        optype = 'delete';
+                    }
+                    rows.push({
+                        op: optype,
+                        table: 'menu',
+                        menuid: rootid,
+                        funcid: -1,
+                        postid: postid
+                    });
+                }
+            }
+            if (rows.length == 0) {
+                return;
+            }
+            var p = {
+                reqtype: 'sysfunc',
+                func: '',
+                rows: rows
+            }
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (returnData, returnMsg, ajaxObj) {
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
+                    var stateCod = parseInt(returnData.stateCod);
+                    if (!isNaN(stateCod)) {
+                        if (returnData.stateCod == 202) { //更新成功
+                            basedata.postmenufuncview.postdg.refreshFunc(postid);
+                        }
+                    }
+                }
+            });
         });
     });
 </script>
@@ -52,7 +135,7 @@
     <div region="center" border="false">
         <ul id="basedata-postmenufunc-menufunctree"></ul>
     </div>
-<div region="south" border="false" style="height:25px;">
+    <div region="south" border="false" style="height:25px;">
         <a id="basedata-postmenufunc-savebutton" href="#" class="easyui-linkbutton">保存</a>
     </div>
 </div>
