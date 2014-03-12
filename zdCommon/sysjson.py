@@ -45,7 +45,7 @@ def getMenuPrivilege(aPostid):
                                 l_oldval = "true"
                             l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
                             l_id = "m" + str(i_m2[0]) + "f" + str(i_m3[0])
-                            ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": False, "attributes": l_attr } )   #把菜单有的权限列出来
+                            ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": l_oldval, "attributes": l_attr } )   #把菜单有的权限列出来
                     else:
                         pass
 
