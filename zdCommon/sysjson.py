@@ -38,31 +38,31 @@ def getMenuPrivilege(aPostid):
                     l_menu3 = cursorSelect('select id, func_id from sys_menu_func where menu_id = %d' % i_m2[0])  # menu下的func功能。
                     ldict_3 = []
                     if len(l_menu3) > 0 :
-                        for i_m3 in l_menu3:   # 列出menu下的func权限，看看当前post有没有这个权限。
-                            l_oldval = "false"
+                        for i_m3 in l_menu3:   # 列出menu下的func权限，看看当前post有没有这个权限。   checked    indeterminate unckecked
+                            l_oldval = "unckecked"
                             l_countfunc = cursorSelect('select count(1) from s_postmenufunc where post_id=%d and menu_id=%d and func_id=%d' % (l_postid, i_m2[0], i_m3[0]))  # menu下的func功能。
                             if l_countfunc[0][0] > 0 :
-                                l_oldval = "true"
+                                l_oldval = "checked"
                             l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
                             l_id = "m" + str(i_m2[0]) + "f" + str(i_m3[0])
                             ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": l_oldval, "attributes": l_attr } )   #把菜单有的权限列出来
                     else:
                         pass
 
-                    l_oldval = "false"
+                    l_oldval = "unckecked"
                     l_countmenu2 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
                     if l_countmenu2[0][0] > 0 :
-                        l_oldval = "true"
+                        l_oldval = "checked"
                     l_attr = { "type": "menu", "id": str(i_m2[0]), "oldval": l_oldval }
-                    ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": l_attr, "children": ldict_3 , "checked": l_oldval  }  )
+                    ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": l_attr, "children": ldict_3 } ) # , "checked": l_oldval  }  )
             else:
                 pass # no child
-            l_oldval = "false"
+            l_oldval = "unckecked"
             l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
             if l_countmenu1[0][0] > 0 :
-                l_oldval = "true"
+                l_oldval = "checked"
             l_attr = { "type": "menu", "id": str(i_m1[0]), "oldval": l_oldval }
-            ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2, "checked": l_oldval  } )
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2 } ) # , "checked": l_oldval  } )
     else:
         pass   # no top menu ... how that posible ....
     return(ldict_1)
