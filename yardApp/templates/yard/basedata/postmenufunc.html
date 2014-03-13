@@ -20,22 +20,22 @@
             }
         });
         basedata.postmenufuncview.postdg.refreshFunc = function (postid) {
-                var param = {
-                    type: 'query',
-                    func: '岗位权限查询',
-                    postid: postid
-                }
-                $.ajax({
-                    url: "./dealPAjax/",
-                    data: {jpargs: JSON.stringify(param)},
-                    success: function (r, t, a) {
-                        //console.info(r);
-                        basedata.postmenufuncview.menufunctree.tree('loadData', r);
-                        basedata.postmenufuncview.menufunctree.tree('collapseAll');
-                        $.ajaxSettings.success(r, t, a);
-                    }
-                });
+            var param = {
+                type: 'query',
+                func: '岗位权限查询',
+                postid: postid
             }
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(param)},
+                success: function (r, t, a) {
+                    //console.info(r);
+                    basedata.postmenufuncview.menufunctree.tree('loadData', r);
+                    basedata.postmenufuncview.menufunctree.tree('collapseAll');
+                    $.ajaxSettings.success(r, t, a);
+                }
+            });
+        }
         basedata.postmenufuncview.menufunctree = $('#basedata-postmenufunc-menufunctree').tree({
             checkbox: true,
             lines: true
@@ -44,50 +44,38 @@
             var rootNodes = basedata.postmenufuncview.menufunctree.tree('getRoots');
             var postid = basedata.postmenufuncview.postdg.datagrid('getSelected').id;
             var optype = '';
+            var menuid,funcid,table;
             var rows = new Array();
             for (var i = 0, ilen = rootNodes.length; i < ilen; i++) {
-                var rootid = rootNodes[i].attributes.id;
                 if (!basedata.postmenufuncview.menufunctree.tree('isLeaf', rootNodes[i].target)) {
-                    var menuNodes = basedata.postmenufuncview.menufunctree.tree('getChildren', rootNodes[i].target);
-                    for (j = 0, jlen = menuNodes.length; j < jlen; j++) {
-                        var menuid = menuNodes[j].attributes.id;
-                        if (!basedata.postmenufuncview.menufunctree.tree('isLeaf', menuNodes[j].target)) {
-                            var funcNodes = basedata.postmenufuncview.menufunctree.tree('getChildren', menuNodes[j].target);
-                            for (f = 0, flen = funcNodes.length; f < flen; f++) {
-                                if (funcNodes[f].checked != (funcNodes[f].attributes.oldval == 'checked' ? true : false)) {
-                                    if (funcNodes[f].checked) {
-                                        optype = 'insert';
-                                    } else {
-                                        optype = 'delete'
-                                    }
-                                    rows.push({
-                                        op: optype,
-                                        table: 'func',
-                                        menuid: menuid,
-                                        funcid: funcNodes[f].attributes.id,
-                                        postid: postid
-                                    });
-                                }
-                            }
-                        }
-                        if (menuNodes[j].checked != (menuNodes[j].attributes.oldval == 'checked' ? true : false)) {
-                            if (menuNodes[j].checked) {
+                    var nodes = basedata.postmenufuncview.menufunctree.tree('getChildren', rootNodes[i].target);
+                    for (j = 0, jlen = nodes.length; j < jlen; j++) {
+                        if ((nodes[j].checked ^ nodes[j].attributes.oldval) == 1 ) {
+                            if (nodes[j].checked) {
                                 optype = 'insert';
                             } else {
-                                optype = 'delete';
+                                optype = 'delete'
+                            }
+                            if (nodes[j].attributes.type == 'func'){
+                                funcid = nodes[j].attributes.id;
+                                menuid = basedata.postmenufuncview.menufunctree.tree('getParent',nodes[j].target).attributes.id;
+                                table = 'func';
+                            }else{
+                                funcid = -1;
+                                menuid = nodes[j].attributes.id;
+                                table = 'menu';
                             }
                             rows.push({
                                 op: optype,
-                                table: 'menu',
+                                table: table,
                                 menuid: menuid,
-                                funcid: -1,
+                                funcid: funcid,
                                 postid: postid
                             });
                         }
                     }
-
                 }
-                if (rootNodes[i].checked != (rootNodes[i].attributes.oldval == 'checked' ? true : false)) {
+                if ((rootNodes[i].checked ^ rootNodes[i].attributes.oldval) == 1) {
                     if (rootNodes[i].checked) {
                         optype = 'insert';
                     } else {
@@ -96,7 +84,20 @@
                     rows.push({
                         op: optype,
                         table: 'menu',
-                        menuid: rootid,
+                        menuid: rootNodes[i].attributes.id,
+                        funcid: -1,
+                        postid: postid
+                    });
+                }
+            }
+            //处理indeterminate状态节点
+            var fuzzyNodes = basedata.postmenufuncview.menufunctree.tree('getChecked','indeterminate');
+            for (f = 0,flen = fuzzyNodes.length;f < flen;f++){
+                if (!fuzzyNodes[f].attributes.oldval){
+                    rows.push({
+                        op: 'insert',
+                        table: 'menu',
+                        menuid: fuzzyNodes[f].attributes.id,
                         funcid: -1,
                         postid: postid
                     });
@@ -107,7 +108,7 @@
             }
             var p = {
                 reqtype: 'sysfunc',
-                func: '',
+                func: 'menufuncpost',
                 rows: rows
             }
             $.ajax({
