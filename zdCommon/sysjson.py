@@ -2,6 +2,7 @@ __author__ = 'dh'
 
 from zdCommon.dbhelp import cursorSelect
 from django.db import connection
+from zdCommon.utils import logErr
 
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
@@ -39,79 +40,85 @@ def getMenuPrivilege(aPostid):
                     ldict_3 = []
                     if len(l_menu3) > 0 :
                         for i_m3 in l_menu3:   # 列出menu下的func权限，看看当前post有没有这个权限。   checked    indeterminate unckecked
-                            l_oldval = "unckecked"
+                            l_oldval = False
                             l_countfunc = cursorSelect('select count(1) from s_postmenufunc where post_id=%d and menu_id=%d and func_id=%d' % (l_postid, i_m2[0], i_m3[0]))  # menu下的func功能。
                             if l_countfunc[0][0] > 0 :
-                                l_oldval = "checked"
+                                l_oldval = True
                             l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
                             l_id = "m" + str(i_m2[0]) + "f" + str(i_m3[0])
                             ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": l_oldval, "attributes": l_attr } )   #把菜单有的权限列出来
                     else:
                         pass
 
-                    l_oldval = "unckecked"
+                    l_oldval = False
                     l_countmenu2 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
                     if l_countmenu2[0][0] > 0 :
-                        l_oldval = "checked"
+                        l_oldval = True
                     l_attr = { "type": "menu", "id": str(i_m2[0]), "oldval": l_oldval }
                     ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": l_attr, "children": ldict_3 } ) # , "checked": l_oldval  }  )
             else:
                 pass # no child
-            l_oldval = "unckecked"
+            l_oldval = False
             l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
             if l_countmenu1[0][0] > 0 :
-                l_oldval = "checked"
-            l_attr = { "type": "menu", "id": str(i_m1[0]), "oldval": l_oldval }
+                l_oldval = True
+            l_attr = { "type": "menu", "id": str(i_m1[0]) } #, "oldval": l_oldval }
             ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2 } ) # , "checked": l_oldval  } )
     else:
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
-def setMenuPrivilege(aJson):
+def setMenuPrivilege(aDict):
     '''
-    这样传有没有问题？
-    jpargs: {  'reqtype':'update'      ----- insert 功能发起。
-       'rows': [ {
-                'op': 'insert',   / "delete"      // 添加 或者 取消授权。   显示 或者 隐藏 菜单。
-                'table': 'menu',   /  'func'
-                'menuid' : mid
-                "funcid' : fid
-                "postid", : pid
-            },]
-        ｝
-    #-----------------------------或者这样。------------------
-    jpargs: {  'reqtype':'sysfunc'      ----- insert 功能发起。
-       'rows': [ {
-                'op': 'change',
-                'func': 'menufuncpost',   /  'func'
-                "newval" :  "true" / "false"
-                "oldval" : "true" / "false"
-                'menuid' : mid
-                "funcid' : fid
-                "postid", : pid            },]             ｝
+    jpargs:{"reqtype":"sysfunc",
+        "func":"menufuncpost",
+        "rows": [  {"op":"insert",
+                    "table":"menu",
+                    "menuid":"3",
+                    "funcid":-1,
+                    "postid":"3" } ,
+                    {"op":"insert",
+                    "table":"menu",
+                    "menuid":"4",
+                    "funcid":-1,
+                    "postid":"3"    }
+                ] }
     '''
     l_rtn = {   "error": [""],
                 "msg":"",
                 "stateCod":  0 ,
                 "effectnum": 0 ,
                 "changeid" : {'uuid1':'id1'} }
-    l_JsonRows = aJson['rows']
+    l_JsonRows = aDict['rows']
     lb_err  = False
     li_count = 0
     try:
         l_cur = connection.cursor()
         for i_row in  l_JsonRows:
             ls_sql = ""
-            if i_row['newval'] == True:      # insert
-                pass
-                ls_sql = "insert into sys_postmenufunc()"
+            if i_row['table'] == "menu":     # insert
+                if i_row['op'] == "insert":  # ii
+                    ls_sql = "insert into s_postmenu(post_id, menu_id, rec_nam, rec_tim) values(%s, %s, %s, now() )" % ( str(i_row['menuid']), str(i_row['postid']), "1" )
+                elif i_row['op'] == "delete":  # ii
+                    ls_sql = "delete from s_postmenu where post_id = %s and menu_id = %s " % ( str(i_row['menuid']), str(i_row['postid']) )
+                else:
+                    pass
+            elif i_row['table'] == "func":
+                if i_row['op'] == "insert":  # ii
+                    ls_sql = "insert into s_postmenufunc(post_id, menu_id, func_id, rec_nam, rec_tim) values(%s, %s, %s, %s, now() )" % ( str(i_row['menuid']), str(i_row['postid']), str(i_row['funcid']), "1" )
+                elif i_row['op'] == "delete":  # ii
+                    ls_sql = "delete from sys_postmenufunc from s_postmenufunc where post_id = %s and menu_id = %s and func_id = %s" % ( str(i_row['menuid']), str(i_row['postid']),  str(i_row['funcid']) )
+                else:
+                    pass
             else:
-                ls_sql = "delete from sys_postmenufunc where"
-                l_cur.execute(ls_sql)
-                li_count += l_cur.cursor.rowcount
+                pass
+            l_cur.execute(ls_sql)
+            print(ls_sql)
+            li_count += l_cur.cursor.rowcount
     except Exception as e:
         l_rtn["error"].append("注意：" + str(e.args))
-        lb_ok = False
+        lb_err = True
+        logErr("数据库执行错误：%s" % str(e.args))
     finally:
         l_cur.close()
     if lb_err :

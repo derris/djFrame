@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import json
 from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
-from zdCommon.sysjson import getMenuPrivilege
+from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
 
 ##########################################################        GET    ----
 # 查询参数 json string。
@@ -111,9 +111,11 @@ def updateClients(request):
     return HttpResponse(json.dumps(json2upd(json.loads( request.POST['jpargs'] )),ensure_ascii = False))
 
 #####################################################  common interface ----------
+@transaction.atomic
 def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
     # check and valid here ...
+    print(ldict)
     #################################################  get
     if ldict['func'] == '功能查询':
         return(getsysmenu(request))
@@ -177,6 +179,9 @@ def dealPAjax(request):
 
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
+
+    elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
+        return(HttpResponse(json.dumps( setMenuPrivilege(ldict) ,ensure_ascii = False) ))
     else:
         return HttpResponse("没有此功能")
 
