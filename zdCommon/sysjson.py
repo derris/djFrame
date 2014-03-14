@@ -98,22 +98,22 @@ def setMenuPrivilege(aDict):
             ls_sql = ""
             if i_row['table'] == "menu":     # insert
                 if i_row['op'] == "insert":  # ii
-                    ls_sql = "insert into s_postmenu(post_id, menu_id, rec_nam, rec_tim) values(%s, %s, %s, now() )" % ( str(i_row['menuid']), str(i_row['postid']), "1" )
+                    ls_sql = "insert into s_postmenu(post_id, menu_id, rec_nam, rec_tim) values(%s, %s, %s, now() )" % ( str(i_row['postid']), str(i_row['menuid']), "1" )
                 elif i_row['op'] == "delete":  # ii
-                    ls_sql = "delete from s_postmenu where post_id = %s and menu_id = %s " % ( str(i_row['menuid']), str(i_row['postid']) )
+                    ls_sql = "delete from s_postmenu where post_id = %s and menu_id = %s " % ( str(i_row['postid']), str(i_row['menuid']) )
                 else:
                     pass
             elif i_row['table'] == "func":
                 if i_row['op'] == "insert":  # ii
-                    ls_sql = "insert into s_postmenufunc(post_id, menu_id, func_id, rec_nam, rec_tim) values(%s, %s, %s, %s, now() )" % ( str(i_row['menuid']), str(i_row['postid']), str(i_row['funcid']), "1" )
+                    ls_sql = "insert into s_postmenufunc(post_id, menu_id, func_id, rec_nam, rec_tim) values(%s, %s, %s, %s, now() )" % ( str(i_row['postid']), str(i_row['menuid']), str(i_row['funcid']), "1" )
                 elif i_row['op'] == "delete":  # ii
-                    ls_sql = "delete from sys_postmenufunc from s_postmenufunc where post_id = %s and menu_id = %s and func_id = %s" % ( str(i_row['menuid']), str(i_row['postid']),  str(i_row['funcid']) )
+                    ls_sql = "delete from s_postmenufunc where post_id = %s and menu_id = %s and func_id = %s" % ( str(i_row['postid']), str(i_row['menuid']),  str(i_row['funcid']) )
                 else:
                     pass
             else:
                 pass
-            l_cur.execute(ls_sql)
             print(ls_sql)
+            l_cur.execute(ls_sql)
             li_count += l_cur.cursor.rowcount
     except Exception as e:
         l_rtn["error"].append("注意：" + str(e.args))
