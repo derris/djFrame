@@ -1,83 +1,16 @@
-<script>
-    Namespace.register('contract.contractview');
-    $(function () {
-        contract.contractview.datagrid = $('#contract-contract-datagrid').datagrid({
-            autoSave: true,
-            columns: [
-                [
-                    {% autoescape off %}
-                        {{ id.writeUI|safe|escape }},
-                        {{ bill_no.writeUI|safe|escape }},
-                        {{ cargo_name.writeUI|safe|escape }},
-                        {{ origin_place.writeUI|safe|escape }},
-                        {{ client_id.writeUI|safe|escape }},
-                        {{ cargo_piece.writeUI|safe|escape }},
-                        {{ cargo_weight.writeUI|safe|escape }},
-                        {{ cargo_volume.writeUI|safe|escape }},
-                        {{ booking_date.writeUI|safe|escape }},
-                        {{ in_port_date.writeUI|safe|escape }},
-                        {{ return_cntr_date.writeUI|safe|escape }},
-                        {{ custom_id.writeUI|safe|escape }},
-                        {{ ship_corp_id.writeUI|safe|escape }},
-                        {{ port_id.writeUI|safe|escape }},
-                        {{ yard_id.writeUI|safe|escape }},
-                        {{ finish_flag.writeUI|safe|escape }},
-                        {{ finish_tim.writeUI|safe|escape }},
-                        {{ remark.writeUI|safe|escape }}
-                    {% endautoescape %}
-                ]
-            ],
-            dataTable: 'contract',
-            toolbar: [
-                {text: '查询',
-                    iconCls: 'icon-search',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        sy.createSearchWindow(basedata.clientsview.datagrid);
-                    }
-                },
-                '-',
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('insertData', {
-                            client_name: '新客户名称'
-                        });
-                    }
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('deleteData');
-                    }
-                },
-                '-',
-                {text: '保存',
-                    iconCls: 'icon-save',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('postUpdateAllData');
-                    }
-                }
-            ]
-
-        });
-    });
-</script>
-<div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',border:'true'">
-        <table id="contract-contract-datagrid" data-options="border:false">
-        </table>
+<form id="contract-contract-form" class="editform" method="post">
+    <div>
+        <label for="bill_no" >提单号:</label>
+        <input class="easyui-validatebox" type="text" name="bill_no" data-options="required:true"/>
+        <label for="vslvoy">船名航次:</label>
+        <input type="text" name="vslvoy" />
+        <label for="cargo_name">货名:</label>
+        <input type="text" name="cargo_name" />
+        <label for="origin_place">产地:</label>
+        <input type="text" name="origin_place" />
     </div>
-    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
-        <div id="tt" class="easyui-tabs" style="width:500px;height:250px;">
-            <div title="Tab1">
-                <table id="contract-contractaction-datagrid" data-options="border:'false'">
-                </table>
-            </div>
-        </div>
+    <div>
+        <label for="email">Email:</label>
+        <input class="easyui-validatebox" type="text" name="email" data-options="validType:'email'"/>
     </div>
-</div>
+</form>

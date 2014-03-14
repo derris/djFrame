@@ -151,7 +151,7 @@ def contractview(request):
     finish_tim = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_tim')
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
-    return render(request,"yard/contract/contract.html",locals())
+    return render(request,"yard/contract/contractgrid.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':

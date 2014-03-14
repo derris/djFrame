@@ -116,7 +116,31 @@ UUID.rand = function (max) {
     return Math.floor(Math.random() * max);
 }
 
-//***************生成32位UUID**************
+//**************对象数组按指定属性排序***************************
+sy.createComparsion = function(propertyName,orderType){
+    return function(o1,o2){
+        var orderT = orderType || 'asc';
+        var v1 = o1[propertyName];
+        var v2 = o2[propertyName];
+        if (v1 == v2){
+            return 0;
+        }
+        if (orderT == 'asc'){
+            if (v1 < v2){
+                return -1;
+            }else{
+                return 1;
+            }
+        }else{
+            if (v1 < v2){
+                return 1;
+            }else{
+                return -1;
+            }
+        }
+    }
+}
+
 
 
 //***************Django Ajax通过csrf**************//
