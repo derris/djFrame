@@ -1,0 +1,42 @@
+<form id="contract-contract-form" class="editform" method="post">
+    <div>
+        <label for="bill_no" >提单号:</label>
+        <input class="easyui-validatebox" type="text" name="bill_no" data-options="required:true"/>
+        <label for="vslvoy">船名航次:</label>
+        <input type="text" name="vslvoy" />
+        <label for="cargo_name">货名:</label>
+        <input type="text" name="cargo_name" />
+        <label for="origin_place">产地:</label>
+        <input type="text" name="origin_place" />
+    </div>
+    <div>
+        <label for="client_id">委托客户:</label>
+        <input id= "contract-contract-form-client" type="text" name="client_id" />
+        <label for="cargo_piece">件数:</label>
+        <input type="number" name="cargo_piece" />
+        <label for="cargo_weight">重量:</label>
+        <input type="number" name="cargo_weight" />
+        <lab for="cargo_volume">体积:</lab>
+        <input type="number" name="cargo_volume" />
+    </div>
+    <div>
+        <label for="booking_date">接单日期:</label>
+        <input type="date" name="booking_date" />
+        <label for="in_port_date">到港日期:</label>
+        <input type="date" name="in_port_date" />
+        <label for="return_cntr_date">还箱日期:</label>
+        <input type="date" name="return_cntr_date" />
+        <label for="finish_tim">完结日期:</label>
+        <input type="date" name="finish_tim" />
+    </div>
+    <div>
+        <label for="custom_id">报关行:</label>
+        <input type="text" name="custom_id" />
+        <label for="ship_corp_id">船公司:</label>
+        <input type="text" name="ship_corp_id" />
+        <label for="yard_id">场站</label>
+        <input type="text" name="yard_id" />
+        <label for="port_id">码头</label>
+        <input type="text" name="port_id" />
+    </div>
+</form>
