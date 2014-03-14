@@ -4,7 +4,7 @@ import json
 from datetime import date,datetime
 from django.db import connection
 import re
-from zdCommon.utils import logErr
+from zdCommon.utils import logErr, log
 
 
 def correctjsonfield(obj, atypecode):
@@ -42,7 +42,6 @@ def strip(aStr):
     return aStr.strip(" ") if aStr else ""
 
 def rawsql4request(aSql, aRequestDict):
-    ldict_req = {}
     ldict_req = aRequestDict
     l_page = int(ldict_req.get('page', 1))
     l_rows = int(ldict_req.get('rows', 10))
@@ -175,7 +174,7 @@ def rawsql4request(aSql, aRequestDict):
 
     if l_rows > 0:
         ls_finSql += (" limit %d offset %d " % (l_rows, (l_page-1)*l_rows ))
-    print(ls_finSql, ls_sqlcount)
+    log( ls_finSql + " - page - " +  ls_sqlcount )
     return( (ls_finSql, ls_sqlcount) )
 
 def rawsql2json(aSql, aSqlCount):
@@ -270,7 +269,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     ls_col += " , rec_tim "
                     ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
                 ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
-                print(ls_sql)
+                log(ls_sql)
                 try:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount
@@ -300,7 +299,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 else:
                     ls_set += " , upd_tim = current_timestamp(0) "
                 ls_sql += ls_set + ' where ' + ls_where
-                print(ls_sql)
+                log(ls_sql)
                 try:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount
@@ -312,7 +311,7 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
             #######################################################################
             if i_row['op'] == 'delete':
                 ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
-                print(ls_sql)
+                log(ls_sql)
                 try:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount

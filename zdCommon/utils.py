@@ -5,10 +5,15 @@ from datetime import datetime
 from yard.settings import BASE_DIR, DEBUG
 import sys
 
-def logger(aMsg, alogFile = BASE_DIR + 'djgw.log'):
-    lMsg = datetime.now().strftime('%m-%d %H:%M:%S') + sys._getframe(1).f_code.co_name + ' ' + aMsg + os.linesep
-    print(lMsg)
+def log(aMsg, alogFile = BASE_DIR + 'djgw.log'):
+    '''
+        记录日志： from utiles import log, logErr
+    @param aMsg: 记录的信息
+    @param alogFile:  记录的文件名，默认djgw.log
+    '''
     if DEBUG:
+        lMsg = datetime.now().strftime('%m-%d %H:%M:%S') + sys._getframe(1).f_code.co_name + ' ' + aMsg + os.linesep
+        print(lMsg)
         a = open(alogFile, 'a+')
         a.write(lMsg)
         a.close()

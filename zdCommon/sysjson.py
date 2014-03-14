@@ -2,7 +2,7 @@ __author__ = 'dh'
 
 from zdCommon.dbhelp import cursorSelect
 from django.db import connection
-from zdCommon.utils import logErr
+from zdCommon.utils import logErr, log
 
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
@@ -112,7 +112,7 @@ def setMenuPrivilege(aDict):
                     pass
             else:
                 pass
-            print(ls_sql)
+            log(ls_sql)
             l_cur.execute(ls_sql)
             li_count += l_cur.cursor.rowcount
     except Exception as e:
