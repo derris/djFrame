@@ -22,6 +22,14 @@ def getMenuList():
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
+def getAuth4post(aPostId, aMenuId):
+    '''
+        返回这个岗位在menu下面都有那些权限。
+    '''
+    l_postAuth = cursorSelect('select func_id from s_postmenufunc where post_id=%d and menu_id=%d' % (aPostId, aMenuId) )  # menu下的func功能
+    # select a.func_id , b.funcname from s_postmenufunc as a  , sys_func  as b where menu_id = 9 and post_id = 2 and a.id = b.id
+
+
 def getMenuPrivilege(aPostid):
     l_postid = int(aPostid)
     l_func = dict(cursorSelect('select id, funcname from sys_func'))
@@ -84,6 +92,8 @@ def setMenuPrivilege(aDict):
                     "funcid":-1,
                     "postid":"3"    }
                 ] }
+    s_postmenu( the post menu see or not );   s_postmenufunc ( if the post have the right to do somthing . )
+    sys_menu  --  sys_menu_func   -- sys_func
     '''
     l_rtn = {   "error": [""],
                 "msg":"",
