@@ -36,7 +36,7 @@ def getMenuPrivilege(aPostid):
             ldict_2 = []
             if len(l_menu2) > 0 :
                 for i_m2 in l_menu2:
-                    l_menu3 = cursorSelect('select id, func_id from sys_menu_func where menu_id = %d' % i_m2[0])  # menu下的func功能。
+                    l_menu3 = cursorSelect('select func_id from sys_menu_func where menu_id = %d' % i_m2[0])  # menu下的func功能。
                     ldict_3 = []
                     if len(l_menu3) > 0 :
                         for i_m3 in l_menu3:   # 列出menu下的func权限，看看当前post有没有这个权限。   checked    indeterminate unckecked
@@ -46,7 +46,7 @@ def getMenuPrivilege(aPostid):
                                 l_oldval = True
                             l_attr = { "type": "func", "id": str(i_m3[0]), "oldval": l_oldval }
                             l_id = "m" + str(i_m2[0]) + "f" + str(i_m3[0])
-                            ldict_3.append( { "id": l_id, "text": l_func[i_m3[1]], "checked": l_oldval, "attributes": l_attr } )   #把菜单有的权限列出来
+                            ldict_3.append( { "id": l_id, "text": l_func[i_m3[0]], "checked": l_oldval, "attributes": l_attr } )   #把菜单有的权限列出来
                     else:
                         pass
 
