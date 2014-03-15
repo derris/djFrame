@@ -59,13 +59,14 @@ def getMenuPrivilege(aPostid):
             else:
                 pass # no child
             l_oldval = False
-            l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m2[0]))  # menu下的func功能。
+            l_countmenu1 = cursorSelect('select count(1) from s_postmenu where post_id=%d and menu_id=%d' % (l_postid, i_m1[0]))  # menu的func功能。
             if l_countmenu1[0][0] > 0 :
                 l_oldval = True
-            l_attr = { "type": "menu", "id": str(i_m1[0]) } #, "oldval": l_oldval }
+            l_attr = { "type": "menu", "id": str(i_m1[0]) , "oldval": l_oldval }
             ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2 } ) # , "checked": l_oldval  } )
     else:
         pass   # no top menu ... how that posible ....
+    log(ldict_1)
     return(ldict_1)
 
 def setMenuPrivilege(aDict):
@@ -128,5 +129,6 @@ def setMenuPrivilege(aDict):
         l_rtn["msg"] = "执行成功。"
         l_rtn["stateCod"] = 202
     l_rtn["effectnum"] = str(li_count)
+    log(l_rtn)
     return(l_rtn)
 
