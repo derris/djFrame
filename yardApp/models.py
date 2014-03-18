@@ -217,7 +217,7 @@ class PreFee(BaseModel):
         db_table = 'pre_fee'
 class ActFee(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',related_name='client_prefee',verbose_name='客户',db_column='client_id')
+    client_id = models.ForeignKey('Client',related_name='client_actfee',verbose_name='客户',db_column='client_id')
     fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','已收'),('O','已付')))
     amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
     invoice_no = models.CharField('发票号',max_length=30)
@@ -229,6 +229,7 @@ class ActFee(BaseModel):
         return self.client_id.client_name + '/' + self.fee_typ + '/' + self.pay_type.pay_name + '/' + str(self.amount)
     class Meta:
         db_table = 'act_fee'
+
 class WriteOffFee(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     act_fee_id = models.ForeignKey('ActFee',related_name='actfee_writeofffee',verbose_name='已收付费用',db_column='act_fee_id')

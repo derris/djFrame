@@ -1,0 +1,67 @@
+<script>
+    Namespace.register('basedata.actfeeview');
+    $(function () {
+        basedata.actfeeview.datagrid = $('#basedata-actfee-datagrid').datagrid({
+            autoSave: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ idObj.writeUI|safe|escape }},
+                        {{ clientIdObj.writeUI|safe|escape }},
+                        {{ feeTypObj.writeUI|safe|escape }},
+                        {{ amountObj.writeUI|safe|escape }},
+                        {{ invoiceNoObj.writeUI|safe|escape }},
+                        {{ checkNoObj.writeUI|safe|escape }},
+                        {{ payTypeObj.writeUI|safe|escape }},
+                        {{ feeTimObj.writeUI|safe|escape }},
+                        {{ offFlagObj.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'act_fee',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-actfee-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.actfeeview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-actfee-datagrid',
+                    handler: function () {
+                        basedata.actfeeview.datagrid.datagrid('insertData', {
+                            id: '0'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-actfee-datagrid',
+                    handler: function () {
+                        basedata.actfeeview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-actfee-datagrid',
+                    handler: function () {
+                        basedata.actfeeview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'已收核销查询',
+            updateFuncName:'已收核销维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-actfee-datagrid" border="false">
+        </table>
+    </div>
+</div>

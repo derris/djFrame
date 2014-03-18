@@ -153,6 +153,20 @@ def contractview(request):
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/contractgrid.html",locals())
+
+def actfeeview(request):
+    idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
+    clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id')
+    feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
+    amountObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
+    invoiceNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no')
+    checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no')
+    payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type')
+    feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
+    offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag')
+    return render(request,"yard/fee/actfee.html",locals())
+
+
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -195,5 +209,8 @@ def dealMenuReq(request):
         return(clientview(request))
     elif ls_args == "委托头表单":
         return(contractform(request))
+    elif ls_args == "已收核销":
+        return(actfeeview(request))
+
     else:
         return HttpResponse("找不到功能名，请联系管理员")
