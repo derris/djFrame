@@ -161,11 +161,11 @@ def actfeeview(request):
     clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
     amountObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
-    invoiceNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no')
-    checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no')
+    invoiceNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no',width=100)
+    checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no',width=100)
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
-    offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag')
+    offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
     return render(request,"yard/fee/actfee.html",locals())
 
 
