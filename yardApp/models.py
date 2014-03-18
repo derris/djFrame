@@ -24,41 +24,6 @@ class Client(BaseModel):
         return self.client_name
     class Meta:
         db_table = 'c_client'
-class Contract(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    bill_no = models.CharField('提单号',max_length=25,unique=True)
-    cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
-    origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
-    client_id = models.ForeignKey('Client',verbose_name='客户',limit_choices_to={'client_flag':True},related_name='client_contract',db_column='client_id')
-    #contract_type = models.ForeignKey('SysCode',verbose_name='委托类型',limit_choices_to={'fld_eng':'contract_type'},related_name='contract_type_contract',db_column='contract_type')
-    #cargo_fee_type = models.ForeignKey('SysCode',verbose_name='货物费用计费类型',limit_choices_to={'fld_eng':'fee_cal_type'},related_name='cargo_fee_type_contract',db_column='cargo_fee_type')
-    cargo_piece = models.IntegerField('货物件数',blank=True,null=True)
-    cargo_weight = models.DecimalField('货物重量',blank=True,decimal_places=2,max_digits=13,null=True)
-    cargo_volume = models.DecimalField('货物体积',blank=True,decimal_places=3,max_digits=13,null=True)
-    booking_date = models.DateField('接单日期',blank=True,null=True)
-    in_port_date = models.DateField('到港日期',blank=True,null=True)
-    return_cntr_date = models.DateField('还箱日期',blank=True,null=True)
-    custom_id = models.ForeignKey('Client',blank=True,null=True,limit_choices_to={'custom_flag':True},verbose_name='报关行',related_name='custom_contract',db_column='custom_id')
-    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,limit_choices_to={'ship_corp_flag':True},verbose_name='船公司',related_name='ship_corp_contract',db_column='ship_corp_id')
-    port_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='码头',limit_choices_to={'port_flag':True},related_name='port_contract',db_column='port_id')
-    yard_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='场站',limit_choices_to={'yard_flag':True},related_name='yard_contract',db_column='yard_id')
-    finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
-    finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
-    vslvoy = models.CharField('船名航次',max_length=40)
-    def __str__(self):
-        return self.bill_no
-    class Meta:
-        db_table = 'contract'
-class contractAction(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    contract_id = models.ForeignKey('Contract',related_name='contract_contractaction',verbose_name='委托')
-    action_id = models.ForeignKey('Action',related_name='action_contractaction',verbose_name='委托动态')
-    finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
-    finish_time = models.DateTimeField('完成时间',blank=True,null=True)
-    def __str__(self):
-        return self.contract_id.bill_no + '/' + self.action_id.action_name
-    class Meta:
-        db_table = 'contract_action'
 class SysCode(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     fld_eng = models.CharField('英文字段名',max_length=20)
@@ -192,3 +157,83 @@ class PayType(BaseModel):
         return self.pay_name
     class Meta:
         db_table = 'c_pay_type'
+class Contract(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    bill_no = models.CharField('提单号',max_length=25,unique=True)
+    cargo_name = models.CharField('货物名称',blank=True,max_length=30,null=True)
+    origin_place = models.CharField('产地',blank=True,max_length=30,null=True)
+    client_id = models.ForeignKey('Client',verbose_name='客户',limit_choices_to={'client_flag':True},related_name='client_contract',db_column='client_id')
+    #contract_type = models.ForeignKey('SysCode',verbose_name='委托类型',limit_choices_to={'fld_eng':'contract_type'},related_name='contract_type_contract',db_column='contract_type')
+    #cargo_fee_type = models.ForeignKey('SysCode',verbose_name='货物费用计费类型',limit_choices_to={'fld_eng':'fee_cal_type'},related_name='cargo_fee_type_contract',db_column='cargo_fee_type')
+    cargo_piece = models.IntegerField('货物件数',blank=True,null=True)
+    cargo_weight = models.DecimalField('货物重量',blank=True,decimal_places=2,max_digits=13,null=True)
+    cargo_volume = models.DecimalField('货物体积',blank=True,decimal_places=3,max_digits=13,null=True)
+    booking_date = models.DateField('接单日期',blank=True,null=True)
+    in_port_date = models.DateField('到港日期',blank=True,null=True)
+    return_cntr_date = models.DateField('还箱日期',blank=True,null=True)
+    custom_id = models.ForeignKey('Client',blank=True,null=True,limit_choices_to={'custom_flag':True},verbose_name='报关行',related_name='custom_contract',db_column='custom_id')
+    ship_corp_id = models.ForeignKey('Client',blank=True,null=True,limit_choices_to={'ship_corp_flag':True},verbose_name='船公司',related_name='ship_corp_contract',db_column='ship_corp_id')
+    port_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='码头',limit_choices_to={'port_flag':True},related_name='port_contract',db_column='port_id')
+    yard_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='场站',limit_choices_to={'yard_flag':True},related_name='yard_contract',db_column='yard_id')
+    finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
+    finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
+    vslvoy = models.CharField('船名航次',max_length=40)
+    def __str__(self):
+        return self.bill_no
+    class Meta:
+        db_table = 'contract'
+class ContractAction(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    contract_id = models.ForeignKey('Contract',related_name='contract_contractaction',verbose_name='委托',db_column='contract_id')
+    action_id = models.ForeignKey('Action',related_name='action_contractaction',verbose_name='委托动态',db_column='action_id')
+    finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
+    finish_time = models.DateTimeField('完成时间',blank=True,null=True)
+    def __str__(self):
+        return self.contract_id.bill_no + '/' + self.action_id.action_name
+    class Meta:
+        db_table = 'contract_action'
+class ContractCntr(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    contract_id = models.ForeignKey('Contract',related_name='contract_contractcntr',verbose_name='委托',db_column='contract_id')
+    cntr_type = models.ForeignKey('CntrType',related_name='cntrtype_contractcntr',verbose_name='箱型',db_column='cntr_type')
+    cntr_num = models.IntegerField('货物件数')
+    def __str__(self):
+        return self.contract_id.bill_no + '/' + self.cntr_type + '/' + str(self.cntr_num)
+    class Meta:
+        db_table = 'contract_cntr'
+class PreFee(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    contract_id = models.ForeignKey('Contract',related_name='contract_prefee',verbose_name='委托',db_column='contract_id')
+    fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','应收'),('O','应付')))
+    fee_cod = models.ForeignKey('FeeCod',related_name='feecod_prefee',verbose_name='费用名称',db_column='fee_cod')
+    client_id = models.ForeignKey('Client',related_name='client_prefee',verbose_name='客户',db_column='client_id')
+    amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
+    fee_tim = models.DateTimeField('费用时间')
+    fee_financial_tim = models.DateTimeField('财务统计时间')
+    lock_flag = models.NullBooleanField('锁定',blank=True,null=True)
+    def __str__(self):
+        return self.contract_id.bill_no + '/' + self.fee_typ + '/' + self.fee_cod.fee_name + '/' + self.client_id.client_name + '/' + str(self.amount)
+    class Meta:
+        db_table = 'pre_fee'
+class ActFee(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    client_id = models.ForeignKey('Client',related_name='client_prefee',verbose_name='客户',db_column='client_id')
+    fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','已收'),('O','已付')))
+    amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
+    invoice_no = models.CharField('发票号',max_length=30)
+    check_no = models.CharField('支票号',max_length=30)
+    pay_type = models.ForeignKey('PayType',related_name='paytype_actfee',verbose_name='付费类型',db_column='pay_type')
+    fee_tim = models.DateTimeField('付费时间')
+    off_flag = models.NullBooleanField('核销完毕标识',blank=True,null=True)
+    def __str__(self):
+        return self.client_id.client_name + '/' + self.fee_typ + '/' + self.pay_type.pay_name + '/' + str(self.amount)
+    class Meta:
+        db_table = 'act_fee'
+class WriteOffFee(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    act_fee_id = models.ForeignKey('ActFee',related_name='actfee_writeofffee',verbose_name='已收付费用',db_column='act_fee_id')
+    pre_fee_id = models.ForeignKey('PreFee',related_name='prefee_writeofffee',verbose_name='应收付费用',db_column='pre_fee_id')
+    amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
+    class Meta:
+        db_table = 'writeoff_fee'
+
