@@ -206,7 +206,7 @@ class PreFee(BaseModel):
     contract_id = models.ForeignKey('Contract',related_name='contract_prefee',verbose_name='委托',db_column='contract_id')
     fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','应收'),('O','应付')))
     fee_cod = models.ForeignKey('FeeCod',related_name='feecod_prefee',verbose_name='费用名称',db_column='fee_cod')
-    client_id = models.ForeignKey('Client',related_name='client_prefee',verbose_name='客户',db_column='client_id')
+    client_id = models.ForeignKey('Client',related_name='client_prefee',limit_choices_to={'client_flag':True},verbose_name='客户',db_column='client_id')
     amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
     fee_tim = models.DateTimeField('费用时间')
     fee_financial_tim = models.DateTimeField('财务统计时间')
@@ -217,11 +217,11 @@ class PreFee(BaseModel):
         db_table = 'pre_fee'
 class ActFee(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',related_name='client_actfee',verbose_name='客户',db_column='client_id')
+    client_id = models.ForeignKey('Client',related_name='client_actfee',limit_choices_to={'client_flag':True},verbose_name='客户',db_column='client_id')
     fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','已收'),('O','已付')))
     amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
-    invoice_no = models.CharField('发票号',max_length=30)
-    check_no = models.CharField('支票号',max_length=30)
+    invoice_no = models.CharField('发票号',max_length=30,blank=True,null=True)
+    check_no = models.CharField('支票号',max_length=30,blank=True,null=True)
     pay_type = models.ForeignKey('PayType',related_name='paytype_actfee',verbose_name='付费类型',db_column='pay_type')
     fee_tim = models.DateTimeField('付费时间')
     off_flag = models.NullBooleanField('核销完毕标识',blank=True,null=True)

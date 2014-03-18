@@ -1,0 +1,10 @@
+.editform input {
+    width: 180px;
+}
+.editform label {
+    width:60px;
+    display: inline-block;
+}
+.editform div {
+    padding: 5px;
+}

@@ -131,9 +131,11 @@ def paytypeview(request):
     pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
     return render(request,"yard/basedata/paytype.html",locals())
-def contractform(request):
-    return render(request,"yard/contract/contractform")
 def contractview(request):
+    return render(request,"yard/contract/contractview.html")
+def contractform(request):
+    return render(request,"yard/contract/contractform.html")
+def contractgrid(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no')
     cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name')
@@ -156,12 +158,12 @@ def contractview(request):
 
 def actfeeview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
-    clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id')
+    clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
     amountObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
     invoiceNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no')
     checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no')
-    payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type')
+    payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag')
     return render(request,"yard/fee/actfee.html",locals())
@@ -207,6 +209,8 @@ def dealMenuReq(request):
         return(paytypeview(request))
     elif ls_args == '客户维护':
         return(clientview(request))
+    elif ls_args == '委托维护':
+        return(contractview(request))
     elif ls_args == "委托头表单":
         return(contractform(request))
     elif ls_args == "已收核销":

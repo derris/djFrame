@@ -173,10 +173,13 @@ class EasyuiFieldUI:
                 'type': 'datetimebox'
             }
         if isinstance(self.fObj, (models.CharField,)):
-            self.width = self.fObj.max_length * 5
-            if self.fObj.choices is not None:
+            columnWidth = len(self.title)
+            #self.width = self.fObj.max_length * 5
+            #self.width = columnWidth
+            if self.fObj.choices is not None and len(self.fObj.choices) > 0:
                 dataList = []
                 for item in self.fObj.choices:
+                    columnWidth = max(len(item[1]),columnWidth)
                     dataList.append({
                         'value':item[0],
                         'text':item[1]
@@ -193,6 +196,7 @@ class EasyuiFieldUI:
                 self.editor = {
                     'type': 'text'
                 }
+            self.width = columnWidth * 18
         if isinstance(self.fObj, (models.ForeignKey,)):
             columnWidth = len(self.title)
             if self.autoforeign is not None and self.autoforeign:
