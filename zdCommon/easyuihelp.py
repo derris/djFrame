@@ -174,9 +174,25 @@ class EasyuiFieldUI:
             }
         if isinstance(self.fObj, (models.CharField,)):
             self.width = self.fObj.max_length * 5
-            self.editor = {
-                'type': 'text'
-            }
+            if self.fObj.choices is not None:
+                dataList = []
+                for item in self.fObj.choices:
+                    dataList.append({
+                        'value':item[0],
+                        'text':item[1]
+                    })
+                self.editor = {
+                    'type': 'combobox',
+                    'options': {
+                        'valueField': 'value',
+                        'textField': 'text',
+                        'data': dataList
+                    }
+                }
+            else:
+                self.editor = {
+                    'type': 'text'
+                }
         if isinstance(self.fObj, (models.ForeignKey,)):
             columnWidth = len(self.title)
             if self.autoforeign is not None and self.autoforeign:
