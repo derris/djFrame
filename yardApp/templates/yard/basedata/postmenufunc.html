@@ -41,64 +41,47 @@
             lines: true
         });
         $('#basedata-postmenufunc-savebutton').bind('click', function () {
-            var rootNodes = basedata.postmenufuncview.menufunctree.tree('getRoots');
+            var checkedNodes = basedata.postmenufuncview.menufunctree.tree('getChecked', ['checked', 'indeterminate']);
+            var uncheckedNodes = basedata.postmenufuncview.menufunctree.tree('getChecked', 'unchecked');
             var postid = basedata.postmenufuncview.postdg.datagrid('getSelected').id;
-            var optype = '';
-            var menuid,funcid,table;
+            var menuid, funcid, table;
             var rows = new Array();
-            for (var i = 0, ilen = rootNodes.length; i < ilen; i++) {
-                if (!basedata.postmenufuncview.menufunctree.tree('isLeaf', rootNodes[i].target)) {
-                    var nodes = basedata.postmenufuncview.menufunctree.tree('getChildren', rootNodes[i].target);
-                    for (j = 0, jlen = nodes.length; j < jlen; j++) {
-                        if ((nodes[j].checked ^ nodes[j].attributes.oldval) == 1 ) {
-                            if (nodes[j].checked) {
-                                optype = 'insert';
-                            } else {
-                                optype = 'delete'
-                            }
-                            if (nodes[j].attributes.type == 'func'){
-                                funcid = nodes[j].attributes.id;
-                                menuid = basedata.postmenufuncview.menufunctree.tree('getParent',nodes[j].target).attributes.id;
-                                table = 'func';
-                            }else{
-                                funcid = -1;
-                                menuid = nodes[j].attributes.id;
-                                table = 'menu';
-                            }
-                            rows.push({
-                                op: optype,
-                                table: table,
-                                menuid: menuid,
-                                funcid: funcid,
-                                postid: postid
-                            });
-                        }
-                    }
-                }
-                if ((rootNodes[i].checked ^ rootNodes[i].attributes.oldval) == 1) {
-                    if (rootNodes[i].checked) {
-                        optype = 'insert';
+            for (var i = 0, ilen = checkedNodes.length; i < ilen; i++) {
+                if (!checkedNodes[i].attributes.oldval) {
+                    if (checkedNodes[i].attributes.type == 'func') {
+                        funcid = checkedNodes[i].attributes.id;
+                        menuid = basedata.postmenufuncview.menufunctree.tree('getParent', checkedNodes[i].target).attributes.id;
+                        table = 'func';
                     } else {
-                        optype = 'delete';
+                        funcid = -1;
+                        menuid = checkedNodes[i].attributes.id;
+                        table = 'menu';
                     }
                     rows.push({
-                        op: optype,
-                        table: 'menu',
-                        menuid: rootNodes[i].attributes.id,
-                        funcid: -1,
+                        op: 'insert',
+                        table: table,
+                        menuid: menuid,
+                        funcid: funcid,
                         postid: postid
                     });
                 }
             }
-            //处理indeterminate状态节点
-            var fuzzyNodes = basedata.postmenufuncview.menufunctree.tree('getChecked','indeterminate');
-            for (f = 0,flen = fuzzyNodes.length;f < flen;f++){
-                if (!fuzzyNodes[f].attributes.oldval){
+            for (var j = 0, jlen = uncheckedNodes.length; j < jlen; j++) {
+                if (uncheckedNodes[j].attributes.oldval) {
+                    if (uncheckedNodes[j].attributes.type == 'func') {
+                        funcid = uncheckedNodes[j].attributes.id;
+                        menuid = basedata.postmenufuncview.menufunctree.tree('getParent', uncheckedNodes[j].target).attributes.id;
+                        table = 'func';
+                    } else {
+                        funcid = -1;
+                        menuid = uncheckedNodes[j].attributes.id;
+                        table = 'menu';
+                    }
                     rows.push({
-                        op: 'insert',
-                        table: 'menu',
-                        menuid: fuzzyNodes[f].attributes.id,
-                        funcid: -1,
+                        op: 'delete',
+                        table: table,
+                        menuid: menuid,
+                        funcid: funcid,
                         postid: postid
                     });
                 }
@@ -106,7 +89,7 @@
             if (rows.length == 0) {
                 return;
             }
-            rows.sort(sy.createComparsion('op','desc'));
+            rows.sort(sy.createComparsion('op', 'desc'));
             var p = {
                 reqtype: 'sysfunc',
                 func: 'menufuncpost',

@@ -6,16 +6,15 @@
             columns: [
                 [
                     {% autoescape off %}
-                        {{ id.writeUI|safe|escape }},
-                        {{ clientName.writeUI|safe|escape }},
-                        {{ clientFlag.writeUI|safe|escape }},
-                        {{ customFlag.writeUI|safe|escape }},
-                        {{ shipcorpFlag.writeUI|safe|escape }},
-                        {{ yardFlag.writeUI|safe|escape }},
-                        {{ portFlag.writeUI|safe|escape }},
-                        {{ financialFlag.writeUI|safe|escape }},
-                        {{ recTim.writeUI|safe|escape }},
-                        {{ remark.writeUI|safe|escape }}
+                        {{ idObj.writeUI|safe|escape }},
+                        {{ clientNameObj.writeUI|safe|escape }},
+                        {{ clientFlagObj.writeUI|safe|escape }},
+                        {{ customFlagObj.writeUI|safe|escape }},
+                        {{ shipcorpFlagObj.writeUI|safe|escape }},
+                        {{ yardFlagObj.writeUI|safe|escape }},
+                        {{ portFlagObj.writeUI|safe|escape }},
+                        {{ financialFlagObj.writeUI|safe|escape }},
+                        {{ remarkObj.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],

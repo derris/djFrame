@@ -88,9 +88,8 @@ def clientview(request):
     yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
     portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
     financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
-    recTimObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='rec_tim')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
-    return render(request,"yard/basedata/clients.html",locals())
+    return render(request,"yard/basedata/client.html",locals())
 def cntrtypeview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='id')
     cntrtype = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type',width=100)
@@ -132,6 +131,8 @@ def paytypeview(request):
     pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
     return render(request,"yard/basedata/paytype.html",locals())
+def contractform(request):
+    return render(request,"yard/contract/contractform")
 def contractview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no')
@@ -190,8 +191,9 @@ def dealMenuReq(request):
         return(feeprotocolview(request))
     elif ls_args == '付款方式维护':
         return(paytypeview(request))
-
     elif ls_args == '客户维护':
         return(clientview(request))
+    elif ls_args == "委托头表单":
+        return(contractform(request))
     else:
         return HttpResponse("找不到功能名，请联系管理员")
