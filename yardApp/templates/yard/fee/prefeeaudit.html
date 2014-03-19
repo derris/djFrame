@@ -1,0 +1,94 @@
+<script>
+    Namespace.register('fee.prefeeauditview');
+$(function () {
+        fee.prefeeauditview.clientgrid = $('#fee-prefeeaudit-client-datagrid').datagrid({
+            autoSave: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ idObj.writeUI|safe|escape }},
+                        {{ clientNameObj.writeUI|safe|escape }},
+                        {{ clientFlagObj.writeUI|safe|escape }},
+                        {{ customFlagObj.writeUI|safe|escape }},
+                        {{ shipcorpFlagObj.writeUI|safe|escape }},
+                        {{ yardFlagObj.writeUI|safe|escape }},
+                        {{ portFlagObj.writeUI|safe|escape }},
+                        {{ financialFlagObj.writeUI|safe|escape }},
+                        {{ remarkObj.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_client',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'fee-prefeeaudit-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(fee.prefeeauditview.clientgrid);
+                    }
+                }
+            ],
+            queryFuncName:'已收核销客户查询',
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                var id = rowData.id;
+                var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
+                opts.postid = id
+                fee.prefeeauditview.actfeegrid.datagrid('reload');
+            }
+        });
+
+        fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
+            autoSave: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id2Obj.writeUI|safe|escape }},
+                        {{ clientIdObj.writeUI|safe|escape }},
+                        {{ feeTypObj.writeUI|safe|escape }},
+                        {{ amountObj.writeUI|safe|escape }},
+                        {{ invoiceNoObj.writeUI|safe|escape }},
+                        {{ checkNoObj.writeUI|safe|escape }},
+                        {{ payTypeObj.writeUI|safe|escape }},
+                        {{ feeTimObj.writeUI|safe|escape }},
+                        {{ offFlagObj.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            queryFuncName: '已收核销已收费用查询',
+            postid: "0"
+        })
+        /* fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ menu_id.writeUI|safe|escape }},
+                    {{ func_id.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                {% endautoescape %}
+                ]
+            ]
+        }) */
+});
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="north" border="false" style="height: 250px" data-options="split:true">
+        <table id="fee-prefeeaudit-client-datagrid" border="false">
+        </table>
+    </div>
+
+    <div data-options="region:'west',split:true" title="West" style="width:350px;">
+        <table id="fee-prefeeaudit-prefee-datagrid" border="false">
+        </table>
+    </div>
+    <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
+        <table id="fee-prefeeaudit-actfee-datagrid" border="false">
+        </table>
+    </div>
+    <div data-options="region:'south',split:true" style="height:50px;">
+
+    </div>
+</div>

@@ -1,7 +1,7 @@
 <script>
-    Namespace.register('basedata.actfeeview');
+    Namespace.register('fee.actfeeview');
     $(function () {
-        basedata.actfeeview.datagrid = $('#basedata-actfee-datagrid').datagrid({
+        fee.actfeeview.datagrid = $('#fee-actfee-datagrid').datagrid({
             autoSave: false,
             columns: [
                 [
@@ -22,17 +22,17 @@
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-actfee-datagrid',
+                    group:'fee-actfee-datagrid',
                     handler: function () {
-                        sy.createSearchWindow(basedata.actfeeview.datagrid);
+                        sy.createSearchWindow(fee.actfeeview.datagrid);
                     }
                 },
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-actfee-datagrid',
+                    group:'fee-actfee-datagrid',
                     handler: function () {
-                        basedata.actfeeview.datagrid.datagrid('insertData', {
+                        fee.actfeeview.datagrid.datagrid('insertData', {
 
                         });
                     }
@@ -40,17 +40,17 @@
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-actfee-datagrid',
+                    group:'fee-actfee-datagrid',
                     handler: function () {
-                        basedata.actfeeview.datagrid.datagrid('deleteData');
+                        fee.actfeeview.datagrid.datagrid('deleteData');
                     }
                 },
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-actfee-datagrid',
+                    group:'fee-actfee-datagrid',
                     handler: function () {
-                        basedata.actfeeview.datagrid.datagrid('postUpdateAllData');
+                        fee.actfeeview.datagrid.datagrid('postUpdateAllData');
                     }
                 }
             ],
@@ -61,7 +61,7 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="center" border="false">
-        <table id="basedata-actfee-datagrid" border="false">
+        <table id="fee-actfee-datagrid" border="false">
         </table>
     </div>
 </div>

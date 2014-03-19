@@ -60,6 +60,13 @@ def getclients(request):
     ls_sql = "select " + ", ".join(ldict['cols']) + " from c_client "
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
+def getclientsEx(request, aSql):
+    '''客户查询'''
+    ls_sql = aSql
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps( rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
 @csrf_exempt
 def getsyscod(request):
     '''系统参数查询'''
@@ -90,13 +97,6 @@ def getfeecod(request):
     ls_sql = "select id,fee_name,fee_group_id,pair_flag,protocol_flag,remark from c_fee"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-def getactfee(request):
-    '''已收核销查询'''
-    ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
-    ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-
-
 def getfeeprotocol(request):
     '''费用名称查询'''
     ls_sql = "select id,client_id,fee_id,contract_type,fee_cal_type,rate,free_day,remark from c_fee_protocol"
@@ -111,6 +111,15 @@ def getpaytype(request):
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( getMenuPrivilege(ldict['postid']),ensure_ascii = False) )
+def getactfeeEx(request, aSql):
+    '''已收核销查询'''
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
+def getprefeeEx(request, aSql):
+    '''已收核销查询'''
+    #ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from pre_fee"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
 
 
 #############################################################    UPDATE    -----
@@ -155,11 +164,20 @@ def dealPAjax(request):
         return(getpaytype(request))
     elif ldict['func'] == '客户查询':
         return(getclients(request))
-    elif ldict['func'] == '已收费用查询':
-        return(getactfee(request))
     elif ldict['func'] == '岗位权限查询':
         return(getprivilege(request))
-
+    ############## 费用  #######
+    ###
+    elif ldict['func'] == '已收费用查询':
+        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
+        return(getactfeeEx(request, ls_sql))
+    elif ldict['func'] == '已收核销已收费用查询':
+        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee where client_id = %s " % (str(ldict['postid']),)
+        return(getactfeeEx(request, ls_sql))
+    ######
+    elif ldict['func'] == '已收核销客户查询':
+        ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
+        return(getclientsEx(request, ls_t))
     ################################################## update
     elif ldict['func'] == '功能维护':
         return(updateClients(request))

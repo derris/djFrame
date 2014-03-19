@@ -178,7 +178,28 @@ def actfeeview(request):
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
     return render(request,"yard/fee/actfee.html",locals())
+def prefeeauditview(request):
+    idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
+    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
+    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
+    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag')
+    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
+    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
+    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
+    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
+    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
 
+    id2Obj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
+    clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
+    amountObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
+    invoiceNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no',width=100)
+    checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no',width=100)
+    payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
+    feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
+    offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
+
+    return render(request,"yard/fee/prefeeaudit.html",locals())
 
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
@@ -224,10 +245,10 @@ def dealMenuReq(request):
         return(contractview(request))
     elif ls_args == "委托头表单":
         return(contractform(request))
+    #######  费用 #############
     elif ls_args == "已收费用":
         return(actfeeview(request))
     elif ls_args == "已收核销":
-        return(actfeeview(request))
-
+        return(prefeeauditview(request))
     else:
         return HttpResponse("找不到功能名，请联系管理员")
