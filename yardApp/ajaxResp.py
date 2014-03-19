@@ -55,7 +55,9 @@ def getpostuser(request):
 @csrf_exempt
 def getclients(request):
     '''客户查询'''
-    ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
+    #ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from c_client "
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 @csrf_exempt
@@ -153,7 +155,7 @@ def dealPAjax(request):
         return(getpaytype(request))
     elif ldict['func'] == '客户查询':
         return(getclients(request))
-    elif ldict['func'] == '已收核销查询':
+    elif ldict['func'] == '已收费用查询':
         return(getactfee(request))
     elif ldict['func'] == '岗位权限查询':
         return(getprivilege(request))
@@ -188,7 +190,7 @@ def dealPAjax(request):
 
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
-    elif ldict['func'] == '已收核销维护':
+    elif ldict['func'] == '已收费用维护':
         return(updateClients(request))
     elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
         return(HttpResponse(json.dumps( setMenuPrivilege(ldict) ,ensure_ascii = False) ))

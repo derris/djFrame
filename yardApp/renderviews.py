@@ -224,6 +224,8 @@ def dealMenuReq(request):
         return(contractview(request))
     elif ls_args == "委托头表单":
         return(contractform(request))
+    elif ls_args == "已收费用":
+        return(actfeeview(request))
     elif ls_args == "已收核销":
         return(actfeeview(request))
 
