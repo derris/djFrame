@@ -211,6 +211,10 @@ class PreFee(BaseModel):
     fee_tim = models.DateTimeField('费用时间')
     fee_financial_tim = models.DateTimeField('财务统计时间')
     lock_flag = models.NullBooleanField('锁定',blank=True,null=True)
+    ex_feeid = models.CharField('生成标记',max_length=1,choices=(('O','原生'),('E','拆分')))
+    ex_from = models.CharField('来源号',max_length=36,blank=True,null=True)
+    ex_over = models.CharField('完结号',max_length=36,blank=True,null=True)
+
     def __str__(self):
         return self.contract_id.bill_no + '/' + self.fee_typ + '/' + self.fee_cod.fee_name + '/' + self.client_id.client_name + '/' + str(self.amount)
     class Meta:
@@ -225,6 +229,9 @@ class ActFee(BaseModel):
     pay_type = models.ForeignKey('PayType',related_name='paytype_actfee',verbose_name='付费类型',db_column='pay_type')
     fee_tim = models.DateTimeField('付费时间')
     off_flag = models.NullBooleanField('核销完毕标识',blank=True,null=True)
+    ex_feeid = models.CharField('生成标记',max_length=1,choices=(('O','原生'),('E','拆分')))
+    ex_from = models.CharField('来源号',max_length=36,blank=True,null=True)
+    ex_over = models.CharField('完结号',max_length=36,blank=True,null=True)
     def __str__(self):
         return self.client_id.client_name + '/' + self.fee_typ + '/' + self.pay_type.pay_name + '/' + str(self.amount)
     class Meta:
