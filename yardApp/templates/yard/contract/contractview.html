@@ -39,6 +39,43 @@
             queryFuncName:'委托动态查询',
             updateFuncName:'委托动态维护'
         });
+        contract.contractview.cntrdatagrid = $('#contract-contractview-cntrdatagrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ cntrid.writeUI|safe|escape }},
+                        {{ cntrcontractid.writeUI|safe|escape }},
+                        {{ cntr_type.writeUI|safe|escape }},
+                        {{ cntr_num.writeUI|safe|escape }},
+                        {{ actionremark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'contract_cntr',
+            toolbar: [
+
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'contract-contractview-cntrdatagrid',
+                    handler: function () {
+                        contract.contractview.cntrdatagrid.datagrid('insertData', {
+
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'contract-contractview-cntrdatagrid',
+                    handler: function () {
+                        contract.contractview.cntrdatagrid.datagrid('deleteData');
+                    }
+                }
+            ],
+            queryFuncName:'委托箱查询',
+            updateFuncName:'委托箱维护'
+        });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">

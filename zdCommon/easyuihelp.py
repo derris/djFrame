@@ -192,6 +192,14 @@ class EasyuiFieldUI:
                         'data': dataList
                     }
                 }
+                self.formatter = ''' function(value,rowData,index){
+                                     for (var i = 0,ilen = this.editor.options.data.length; i < ilen ; i++){
+                                         if (this.editor.options.data[i].value == value){
+                                            return this.editor.options.data[i].text;
+                                         }
+                                     }
+                                     return value;
+                                }'''
             else:
                 self.editor = {
                     'type': 'text'
