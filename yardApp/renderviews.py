@@ -132,7 +132,18 @@ def paytypeview(request):
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
     return render(request,"yard/basedata/paytype.html",locals())
 def contractview(request):
-    return render(request,"yard/contract/contractview.html")
+    actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='id')
+    actioncontractid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='contract_id',hidden=True)
+    actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='action_id',autoforeign=True,foreigndisplayfield='action_name')
+    finish_flag = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='finish_flag')
+    finish_time = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='finish_time')
+    actionremark = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='remark')
+    cntrid = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='id')
+    cntrcontractid = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='contract_id',hidden=True)
+    cntr_type = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='cntr_type',autoforeign=True,foreigndisplayfield='cntr_type')
+    cntr_num = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='cntr_num')
+    cntrremark = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='remark')
+    return render(request,"yard/contract/contractview.html",locals())
 def contractform(request):
     return render(request,"yard/contract/contractform.html")
 def contractgrid(request):

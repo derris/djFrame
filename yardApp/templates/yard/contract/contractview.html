@@ -1,9 +1,52 @@
+<script>
+    Namespace.register('contract.contractview');
+    $(function () {
+        contract.contractview.actiondatagrid = $('#contract-contractview-actiondatagrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ actionid.writeUI|safe|escape }},
+                        {{ actioncontractid.writeUI|safe|escape }},
+                        {{ actionid.writeUI|safe|escape }},
+                        {{ finish_flag.writeUI|safe|escape }},
+                        {{ finish_time.writeUI|safe|escape }},
+                        {{ actionremark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'contract_action',
+            toolbar: [
+
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'contract-contractview-actiondatagrid',
+                    handler: function () {
+                        contract.contractview.actiondatagrid.datagrid('insertData', {
+
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'contract-contractview-actiondatagrid',
+                    handler: function () {
+                        contract.contractview.actiondatagrid.datagrid('deleteData');
+                    }
+                }
+            ],
+            queryFuncName:'委托动态查询',
+            updateFuncName:'委托动态维护'
+        });
+    });
+</script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:'true',href:'./dealmenureq/?menutext=委托头表单'">
 
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div id="contract-contract-tabs" class="easyui-tabs" style="height:250px;">
+        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true'">
             <div title="委托动态">
                 <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
                 </table>
@@ -13,6 +56,5 @@
                 </table>
             </div>
         </div>
-
     </div>
 </div>

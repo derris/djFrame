@@ -8,3 +8,9 @@
 .editform div {
     padding: 5px;
 }
+.editform-toolbar{
+    position: absolute;
+    float:left;
+    bottom:10px;
+    left:5px;
+}

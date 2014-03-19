@@ -196,7 +196,7 @@ class ContractCntr(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     contract_id = models.ForeignKey('Contract',related_name='contract_contractcntr',verbose_name='委托',db_column='contract_id')
     cntr_type = models.ForeignKey('CntrType',related_name='cntrtype_contractcntr',verbose_name='箱型',db_column='cntr_type')
-    cntr_num = models.IntegerField('货物件数')
+    cntr_num = models.IntegerField('箱量')
     def __str__(self):
         return self.contract_id.bill_no + '/' + self.cntr_type + '/' + str(self.cntr_num)
     class Meta:
