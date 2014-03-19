@@ -1,5 +1,6 @@
 __author__ = 'zhangtao'
 # render 前台界面
+import json
 from django.shortcuts import render
 from yardApp import models,views
 from zdCommon import easyuihelp
@@ -143,6 +144,7 @@ def contractview(request):
     cntr_type = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='cntr_type',autoforeign=True,foreigndisplayfield='cntr_type')
     cntr_num = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='cntr_num')
     cntrremark = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='remark')
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     return render(request,"yard/contract/contractview.html",locals())
 def contractform(request):
     return render(request,"yard/contract/contractform.html")

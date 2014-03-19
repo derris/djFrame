@@ -310,8 +310,8 @@ $.extend($.fn.datagrid.defaults, {
     autoLoad: true,  //true render完页面后，主动load数据
     loadNumber:0,    //自datagrid创建以来load的次数，结合autoLoad，限制自动加载。
     autoSave: false, //true 在onAfterEdit()中提交'insert'和'update',在deleteData()中提交‘delete’
-    childDatagrid: [],//关联的子datagrid
-    parentDatagrid: null,//关联的父datagrid
+    childDatagrid: [],//关联的子datagrid 未启用
+    parentDatagrid: null,//关联的父datagrid 未启用
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
     filterFields:[], /*过滤字段，自动传入查询参数
@@ -378,11 +378,11 @@ $.extend($.fn.datagrid.defaults, {
             $.each(opts.filterFields, function (index, data) {
                 for (var i = 0, ilen = queryParam.filter.length; i < ilen; i++) {
                     if (queryParam.filter[i].cod == data.cod) {
-                        queryParam.filter.splice(i, 1);
+                        queryParam.filter.splice(i, 1); //删掉重复的过滤字段
                         break;
                     }
                 }
-                queryParam.filter.splice(0, 0, data);
+                queryParam.filter.splice(0, 0, data); //强制增加此datagrid的filterFields属性中的过滤条件
             });
         }
         if (opts.sortFields.length != 0) { //强制增加手动设置排序条件

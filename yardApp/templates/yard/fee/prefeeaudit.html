@@ -36,11 +36,17 @@ $(function () {
                 var id = rowData.id;
                 var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
                 opts.postid = id
+                console.info(opts.postid);
+                //加上这句,这是手动加过滤条件
+                opts.filterFields = [
+                            {cod: 'client_id', operatorTyp: '等于', value: id}
+                        ];
                 fee.prefeeauditview.actfeegrid.datagrid('reload');
             }
         });
 
         fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
+            autoLoad:false,
             autoSave: false,
             columns: [
                 [
@@ -60,7 +66,7 @@ $(function () {
             queryFuncName: '已收核销已收费用查询',
             postid: "0"
         })
-        /* fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
+        {% comment %} fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
             autoLoad: false,
             columns: [
                 [   {% autoescape off %}
@@ -71,7 +77,7 @@ $(function () {
                 {% endautoescape %}
                 ]
             ]
-        }) */
+        }){% endcomment %}
 });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
