@@ -7,18 +7,18 @@ $(function () {
                 [
                     {% autoescape off %}
                         {{ idObj.writeUI|safe|escape }},
-                        {{ clientNameObj.writeUI|safe|escape }},
-                        {{ clientFlagObj.writeUI|safe|escape }},
-                        {{ customFlagObj.writeUI|safe|escape }},
-                        {{ shipcorpFlagObj.writeUI|safe|escape }},
-                        {{ yardFlagObj.writeUI|safe|escape }},
-                        {{ portFlagObj.writeUI|safe|escape }},
-                        {{ financialFlagObj.writeUI|safe|escape }},
-                        {{ remarkObj.writeUI|safe|escape }}
+                        {{ clientIdObj.writeUI|safe|escape }},
+                        {{ feeTypObj.writeUI|safe|escape }},
+                        {{ amountObj.writeUI|safe|escape }},
+                        {{ invoiceNoObj.writeUI|safe|escape }},
+                        {{ checkNoObj.writeUI|safe|escape }},
+                        {{ payTypeObj.writeUI|safe|escape }},
+                        {{ feeTimObj.writeUI|safe|escape }},
+                        {{ offFlagObj.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
-            dataTable: 'c_client',
+            dataTable: 'act_fee',
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
@@ -28,16 +28,16 @@ $(function () {
                     }
                 }
             ],
-            queryFuncName:'已收核销客户查询',
+            queryFuncName:'已收核销已收查询',
             onDblClickRow: function (rowIndex, rowData) {
                 return;
             },
             onClickRow: function (rowIndex, rowData) {
-                var id = rowData.id;
+                var clientid = rowData.client_id;
                 var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
                 opts.postid = id;
                 opts.ex_parm = {
-                    post_id : '1'
+                    clientid : clientid
                 };
                 fee.prefeeauditview.actfeegrid.datagrid('reload');
             }
@@ -61,22 +61,11 @@ $(function () {
                     {% endautoescape %}
                 ]
             ],
-            queryFuncName: '已收核销已收费用查询',
+            queryFuncName: '已收核销应收查询',
             postid: "0",
             rows: "-1"
         })
-        {% comment %} fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
-            autoLoad: false,
-            columns: [
-                [   {% autoescape off %}
-                    {{ id.writeUI|safe|escape }},
-                    {{ menu_id.writeUI|safe|escape }},
-                    {{ func_id.writeUI|safe|escape }},
-                    {{ remark.writeUI|safe|escape }}
-                {% endautoescape %}
-                ]
-            ]
-        }){% endcomment %}
+
 });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">

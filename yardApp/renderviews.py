@@ -201,7 +201,6 @@ def prefeeauditview(request):
     feeTimObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
     lockFlagObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
     remarkObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',readonly=True)
-
     return render(request,"yard/fee/prefeeaudit.html",locals())
 
 def dealMenuReq(request):
