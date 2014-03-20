@@ -35,12 +35,10 @@ $(function () {
             onClickRow: function (rowIndex, rowData) {
                 var id = rowData.id;
                 var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
-                opts.postid = id
-                console.info(opts.postid);
-                //加上这句,这是手动加过滤条件
-                opts.filterFields = [
-                            {cod: 'client_id', operatorTyp: '等于', value: id}
-                        ];
+                opts.postid = id;
+                opts.ex_parm = {
+                    post_id : '1'
+                };
                 fee.prefeeauditview.actfeegrid.datagrid('reload');
             }
         });
