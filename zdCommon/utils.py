@@ -7,7 +7,7 @@ import sys
 
 def log(aMsg, alogFile = BASE_DIR + 'djgw.log'):
     '''
-        记录日志： from utiles import log, logErr
+        记录日志： from zdCommon.utils import log, logErr
     @param aMsg: 记录的信息
     @param alogFile:  记录的文件名，默认djgw.log
     '''

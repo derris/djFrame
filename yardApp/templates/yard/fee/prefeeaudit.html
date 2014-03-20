@@ -64,7 +64,8 @@ $(function () {
                 ]
             ],
             queryFuncName: '已收核销已收费用查询',
-            postid: "0"
+            postid: "0",
+            rows: "-1"
         })
         {% comment %} fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
             autoLoad: false,
@@ -86,11 +87,11 @@ $(function () {
         </table>
     </div>
 
-    <div data-options="region:'west',split:true" title="West" style="width:350px;">
+    <div data-options="region:'west',split:true" title="应收" style="width:350px;">
         <table id="fee-prefeeaudit-prefee-datagrid" border="false">
         </table>
     </div>
-    <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
+    <div data-options="region:'center',title:'已收',iconCls:'icon-ok'">
         <table id="fee-prefeeaudit-actfee-datagrid" border="false">
         </table>
     </div>

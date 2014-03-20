@@ -6,7 +6,7 @@ import json
 from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
-
+from zdCommon.utils import log, logErr
 ##########################################################        GET    ----
 # 查询参数 json string。
 #    jpargs:  '''
@@ -134,7 +134,7 @@ def updateClients(request):
 def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
     # check and valid here ...
-    print(ldict)
+    log(ldict)
     #################################################  get
     if ldict['func'] == '功能查询':
         return(getsysmenu(request))
@@ -172,7 +172,7 @@ def dealPAjax(request):
         ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
         return(getactfeeEx(request, ls_sql))
     elif ldict['func'] == '已收核销已收费用查询':
-        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee where client_id = %s " % (str(ldict['postid']),)
+        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
         return(getactfeeEx(request, ls_sql))
     ######
     elif ldict['func'] == '已收核销客户查询':
