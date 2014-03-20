@@ -327,7 +327,7 @@ $.extend($.fn.datagrid.defaults, {
                        }*/
     queryFuncName: '' , //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
     updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
-
+    ex_parm:{}, //扩展查询参数 load()中使用
     //以上为扩展属性
     border: false,
     fit: true,
@@ -368,7 +368,8 @@ $.extend($.fn.datagrid.defaults, {
 
         var queryParam = {
             reqtype: 'query',
-            func: opts.queryFuncName
+            func: opts.queryFuncName,
+            ex_parm : opts.ex_parm
         };
         $.extend(queryParam, param);
         if (opts.filterFields.length != 0){  //强制增加手动设置过滤条件
