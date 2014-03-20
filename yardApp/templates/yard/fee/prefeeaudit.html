@@ -1,11 +1,12 @@
 <script>
     Namespace.register('fee.prefeeauditview');
 $(function () {
-        fee.prefeeauditview.clientgrid = $('#fee-prefeeaudit-client-datagrid').datagrid({
+        fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
             autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
+                        {field: 'check_flag',title: '选择',checkbox:true},
                         {{ idObj.writeUI|safe|escape }},
                         {{ clientIdObj.writeUI|safe|escape }},
                         {{ feeTypObj.writeUI|safe|escape }},
@@ -24,7 +25,7 @@ $(function () {
                     iconCls: 'icon-search',
                     group:'fee-prefeeaudit-datagrid',
                     handler: function () {
-                        sy.createSearchWindow(fee.prefeeauditview.clientgrid);
+                        sy.createSearchWindow(fee.prefeeauditview.actfeegrid);
                     }
                 }
             ],
@@ -34,55 +35,48 @@ $(function () {
             },
             onClickRow: function (rowIndex, rowData) {
                 var clientid = rowData.client_id;
-                var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
-                opts.postid = id;
+                var opts = fee.prefeeauditview.prefeegrid.datagrid('options');
                 opts.ex_parm = {
-                    clientid : clientid
+                    client_id : clientid
                 };
-                fee.prefeeauditview.actfeegrid.datagrid('reload');
+                fee.prefeeauditview.prefeegrid.datagrid('reload');
             }
         });
 
-        fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
+        fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
             autoLoad:false,
             autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
-                        {{ id2Obj.writeUI|safe|escape }},
-                        {{ clientIdObj.writeUI|safe|escape }},
-                        {{ feeTypObj.writeUI|safe|escape }},
-                        {{ amountObj.writeUI|safe|escape }},
-                        {{ invoiceNoObj.writeUI|safe|escape }},
-                        {{ checkNoObj.writeUI|safe|escape }},
-                        {{ payTypeObj.writeUI|safe|escape }},
-                        {{ feeTimObj.writeUI|safe|escape }},
-                        {{ offFlagObj.writeUI|safe|escape }}
+                        {{ idObj2.writeUI|safe|escape }},
+                        {{ contracIdObj2.writeUI|safe|escape }},
+                        {{ feeTypObj2.writeUI|safe|escape }},
+                        {{ feeCodObj2.writeUI|safe|escape }},
+                        {{ clientIdObj2.writeUI|safe|escape }},
+                        {{ amountObj2.writeUI|safe|escape }},
+                        {{ feeTimObj2.writeUI|safe|escape }},
+                        {{ lockFlagObj2.writeUI|safe|escape }},
+                        {{ remarkObj2.writeUI|safe|escape }},
                     {% endautoescape %}
                 ]
             ],
-            queryFuncName: '已收核销应收查询',
-            postid: "0",
-            rows: "-1"
+            queryFuncName: '已收核销应收查询'
         })
 
 });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="north" border="false" style="height: 250px" data-options="split:true">
-        <table id="fee-prefeeaudit-client-datagrid" border="false">
+
+        <table id="fee-prefeeaudit-actfee-datagrid" border="false" data-options="rownumbers:true,singleSelect:false,selectOnCheck:false" >
         </table>
     </div>
 
-    <div data-options="region:'west',split:true" title="应收" style="width:350px;">
+    <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
         <table id="fee-prefeeaudit-prefee-datagrid" border="false">
         </table>
     </div>
-    <div data-options="region:'center',title:'已收',iconCls:'icon-ok'">
-        <table id="fee-prefeeaudit-actfee-datagrid" border="false">
-        </table>
-    </div>
-    <div data-options="region:'south',split:true" style="height:50px;">
-
+    <div data-options="region:'south',split:true" style="height:30px;">
     </div>
 </div>
