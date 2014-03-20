@@ -1,57 +1,14 @@
 <script>
     Namespace.register('fee.prefeeauditview');
-$(function () {
-        fee.prefeeauditview.clientgrid = $('#fee-prefeeaudit-client-datagrid').datagrid({
+
+    $(function () {
+        fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
+            autoLoad: false,
             autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
                         {{ idObj.writeUI|safe|escape }},
-                        {{ clientNameObj.writeUI|safe|escape }},
-                        {{ clientFlagObj.writeUI|safe|escape }},
-                        {{ customFlagObj.writeUI|safe|escape }},
-                        {{ shipcorpFlagObj.writeUI|safe|escape }},
-                        {{ yardFlagObj.writeUI|safe|escape }},
-                        {{ portFlagObj.writeUI|safe|escape }},
-                        {{ financialFlagObj.writeUI|safe|escape }},
-                        {{ remarkObj.writeUI|safe|escape }}
-                    {% endautoescape %}
-                ]
-            ],
-            dataTable: 'c_client',
-            toolbar: [
-                {text: '查询',
-                    iconCls: 'icon-search',
-                    group:'fee-prefeeaudit-datagrid',
-                    handler: function () {
-                        sy.createSearchWindow(fee.prefeeauditview.clientgrid);
-                    }
-                }
-            ],
-            queryFuncName:'已收核销客户查询',
-            onDblClickRow: function (rowIndex, rowData) {
-                return;
-            },
-            onClickRow: function (rowIndex, rowData) {
-                var id = rowData.id;
-                var opts = fee.prefeeauditview.actfeegrid.datagrid('options');
-                opts.postid = id
-                console.info(opts.postid);
-                //加上这句,这是手动加过滤条件
-                opts.filterFields = [
-                            {cod: 'client_id', operatorTyp: '等于', value: id}
-                        ];
-                fee.prefeeauditview.actfeegrid.datagrid('reload');
-            }
-        });
-
-        fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
-            autoLoad:false,
-            autoSave: false,
-            columns: [
-                [
-                    {% autoescape off %}
-                        {{ id2Obj.writeUI|safe|escape }},
                         {{ clientIdObj.writeUI|safe|escape }},
                         {{ feeTypObj.writeUI|safe|escape }},
                         {{ amountObj.writeUI|safe|escape }},
@@ -64,38 +21,64 @@ $(function () {
                 ]
             ],
             queryFuncName: '已收核销已收费用查询',
-            postid: "0",
-            rows: "-1"
-        })
-        {% comment %} fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
+            dataTable: 'act_fee',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'fee-prefeeaudit-actfee-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(fee.prefeeauditview.actfeegrid);
+                    }
+                }
+            ],
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                var clientid = rowData.client_id;
+                var opts = fee.prefeeauditview.prefeegrid.datagrid('options');
+                // console.info(opts.postid);
+                //加上这句,这是手动加过滤条件
+                opts.filterFields = [
+                            {cod: 'client_id', operatorTyp: '等于', value: clientid },
+                            {cod: 'ex_over', operatorTyp: '不等于', value: ''}
+                        ];
+                fee.prefeeauditview.prefeegrid.datagrid('reload');
+            }
+        });
+
+        fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
             autoLoad: false,
             columns: [
                 [   {% autoescape off %}
-                    {{ id.writeUI|safe|escape }},
-                    {{ menu_id.writeUI|safe|escape }},
-                    {{ func_id.writeUI|safe|escape }},
-                    {{ remark.writeUI|safe|escape }}
+                    {{ idObj2.writeUI|safe|escape }},
+                    {{ contracIdObj2.writeUI|safe|escape }},
+                    {{ feeTypObj2.writeUI|safe|escape }},
+                    {{ feeCodObj2.writeUI|safe|escape }}
+                    {{ clientIdObj2.writeUI|safe|escape }},
+                    {{ amountObj2.writeUI|safe|escape }},
+                    {{ feeTimObj2.writeUI|safe|escape }},
+                    {{ lockFlagObj2.writeUI|safe|escape }},
+                    {{ remarkObj2.writeUI|safe|escape }}
                 {% endautoescape %}
                 ]
-            ]
-        }){% endcomment %}
+            ],
+            queryFuncName: '已收核销应收费用查询',
+            dataTable: 'pre_fee'
+        });
 });
 </script>
+
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="north" border="false" style="height: 250px" data-options="split:true">
-        <table id="fee-prefeeaudit-client-datagrid" border="false">
+        <table id="fee-prefeeaudit-actfee-datagrid" border="false" data-options="rownumbers:true,singleSelect:true">
         </table>
     </div>
 
-    <div data-options="region:'west',split:true" title="应收" style="width:350px;">
-        <table id="fee-prefeeaudit-prefee-datagrid" border="false">
+    <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
+        <table id="fee-prefeeaudit-prefee-datagrid" border="false" data-options="rownumbers:true,singleSelect:true">
         </table>
     </div>
-    <div data-options="region:'center',title:'已收',iconCls:'icon-ok'">
-        <table id="fee-prefeeaudit-actfee-datagrid" border="false">
-        </table>
-    </div>
-    <div data-options="region:'south',split:true" style="height:50px;">
-
+    <div data-options="region:'south',split:true" style="height:30px;">
     </div>
 </div>

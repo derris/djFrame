@@ -308,3 +308,5 @@ class EasyuiFieldUI:
     #     return str(self.attributes)
     def __str__(self):
         return self.writeUI()
+    def UICheckbox(self):
+        return( '<th data-options="field:\'ck\',checkbox:true"></th> ')

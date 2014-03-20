@@ -174,6 +174,9 @@ def dealPAjax(request):
     elif ldict['func'] == '已收核销已收费用查询':
         ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
         return(getactfeeEx(request, ls_sql))
+    elif ldict['func'] == '已收核销应收费用查询':
+        ls_sql = "select id,contract_id, fee_typ, fee_cod, client_id, ,amount,fee_tim,lock_flag, remark from pre_fee"
+        return(getactfeeEx(request, ls_sql))
     ######
     elif ldict['func'] == '已收核销客户查询':
         ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。

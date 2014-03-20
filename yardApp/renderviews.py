@@ -169,6 +169,7 @@ def contractgrid(request):
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/contractgrid.html",locals())
 
+########################### 收费 、 核销 #########
 def actfeeview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
@@ -181,17 +182,7 @@ def actfeeview(request):
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
     return render(request,"yard/fee/actfee.html",locals())
 def prefeeauditview(request):
-    idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
-    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
-    clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
-    customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag')
-    shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
-    yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
-    portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
-    financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
-    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
-
-    id2Obj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
+    idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
     amountObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
@@ -200,6 +191,16 @@ def prefeeauditview(request):
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
+
+    idObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='id')
+    contracIdObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='contract_id')
+    feeTypObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ')
+    feeCodObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_cod')
+    clientIdObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    amountObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
+    feeTimObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
+    lockFlagObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
+    remarkObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',readonly=True)
 
     return render(request,"yard/fee/prefeeaudit.html",locals())
 
