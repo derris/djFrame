@@ -145,12 +145,17 @@ def contractview(request):
     cntr_num = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='cntr_num')
     cntrremark = easyuihelp.EasyuiFieldUI(model=models.ContractCntr,field='remark')
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    customdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    shipcorpdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    portdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    yarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     return render(request,"yard/contract/contractview.html",locals())
 def contractform(request):
     return render(request,"yard/contract/contractform.html")
 def contractgrid(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no')
+    vslvoy = easyuihelp.EasyuiFieldUI(model=models.Contract,field='vslvoy')
     cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name')
     origin_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place')
     client_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
