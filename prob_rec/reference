@@ -3,7 +3,7 @@ easyui界面参考：
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/layout/complex.html
 
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/datagrid/checkbox.html
-
+http://127.0.0.1:8000/static/js/jquery-easyui/demo/linkbutton/basic.html
 
 在前台html加checkbox
     {field: 'check_flag',title: '选择',checkbox:true}
@@ -17,3 +17,5 @@ http://www.jeasyui.com/documentation/index.php#
 
 reset 本地的git版本。
 C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cdfed0a45783d93651\cmd\git.exe reset --hard
+
+

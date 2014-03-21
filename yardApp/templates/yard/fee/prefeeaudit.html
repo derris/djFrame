@@ -49,6 +49,7 @@ $(function () {
             columns: [
                 [
                     {% autoescape off %}
+                        {field: 'check_flag',title: '选择',checkbox:true},
                         {{ idObj2.writeUI|safe|escape }},
                         {{ contracIdObj2.writeUI|safe|escape }},
                         {{ feeTypObj2.writeUI|safe|escape }},
@@ -66,16 +67,43 @@ $(function () {
 
 });
 
-        function checkRull(){
+        function checkRule(){
             var rows = $('#fee-prefeeaudit-actfee-datagrid').datagrid('getChecked');
 			var l_client = ""
+            var l_okActfee = true;
+            var l_sumact = 0;
             for(var i=0; i<rows.length; i++){
 				var row = rows[i];
-                if (l_client.length > 0 )
+                if (l_client.length < 1 ) {
+                    l_client = row.client_id;
+                    l_sumact = l_sumact + parseInt(row.amount);
+                }
+                else {
+                    if (row.client_id != l_client)
+                    {  $.messager.alert("注意", "只能选则相同的客户进行审核。");
+                        l_okActfee = false;
+                        return ;
+                        break;
+                    }
+                }
+			}
+            $('#stat1').innerText = l_sumact.toString();
+            $('#stat2').innerText = "ffff";
+            var l_okPreefee = true;
+            var rows = $('#fee-prefeeaudit-prefee-datagrid').datagrid('getChecked');
+			var l_client = ""
+            var l_okActfee = true;
+            for(var i=0; i<rows.length; i++){
+				var row = rows[i];
+                if (l_client.length < 1 )
                     l_client = row.client_id;
                 else {
                     if (row.client_id != l_client)
-                    {  $.messager.alert("注意", "只能选则相同的客户进行审核。");    }
+                    {  $.messager.alert("注意", "22只能选则相同的客户进行审核。");
+                        l_okPreefee = false;
+                        return ;
+                        break;
+                    }
                 }
 			}
         }
@@ -91,7 +119,13 @@ $(function () {
         <table id="fee-prefeeaudit-prefee-datagrid" border="false">
         </table>
     </div>
-    <div data-options="region:'south',split:true" style="height:30px;">
-
+    <div data-options="region:'south',split:true" style="height:50px; padding: 5px;">
+        <a href="#" class="easyui-linkbutton" onclick="checkRule();" > 核销 </a>
+        &nbsp;&nbsp;
+        <span  id = "stat1">  已收费用 </span>
+        &nbsp;&nbsp;
+        <span name ="stat2" id = "stat2">  应收费用 </span>
+        &nbsp;&nbsp;
+        <span id = "stat2">  审核信息 </span>
     </div>
 </div>
