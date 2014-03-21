@@ -243,7 +243,7 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
-def json2exec(ajson, aCursor, artn, * a2Replace):   # artn['effectnum'] + 1
+def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
     l_oldUUID = ""
     if a2Replace:
         l_UUID = a2Replace[0]
@@ -348,7 +348,7 @@ def json2upd(aJsonDict):
              "changeid" : {'uuid1':'id1'} }
     try:
         l_cur = connection.cursor()
-        json2exec(aJsonDict, l_cur, l_rtn, ())
+        json2exec(aJsonDict, l_cur, l_rtn, ("",""))
         l_rtn.update({"stateCod": 202})
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))

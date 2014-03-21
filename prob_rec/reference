@@ -13,3 +13,7 @@ http://w3school.com.cn/jsref/jsref_obj_string.asp
 
 easyui手册
 http://www.jeasyui.com/documentation/index.php#
+
+
+reset 本地的git版本。
+C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cdfed0a45783d93651\cmd\git.exe reset --hard
