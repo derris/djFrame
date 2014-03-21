@@ -65,18 +65,33 @@ $(function () {
         })
 
 });
+
+        function checkRull(){
+            var rows = $('#fee-prefeeaudit-actfee-datagrid').datagrid('getChecked');
+			var l_client = ""
+            for(var i=0; i<rows.length; i++){
+				var row = rows[i];
+                if (l_client.length > 0 )
+                    l_client = row.client_id;
+                else {
+                    if (row.client_id != l_client)
+                    {  $.messager.alert("注意", "只能选则相同的客户进行审核。");    }
+                }
+			}
+        }
+
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="north" border="false" style="height: 250px" data-options="split:true">
-
-        <table id="fee-prefeeaudit-actfee-datagrid" border="false" data-options="rownumbers:true,singleSelect:false,selectOnCheck:false" >
+        <table id="fee-prefeeaudit-actfee-datagrid" border="false"
+               data-options="rownumbers:true,singleSelect:false,selectOnCheck:false" >
         </table>
     </div>
-
     <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
         <table id="fee-prefeeaudit-prefee-datagrid" border="false">
         </table>
     </div>
     <div data-options="region:'south',split:true" style="height:30px;">
+
     </div>
 </div>

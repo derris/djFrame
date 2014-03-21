@@ -8,3 +8,8 @@ http://127.0.0.1:8000/static/js/jquery-easyui/demo/datagrid/checkbox.html
 在前台html加checkbox
     {field: 'check_flag',title: '选择',checkbox:true}
 
+js手册
+http://w3school.com.cn/jsref/jsref_obj_string.asp
+
+easyui手册
+http://www.jeasyui.com/documentation/index.php#
