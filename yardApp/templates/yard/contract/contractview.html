@@ -167,7 +167,27 @@ $(function () {
         contract.contractview.refresh($.trim(this.value));
     });
     $('#contract-contract-form-save-button').bind('click', function (e) {
-        console.info('click');
+        if (contract.contractview.actiondatagrid.datagrid('preSave') == 0){
+            $.message.show({title: '错误信息',
+                        msg: '委托动态数据验证失败',
+                        timeout: 3000,
+                        showType: 'slide'});
+            return;
+        }
+        if (contract.contractview.cntrdatagrid.datagrid('preSave') == 0 ){
+            $.message.show({title: '错误信息',
+                        msg: '委托箱量数据验证失败',
+                        timeout: 3000,
+                        showType: 'slide'});
+            return;
+        }
+        if (!contract.contractview.contractform.form('validate')){
+            $.message.show({title: '错误信息',
+                        msg: '委托数据验证失败',
+                        timeout: 3000,
+                        showType: 'slide'});
+            return;
+        }
         var parm = {
             reqtype: 'update',
             func: '委托维护'
