@@ -138,7 +138,6 @@ $(function () {
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(queryParam)},
                 success: function (r, t, a) {
-
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 1) {
