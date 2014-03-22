@@ -1,137 +1,257 @@
 <script>
-    Namespace.register('contract.contractview');
-    $(function () {
-        {% autoescape off %}
-            contract.contractview.billno = $('#contract-contract-form-billno').validatebox({
-                validType:['length[0,25]'],
-                width:180,
-                required:true
-
-            });
-            contract.contractview.clientcombo = $('#contract-contract-form-client').combobox({
-                valueField: 'value',
-                textField: 'text',
-                required: true,
-                width: 180,
-                data:{{ clientdata }}
-            });
-            contract.contractview.customcombo = $('#contract-contract-form-custom').combobox({
-                valueField: 'value',
-                textField: 'text',
-                width: 180,
-                data:{{ customdata }}
-            });
-            contract.contractview.shipcorpcombo = $('#contract-contract-form-shipcorp').combobox({
-                valueField: 'value',
-                textField: 'text',
-                width: 180,
-                data:{{ shipcorpdata }}
-            });
-            contract.contractview.portcombo = $('#contract-contract-form-port').combobox({
-                valueField: 'value',
-                textField: 'text',
-                width: 180,
-                data:{{ portdata }}
-            });
-            contract.contractview.yardcombo = $('#contract-contract-form-yard').combobox({
-                valueField: 'value',
-                textField: 'text',
-                width: 180,
-                data:{{ yarddata }}
-            });
-        {% endautoescape %}
-        contract.contractview.actiondatagrid = $('#contract-contractview-actiondatagrid').datagrid({
-            autoLoad: false,
-            columns: [
-                [
-                    {% autoescape off %}
-                        {{ actionid.writeUI|safe|escape }},
-                        {{ actioncontractid.writeUI|safe|escape }},
-                        {{ actionid.writeUI|safe|escape }},
-                        {{ finish_flag.writeUI|safe|escape }},
-                        {{ finish_time.writeUI|safe|escape }},
-                        {{ actionremark.writeUI|safe|escape }}
-                    {% endautoescape %}
-                ]
-            ],
-            dataTable: 'contract_action',
-            toolbar: [
-
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: 'contract-contractview-actiondatagrid',
-                    handler: function () {
-                        contract.contractview.actiondatagrid.datagrid('insertData', {
-
-                        });
-                    }
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: 'contract-contractview-actiondatagrid',
-                    handler: function () {
-                        contract.contractview.actiondatagrid.datagrid('deleteData');
-                    }
-                }
-            ],
-            queryFuncName: '委托动态查询',
-            updateFuncName: '委托动态维护'
+Namespace.register('contract.contractview');
+$(function () {
+    {% autoescape off %}
+        contract.contractview.billno = $('#contract-contract-form-billno').validatebox({
+            validType: ['length[0,25]'],
+            width: 180,
+            required: true
         });
-        contract.contractview.cntrdatagrid = $('#contract-contractview-cntrdatagrid').datagrid({
-            autoLoad: false,
-            columns: [
-                [
-                    {% autoescape off %}
-                        {{ cntrid.writeUI|safe|escape }},
-                        {{ cntrcontractid.writeUI|safe|escape }},
-                        {{ cntr_type.writeUI|safe|escape }},
-                        {{ cntr_num.writeUI|safe|escape }},
-                        {{ actionremark.writeUI|safe|escape }}
-                    {% endautoescape %}
-                ]
-            ],
-            dataTable: 'contract_cntr',
-            toolbar: [
-
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: 'contract-contractview-cntrdatagrid',
-                    handler: function () {
-                        contract.contractview.cntrdatagrid.datagrid('insertData', {
-
-                        });
-                    }
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: 'contract-contractview-cntrdatagrid',
-                    handler: function () {
-                        contract.contractview.cntrdatagrid.datagrid('deleteData');
-                    }
-                }
-            ],
-            queryFuncName: '委托箱查询',
-            updateFuncName: '委托箱维护'
+        contract.contractview.clientcombo = $('#contract-contract-form-client').combobox({
+            valueField: 'value',
+            textField: 'text',
+            required: true,
+            width: 180,
+            data:{{ clientdata }}
         });
+        contract.contractview.customcombo = $('#contract-contract-form-custom').combobox({
+            valueField: 'value',
+            textField: 'text',
+            width: 180,
+            data:{{ customdata }}
+        });
+        contract.contractview.shipcorpcombo = $('#contract-contract-form-shipcorp').combobox({
+            valueField: 'value',
+            textField: 'text',
+            width: 180,
+            data:{{ shipcorpdata }}
+        });
+        contract.contractview.portcombo = $('#contract-contract-form-port').combobox({
+            valueField: 'value',
+            textField: 'text',
+            width: 180,
+            data:{{ portdata }}
+        });
+        contract.contractview.yardcombo = $('#contract-contract-form-yard').combobox({
+            valueField: 'value',
+            textField: 'text',
+            width: 180,
+            data:{{ yarddata }}
+        });
+    {% endautoescape %}
+    contract.contractview.contractform = $('#contract-contract-form').form({
+        url: './dealPAjax/'
     });
+    contract.contractview.actiondatagrid = $('#contract-contractview-actiondatagrid').datagrid({
+        autoLoad: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ actionid.writeUI|safe|escape }},
+                    {{ actioncontractid.writeUI|safe|escape }},
+                    {{ action_id.writeUI|safe|escape }},
+                    {{ finish_flag.writeUI|safe|escape }},
+                    {{ finish_time.writeUI|safe|escape }},
+                    {{ actionremark.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'contract_action',
+        toolbar: [
+
+            {text: '增加',
+                iconCls: 'icon-add',
+                group: 'contract-contractview-actiondatagrid',
+                handler: function () {
+                    contract.contractview.actiondatagrid.datagrid('insertData', {
+                        contract_id : -1
+                    });
+                }
+            },
+            '-',
+            {text: '删除',
+                iconCls: 'icon-remove',
+                group: 'contract-contractview-actiondatagrid',
+                handler: function () {
+                    contract.contractview.actiondatagrid.datagrid('deleteData');
+                }
+            }
+        ],
+        queryFuncName: '委托动态查询'
+    });
+    contract.contractview.cntrdatagrid = $('#contract-contractview-cntrdatagrid').datagrid({
+        autoLoad: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ cntrid.writeUI|safe|escape }},
+                    {{ cntrcontractid.writeUI|safe|escape }},
+                    {{ cntr_type.writeUI|safe|escape }},
+                    {{ cntr_num.writeUI|safe|escape }},
+                    {{ actionremark.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'contract_cntr',
+        toolbar: [
+
+            {text: '增加',
+                iconCls: 'icon-add',
+                group: 'contract-contractview-cntrdatagrid',
+                handler: function () {
+                    contract.contractview.cntrdatagrid.datagrid('insertData', {
+                        contract_id : -1
+                    });
+                }
+            },
+            '-',
+            {text: '删除',
+                iconCls: 'icon-remove',
+                group: 'contract-contractview-cntrdatagrid',
+                handler: function () {
+                    contract.contractview.cntrdatagrid.datagrid('deleteData');
+                }
+            }
+        ],
+        queryFuncName: '委托箱查询'
+    });
+    contract.contractview.refresh = function (bill_no) {
+        if (bill_no != null && bill_no.length > 0) {
+            var cols = new Array();
+            var formcols = contract.contractview.contractform.serializeArray();
+            for (var i = 0, ilen = formcols.length; i < ilen; i++) {
+                cols.push(formcols[i].name);
+            }
+            var queryParam = {
+                reqtype: 'query',
+                func: '委托查询',
+                page: 1,
+                rows: 1,
+                cols: cols,
+                filter: [
+                    {cod: 'bill_no', operatorTyp: '等于', value: bill_no}
+                ],
+                sort: [],
+                ex_parm: {}
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(queryParam)},
+                success: function (r, t, a) {
+
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 1) {
+                            //旧委托 刷新界面
+                        }
+                        if (stateCod == 201) {
+                            //新委托 清空界面
+                            contract.contractview.contractform.form('reset');
+                            contract.contractview.billno.val(bill_no);
+                            $('#contract-contract-form-id').val(-1);
+                            contract.contractview.cntrdatagrid.datagrid('loadData', []);
+                            contract.contractview.actiondatagrid.datagrid('loadData', []);
+                        }
+                    } else {
+                        $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
+                    }
+                }
+            });
+        } else {
+            contract.contractview.contractform.form('reset');
+            contract.contractview.cntrdatagrid.datagrid('loadData', []);
+            contract.contractview.actiondatagrid.datagrid('loadData', []);
+        }
+    }
+    contract.contractview.billno.bind('change', function (e) {
+        contract.contractview.refresh($.trim(this.value));
+    });
+    $('#contract-contract-form-save-button').bind('click', function (e) {
+        console.info('click');
+        var parm = {
+            reqtype: 'update',
+            func: '委托维护'
+        };
+        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+            //旧委托 修改
+        } else {
+            //新委托 增加
+            var uuid = (new UUID()).id;
+            var actionrows = contract.contractview.actiondatagrid.datagrid('getChanges', 'inserted');
+            var cntrrows = contract.contractview.cntrdatagrid.datagrid('getChanges', 'inserted');
+            var newactions = new Array();
+            for (var i = 0, ilen = actionrows.length; i < ilen; i++) {
+                actionrows[i].contract_id = uuid;
+                newactions.push({
+                    op: 'insert',
+                    table: 'contract_action',
+                    cols: actionrows[i],
+                    id: -1,
+                    uuid: uuid,
+                    subs: {}
+                });
+            }
+            var newcntrs = new Array();
+            for (var i = 0, ilen = cntrrows.length; i < ilen; i++) {
+                cntrrows[i].contract_id = uuid;
+                newcntrs.push({
+                    op: 'insert',
+                    table: 'contract_cntr',
+                    cols: cntrrows[i],
+                    id: -1,
+                    uuid: uuid,
+                    subs: {}
+                });
+            }
+            parm.rows = [{
+                op: 'insert',
+                table: 'contract',
+                cols: contract.contractview.contractform.serializeJson(),
+                id: -1,
+                uuid: uuid,
+                subs: {
+                    rows: newactions.concat(newcntrs)
+                }
+            }];
+
+                $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(parm)},
+                success: function (r, t, a) {
+
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractview.refresh($.trim(contract.contractview.billno.val()));
+                        }
+                    } else {
+                        $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
+                    }
+                }
+
+                });
+
+        }
+    });
+});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:'true'">
         <form id="contract-contract-form" class="editform" method="post">
             <div>
+                <input id="contract-contract-form-id" type="hidden" name="id"/>
                 <label for="bill_no">提单号:</label>
-                <input id="contract-contract-form-billno" type="text" name="bill_no" />
+                <input id="contract-contract-form-billno" type="text" name="bill_no"/>
                 <label for="vslvoy">船名航次:</label>
                 <input type="text" name="vslvoy" class="easyui-validatebox"
-                        data-options="validType:['length[0,40]'],width:180"/>
+                       data-options="validType:['length[0,40]'],width:180"/>
                 <label for="cargo_name">货名:</label>
                 <input type="text" name="cargo_name" class="easyui-validatebox"
-                        data-options="validType:['length[0,30]'],width:180"/>
+                       data-options="validType:['length[0,30]'],width:180"/>
                 <label for="origin_place">产地:</label>
                 <input type="text" name="origin_place" class="easyui-validatebox"
-                        data-options="validType:['length[0,30]'],width:180"/>
+                       data-options="validType:['length[0,30]'],width:180"/>
             </div>
             <div>
                 <label for="client_id">委托客户:</label>
@@ -149,16 +269,16 @@
             <div>
                 <label for="booking_date">接单日期:</label>
                 <input type="date" name="booking_date" class="easyui-datebox"
-                        data-options="width:180"/>
+                       data-options="width:180"/>
                 <label for="in_port_date">到港日期:</label>
                 <input type="date" name="in_port_date" class="easyui-datebox"
-                        data-options="width:180"/>
+                       data-options="width:180"/>
                 <label for="return_cntr_date">还箱日期:</label>
                 <input type="date" name="return_cntr_date" class="easyui-datebox"
-                        data-options="width:180"/>
+                       data-options="width:180"/>
                 <label for="finish_tim">完结日期:</label>
                 <input type="date" name="finish_tim" class="easyui-datebox"
-                        data-options="width:180"/>
+                       data-options="width:180"/>
             </div>
             <div>
                 <label for="custom_id">报关行:</label>

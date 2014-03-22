@@ -85,7 +85,7 @@ yardApp/views.getMenuList
 202：修改成功
 ************************************************   前台insert：
     jpargs:｛
-       'reqtype':'insert'      ----- insert 功能发起。
+       'reqtype':'update'      ----- insert 功能发起。
        'rows': [ {
                 'op': 'insert',
                 'table': 'c_client',

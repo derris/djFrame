@@ -135,7 +135,7 @@ def paytypeview(request):
 def contractview(request):
     actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='id')
     actioncontractid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='contract_id',hidden=True)
-    actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='action_id',autoforeign=True,foreigndisplayfield='action_name')
+    action_id = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='action_id',autoforeign=True,foreigndisplayfield='action_name')
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='finish_flag')
     finish_time = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='finish_time')
     actionremark = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='remark')
@@ -150,8 +150,7 @@ def contractview(request):
     portdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     yarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     return render(request,"yard/contract/contractview.html",locals())
-def contractform(request):
-    return render(request,"yard/contract/contractform.html")
+
 def contractgrid(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no')
@@ -250,8 +249,7 @@ def dealMenuReq(request):
         return(clientview(request))
     elif ls_args == '委托维护':
         return(contractview(request))
-    elif ls_args == "委托头表单":
-        return(contractform(request))
+
     #######  费用 #############
     elif ls_args == "已收费用":
         return(actfeeview(request))

@@ -111,6 +111,20 @@ def getpaytype(request):
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( getMenuPrivilege(ldict['postid']),ensure_ascii = False) )
+def getcontract(request):
+    ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
+             "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
+             "yard_id,finish_flag,finish_time,remark from contract"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcontractaction(request):
+    ls_sql = "select id,contract_id,action_id,finish_flag,finish_time,remark from contract_action"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcontractcntr(request):
+    ls_sql = "select id,contract_id,cntr_type,cntr_num,remark from contract_cntr"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getactfeeEx(request, aSql):
     '''已收核销查询'''
     ldict = json.loads( request.POST['jpargs'] )
@@ -168,6 +182,13 @@ def dealPAjax(request):
         return(getprivilege(request))
     ############## 费用  #######
     ###
+    elif ldict['func'] == '委托查询':
+        return(getcontract(request))
+    elif ldict['func'] == '委托动态查询':
+        return(getcontractaction(request))
+    elif ldict['func'] == '委托箱查询':
+        return(getcontractcntr(request))
+
     elif ldict['func'] == '已收费用查询':
         ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
         return(getactfeeEx(request, ls_sql))
@@ -209,9 +230,11 @@ def dealPAjax(request):
         return(updateClients(request))
     elif ldict['func'] == '付款方式维护':
         return(updateClients(request))
-
     elif ldict['func'] == '客户维护':
         return(updateClients(request))
+    elif ldict['func'] == '委托维护':
+        return(updateClients(request))
+
     elif ldict['func'] == '已收费用维护':
         return(updateClients(request))
     elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":

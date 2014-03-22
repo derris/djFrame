@@ -165,12 +165,14 @@ class EasyuiFieldUI:
         if isinstance(self.fObj, (models.DateField,)):
             self.width = 100
             self.editor = {
-                'type': 'datebox'
+                'type': 'datebox',
+                'options':{}
             }
         if isinstance(self.fObj, (models.DateTimeField,)):
             self.width = 180
             self.editor = {
-                'type': 'datetimebox'
+                'type': 'datetimebox',
+                'options':{}
             }
         if isinstance(self.fObj, (models.CharField,)):
             columnWidth = len(self.title)
