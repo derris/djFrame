@@ -64,7 +64,7 @@ $(function () {
                 group: 'contract-contractview-actiondatagrid',
                 handler: function () {
                     contract.contractview.actiondatagrid.datagrid('insertData', {
-                        contract_id : -1
+                        contract_id: -1
                     });
                 }
             },
@@ -100,7 +100,7 @@ $(function () {
                 group: 'contract-contractview-cntrdatagrid',
                 handler: function () {
                     contract.contractview.cntrdatagrid.datagrid('insertData', {
-                        contract_id : -1
+                        contract_id: -1
                     });
                 }
             },
@@ -167,25 +167,25 @@ $(function () {
         contract.contractview.refresh($.trim(this.value));
     });
     $('#contract-contract-form-save-button').bind('click', function (e) {
-        if (contract.contractview.actiondatagrid.datagrid('preSave') == 0){
+        if (contract.contractview.actiondatagrid.datagrid('preSave') == 0) {
             $.message.show({title: '错误信息',
-                        msg: '委托动态数据验证失败',
-                        timeout: 3000,
-                        showType: 'slide'});
+                msg: '委托动态数据验证失败',
+                timeout: 3000,
+                showType: 'slide'});
             return;
         }
-        if (contract.contractview.cntrdatagrid.datagrid('preSave') == 0 ){
+        if (contract.contractview.cntrdatagrid.datagrid('preSave') == 0) {
             $.message.show({title: '错误信息',
-                        msg: '委托箱量数据验证失败',
-                        timeout: 3000,
-                        showType: 'slide'});
+                msg: '委托箱量数据验证失败',
+                timeout: 3000,
+                showType: 'slide'});
             return;
         }
-        if (!contract.contractview.contractform.form('validate')){
+        if (!contract.contractview.contractform.form('validate')) {
             $.message.show({title: '错误信息',
-                        msg: '委托数据验证失败',
-                        timeout: 3000,
-                        showType: 'slide'});
+                msg: '委托数据验证失败',
+                timeout: 3000,
+                showType: 'slide'});
             return;
         }
         var parm = {
@@ -223,22 +223,22 @@ $(function () {
                     subs: {}
                 });
             }
-            parm.rows = [{
-                op: 'insert',
-                table: 'contract',
-                cols: contract.contractview.contractform.serializeJson(),
-                id: -1,
-                uuid: uuid,
-                subs: {
-                    rows: newactions.concat(newcntrs)
+            parm.rows = [
+                {
+                    op: 'insert',
+                    table: 'contract',
+                    cols: contract.contractview.contractform.serializeJson(),
+                    id: -1,
+                    uuid: uuid,
+                    subs: {
+                        rows: newactions.concat(newcntrs)
+                    }
                 }
-            }];
-
-                $.ajax({
+            ];
+            $.ajax({
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(parm)},
                 success: function (r, t, a) {
-
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 202) {
@@ -249,9 +249,7 @@ $(function () {
                         $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
                     }
                 }
-
-                });
-
+            });
         }
     });
 });
