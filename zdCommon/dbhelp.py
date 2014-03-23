@@ -388,7 +388,19 @@ def cursorExec(aSql):
         logErr("数据库执行错误：%s" % str(e.args))
     finally:
         l_cur.close
+    return l_rtn
 
+def cursorExec2(aSql, aList ):
+    l_rtn = -1
+    log(aSql + str(aList))
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql, aList)
+        l_rtn = l_cur.cursor.rowcount
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+    finally:
+        l_cur.close
     return l_rtn
 
 def cursorSelect(aSql):

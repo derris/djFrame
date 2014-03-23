@@ -24,6 +24,11 @@ function getSeqNo(aSeqNam)
             var l_sumact = 0;
             for(var i=0; i<rows1.length; i++){
 				var row = rows1[i];
+                if (row.off_flag)
+                {
+                    $.messager.alert("注意", "已收费用：已经核销的费用无法选择。");
+                    return false;
+                }
                 if (l_client.length < 1 ) {
                     l_client = row.client_id;
                 }
@@ -45,6 +50,11 @@ function getSeqNo(aSeqNam)
             var l_okActfee = true;
             for(var i=0; i<rows2.length; i++){
 				var row = rows2[i];
+                if (row.lock_flag)
+                {
+                    $.messager.alert("注意", "应收费用：锁定费用无法选择。");
+                    return false;
+                }
                 if (l_client.length < 1 )
                 {
                     l_client = row.client_id;
@@ -73,7 +83,7 @@ function getSeqNo(aSeqNam)
         }
         function dealAudit()
         {
-            //if (checkRule())
+            if (checkRule())
             {
                 //var p = new sy.UUID();
                  $.messager.confirm("操作提示", "您确定要执行操作吗？系统将处理选中的费用，生成新的费用单据。", function (data) {
@@ -128,12 +138,17 @@ function getSeqNo(aSeqNam)
                                         }
                                     )
                                 }  ,
-                                function(data,status){  l_rtn = data; }
+                                function(data,status)
+                                {
+                                    l_rtn = data;
+                                }
                         );
                        if (l_rtn["stateCod"] < 0)
                             alert("处理失败：" + l_rtn["error"]);
                         else
                             alert("处理成功。" + l_rtn["msg"]);
+                            fee.prefeeauditview.actfeegrid.datagrid('reload');
+                            fee.prefeeauditview.prefeegrid.datagrid('reload');
                     }
                     else {
                         alert("用户取消核销。");

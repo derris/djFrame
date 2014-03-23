@@ -11,27 +11,25 @@ C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cd
 
 
 
-js手册
+js文档
 http://w3school.com.cn/jsref/jsref_obj_string.asp
-easyui手册
+easyui文档
 http://www.jeasyui.com/documentation/index.php#
-jquery手册
+jquery文档
 http://www.w3school.com.cn/jquery/jquery_reference.asp
-html5手册
+html5文档
 http://www.w3school.com.cn/html5/index.asp
-
-nodejs手册
+nodejs文档
 http://nodejs.org/api/documentation.html
-
-深入python3
+python文档
+http://docs.python.org/3/
 http://woodpecker.org.cn/diveintopython3/index.html
-
-pillow 手册。
+pillow 文档。
 http://pillow.readthedocs.org/en/latest/handbook/tutorial.html#converting-between-modes
-
-postgresql手册
+postgresql文档
 http://www.postgresql.org/docs/9.1/static/index.html
-
+django文档
+https://docs.djangoproject.com/en/dev/topics/db/sql/
 
 
 在前台html加checkbox

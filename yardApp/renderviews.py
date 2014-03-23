@@ -195,6 +195,7 @@ def prefeeauditview(request):
     checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no',width=100)
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
+    exfeeidObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='ex_feeid')
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
 
     idObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='id')
@@ -205,6 +206,7 @@ def prefeeauditview(request):
     amountObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
     feeTimObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
     lockFlagObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
+    exfeeidObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid')
     remarkObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',readonly=True)
     return render(request,"yard/fee/prefeeaudit.html",locals())
 
