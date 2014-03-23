@@ -20,6 +20,19 @@ http://www.w3school.com.cn/jquery/jquery_reference.asp
 html5手册
 http://www.w3school.com.cn/html5/index.asp
 
+nodejs手册
+http://nodejs.org/api/documentation.html
+
+深入python3
+http://woodpecker.org.cn/diveintopython3/index.html
+
+pillow 手册。
+http://pillow.readthedocs.org/en/latest/handbook/tutorial.html#converting-between-modes
+
+postgresql手册
+http://www.postgresql.org/docs/9.1/static/index.html
+
+
 
 在前台html加checkbox
     {field: 'check_flag',title: '选择',checkbox:true}

@@ -1,3 +1,17 @@
+******************************************************     ajax后台返回统一格式。
+    {
+     "msg":"",              。 ok
+     "stateCod": > 0 正确。 。    # 1， 201， 202
+     "error": ['', '', '']....        # 错误数组。
+     "effectnum": xx ,                #  影响行数。
+     "result": {"r1":"", "r2":"","uuid1":"id1", ....}      #  根据功能不同的扩展返回数据。
+
+   }
+******************************************************
+
+
+
+
 *************************************
 2014-03-12 岗位功能权限提交
 ************************************
@@ -61,6 +75,7 @@ yardApp/views.getMenuList
            'cod':'client_name',
            'order_typ':'升序'
          }, ...]'
+         'ex_parm':{'', ''}
     }
 ****后台返回select：
     {
@@ -79,6 +94,7 @@ yardApp/views.getMenuList
      "error": ['', '', '']....        # 错误数组。
      "effectnum": xx ,                #  影响行数。
      "changeid":{'uuid1':'id1', 'uuid2':'id2'. ..}     #  insert专用。
+     "result": {"r1":"", "r2":"", "r3":"" ....}
    }
 001：查询成功,有数据
 201：查询成功,无数据
@@ -98,7 +114,7 @@ yardApp/views.getMenuList
     jpargs:   {
         'reqtype':'update',
         'rows': [ {
-                'op': 'update',
+                'op': 'update',       // 不需要旧值判断。用updatedirty，col数组一个值就行。
                 'table': 'c_client',
                 'cols': {'col1':['valueNew','valueold'], 'cold2':['value2new', 'value2old']},
                 'subs': {} ,

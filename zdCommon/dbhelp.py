@@ -278,7 +278,6 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                     ls_col += " , rec_tim "
                     ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
                 ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
-                log(ls_sql)
             #######################################################################
             elif i_row['op'] == 'update':
                 ls_sql = "update %s set " % i_row['table']
@@ -298,13 +297,31 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 else:
                     ls_set += " , upd_tim = current_timestamp(0) "
                 ls_sql += ls_set + ' where ' + ls_where
-                log(ls_sql)
+            #######################################################################
+            elif i_row['op'] == 'updatedirty':
+                ls_sql = "update %s set " % i_row['table']
+                ls_set = ''
+                ls_where = ' id = ' + str(i_row['id'])
+                for icol,ival in i_row['cols'].items():
+                    ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
+                ls_set = ls_set[:-1]
+                ls_where = ls_where[:-5]
+                if 'upd_nam' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_nam = 1 "
+                if 'upd_tim' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_tim = current_timestamp(0) "
+                ls_sql += ls_set + ' where ' + ls_where
             #######################################################################
             elif i_row['op'] == 'delete':
                 ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
-                log(ls_sql)
+
             ######################  处理完毕  sql  语句。  如果有替换需求，就需要全部处理。
 
+            log(ls_sql)
             if len(l_UUID) > 10:
                 ls_sql = ls_sql.replace(l_UUID, l_NewId)
                 log(' 根据带入的UUID替换：' + ls_sql)
@@ -362,6 +379,7 @@ def cursorExec(aSql):
         execute sql use cursor, return effect rows.
     '''
     l_rtn = -1
+    log(aSql)
     try:
         l_cur = connection.cursor()
         l_cur.execute(aSql)
@@ -376,7 +394,9 @@ def cursorExec(aSql):
 def cursorSelect(aSql):
     '''
         execute sql use cursor, return all. fetchall()
+        l_rtn[0][0]  单值。
     '''
+    log(aSql)
     l_rtn = -1
     try:
         l_cur = connection.cursor()
