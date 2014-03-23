@@ -243,19 +243,28 @@ def getTableInfo(aTableName):
         l_dict.update({ i[0] : ls  })
     return l_dict
 
-def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
+def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
+    l_oldUUID = ""
+    if a2Replace:
+        l_UUID = a2Replace[0]
+        l_NewId = a2Replace[1]
+
     try:
         for i_row in  ajson['rows']:
             #循环进行处理字符串，然后更新
+            ls_sql = ""
             if i_row['op'] == 'insert':
                 ls_sql = "insert into %s" % i_row['table']
                 ls_col = ls_val = ''
                 for icol,ival in i_row['cols'].items():
-                    ls_col += str(icol) + ','
-                    if icol == "rec_tim":
-                        ls_val += "'" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "',"
+                    if icol == "id":
+                        pass # id字段不生成insert语句。
                     else:
-                        ls_val += "'" + str(ival) + "',"
+                        ls_col += str(icol) + ','
+                        if icol == "rec_tim":
+                            ls_val += "'" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "',"
+                        else:
+                            ls_val += "'" + str(ival) + "',"
                 ls_col = ls_col[:-1]
                 ls_val = ls_val[:-1]
                 if 'rec_nam' in ls_col:
@@ -269,19 +278,8 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     ls_col += " , rec_tim "
                     ls_val += ", '" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') +  "'"
                 ls_sql += "(" + ls_col + ")" + " values (" + ls_val + ") returning id"
-                log(ls_sql)
-                try:
-                    aCursor.execute(ls_sql)
-                    li_t = aCursor.cursor.rowcount
-                    l_insId = aCursor.fetchone()[0]
-                    artn['changeid'].update({i_row["uuid"] : l_insId})
-                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
-                except Exception as e:
-                    logErr("数据库执行错误：%s" % str(e.args))
-                    artn["error"].append(str(e.args))
-                    raise e
             #######################################################################
-            if i_row['op'] == 'update':
+            elif i_row['op'] == 'update':
                 ls_sql = "update %s set " % i_row['table']
                 ls_set = ''
                 ls_where = ' id = ' + str(i_row['id']) + ' and '
@@ -299,19 +297,50 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                 else:
                     ls_set += " , upd_tim = current_timestamp(0) "
                 ls_sql += ls_set + ' where ' + ls_where
-                log(ls_sql)
-                try:
-                    aCursor.execute(ls_sql)
-                    li_t = aCursor.cursor.rowcount
-                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
-                except Exception as e:
-                    logErr("数据库执行错误：%s" % str(e.args))
-                    artn["error"].append(str(e.args))
-                    raise e
             #######################################################################
-            if i_row['op'] == 'delete':
+            elif i_row['op'] == 'updatedirty':
+                ls_sql = "update %s set " % i_row['table']
+                ls_set = ''
+                ls_where = ' id = ' + str(i_row['id'])
+                for icol,ival in i_row['cols'].items():
+                    ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
+                ls_set = ls_set[:-1]
+                ls_where = ls_where[:-5]
+                if 'upd_nam' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_nam = 1 "
+                if 'upd_tim' in ls_set:
+                    pass
+                else:
+                    ls_set += " , upd_tim = current_timestamp(0) "
+                ls_sql += ls_set + ' where ' + ls_where
+            #######################################################################
+            elif i_row['op'] == 'delete':
                 ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
-                log(ls_sql)
+
+            ######################  处理完毕  sql  语句。  如果有替换需求，就需要全部处理。
+
+            log(ls_sql)
+            if len(l_UUID) > 10:
+                ls_sql = ls_sql.replace(l_UUID, l_NewId)
+                log(' 根据带入的UUID替换：' + ls_sql)
+
+            if 'uuid' in i_row :
+                l_oldUUID =  i_row['uuid']
+            l_newInsertId = ""
+            if i_row['op'] == 'insert':
+                try:
+                    aCursor.execute(ls_sql)
+                    li_t = aCursor.cursor.rowcount
+                    l_newInsertId = aCursor.fetchone()[0]        # 返回的新的id，子记录需要把所有的都替换成。
+                    artn['changeid'].update({i_row["uuid"] : l_newInsertId})
+                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
+                except Exception as e:
+                    logErr("数据库执行错误：%s" % str(e.args))
+                    artn["error"].append(str(e.args))
+                    raise e
+            elif i_row['op'] in ('delete', 'update'):
                 try:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount
@@ -320,8 +349,9 @@ def json2exec(ajson, aCursor, artn):   # artn['effectnum'] + 1
                     logErr("数据库执行错误：%s" % str(e.args))
                     artn["error"].append(str(e.args))
                     raise e
+
             if 'rows' in i_row['subs'].keys():
-                json2exec(i_row['subs'], aCursor, artn)
+                json2exec(i_row['subs'], aCursor, artn, (l_oldUUID, l_newInsertId))
     except Exception as e:
         logErr("批量数据库执行失败：%s" % str(e.args))
         raise Exception("操作失败:  " + str(e.args))
@@ -335,7 +365,7 @@ def json2upd(aJsonDict):
              "changeid" : {'uuid1':'id1'} }
     try:
         l_cur = connection.cursor()
-        json2exec(aJsonDict, l_cur, l_rtn)
+        json2exec(aJsonDict, l_cur, l_rtn, ("",""))
         l_rtn.update({"stateCod": 202})
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
@@ -349,6 +379,7 @@ def cursorExec(aSql):
         execute sql use cursor, return effect rows.
     '''
     l_rtn = -1
+    log(aSql)
     try:
         l_cur = connection.cursor()
         l_cur.execute(aSql)
@@ -357,13 +388,27 @@ def cursorExec(aSql):
         logErr("数据库执行错误：%s" % str(e.args))
     finally:
         l_cur.close
+    return l_rtn
 
+def cursorExec2(aSql, aList ):
+    l_rtn = -1
+    log(aSql + str(aList))
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql, aList)
+        l_rtn = l_cur.cursor.rowcount
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+    finally:
+        l_cur.close
     return l_rtn
 
 def cursorSelect(aSql):
     '''
         execute sql use cursor, return all. fetchall()
+        l_rtn[0][0]  单值。
     '''
+    log(aSql)
     l_rtn = -1
     try:
         l_cur = connection.cursor()

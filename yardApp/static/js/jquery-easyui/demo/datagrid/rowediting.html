@@ -20,11 +20,12 @@
 	<table id="dg" class="easyui-datagrid" title="Row Editing in DataGrid" style="width:700px;height:auto"
 			data-options="
 				iconCls: 'icon-edit',
-				singleSelect: true,
+				singleSelect: false,
 				toolbar: '#tb',
 				url: 'datagrid_data1.json',
 				method: 'get',
-				onClickRow: onClickRow
+				onClickRow: onClickRow,
+				onSelect : onSelect
 			">
 		<thead>
 			<tr>
@@ -111,6 +112,40 @@
 			var rows = $('#dg').datagrid('getChanges');
 			alert(rows.length+' rows are changed!');
 		}
+        function onSelect(rowIndex, rowData){
+            //
+            if (rowIndex > 8)
+            {
+                var ss = [];
+                var rows = rowData;
+                for(var i=0; i<rows.length; i++){
+                    var row = rows[i];
+                    ss.push('<span>'+row.itemid+":"+row.productid+":"+row.attr1+'</span>');
+                }
+                $.messager.alert('Info', ss.join('<br/>'));
+            }
+            if (rowIndex < 2)
+            {
+                $('#dg').datagrid('unselectRow', rowIndex );
+            }
+        }
+
+        function getSelected(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$.messager.alert('Info', row.itemid+":"+row.productid+":"+row.attr1);
+			}
+		}
+		function getSelections(){
+			var ss = [];
+			var rows = $('#dg').datagrid('getSelections');
+			for(var i=0; i<rows.length; i++){
+				var row = rows[i];
+				ss.push('<span>'+row.itemid+":"+row.productid+":"+row.attr1+'</span>');
+			}
+			$.messager.alert('Info', ss.join('<br/>'));
+		}
+
 	</script>
 </body>
 </html>

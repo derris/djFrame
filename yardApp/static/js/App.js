@@ -141,7 +141,12 @@ sy.createComparsion = function(propertyName,orderType){
     }
 }
 
-
+sy.UUID = function(){
+    this.id = new UUID();
+}
+sy.UUID.prototype.toString= function () {
+    return this.id.toString();
+}
 
 //***************Django Ajax通过csrf**************//
 sy.getCookie = function (name) {

@@ -8,6 +8,28 @@
 	<link rel="stylesheet" type="text/css" href="../demo.css">
 	<script type="text/javascript" src="../../jquery.min.js"></script>
 	<script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+    <script type="text/javascript">
+        function onCheck(rowIndex, rowData){
+            //
+            var l_pd = rowData.productid;
+            var ss = "";
+            var rows = $('#dg').datagrid('getSelections');
+			for(var i=0; i<rows.length; i++){
+				var row = rows[i];
+                var ii = $('#dg').datagrid('getRowIndex', row);
+				if (rowIndex != ii ) ss = ss + "," + row.productid.substr(0,2);
+			}
+            l_pd = "," + l_pd.substr(0,2);
+            if (ss.length > 0)
+            {
+                if (!(ss.indexOf(l_pd) >= 0 ))
+                {
+                    $.messager.alert("选相同的。", ss);
+                    $('#dg').datagrid('uncheckRow', rowIndex );
+                }
+            }
+        }
+    </script>
 </head>
 <body>
 	<h2>CheckBox Selection on DataGrid</h2>
@@ -18,7 +40,7 @@
 	<div style="margin:10px 0;"></div>
 	
 	<table id="dg" class="easyui-datagrid" title="CheckBox Selection on DataGrid" style="width:700px;height:250px"
-			data-options="rownumbers:true,singleSelect:true,url:'datagrid_data1.json',method:'get'">
+			data-options="rownumbers:true,singleSelect:false,url:'datagrid_data1.json',method:'get', onCheck:onCheck">
 		<thead>
 			<tr>
 				<th data-options="field:'ck',checkbox:true"></th>
@@ -40,6 +62,8 @@
 		SelectOnCheck: <input type="checkbox" checked onchange="$('#dg').datagrid({selectOnCheck:$(this).is(':checked')})"><br/>
 		CheckOnSelect: <input type="checkbox" checked onchange="$('#dg').datagrid({checkOnSelect:$(this).is(':checked')})">
 	</div>
+
+
 
 </body>
 </html>

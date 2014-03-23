@@ -12,7 +12,7 @@ def log(aMsg, alogFile = BASE_DIR + 'djgw.log'):
     @param alogFile:  记录的文件名，默认djgw.log
     '''
     if DEBUG:
-        lMsg = datetime.now().strftime('%m-%d %H:%M:%S') + sys._getframe(1).f_code.co_name + ' ' + str(aMsg) + os.linesep
+        lMsg = datetime.now().strftime('%m-%d %H:%M:%S -> ') + sys._getframe(1).f_code.co_name + ' -> ' + str(aMsg) + os.linesep
         print(lMsg)
         a = open(alogFile, 'a+')
         a.write(lMsg)

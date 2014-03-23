@@ -3,8 +3,34 @@ easyui界面参考：
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/layout/complex.html
 
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/datagrid/checkbox.html
+http://127.0.0.1:8000/static/js/jquery-easyui/demo/linkbutton/basic.html
+
+reset 本地的git版本。
+C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cdfed0a45783d93651\cmd\git.exe reset --hard
+
+
+
+
+js文档
+http://w3school.com.cn/jsref/jsref_obj_string.asp
+easyui文档
+http://www.jeasyui.com/documentation/index.php#
+jquery文档
+http://www.w3school.com.cn/jquery/jquery_reference.asp
+html5文档
+http://www.w3school.com.cn/html5/index.asp
+nodejs文档
+http://nodejs.org/api/documentation.html
+python文档
+http://docs.python.org/3/
+http://woodpecker.org.cn/diveintopython3/index.html
+pillow 文档。
+http://pillow.readthedocs.org/en/latest/handbook/tutorial.html#converting-between-modes
+postgresql文档
+http://www.postgresql.org/docs/9.1/static/index.html
+django文档
+https://docs.djangoproject.com/en/dev/topics/db/sql/
 
 
 在前台html加checkbox
     {field: 'check_flag',title: '选择',checkbox:true}
-
