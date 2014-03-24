@@ -6,6 +6,16 @@ from django.db import connection
 import re
 from zdCommon.utils import logErr, log
 
+tbDefCache = {}  # table的定义缓存。
+def getColType(atable, aCol):
+    global tbDefCache
+    ls_tab = atable.lower()
+    ls_col = aCol.lower()
+    if ls_tab not in tbDefCache.keys():
+        tbDefCache.update(  { ls_tab : getTableInfo(ls_tab)}  )
+    if not ls_col in tbDefCache[ls_tab].keys():
+        raise Exception(atable + "中不存在字段" + aCol)
+    return(tbDefCache[ls_tab][ls_col])
 
 def correctjsonfield(obj, atypecode):
     if obj:
@@ -264,7 +274,14 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                         if icol == "rec_tim":
                             ls_val += "'" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "',"
                         else:
-                            ls_val += "'" + str(ival) + "',"
+                            if (str(ival) != ""):
+                                ls_val += "'" + str(ival) + "',"
+                            else:
+                                if getColType(i_row['table'], icol) == "char": # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                                    ls_val += "'" + str(ival) + "',"
+                                else:
+                                    ls_val += "null,"
+
                 ls_col = ls_col[:-1]
                 ls_val = ls_val[:-1]
                 if 'rec_nam' in ls_col:
