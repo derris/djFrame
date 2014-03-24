@@ -9,24 +9,6 @@ from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 ##########################################################        GET    ----
-# 查询参数 json string。
-#    jpargs:  '''
-#               { 'reqtype':'query'    #  类型。
-#                 'func' : '菜单功能名称'   / '取'
-#               'rows':10,          #  -1 表示不分页。返回全部的数据。
-#               'page':1,           #  当前页码数。
-#               'cols':['colname1','colname2','colname3'],    # 查询栏目。
-#               'filter':[{                       # 前台传递的查询条件参数。
-#                          'cod':'client_name',
-#                          'operatorTyp':'等于',
-#                          'value':'值'
-#                       },...],
-#               'sort':[{                        # 前台传递过来的排序参数。
-#                       'cod':'client_name',     # 排序字段，
-#                       'order_typ':'升序'       # 排序升降
-#                       }, ... ]'
-#               'ex_parm'： {扩展参数}
-#               }   '''
 def getsysmenu(request):
     '''功能查询'''
     ldict = json.loads( request.POST['jpargs'] )
@@ -43,19 +25,20 @@ def getsysmenufunc(request):
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu_func "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getuser(request):
-    ''''''
+    '''用户查询'''
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_user "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getpost(request):
+    '''岗位查询'''
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_post "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getpostuser(request):
+    '''岗位用户查询'''
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_postuser "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-@csrf_exempt
 def getclients(request):
     '''客户查询'''
     #ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
@@ -63,14 +46,11 @@ def getclients(request):
     ls_sql = "select " + ", ".join(ldict['cols']) + " from c_client "
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-
 def getclientsEx(request, aSql):
     '''客户查询'''
     ls_sql = aSql
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-
-@csrf_exempt
 def getsyscod(request):
     '''系统参数查询'''
     ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
@@ -110,7 +90,6 @@ def getpaytype(request):
     ls_sql = "select id,pay_name,remark from c_pay_type"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( getMenuPrivilege(ldict['postid']),ensure_ascii = False) )
@@ -137,8 +116,6 @@ def getprefeeEx(request, aSql):
     #ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from pre_fee"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
-
-@csrf_exempt
 def getSequence(aDict):
     ''' 因为要放到后台，暂时没用。
         aDict = {"ex_parm": {"seqname":"seq_4_auditfee"} }
@@ -154,15 +131,12 @@ def getSequence(aDict):
     else:
         ldict_rtn.update(  {"stateCod": "-1" }  )
     return ldict_rtn
-
 #############################################################    UPDATE    -----
-@csrf_exempt
-@transaction.atomic
+
 def updateClients(request):
     ''' 客户维护  '''
     return HttpResponse(json.dumps(json2upd(json.loads( request.POST['jpargs'] )),ensure_ascii = False))
 
-@transaction.atomic
 def dealAuditFee(reqeust):
     '''
      "func" : "处理已收费用核销",
@@ -219,115 +193,117 @@ def dealAuditFee(reqeust):
         ls_ins += "values(%s, %s, %s, %s,%s, current_timestamp(0), %s, current_timestamp(0), %s, %s, %s)"
         la_list = list((l_clientid, l_contractid, l_feetyp, l_feecod, l_sumpre - l_sumact, l_recnam, ls_seq, 'E','核销自动生成'))
         cursorExec2(ls_ins, la_list)
-
     ldict_rtn = { "msg": "成功", "stateCod": "0" , "result":{} }
-
     return(ldict_rtn)
-
 #####################################################  common interface ----------
-@csrf_exempt
 def dealPAjax(request):
-    ldict = json.loads( request.POST['jpargs'] )
-    # check and valid here ...
-    log(ldict)
-    #################################################  get
-    if ldict['func'] == '功能查询':
-        return(getsysmenu(request))
-    elif ldict['func'] == '权限查询':
-        return(getsysfunc(request))
-    elif ldict['func'] == '功能权限查询':
-        return(getsysmenufunc(request))
-    elif ldict['func'] == '系统参数查询':
-        return(getsyscod(request))
-    elif ldict['func'] == '用户查询':
-        return(getuser(request))
-    elif ldict['func'] == '岗位查询':
-        return(getpost(request))
-    elif ldict['func'] == '岗位用户查询':
-        return(getpostuser(request))
-    elif ldict['func'] == '箱型查询':
-        return(getcntrtype(request))
-    elif ldict['func'] == '动态类型查询':
-        return(getaction(request))
-    elif ldict['func'] == '费用分组类型查询':
-        return(getfeegroup(request))
-    elif ldict['func'] == '费用名称查询':
-        return(getfeecod(request))
-    elif ldict['func'] == '协议费率查询':
-        return(getfeeprotocol(request))
-    elif ldict['func'] == '付款方式查询':
-        return(getpaytype(request))
-    elif ldict['func'] == '客户查询':
-        return(getclients(request))
-    elif ldict['func'] == '岗位权限查询':
-        return(getprivilege(request))
-    ############## 费用  #######
-    ###
-    elif ldict['func'] == '委托查询':
-        return(getcontract(request))
-    elif ldict['func'] == '委托动态查询':
-        return(getcontractaction(request))
-    elif ldict['func'] == '委托箱查询':
-        return(getcontractcntr(request))
-
-    elif ldict['func'] == '已收费用查询':
-        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
-        return(getactfeeEx(request, ls_sql))
-    elif ldict['func'] == '已收核销已收查询':
-        ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
-        return(getactfeeEx(request, ls_sql))
-    elif ldict['func'] == '已收核销应收查询':
-        l_clientid = str(ldict['ex_parm']['client_id'])
-        ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
-        return(getactfeeEx(request, ls_sql))
-    ######
-    elif ldict['func'] == '已收核销客户查询':
-        ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
-        return(getclientsEx(request, ls_t))
-    ################################################## update
-    elif ldict['func'] == '功能维护':
-        return(updateClients(request))
-    elif ldict['func'] == '权限维护':
-        return(updateClients(request))
-    elif ldict['func'] == '功能权限维护':
-        return(updateClients(request))
-    elif ldict['func'] == '系统参数维护':
-        return(updateClients(request))
-    elif ldict['func'] == '用户维护':
-        return(updateClients(request))
-    elif ldict['func'] == '岗位维护':
-        return(updateClients(request))
-    elif ldict['func'] == '岗位用户维护':
-        return(updateClients(request))
-    elif ldict['func'] == '箱型维护':
-        return(updateClients(request))
-    elif ldict['func'] == '动态类型维护':
-        return(updateClients(request))
-    elif ldict['func'] == '费用分组类型维护':
-        return(updateClients(request))
-    elif ldict['func'] == '费用名称维护':
-        return(updateClients(request))
-    elif ldict['func'] == '协议费率维护':
-        return(updateClients(request))
-    elif ldict['func'] == '付款方式维护':
-        return(updateClients(request))
-    elif ldict['func'] == '客户维护':
-        return(updateClients(request))
-    elif ldict['func'] == '委托维护':
-        return(updateClients(request))
-
-    elif ldict['func'] == '已收费用维护':
-        return(updateClients(request))
-    elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
-        return(HttpResponse(json.dumps( setMenuPrivilege(ldict) ,ensure_ascii = False) ))
-    ############################
-    elif ldict['func'] == "取序列号":
-        return(HttpResponse(json.dumps( getSequence(ldict) ,ensure_ascii = False) ))
-
-    ##################################     费     #######
-    elif ldict['func'] == "处理已收费用核销":
-        return( HttpResponse(json.dumps( dealAuditFee(request),ensure_ascii = False) ))
-
-    else:
-        return HttpResponse("没有此功能")
-
+    ls_err = ""
+    try:
+        ldict = json.loads( request.POST['jpargs'] )
+        log(ldict)
+        with transaction.atomic():
+            #################################################  get
+            if ldict['func'] == '功能查询':
+                return(getsysmenu(request))
+            elif ldict['func'] == '权限查询':
+                return(getsysfunc(request))
+            elif ldict['func'] == '功能权限查询':
+                return(getsysmenufunc(request))
+            elif ldict['func'] == '系统参数查询':
+                return(getsyscod(request))
+            elif ldict['func'] == '用户查询':
+                return(getuser(request))
+            elif ldict['func'] == '岗位查询':
+                return(getpost(request))
+            elif ldict['func'] == '岗位用户查询':
+                return(getpostuser(request))
+            elif ldict['func'] == '箱型查询':
+                return(getcntrtype(request))
+            elif ldict['func'] == '动态类型查询':
+                return(getaction(request))
+            elif ldict['func'] == '费用分组类型查询':
+                return(getfeegroup(request))
+            elif ldict['func'] == '费用名称查询':
+                return(getfeecod(request))
+            elif ldict['func'] == '协议费率查询':
+                return(getfeeprotocol(request))
+            elif ldict['func'] == '付款方式查询':
+                return(getpaytype(request))
+            elif ldict['func'] == '客户查询':
+                return(getclients(request))
+            elif ldict['func'] == '岗位权限查询':
+                return(getprivilege(request))
+            ############## 费用  ###################################
+            elif ldict['func'] == '委托查询':
+                return(getcontract(request))
+            elif ldict['func'] == '委托动态查询':
+                return(getcontractaction(request))
+            elif ldict['func'] == '委托箱查询':
+                return(getcontractcntr(request))
+            elif ldict['func'] == '已收费用查询':
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
+                return(getactfeeEx(request, ls_sql))
+            elif ldict['func'] == '已收核销已收查询':
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
+                return(getactfeeEx(request, ls_sql))
+            elif ldict['func'] == '已收核销应收查询':
+                l_clientid = str(ldict['ex_parm']['client_id'])
+                ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
+                return(getactfeeEx(request, ls_sql))
+            ######################
+            elif ldict['func'] == '已收核销客户查询':
+                ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
+                return(getclientsEx(request, ls_t))
+            ############################################################################## update
+            elif ldict['func'] == '功能维护':
+                return(updateClients(request))
+            elif ldict['func'] == '权限维护':
+                return(updateClients(request))
+            elif ldict['func'] == '功能权限维护':
+                return(updateClients(request))
+            elif ldict['func'] == '系统参数维护':
+                return(updateClients(request))
+            elif ldict['func'] == '用户维护':
+                return(updateClients(request))
+            elif ldict['func'] == '岗位维护':
+                return(updateClients(request))
+            elif ldict['func'] == '岗位用户维护':
+                return(updateClients(request))
+            elif ldict['func'] == '箱型维护':
+                return(updateClients(request))
+            elif ldict['func'] == '动态类型维护':
+                return(updateClients(request))
+            elif ldict['func'] == '费用分组类型维护':
+                return(updateClients(request))
+            elif ldict['func'] == '费用名称维护':
+                return(updateClients(request))
+            elif ldict['func'] == '协议费率维护':
+                return(updateClients(request))
+            elif ldict['func'] == '付款方式维护':
+                return(updateClients(request))
+            elif ldict['func'] == '客户维护':
+                return(updateClients(request))
+            elif ldict['func'] == '委托维护':
+                return(updateClients(request))
+            elif ldict['func'] == '已收费用维护':
+                return(updateClients(request))
+            elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
+                return(HttpResponse(json.dumps( setMenuPrivilege(ldict) ,ensure_ascii = False) ))
+            ########################################
+            elif ldict['func'] == "取序列号":
+                return(HttpResponse(json.dumps( getSequence(ldict) ,ensure_ascii = False) ))
+            ##########################################     费     #######
+            elif ldict['func'] == "处理已收费用核销":
+                return( HttpResponse(json.dumps( dealAuditFee(request),ensure_ascii = False) ))
+            else:
+                pass
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+        ls_err = str(e.args)
+    # 前面没有正确返回，这里返回一个错误。
+    l_rtn = {
+            "error": [ls_err],
+            "msg":    ldict['func'] + "执行失败",
+            "stateCod":  -1 ,
+            }
+    return( HttpResponse(json.dumps( l_rtn,ensure_ascii = False) ))

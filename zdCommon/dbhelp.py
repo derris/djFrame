@@ -194,9 +194,7 @@ def rawsql2json(aSql, aSqlCount):
         根据sql语句，返回数据和记录总数。.
     '''
     l_cur = connection.cursor()
-    l_rtn = {"msg": "查询成功", "error":[] }
-    ls_msg = "查询完毕"
-    l_state = 0
+    l_rtn = {"msg": "查询完毕", "error":[] }
     try:
         l_cur.execute(aSql)
         l_keys = [i for i in l_cur.description ]
@@ -211,16 +209,11 @@ def rawsql2json(aSql, aSqlCount):
         l_cur.execute(aSqlCount)
         l_sqlcount = l_cur.fetchone()[0]
     except Exception as e:
-        l_rtn["error"].append(str(e.args))
         logErr("查询失败：%s" % str(e.args))
-        ls_msg = "查询失败"
-        l_state = -1
         raise e
     finally:
         l_cur.close()
-
-    l_rtn.update( {"msg":ls_msg,  "stateCod": 1 if l_sqlcount > 0 else 201  , "total":l_sqlcount, "rows": l_sum } )
-    # l_rtn =  '{"total":' + str(l_count) + ', "rows":' + str( l_sum) + '}'
+    l_rtn.update( { "stateCod": 1 if l_sqlcount > 0 else 201  , "total":l_sqlcount, "rows": l_sum } )
     return l_rtn
 
 def getTableInfo(aTableName):
@@ -262,7 +255,6 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
     if a2Replace:
         l_UUID = a2Replace[0]
         l_NewId = a2Replace[1]
-
     try:
         for i_row in  ajson['rows']:
             #循环进行处理字符串，然后更新
@@ -343,44 +335,30 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
             elif i_row['op'] == 'delete':
                 lb_updateValid = True
                 ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
-
             ######################  处理完毕  sql  语句。  如果有替换需求，就需要全部处理。
-
             log(ls_sql)
             if len(l_UUID) > 10:
                 ls_sql = ls_sql.replace(l_UUID, str(l_NewId))
                 log(' 根据带入的UUID替换：' + ls_sql)
-
             if 'uuid' in i_row.keys() :
                 l_oldUUID =  i_row['uuid']
-
             l_newInsertId = ""
             if i_row['op'] == 'insert':
-                try:
+                aCursor.execute(ls_sql)
+                li_t = aCursor.cursor.rowcount
+                l_newInsertId = aCursor.fetchone()[0]        # 返回的新的id，子记录需要把所有的都替换成。
+                artn['changeid'].update({i_row["uuid"] : l_newInsertId})
+                artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
+            elif i_row['op'] in ('delete', 'update'):
+                if lb_updateValid:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount
-                    l_newInsertId = aCursor.fetchone()[0]        # 返回的新的id，子记录需要把所有的都替换成。
-                    artn['changeid'].update({i_row["uuid"] : l_newInsertId})
                     artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
-                except Exception as e:
-                    logErr("数据库执行错误：%s" % str(e.args))
-                    artn["error"].append(str(e.args))
-                    raise e
-            elif i_row['op'] in ('delete', 'update'):
-                try:
-                    if lb_updateValid:
-                        aCursor.execute(ls_sql)
-                        li_t = aCursor.cursor.rowcount
-                        artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
-                except Exception as e:
-                    logErr("数据库执行错误：%s" % str(e.args))
-                    artn["error"].append(str(e.args))
-                    raise e
             if 'rows' in i_row['subs'].keys():
                 json2exec(i_row['subs'], aCursor, artn, (l_oldUUID, l_newInsertId))
     except Exception as e:
-        logErr("批量数据库执行失败：%s" % str(e.args))
-        raise Exception("操作失败:  " + str(e.args))
+        logErr("错误：%s" % str(e.args))
+        raise e
 
 
 def json2upd(aJsonDict):
@@ -396,7 +374,7 @@ def json2upd(aJsonDict):
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         l_rtn.update({"stateCod": -100, "error": str(l_rtn['error']), "msg":"执行失败" })
-        raise Exception("数据库之行错误。")
+        raise e
     finally:
         l_cur.close()
     return(l_rtn)
@@ -413,7 +391,7 @@ def cursorExec(aSql):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
-        raise Exception("数据库之行错误。")
+        raise e
     finally:
         l_cur.close
     return l_rtn
@@ -427,7 +405,7 @@ def cursorExec2(aSql, aList ):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
-        raise Exception("数据库之行错误。")
+        raise e
     finally:
         l_cur.close
     return l_rtn
@@ -445,7 +423,7 @@ def cursorSelect(aSql):
         l_rtn = l_cur.fetchall()
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
-        transaction.rollback()
+        raise e
     finally:
         l_cur.close
     return l_rtn
