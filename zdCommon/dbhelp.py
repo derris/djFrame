@@ -388,7 +388,7 @@ def json2upd(aJsonDict):
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         l_rtn.update({"stateCod": -100, "error": str(l_rtn['error']), "msg":"执行失败" })
-        transaction.rollback()
+        raise Exception("数据库之行错误。")
     finally:
         l_cur.close()
     return(l_rtn)
@@ -405,7 +405,7 @@ def cursorExec(aSql):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
-        transaction.rollback()
+        raise Exception("数据库之行错误。")
     finally:
         l_cur.close
     return l_rtn
@@ -419,7 +419,7 @@ def cursorExec2(aSql, aList ):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
-        transaction.rollback()
+        raise Exception("数据库之行错误。")
     finally:
         l_cur.close
     return l_rtn
