@@ -117,34 +117,34 @@ UUID.rand = function (max) {
 }
 
 //**************对象数组按指定属性排序***************************
-sy.createComparsion = function(propertyName,orderType){
-    return function(o1,o2){
+sy.createComparsion = function (propertyName, orderType) {
+    return function (o1, o2) {
         var orderT = orderType || 'asc';
         var v1 = o1[propertyName];
         var v2 = o2[propertyName];
-        if (v1 == v2){
+        if (v1 == v2) {
             return 0;
         }
-        if (orderT == 'asc'){
-            if (v1 < v2){
+        if (orderT == 'asc') {
+            if (v1 < v2) {
                 return -1;
-            }else{
+            } else {
                 return 1;
             }
-        }else{
-            if (v1 < v2){
+        } else {
+            if (v1 < v2) {
                 return 1;
-            }else{
+            } else {
                 return -1;
             }
         }
     }
 }
 
-sy.UUID = function(){
+sy.UUID = function () {
     this.id = new UUID();
 }
-sy.UUID.prototype.toString= function () {
+sy.UUID.prototype.toString = function () {
     return this.id.toString();
 }
 
@@ -313,26 +313,26 @@ $.extend($.fn.datagrid.defaults.editors, {
 $.extend($.fn.datagrid.defaults, {
     //以下为扩展属性
     autoLoad: true,  //true render完页面后，主动load数据
-    loadNumber:0,    //自datagrid创建以来load的次数，结合autoLoad，限制自动加载。
+    loadNumber: 0,    //自datagrid创建以来load的次数，结合autoLoad，限制自动加载。
     autoSave: false, //true 在onAfterEdit()中提交'insert'和'update',在deleteData()中提交‘delete’
     childDatagrid: [],//关联的子datagrid 未启用
     parentDatagrid: null,//关联的父datagrid 未启用
     dataTable: '', //此datagrid关联的table名称
     editRow: -1,   //当前正在编辑的行index
-    filterFields:[], /*过滤字段，自动传入查询参数
-                        {
-                          'cod':'client_name',
-                          'operatorTyp':'等于',
-                          'value':'值'
-                        }
-                      */
-    sortFields: [],  /*排序字段，自动传入查询参数{
-                           'cod':'client_name',
-                           'order_typ':'升序'
-                       }*/
-    queryFuncName: '' , //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
+    filterFields: [], /*过滤字段，自动传入查询参数
+     {
+     'cod':'client_name',
+     'operatorTyp':'等于',
+     'value':'值'
+     }
+     */
+    sortFields: [], /*排序字段，自动传入查询参数{
+     'cod':'client_name',
+     'order_typ':'升序'
+     }*/
+    queryFuncName: '', //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
     updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
-    ex_parm:{}, //扩展查询参数 load()中使用
+    ex_parm: {}, //扩展查询参数 load()中使用
     //以上为扩展属性
     border: false,
     fit: true,
@@ -374,10 +374,10 @@ $.extend($.fn.datagrid.defaults, {
         var queryParam = {
             reqtype: 'query',
             func: opts.queryFuncName,
-            ex_parm : opts.ex_parm
+            ex_parm: opts.ex_parm
         };
         $.extend(queryParam, param);
-        if (opts.filterFields.length != 0){  //强制增加手动设置过滤条件
+        if (opts.filterFields.length != 0) {  //强制增加手动设置过滤条件
             if (queryParam.filter == undefined) {
                 queryParam.filter = new Array();
             }
@@ -395,7 +395,7 @@ $.extend($.fn.datagrid.defaults, {
             if (queryParam.sort == undefined) {
                 queryParam.sort = new Array();
             }
-            var ver = $.grep(opts.sortFields,function(data,index){
+            var ver = $.grep(opts.sortFields,function (data, index) {
                 return true;
             }).reverse();
             $.each(ver, function (index, data) {
@@ -415,14 +415,14 @@ $.extend($.fn.datagrid.defaults, {
         } else {
             queryParam.cols.push('id');
         }
-        if (queryParam.page == undefined){
+        if (queryParam.page == undefined) {
             queryParam.page = -1;
         }
-        if (queryParam.rows == undefined){
+        if (queryParam.rows == undefined) {
             queryParam.rows = -1;
         }
         opts.loadNumber++;
-        if (opts.autoLoad == false && opts.loadNumber == 1){
+        if (opts.autoLoad == false && opts.loadNumber == 1) {
             return false;
         }
         $.ajax({
@@ -498,12 +498,12 @@ $.extend($.fn.datagrid.methods, {
             }
         }
         /*jq.datagrid('insertRow', {
-            index: 0,
-            row: param
-        });*/
-        jq.datagrid('appendRow',param);
+         index: 0,
+         row: param
+         });*/
+        jq.datagrid('appendRow', param);
         var lastRow = jq.datagrid('getRows').length;
-        jq.datagrid('selectRow', lastRow - 1 );
+        jq.datagrid('selectRow', lastRow - 1);
         jq.datagrid('beginEdit', lastRow - 1);
         opts.editRow = lastRow - 1;
     },
@@ -604,7 +604,8 @@ $.extend($.fn.datagrid.methods, {
             if (jq.datagrid('validateRow', opts.editRow)) {
                 jq.datagrid('endEdit', opts.editRow);
                 opts.editRow = -1;
-                return 1;;
+                return 1;
+                ;
             } else {
                 return 0;
             }
@@ -727,6 +728,32 @@ $.extend($.fn.datagrid.methods, {
 
 });
 //***************扩展datagrid ***********************//
+
+//***************扩展form****************************//
+$.extend($.fn.form.defaults, {
+    originalData: {}, //保存通过load方法加载的原始数据
+    onLoadSuccess:function(data){
+        $(this).data('form').options.originalData = data;
+    }
+});
+$.extend($.fn.form.methods, {
+    getFields: function (jq) {
+        var cols = new Array();
+        var formcols = jq.serializeArray();
+        for (var i = 0, ilen = formcols.length; i < ilen; i++) {
+            cols.push(formcols[i].name);
+        }
+        return cols;
+    },
+    getOriData: function(jq){
+        //取扩展的originalData
+        return $(jq).data('form').options.originalData;
+    },
+    extReset:function(jq){
+        jq.form('reset');
+        $(jq).data('form').options.originalData = {};
+    }
+});
 
 //***************扩展JQuery包装集函数************************
 //将form表单值转换成Json格式
