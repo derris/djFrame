@@ -690,17 +690,21 @@ $.extend($.fn.datagrid.methods, {
                 );
             }
         }
-        return updateArray.concat(insertArray).concat(deleteArray);
+        return {i:insertArray,
+            u:updateArray,
+            d:deleteArray};
     },
     //调用方式 datagrid('postUpdateAllData')
     postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             var opts = jq.datagrid('options');
+            var dirtyObj = jq.datagrid('getDirtyData','all');
+            var dirtyArray = dirtyObj.i.concat(dirtyObj.u).concat(dirtyObj.d);
             //删除只传id值
             var p = {
                 reqtype: 'update',
                 func: opts.updateFuncName,
-                rows: jq.datagrid('getDirtyData','all')
+                rows: dirtyArray
             }
             if (p.rows.length == 0) {
                 return;
@@ -713,10 +717,10 @@ $.extend($.fn.datagrid.methods, {
                     if (!isNaN(stateCod)) {
                         if (returnData.stateCod == 202) { //更新成功
                             //更新id
-                            if (returnData.changeid != null && insertArray.length > 0) {
-                                for (var i = 0, ilen = insertArray.length; i < ilen; i++) {
-                                    if (returnData.changeid.hasOwnProperty(insertArray[i].uuid)) {
-                                        insertArray[i].cols.id = returnData.changeid[insertArray[i].uuid];
+                            if (returnData.changeid != null && dirtyObj.i.length > 0) {
+                                for (var i = 0, ilen = dirtyObj.i.length; i < ilen; i++) {
+                                    if (returnData.changeid.hasOwnProperty(dirtyObj.i[i].uuid)) {
+                                        dirtyObj.i[i].cols.id = returnData.changeid[dirtyObj.i[i].uuid];
                                     } else {
                                         sy.onError('主键更新失败', false);
                                         return;
@@ -766,16 +770,19 @@ $.extend($.fn.form.methods, {
     },
     getUpdateData:function(jq){
         var oriData = $(jq).form('getOriData');
-        var dirty = $.extend({},oriData,jq.serializeJson());
-
-
+        var dirty = {};
         $.each(jq.serializeJson(),function(name,value){
             if (oriData.hasOwnProperty(name)){
-
+                if (oriData[name] != value){
+                    dirty[name] = [value,oriData[name]];
+                }
             }else{
-
+                if (value != null && value.length > 0){
+                    dirty[name] = [value,""];
+                }
             }
         });
+        return dirty;
     }
 });
 
