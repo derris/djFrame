@@ -58,10 +58,10 @@ def syscodview(request):
     return render(request,"yard/sysdata/syscod.html",locals())
 def userview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.User,field='id')
-    username = easyuihelp.EasyuiFieldUI(model=models.User,field='username')
+    username = easyuihelp.EasyuiFieldUI(model=models.User,field='username',width=180)
     password = easyuihelp.EasyuiFieldUI(model=models.User,field='password',hidden=True)
     lock = easyuihelp.EasyuiFieldUI(model=models.User,field='lock')
-    remark = easyuihelp.EasyuiFieldUI(model = models.User,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model = models.User,field='remark',width=180)
     return render(request,"yard/basedata/user.html",locals())
 def postview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
