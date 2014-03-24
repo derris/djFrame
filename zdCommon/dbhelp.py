@@ -267,6 +267,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
         for i_row in  ajson['rows']:
             #循环进行处理字符串，然后更新
             ls_sql = ""
+            lb_updateValid = False
             if i_row['op'] == 'insert':
                 ls_sql = "insert into %s" % i_row['table']
                 ls_col = ls_val = ''
@@ -305,6 +306,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 ls_set = ''
                 ls_where = ' id = ' + str(i_row['id']) + ' and '
                 for icol,ival in i_row['cols'].items():
+                    lb_updateValid = True
                     ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                     ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
                 ls_set = ls_set[:-1]
@@ -324,6 +326,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 ls_set = ''
                 ls_where = ' id = ' + str(i_row['id'])
                 for icol,ival in i_row['cols'].items():
+                    lb_updateValid = True
                     ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                 ls_set = ls_set[:-1]
                 ls_where = ls_where[:-5]
@@ -338,6 +341,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 ls_sql += ls_set + ' where ' + ls_where
             #######################################################################
             elif i_row['op'] == 'delete':
+                lb_updateValid = True
                 ls_sql = "delete from " + i_row['table'] + " where id = " + str(i_row['id'])
 
             ######################  处理完毕  sql  语句。  如果有替换需求，就需要全部处理。
@@ -364,14 +368,14 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                     raise e
             elif i_row['op'] in ('delete', 'update'):
                 try:
-                    aCursor.execute(ls_sql)
-                    li_t = aCursor.cursor.rowcount
-                    artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
+                    if lb_updateValid:
+                        aCursor.execute(ls_sql)
+                        li_t = aCursor.cursor.rowcount
+                        artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
                 except Exception as e:
                     logErr("数据库执行错误：%s" % str(e.args))
                     artn["error"].append(str(e.args))
                     raise e
-
             if 'rows' in i_row['subs'].keys():
                 json2exec(i_row['subs'], aCursor, artn, (l_oldUUID, l_newInsertId))
     except Exception as e:
