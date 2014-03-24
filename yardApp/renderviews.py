@@ -168,7 +168,7 @@ def contractgrid(request):
     ship_corp_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name')
     port_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name')
     yard_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name')
-    finish_tim = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_tim')
+    finish_time = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_time')
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/contractgrid.html",locals())
