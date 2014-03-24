@@ -175,7 +175,7 @@ class Contract(BaseModel):
     ship_corp_id = models.ForeignKey('Client',blank=True,null=True,limit_choices_to={'ship_corp_flag':True},verbose_name='船公司',related_name='ship_corp_contract',db_column='ship_corp_id')
     port_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='码头',limit_choices_to={'port_flag':True},related_name='port_contract',db_column='port_id')
     yard_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='场站',limit_choices_to={'yard_flag':True},related_name='yard_contract',db_column='yard_id')
-    finish_tim = models.DateTimeField('完成时间',blank=True,null=True)
+    finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     vslvoy = models.CharField('船名航次',max_length=40)
     def __str__(self):

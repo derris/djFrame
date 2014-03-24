@@ -170,21 +170,21 @@ $(function () {
     });
     $('#contract-contract-form-save-button').bind('click', function (e) {
         if (contract.contractview.actiondatagrid.datagrid('preSave') == 0) {
-            $.message.show({title: '错误信息',
+            $.messager.show({title: '错误信息',
                 msg: '委托动态数据验证失败',
                 timeout: 3000,
                 showType: 'slide'});
             return;
         }
         if (contract.contractview.cntrdatagrid.datagrid('preSave') == 0) {
-            $.message.show({title: '错误信息',
+            $.messager.show({title: '错误信息',
                 msg: '委托箱量数据验证失败',
                 timeout: 3000,
                 showType: 'slide'});
             return;
         }
         if (!contract.contractview.contractform.form('validate')) {
-            $.message.show({title: '错误信息',
+            $.messager.show({title: '错误信息',
                 msg: '委托数据验证失败',
                 timeout: 3000,
                 showType: 'slide'});
@@ -297,7 +297,7 @@ $(function () {
                 <input type="date" name="return_cntr_date" class="easyui-datebox"
                        data-options="width:180"/>
                 <label for="finish_tim">完结日期:</label>
-                <input type="date" name="finish_tim" class="easyui-datebox"
+                <input type="date" name="finish_time" class="easyui-datebox"
                        data-options="width:180"/>
             </div>
             <div>
