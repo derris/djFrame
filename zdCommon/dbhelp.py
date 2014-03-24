@@ -42,6 +42,8 @@ def correctjsonfield(obj, atypecode):
             return "1800-01-01 00:00:00"
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
             return 0
+        elif atypecode == 0:
+            return ""
         else:
             logErr("无法识别的数据库对象类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
             raise Exception("无法识别的数据库对象类型，请通知管理员。")
@@ -247,6 +249,8 @@ def getTableInfo(aTableName):
             ls = 'datetime'
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
             ls = 'int'
+        elif atypecode == 0:
+            ls = "nouse"
         else:
             logErr("遇到不认识的数据库类型代码%d" % atypecode)
             raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
