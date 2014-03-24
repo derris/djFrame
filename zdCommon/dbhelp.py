@@ -2,7 +2,7 @@ __author__ = 'dh'
 
 import json
 from datetime import date,datetime
-from django.db import connection
+from django.db import connection, transaction
 import re
 from zdCommon.utils import logErr, log
 
@@ -288,7 +288,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                     pass
                 else:
                     ls_col += " , rec_nam "
-                    ls_val += ", 1"
+                    ls_val += ", '1'"
                 if 'rec_tim' in ls_col:
                     pass
                 else:
@@ -340,11 +340,12 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
 
             log(ls_sql)
             if len(l_UUID) > 10:
-                ls_sql = ls_sql.replace(l_UUID, l_NewId)
+                ls_sql = ls_sql.replace(l_UUID, str(l_NewId))
                 log(' 根据带入的UUID替换：' + ls_sql)
 
-            if 'uuid' in i_row :
+            if 'uuid' in i_row.keys() :
                 l_oldUUID =  i_row['uuid']
+
             l_newInsertId = ""
             if i_row['op'] == 'insert':
                 try:
@@ -387,6 +388,7 @@ def json2upd(aJsonDict):
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         l_rtn.update({"stateCod": -100, "error": str(l_rtn['error']), "msg":"执行失败" })
+        transaction.rollback()
     finally:
         l_cur.close()
     return(l_rtn)
@@ -403,6 +405,7 @@ def cursorExec(aSql):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
+        transaction.rollback()
     finally:
         l_cur.close
     return l_rtn
@@ -416,6 +419,7 @@ def cursorExec2(aSql, aList ):
         l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
+        transaction.rollback()
     finally:
         l_cur.close
     return l_rtn
@@ -433,6 +437,7 @@ def cursorSelect(aSql):
         l_rtn = l_cur.fetchall()
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
+        transaction.rollback()
     finally:
         l_cur.close
     return l_rtn
