@@ -141,7 +141,17 @@ $(function () {
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 1) {
-
+                            contract.contractview.contractform.form('load', r.rows[0]);
+                            var actionOpts = contract.contractview.actiondatagrid.datagrid('options');
+                            var cntrOpts = contract.contractview.cntrdatagrid.datagrid('options');
+                            actionOpts.filterFields = [
+                                {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
+                            ];
+                            cntrOpts.filterFields = [
+                                {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
+                            ];
+                            contract.contractview.actiondatagrid.datagrid('reload');
+                            contract.contractview.cntrdatagrid.datagrid('reload');
                             //旧委托 刷新界面
                         }
                         if (stateCod == 201) {
@@ -196,6 +206,9 @@ $(function () {
         };
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
             //旧委托 修改
+            var actionrows = contract.contractview.actiondatagrid.datagrid('getDirtyData','all');
+            var cntrrows = contract.contractview.cntrdatagrid.datagrid('getDirtyData','all');
+
         } else {
             //新委托 增加
             var uuid = (new UUID()).id;

@@ -646,12 +646,12 @@ $.extend($.fn.datagrid.methods, {
             e.editor = {};
         }
     },
-    //调用方式 datagrid('postUpdateAllData')
-    postUpdateAllData: function (jq) {
-        if ($(jq).datagrid('preSave') == 1) {
-            var opts = jq.datagrid('options');
-            //删除只传id值
-            var deleteArray = new Array();
+    //返回脏数据
+    getDirtyData: function (jq, type) {
+        var deleteArray = new Array();
+        var updateArray = new Array();
+        var insertArray = new Array();
+        if (type == 'delete' || type == 'all') {
             var deletedRows = $(jq).datagrid('getChanges', 'deleted');
             for (var i = 0, ilen = deletedRows.length; i < ilen; i++) {
                 deleteArray.push({
@@ -661,7 +661,8 @@ $.extend($.fn.datagrid.methods, {
                     subs: {}
                 });
             }
-            var updateArray = new Array();
+        }
+        if (type == 'update' || type == 'all') {
             var updateRows = $(jq).datagrid('getChangeUpdate');
             if (updateRows != null && updateRows.length > 0) {
                 $.each(updateRows, function (index, data) {
@@ -674,7 +675,8 @@ $.extend($.fn.datagrid.methods, {
                     });
                 });
             }
-            var insertArray = new Array();
+        }
+        if (type == 'insert' || type == 'all') {
             var insertRows = $(jq).datagrid('getChanges', 'inserted');
             for (var i = 0, ilen = insertRows.length; i < ilen; i++) {
                 insertArray.push(
@@ -687,10 +689,18 @@ $.extend($.fn.datagrid.methods, {
                     }
                 );
             }
+        }
+        return updateArray.concat(insertArray).concat(deleteArray);
+    },
+    //调用方式 datagrid('postUpdateAllData')
+    postUpdateAllData: function (jq) {
+        if ($(jq).datagrid('preSave') == 1) {
+            var opts = jq.datagrid('options');
+            //删除只传id值
             var p = {
                 reqtype: 'update',
                 func: opts.updateFuncName,
-                rows: updateArray.concat(insertArray).concat(deleteArray)
+                rows: jq.datagrid('getDirtyData','all')
             }
             if (p.rows.length == 0) {
                 return;
@@ -732,7 +742,7 @@ $.extend($.fn.datagrid.methods, {
 //***************扩展form****************************//
 $.extend($.fn.form.defaults, {
     originalData: {}, //保存通过load方法加载的原始数据
-    onLoadSuccess:function(data){
+    onLoadSuccess: function (data) {
         $(this).data('form').options.originalData = data;
     }
 });
@@ -745,13 +755,27 @@ $.extend($.fn.form.methods, {
         }
         return cols;
     },
-    getOriData: function(jq){
+    getOriData: function (jq) {
         //取扩展的originalData
         return $(jq).data('form').options.originalData;
     },
-    extReset:function(jq){
+    extReset: function (jq) {
+        //扩展reset方法，清空originalData值
         jq.form('reset');
         $(jq).data('form').options.originalData = {};
+    },
+    getUpdateData:function(jq){
+        var oriData = $(jq).form('getOriData');
+        var dirty = $.extend({},oriData,jq.serializeJson());
+
+
+        $.each(jq.serializeJson(),function(name,value){
+            if (oriData.hasOwnProperty(name)){
+
+            }else{
+
+            }
+        });
     }
 });
 
