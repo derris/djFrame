@@ -42,6 +42,7 @@ $(function () {
     contract.contractview.contractform = $('#contract-contract-form').form({
         url: './dealPAjax/'
     });
+    contract.contractview.contractform.form('disableValidation');
     contract.contractview.actiondatagrid = $('#contract-contractview-actiondatagrid').datagrid({
         autoLoad: false,
         columns: [
@@ -58,14 +59,20 @@ $(function () {
         ],
         dataTable: 'contract_action',
         toolbar: [
-
             {text: '增加',
                 iconCls: 'icon-add',
                 group: 'contract-contractview-actiondatagrid',
                 handler: function () {
-                    contract.contractview.actiondatagrid.datagrid('insertData', {
-                        contract_id: -1
-                    });
+                    var rowCount = contract.contractview.actiondatagrid.datagrid('getRows').length;
+                    var oaction = contract.contractview.actiondatagrid.datagrid('getColumnOption', 'action_id').editor.options.data;
+                    if (rowCount == oaction.length) {
+                        return;
+                    } else {
+                        contract.contractview.actiondatagrid.datagrid('insertData', {
+                            contract_id: -1,
+                            action_id: oaction[rowCount].value
+                        });
+                    }
                 }
             },
             '-',
@@ -169,7 +176,8 @@ $(function () {
                     }
                 }
             });
-        } else {
+        }
+        else {
             contract.contractview.contractform.form('extReset');
             contract.contractview.cntrdatagrid.datagrid('loadData', []);
             contract.contractview.actiondatagrid.datagrid('loadData', []);
@@ -179,6 +187,7 @@ $(function () {
         contract.contractview.refresh($.trim(this.value));
     });
     $('#contract-contract-form-save-button').bind('click', function (e) {
+        contract.contractview.contractform.form('enableValidation')
         if (contract.contractview.actiondatagrid.datagrid('preSave') == 0) {
             $.messager.show({title: '错误信息',
                 msg: '委托动态数据验证失败',
@@ -206,9 +215,20 @@ $(function () {
         };
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
             //旧委托 修改
-            var actionrows = contract.contractview.actiondatagrid.datagrid('getDirtyData','all');
-            var cntrrows = contract.contractview.cntrdatagrid.datagrid('getDirtyData','all');
-
+            var actionObj = contract.contractview.actiondatagrid.datagrid('getDirtyData', 'all');
+            var cntrObj = contract.contractview.cntrdatagrid.datagrid('getDirtyData', 'all');
+            var dirtyContract = contract.contractview.contractform.form('getUpdateData');
+            parm.rows = [
+                {
+                    op: 'update',
+                    table: 'contract',
+                    cols: dirtyContract,
+                    id: contract.contractview.contractform.form('getOriData').id,
+                    subs: {
+                        rows: actionObj.i.concat(actionObj.u).concat(actionObj.d).concat(cntrObj.i).concat(cntrObj.u).concat(cntrObj.d)
+                    }
+                }
+            ];
         } else {
             //新委托 增加
             var uuid = (new UUID()).id;
@@ -250,22 +270,25 @@ $(function () {
                     }
                 }
             ];
-            $.ajax({
-                url: "./dealPAjax/",
-                data: {jpargs: JSON.stringify(parm)},
-                success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractview.refresh($.trim(contract.contractview.billno.val()));
-                        }
-                    } else {
-                        $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
-                    }
-                }
-            });
         }
+        $.ajax({
+            url: "./dealPAjax/",
+            data: {jpargs: JSON.stringify(parm)},
+            success: function (r, t, a) {
+                var stateCod = parseInt(r.stateCod);
+                if (r && !isNaN(stateCod)) {
+                    if (stateCod == 202) {
+                        //保存成功刷新界面
+                        contract.contractview.refresh($.trim(contract.contractview.billno.val()));
+                    } else {
+                        console.info(r);
+                    }
+                } else {
+                    $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
+                }
+            }
+        });
+
     });
 });
 </script>
