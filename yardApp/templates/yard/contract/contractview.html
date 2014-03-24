@@ -68,8 +68,9 @@ $(function () {
                     if (rowCount == oaction.length) {
                         return;
                     } else {
+                        var contract_id = parseInt($('#contract-contract-form-id').val());
                         contract.contractview.actiondatagrid.datagrid('insertData', {
-                            contract_id: -1,
+                            contract_id: (isNaN(contract_id) ? -1 : contract_id),
                             action_id: oaction[rowCount].value
                         });
                     }
@@ -106,8 +107,9 @@ $(function () {
                 iconCls: 'icon-add',
                 group: 'contract-contractview-cntrdatagrid',
                 handler: function () {
+                    var contract_id = parseInt($('#contract-contract-form-id').val());
                     contract.contractview.cntrdatagrid.datagrid('insertData', {
-                        contract_id: -1
+                        contract_id: (isNaN(contract_id) ? -1 : contract_id)
                     });
                 }
             },
@@ -355,6 +357,8 @@ $(function () {
         <div class="editform-toolbar">
             <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-search'">查询</a>
+            <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-remove'">删除</a>
             <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-save'">保存</a>
             <a id="contract-contract-form-lock-button" href="#" class="easyui-linkbutton"
@@ -362,7 +366,7 @@ $(function () {
         </div>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true'">
+        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true',headerWidth:300">
             <div title="委托动态">
                 <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
                 </table>
