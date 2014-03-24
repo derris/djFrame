@@ -1,4 +1,4 @@
-__author__ = 'Administrator'
+__author__ = 'dddh'
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -226,7 +226,6 @@ def dealAuditFee(reqeust):
 
 #####################################################  common interface ----------
 @csrf_exempt
-@transaction.atomic
 def dealPAjax(request):
     ldict = json.loads( request.POST['jpargs'] )
     # check and valid here ...

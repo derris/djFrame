@@ -1,0 +1,113 @@
+########################################
+前台菜单功能调用接口：
+    url('^dealmenureq/$', renderviews.dealMenuReq,name='dealmenureq'),
+    dealmenureq/?menutext=菜单功能名称
+##############################################
+AJax检索数据：(全部通过是POST模式访问。)
+    url('^dealPAjax/$', ajaxResp.dealPAjax,name='dealPAjax'),
+    jpargs: {
+                "reqtype":"query",
+                "func":"权限查询",    # 检索标识。
+                "page":1,
+                "rows":20,
+                "cols":["id","funcname","remark"]
+                'filter':'[ {
+                    'cod':'client_name',
+                    'operatorTyp':'等于',
+                    'value':'值'
+                 }, ... ]',
+                 'sort':'[{
+                   'cod':'client_name',
+                   'order_typ':'升序'
+                 }, ...]'
+                 'ex_parm':{'', ''}   扩展的传递参数，可以在功能中特殊处理。
+            }
+    ----------------返回格式：-----------------
+    {
+        "msg":"保存xx成功",
+        "stateCod": "0",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "effectnum": "xx" ,              #  影响行数。
+        "total":22,
+        "rows":[{},{},{}],
+        "result": {"r1":"", "r2":"","uuid1":"id1", ....}      #  根据功能不同的扩展返回数据。
+   }
+######################################################
+AJax更新数据：(全部通过是POST模式访问。)
+jpargs:｛
+       'reqtype':'update'      ----- DML功能发起。
+       'rows': [ {
+                'op': 'insert',
+                'table': 'c_client',
+                'cols': {'col1':'value1', 'cold2':'value2', 'c3':'value3'....},  #  根据cols检索字段和插入、更新
+                'uuid': 'xxxx',   # 根据uuid更新子记录。
+                'id': -1,         # 更新时的主键。-1表示忽略id字段。
+                'subs': { rows: [递归] } //没有就空着
+            },      ] ｝
+************************************************  前台update：
+jpargs:   {
+        'reqtype':'update',
+        'rows': [ {
+                'op': 'update',       // 不需要旧值判断。用updatedirty，col数组只要一个要更新的值就行。
+                'table': 'c_client',
+                'cols': {'col1':['valueNew','valueold'], 'cold2':['value2new', 'value2old']},
+                'subs': {} ,
+                'id': 'xxx1'
+                },  {...}, ... ]    }
+**********************************************    前台delete：
+jpargs: {
+        'reqtype':'update',
+        'rows': [ {  'op': 'delete',    'table': 'c_client',  'id': 25, 'subs': { }  } ....  ]
+        }
+------------------------- 统一返回格式：-----------------
+       {
+             "msg":"",
+             "stateCod":0 、 -10、 -100、-1000 。
+             "error": ['', '', '']....
+             "effectnum": 1
+       }
+############################################################################
+*************************************
+2014-03-12 岗位功能权限提交
+************************************
+'rows': [ {
+                'op': 'insert',   / "delete"      // 添加 或者 取消授权。   显示 或者 隐藏 菜单。
+                'table': 'menu',   /  'func'
+                'menuid' : mid
+                "funcid' : fid
+                "postid", : pid
+            },]
+******************************************************
+2014-03-03 返回岗位功能权限tree结构
+******************************************************
+从sys_menu_func中返回所有数据
+{
+    id: menu_id或者func_id,会有重复id加个前缀'M'/'F',
+    text: menu_name或者func_name,
+    checked: true 岗位有此功能或权限, 从sys_postmenu和sys_postfunc中取数,
+    children: 循环
+}
+*********************************************************
+2014-02-21  返回导航菜单结构
+*********************************************************
+从系统数据库里返回表数据。  sys_menu
+功能菜单估计客户会要求排序的。所以 sortno 留着。
+
+yardApp/views.getMenuList
+入口： url('^getmenulist/$', views.getMenuList),
+返回值：
+[
+    { id: menuid,
+      text: menunshowname,
+      attributes: menuname,
+      children: [{
+         id: menuid,
+         text: menunshowname,
+         attributes: menuname,
+         children: [{}]
+      }]
+    },
+    {},{}....
+]
+###############################################################################
+

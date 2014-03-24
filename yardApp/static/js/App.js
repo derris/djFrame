@@ -140,7 +140,7 @@ sy.createComparsion = function (propertyName, orderType) {
         }
     }
 }
-
+/// dddh add : use as :  var p = new sy.UUID().toString();
 sy.UUID = function () {
     this.id = new UUID();
 }
