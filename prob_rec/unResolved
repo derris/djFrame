@@ -1,3 +1,5 @@
 json
 csrf 用django脚本
 根据model类型 生成前台jqueryeasyui控件
+
+transaction.rollback()
