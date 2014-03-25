@@ -290,33 +290,36 @@ $(function () {
     });
     $('#contract-contract-form-delete-button').bind('click', function (e) {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
-
-            var parm = {
-                reqtype: 'update',
-                rows: [
-                    {op: 'delete',
-                        table: 'contract',
-                        id: parseInt($('#contract-contract-form-id').val()),
-                        subs: { }
-                    }
-                ]
-            };
-            $.ajax({
-                url: "./dealPAjax/",
-                data: {jpargs: JSON.stringify(parm)},
-                success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractview.refresh(null);
+            $.messager.confirm('确认', '确认删除此委托下所有数据?', function (r) {
+                if (r) {
+                    var parm = {
+                        reqtype: 'update',
+                        func:'委托维护',
+                        rows: [
+                            {op: 'delete',
+                                table: 'contract',
+                                id: parseInt($('#contract-contract-form-id').val()),
+                                subs: { }
+                            }
+                        ]
+                    };
+                    $.ajax({
+                        url: "./dealPAjax/",
+                        data: {jpargs: JSON.stringify(parm)},
+                        success: function (r, t, a) {
+                            var stateCod = parseInt(r.stateCod);
+                            if (r && !isNaN(stateCod)) {
+                                if (stateCod == 202) {
+                                    //保存成功刷新界面
+                                    contract.contractview.refresh(null);
+                                }
+                            }
+                            $.ajaxSettings.success(r, t, a, true);
                         }
-                    }
-                    $.ajaxSettings.success(r, t, a, true);
+                    });
                 }
             });
         }
-
     });
 });
 </script>
