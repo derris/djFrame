@@ -1,0 +1,78 @@
+<script>
+    Namespace.register('contract.tool');
+    $(function () {
+        contract.tool.billsearch = $('#contract-tool-billsearch').combogrid({
+            idField: 'id',
+            mode: 'remote',
+            textField: 'bill_no',
+            url: "./dealPAjax/",
+            delay: 500,
+            panelWidth: 600,
+            width: 600,
+            hasDownArrow: false,
+            pagination: false,
+            autoLoad: false,
+            queryFuncName: '提单查询',
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ bill_no.writeUI|safe|escape }},
+                        {{ client_id.writeUI|safe|escape }},
+                        {% comment %}
+
+                                                {{ vslvoy.writeUI|safe|escape }},
+                                                {{ cargo_name.writeUI|safe|escape }},
+                        {% endcomment %}
+                        {{ in_port_date.writeUI|safe|escape }}
+                        {#                        {{ remark.writeUI|safe|escape }}#}
+                    {% endautoescape %}
+                ]
+            ],
+             loader: function (param, success, error) {
+                 console.info(param);
+                 //var that = $(this);
+                 var dgrid = contract.tool.billsearch.combogrid('grid');
+                 var opts = dgrid.datagrid('options');
+                 opts.filterFields = [
+                     {cod: 'bill_no', operatorTyp: '包含', value: param['q']}
+                 ];
+                 opts.sortFields = [
+                     {cod: 'bill_no', order_typ: '升序'}
+                 ];
+                 //console.info(dgrid);
+                 return dgrid.data
+                 //dgrid.datagrid('reload');
+                 //return;
+                 //success([]);
+             },
+            onBeforeLoad: function (param) {
+                if (param.hasOwnProperty("q")) {
+                    {% comment %} var q = param['q'];
+                     param = {
+                         reqtype: 'query',
+                         func: '提单查询',
+                         ex_parm: {},
+                         cols:['id','bill_no','client_id','in_port_date'],
+                         filter:[{cod:'bill_no',operatorTyp:'包含',value:q}],
+                         sort:[{cod:'bill_no',order_typ:'升序'}]
+                     };{% endcomment %}
+                   {% comment %} var dgrid = contract.tool.billsearch.combogrid('grid');
+                    var opts = dgrid.datagrid('options');
+                    opts.filterFields = [
+                        {cod: 'bill_no', operatorTyp: '包含', value: param['q']}
+                    ];
+                    opts.sortFields = [
+                        {cod: 'bill_no', order_typ: '升序'}
+                    ];{% endcomment %}
+                    //dgrid.datagrid('reload');
+                    //return false;
+                } else {
+                    return false;
+                }
+            }
+        });
+        contract.tool.billsearch.combogrid('showPanel');
+    });
+</script>
+<input id="contract-tool-billsearch"/>

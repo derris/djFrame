@@ -147,7 +147,6 @@ $(function () {
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(queryParam)},
                 success: function (r, t, a) {
-                    console.info('ajaxsuccess');
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 1) {
@@ -167,6 +166,7 @@ $(function () {
                         }
                         if (stateCod == 201) {
                             //新委托 清空界面
+                            contract.contractview.contractform.form('clear');
                             contract.contractview.contractform.form('extReset');
                             contract.contractview.contractform.form('disableValidation')
                             contract.contractview.billno.val(bill_no);
@@ -186,7 +186,12 @@ $(function () {
             contract.contractview.cntrdatagrid.datagrid('loadData', []);
             contract.contractview.actiondatagrid.datagrid('loadData', []);
         }
-        console.info('refresh');
+        if (contract.contractview.contractform.serializeJson()['finish_flag'] == 'true') {
+            $('a[group=contract-contractview]').linkbutton('disable');
+        }
+        else {
+            $('a[group=contract-contractview]').linkbutton('enable');
+        }
     }
     contract.contractview.billno.bind('change', function (e) {
         contract.contractview.refresh($.trim(this.value));
@@ -297,7 +302,7 @@ $(function () {
                 if (r) {
                     var parm = {
                         reqtype: 'update',
-                        func:'委托维护',
+                        func: '委托维护',
                         rows: [
                             {op: 'delete',
                                 table: 'contract',
@@ -326,35 +331,52 @@ $(function () {
     });
     $('#contract-contract-form-lock-button').bind('click', function (e) {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
-
-                    var parm = {
-                        reqtype: 'update',
-                        func:'委托维护',
-                        rows: [
-                            {op: 'update',
-                                cols:{finish_flag:['true','']},
-                                table: 'contract',
-                                id: parseInt($('#contract-contract-form-id').val()),
-                                subs: { }
-                            }
-                        ]
-                    };
-                    $.ajax({
-                        url: "./dealPAjax/",
-                        data: {jpargs: JSON.stringify(parm)},
-                        success: function (r, t, a) {
-                            var stateCod = parseInt(r.stateCod);
-                            if (r && !isNaN(stateCod)) {
-                                if (stateCod == 202) {
-                                    //保存成功刷新界面
-                                    contract.contractview.refresh(parseInt($('#contract-contract-form-id').val()));
-                                }
-                            }
-                            $.ajaxSettings.success(r, t, a, true);
+            var parm = {
+                reqtype: 'update',
+                func: '委托维护',
+                rows: [
+                    {op: 'update',
+                        cols: {finish_flag: ['true', '']},
+                        table: 'contract',
+                        id: parseInt($('#contract-contract-form-id').val()),
+                        subs: { }
+                    }
+                ]
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(parm)},
+                success: function (r, t, a) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractview.refresh(parseInt($('#contract-contract-form-id').val()));
                         }
-                    });
+                    }
+                    $.ajaxSettings.success(r, t, a, true);
+                }
+            });
 
         }
+    });
+    $('#contract-contract-form-search-button').bind('click', function (e) {
+        contract.contractview.billsearch = $('<div></div>').window({
+            href: "./dealmenureq/?menutext=提单查询",
+            title: '提单查询',
+            width: window.innerWidth * 0.6,
+            height: window.innerHeight * 0.8,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            maximizable: false,
+
+            closable: true,
+            onClose: function () {
+                contract.contractview.billsearch.window('destroy');
+                contract.contractview.billsearch = null;
+            }
+        });
     });
 });
 </script>
@@ -417,15 +439,16 @@ $(function () {
                 <label for="" remark>备注</label>
                 <input type="text" name="remark" style="width: 400px"/>
             </div>
-
         </form>
         <div class="editform-toolbar">
+            <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-search',group:'contract-contractview'">查询</a>
             <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-remove'">删除</a>
+               data-options="iconCls:'icon-remove',group:'contract-contractview'">删除</a>
             <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-save'">保存</a>
+               data-options="iconCls:'icon-save',group:'contract-contractview'">保存</a>
             <a id="contract-contract-form-lock-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-lock'">锁定</a>
+               data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
         </div>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">

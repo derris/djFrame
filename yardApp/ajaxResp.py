@@ -99,6 +99,11 @@ def getcontract(request):
              "yard_id,finish_flag,finish_time,remark from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcontractbybill(request):
+    ls_sql = "select id,bill_no,vslvoy,cargo_name,client_id,in_port_date,remark from contract"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
 def getcontractaction(request):
     ls_sql = "select id,contract_id,action_id,finish_flag,finish_time,remark from contract_action"
     ldict = json.loads(request.POST['jpargs'])
@@ -240,6 +245,9 @@ def dealPAjax(request):
                 return(getcontractaction(request))
             elif ldict['func'] == '委托箱查询':
                 return(getcontractcntr(request))
+            elif ldict['func'] == '提单查询':
+                return(getcontractbybill(request))
+
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getactfeeEx(request, ls_sql))

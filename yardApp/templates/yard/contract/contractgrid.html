@@ -8,6 +8,7 @@
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
                         {{ bill_no.writeUI|safe|escape }},
+                        {{ vslvoy.writeUI|safe|escape }},
                         {{ cargo_name.writeUI|safe|escape }},
                         {{ origin_place.writeUI|safe|escape }},
                         {{ client_id.writeUI|safe|escape }},
@@ -71,13 +72,5 @@
     <div data-options="region:'center',border:'true'">
         <table id="contract-contract-datagrid" data-options="border:false">
         </table>
-    </div>
-    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
-        <div id="contract-contract_tabs" class="easyui-tabs" style="width:500px;height:250px;">
-            <div title="Tab1">
-                <table id="contract-contractaction-datagrid" data-options="border:'false'">
-                </table>
-            </div>
-        </div>
     </div>
 </div>
