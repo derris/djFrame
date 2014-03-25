@@ -241,7 +241,7 @@ def getTableInfo(aTableName):
         elif atypecode == 1114:  # datetime/ timestamp
             ls = 'datetime'
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
-            ls = 'int'
+            ls = 'number'
         elif atypecode == 0:
             ls = "nouse"
         else:
@@ -300,7 +300,13 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 for icol,ival in i_row['cols'].items():
                     lb_updateValid = True
                     ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
-                    ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
+                    if str(ival[1]) == "":
+                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                            ls_where += str(icol) + " is null and "
+                        else:
+                            ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
+                    else:
+                        ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
                 ls_set = ls_set[:-1]
                 ls_where = ls_where[:-5]
                 if 'upd_nam' in ls_set:
