@@ -47,7 +47,6 @@ function getSeqNo(aSeqNam)
             var l_okPreefee = true;
             var rows2 = $('#fee-prefeeaudit-prefee-datagrid').datagrid('getChecked');
 			var l_client = ""
-            var l_okActfee = true;
             for(var i=0; i<rows2.length; i++){
 				var row = rows2[i];
                 if (row.lock_flag)
@@ -74,7 +73,6 @@ function getSeqNo(aSeqNam)
                 $('#stat3').text( " 已付结余：" + (l_sumact - l_sumpre).toString() );
             else
                 $('#stat3').text( " 还应付费用：" + (l_sumpre - l_sumact).toString() );
-
             // ajax 把费用都提交到后台。
             if ((rows1.length > 0 ) && (rows2.length > 0))
                 return true;
@@ -88,7 +86,6 @@ function getSeqNo(aSeqNam)
                 //var p = new sy.UUID();
                  $.messager.confirm("操作提示", "您确定要执行操作吗？系统将处理选中的费用，生成新的费用单据。", function (data) {
                     if (data) {
-
                  /*  考虑到安全问题，决定把这个整体的事物还是放到后台处理，前台不应该进行通用的update控制。
                         var l_seqNo = getSeqNo("seq_4_auditfee").toString();
                         var aj =  {'reqtype':'update'};
@@ -121,13 +118,10 @@ function getSeqNo(aSeqNam)
                         var l_actId = [];
                         for(var i=0; i<rows1.length; i++)
                             l_actId.push(rows1[i].id);
-
                         var rows2 = $('#fee-prefeeaudit-prefee-datagrid').datagrid('getChecked');
                         var l_preId = [];
                         for(var i=0; i<rows2.length; i++)
                             l_preId.push(rows2[i].id);
-
-
                         var l_rtn;
                         $.post( "dealPAjax/",
                                 { jpargs:
