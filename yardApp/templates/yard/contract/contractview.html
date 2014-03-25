@@ -147,9 +147,11 @@ $(function () {
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(queryParam)},
                 success: function (r, t, a) {
+                    console.info('ajaxsuccess');
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 1) {
+
                             contract.contractview.contractform.form('load', r.rows[0]);
                             var actionOpts = contract.contractview.actiondatagrid.datagrid('options');
                             var cntrOpts = contract.contractview.cntrdatagrid.datagrid('options');
@@ -184,6 +186,7 @@ $(function () {
             contract.contractview.cntrdatagrid.datagrid('loadData', []);
             contract.contractview.actiondatagrid.datagrid('loadData', []);
         }
+        console.info('refresh');
     }
     contract.contractview.billno.bind('change', function (e) {
         contract.contractview.refresh($.trim(this.value));
@@ -321,6 +324,38 @@ $(function () {
             });
         }
     });
+    $('#contract-contract-form-lock-button').bind('click', function (e) {
+        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+
+                    var parm = {
+                        reqtype: 'update',
+                        func:'委托维护',
+                        rows: [
+                            {op: 'update',
+                                cols:{finish_flag:['true','']},
+                                table: 'contract',
+                                id: parseInt($('#contract-contract-form-id').val()),
+                                subs: { }
+                            }
+                        ]
+                    };
+                    $.ajax({
+                        url: "./dealPAjax/",
+                        data: {jpargs: JSON.stringify(parm)},
+                        success: function (r, t, a) {
+                            var stateCod = parseInt(r.stateCod);
+                            if (r && !isNaN(stateCod)) {
+                                if (stateCod == 202) {
+                                    //保存成功刷新界面
+                                    contract.contractview.refresh(parseInt($('#contract-contract-form-id').val()));
+                                }
+                            }
+                            $.ajaxSettings.success(r, t, a, true);
+                        }
+                    });
+
+        }
+    });
 });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -328,6 +363,7 @@ $(function () {
         <form id="contract-contract-form" class="editform" method="post">
             <div>
                 <input id="contract-contract-form-id" type="hidden" name="id"/>
+                <input type="hidden" name="finish_flag"/>
                 <label for="bill_no">提单号:</label>
                 <input id="contract-contract-form-billno" type="text" name="bill_no"/>
                 <label for="vslvoy">船名航次:</label>
