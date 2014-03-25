@@ -15,8 +15,8 @@ $(function () {
                         {{ checkNoObj.writeUI|safe|escape }},
                         {{ payTypeObj.writeUI|safe|escape }},
                         {{ feeTimObj.writeUI|safe|escape }},
-                        {{ offFlagObj.writeUI|safe|escape }},
-                        {{ exfeeidObj.writeUI|safe|escape }}
+                        {{ exfeeidObj.writeUI|safe|escape }},
+                        {{ auditidObj.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
@@ -33,14 +33,6 @@ $(function () {
             queryFuncName:'已收核销已收查询',
             onDblClickRow: function (rowIndex, rowData) {
                 return;
-            },
-            onClickRow: function (rowIndex, rowData) {
-                var clientid = rowData.client_id;
-                var opts = fee.prefeeauditview.prefeegrid.datagrid('options');
-                opts.ex_parm = {
-                    client_id : clientid
-                };
-                fee.prefeeauditview.prefeegrid.datagrid('reload');
             }
         });
 
@@ -61,6 +53,7 @@ $(function () {
                         {{ lockFlagObj2.writeUI|safe|escape }},
                         {{ exfeeidObj2.writeUI|safe|escape }},
                         {{ remarkObj2.writeUI|safe|escape }},
+                        {{ auditidObj2.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
@@ -74,11 +67,11 @@ $(function () {
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="north" border="false" style="height: 250px" data-options="split:true">
         <table id="fee-prefeeaudit-actfee-datagrid" border="false"
-               data-options="rownumbers:true,singleSelect:false,selectOnCheck:false" >
+               data-options="rownumbers:true,singleSelect:false,checkOnSelect:false, selectOnCheck:false,onCheck:onCheck1" >
         </table>
     </div>
     <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
-        <table id="fee-prefeeaudit-prefee-datagrid" border="false">
+        <table id="fee-prefeeaudit-prefee-datagrid" border="false" data-option="onCheck:onCheck2">
         </table>
     </div>
     <div data-options="region:'south',split:true" style="height:50px; padding: 5px;">

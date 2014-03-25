@@ -16,6 +16,55 @@ function getSeqNo(aSeqNam)
     else
         return l_rtn["result"]["seqno"]
 }
+function onCheck1(rowIndex,rowData)
+{
+    var l_grid  = $('#fee-prefeeaudit-actfee-datagrid');
+    comOnCheck(l_grid, rowIndex,rowData, true)
+}
+function onCheck2(rowIndex,rowData)
+{
+    var l_grid  = $('#fee-prefeeaudit-prefee-datagrid')
+    comOnCheck(l_grid, rowIndex,rowData, false)
+}
+
+function comOnCheck( aFeeGrid, rowIndex, rowData, aSync)
+{
+    var rows = aFeeGrid.datagrid('getChecked');
+    var ls_msg = "" , l_client = "", lb_valid = true;
+    for(var i=0; i<rows.length; i++){
+        var row = rows[i];
+        if (row.audit_id)
+        {
+            ls_msg = "已经核销过的不能选择";
+            lb_valid = false;
+            break;
+        }
+        if (l_client.length < 1 ) {
+            l_client = row.client_id;
+            if (aSync) {
+                var opts = fee.prefeeauditview.prefeegrid.datagrid('options');
+                opts.ex_parm = {
+                    client_id : l_client
+                };
+                fee.prefeeauditview.prefeegrid.datagrid('reload');
+            }
+        }
+        else {
+            if (row.client_id != l_client)
+            {
+                ls_msg = "只能选择相同的客户";
+                lb_valid = false;
+                break;
+            }
+        }
+    }
+    if (! lb_valid)
+    {
+        aFeeGrid.datagrid('uncheckRow', rowIndex);
+        $.messager.alert("注意", ls_msg);
+    }
+    return(lb_valid);
+}
 
  function checkRule(){
             var rows1 = $('#fee-prefeeaudit-actfee-datagrid').datagrid('getChecked');

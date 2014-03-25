@@ -203,7 +203,7 @@ def prefeeauditview(request):
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     exfeeidObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='ex_feeid')
-    offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
+    auditidObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='audit_id')
 
     idObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='id')
     contracIdObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='contract_id')
@@ -215,6 +215,7 @@ def prefeeauditview(request):
     lockFlagObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
     exfeeidObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid')
     remarkObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',readonly=True)
+    auditidObj2 = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id')
     return render(request,"yard/fee/prefeeaudit.html",locals())
 
 def dealMenuReq(request):

@@ -228,7 +228,7 @@ def getTableInfo(aTableName):
     l_dict = {}
     for i in l_desc:
         atypecode = i[1]
-        if atypecode == 1043:    # varchar
+        if atypecode in (1042,1043):    # varchar
             ls = "char"
         elif atypecode == 1082:  # date
             ls = 'date'
@@ -236,16 +236,16 @@ def getTableInfo(aTableName):
             ls = 'time'
         elif atypecode == 16:    # bool
             ls = 'bool'
-        elif atypecode == 18:  # char            :
+        elif atypecode in (18,25,):  # char            :
             ls = 'char'
         elif atypecode == 1114:  # datetime/ timestamp
             ls = 'datetime'
-        elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
+        elif atypecode in( 20, 21, 23, 700, 701,790,1700):  # int2,4 8, float4,8, numberic
             ls = 'number'
         elif atypecode == 0:
             ls = "nouse"
         else:
-            logErr("遇到不认识的数据库类型代码%d" % atypecode)
+            logErr("遇到不认识的数据库类型代码%d -> 字段 %s " % (atypecode, ))
             raise Exception("遇到不认识的类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
         l_dict.update({ i[0] : ls  })
     return l_dict
