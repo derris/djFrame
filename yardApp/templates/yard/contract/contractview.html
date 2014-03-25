@@ -282,14 +282,40 @@ $(function () {
                     if (stateCod == 202) {
                         //保存成功刷新界面
                         contract.contractview.refresh($.trim(contract.contractview.billno.val()));
-                    } else {
-                        console.info(r);
                     }
-                } else {
-                    $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
                 }
+                $.ajaxSettings.success(r, t, a, true);
             }
         });
+    });
+    $('#contract-contract-form-delete-button').bind('click', function (e) {
+        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+
+            var parm = {
+                reqtype: 'update',
+                rows: [
+                    {op: 'delete',
+                        table: 'contract',
+                        id: parseInt($('#contract-contract-form-id').val()),
+                        subs: { }
+                    }
+                ]
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(parm)},
+                success: function (r, t, a) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractview.refresh(null);
+                        }
+                    }
+                    $.ajaxSettings.success(r, t, a, true);
+                }
+            });
+        }
 
     });
 });
@@ -355,8 +381,6 @@ $(function () {
 
         </form>
         <div class="editform-toolbar">
-            <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-search'">查询</a>
             <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-remove'">删除</a>
             <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"

@@ -1,0 +1,11 @@
+1.委托contract:
+  delete:不允许删除条件
+    a:  pre_fee中有此委托记录
+    b:  此委托锁定
+  update:禁止修改条件
+    a:  pre_fee中有此委托记录禁止修改client_id
+    b:  委托锁定禁止修改
+2.委托动态contract_action：
+  delete:   只能从最后一个动态开始删除
+  insert/update: 动态要求按照顺序增加，只有在c_action中的require_flag为false的情况下，
+            可以跳过此action而插入下一个action。

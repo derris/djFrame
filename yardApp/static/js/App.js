@@ -431,7 +431,7 @@ $.extend($.fn.datagrid.defaults, {
             //data:queryParam,
             success: function (r, t, a) {
                 success(r);
-                $.ajaxSettings.success(r, t, a);
+                $.ajaxSettings.success(r, t, a,false);
             }
         });
     }
@@ -729,9 +729,8 @@ $.extend($.fn.datagrid.methods, {
                             }
                             $(jq).datagrid('afterSave');
                         }
-
                     }
-                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj,true);
                 }
 
             });
@@ -926,10 +925,13 @@ $.ajaxSetup({
     type: 'POST',
     contentType: 'application/x-www-form-urlencoded',
     dataType: 'json',
-    success: function (returnData, returnMsg, ajaxObj) {
+    success: function (returnData, returnMsg, ajaxObj,msgShow) {
         var stateCod = parseInt(returnData.stateCod);
         if (returnData && !isNaN(stateCod)) {
             if (stateCod > 0) {//返回成功
+                if(msgShow == false){
+                    return;
+                }
                 if (stateCod >= 101 && stateCod <= 200) {
                     $.messager.alert('提示', returnData.msg || '执行成功！', 'info');
                 }
