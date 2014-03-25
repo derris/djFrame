@@ -14,7 +14,6 @@ urlpatterns = patterns('',
     # 处理页面左边导航的功能。
     url('^dealmenureq/$', renderviews.dealMenuReq,name='dealmenureq'),
     url('^dealPAjax/$', ajaxResp.dealPAjax,name='dealPAjax'),
-
     # 实验室
     url(r'^lab/$',"yardApp.lab.index", name='labindex'),
     url(r'^lab/getfunc/$',"yardApp.lab.getfunc", name='labgetfunc'),

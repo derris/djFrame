@@ -172,7 +172,15 @@ def contractgrid(request):
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/contractgrid.html",locals())
-
+def billsearch(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
+    bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no',width=150)
+    client_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    vslvoy = easyuihelp.EasyuiFieldUI(model=models.Contract,field='vslvoy')
+    cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name')
+    in_port_date = easyuihelp.EasyuiFieldUI(model=models.Contract,field='in_port_date',width=150)
+    remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
+    return render(request,"yard/contract/billsearch.html",locals())
 ########################### 收费 、 核销 #########
 def actfeeview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
@@ -251,7 +259,8 @@ def dealMenuReq(request):
         return(clientview(request))
     elif ls_args == '委托维护':
         return(contractview(request))
-
+    elif ls_args == '提单查询':
+        return(billsearch(request))
     #######  费用 #############
     elif ls_args == "已收费用":
         return(actfeeview(request))

@@ -365,6 +365,8 @@ $.extend($.fn.datagrid.defaults, {
         }
     },
     loader: function (param, success, error) {
+        console.info('123');
+        console.info(param);
         var that = $(this);
         var opts = that.datagrid('options');
         if (!opts.url) {
@@ -741,6 +743,7 @@ $.extend($.fn.datagrid.methods, {
 
 });
 //***************扩展datagrid ***********************//
+
 
 //***************扩展form****************************//
 $.extend($.fn.form.defaults, {
