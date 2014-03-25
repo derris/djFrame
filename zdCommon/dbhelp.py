@@ -301,7 +301,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                     lb_updateValid = True
                     ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                     if str(ival[1]) == "":
-                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime", "bool"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                             ls_where += str(icol) + " is null and "
                         else:
                             ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
