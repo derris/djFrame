@@ -31,23 +31,23 @@ def correctjsonfield(obj, atypecode):
         if atypecode == 1043:    # varchar
             return ""
         elif atypecode == 1082:  # date
-            return "1800-01-01"
+            return ""
         elif atypecode == 1083:  # time
-            return "00:00:00"
+            return ""
         elif atypecode == 16:    # bool
-            return "false"
+            return ""
         elif atypecode == 18:  # char            :
             return ""
         elif atypecode == 1114:  # datetime/ timestamp
-            return "1800-01-01 00:00:00"
+            return ""
         elif atypecode in( 20, 21, 23, 700, 701, 1700):  # int2,4 8, float4,8, numberic
-            return 0
+            return ""
         elif atypecode == 0:
             return ""
         else:
             logErr("无法识别的数据库对象类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
             raise Exception("无法识别的数据库对象类型，请通知管理员。")
-            return 0
+    return ""
 
 
 def strip(aStr):
