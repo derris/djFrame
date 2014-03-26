@@ -3,7 +3,7 @@ __author__ = 'dh'
 from zdCommon.dbhelp import cursorSelect
 from django.db import connection
 from zdCommon.utils import logErr, log
-
+import json
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -77,7 +77,8 @@ def getMenuPrivilege(aPostid):
     log(ldict_1)
     return(ldict_1)
 
-def setMenuPrivilege(aDict):
+def setMenuPrivilege(request):
+    ldict = json.loads( request.POST['jpargs'] )
     '''
     jpargs:{"reqtype":"sysfunc",
         "func":"menufuncpost",
@@ -100,7 +101,7 @@ def setMenuPrivilege(aDict):
                 "stateCod":  0 ,
                 "effectnum": 0 ,
                 "changeid" : {'uuid1':'id1'} }
-    l_JsonRows = aDict['rows']
+    l_JsonRows = ldict['rows']
     lb_err  = False
     li_count = 0
     try:

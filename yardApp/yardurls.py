@@ -20,3 +20,6 @@ urlpatterns = patterns('',
     url(r'^lab/post/$',"yardApp.lab.getJsonPost", name='labpost'),
     # http://127.0.0.1:8000/yard/lab/getfunc/?func=getJson1&&args=%22aaa%22
 )
+
+
+#  yardurls.py --->  ajaxResp ---> function.

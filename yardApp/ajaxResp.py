@@ -140,21 +140,22 @@ def getSequence(aDict):
 
 def updateClients(request):
     ''' 客户维护  '''
-    return HttpResponse(json.dumps(json2upd(json.loads( request.POST['jpargs'] )),ensure_ascii = False))
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(json2upd(ldict),ensure_ascii = False))
 
-def dealAuditFee(reqeust):
+def dealAuditFee(request):
     '''
      "func" : "处理已收费用核销",
      "ex_parm": {"actfeeid": l_actId , "prefeeid":l_preId}
     '''
-    ldict = json.loads( reqeust.POST['jpargs'] )
+    ldict = json.loads( request.POST['jpargs'] )
     list_actId = set(ldict['ex_parm']["actfeeid"])
     list_preId = set(ldict['ex_parm']["prefeeid"])
 
     if (len(list_actId) != len(ldict['ex_parm']["actfeeid"])):
-        raise Exception("已收费用长度不一致")
+        raise Exception("已收费用id重复")
     if (len(list_preId) != len(ldict['ex_parm']["prefeeid"])):
-        raise Exception("应收费用长度不一致")
+        raise Exception("应收费用id重复")
 
     # 得到一个处理的seq{"seqnam":aSeqNam }
     ls_sql = "select nextval('seq_4_auditfee')"
@@ -169,16 +170,16 @@ def dealAuditFee(reqeust):
 
     for i in list_actId:
         l_sumact += float( cursorSelect("select amount from act_fee where id =  " + str(i))[0][0] )
-        ls_exec = "update act_fee set ex_over = '" + ls_seq + "', off_flag=true where id = " + str(i)
+        ls_exec = "update act_fee set ex_over = '" + ls_seq + "', audit_id=true where id = " + str(i)
         if cursorExec(ls_exec) < 0 :
             raise Exception("数据库执行失败")
     for i in list_preId:
         l_sumpre += float(cursorSelect("select amount from pre_fee where id =  " + str(i))[0][0] )
-        ls_exec = "update pre_fee set ex_over = '" + ls_seq + "', lock_flag=true where id = " + str(i)
+        ls_exec = "update pre_fee set ex_over = '" + ls_seq + "', audit_id=true where id = " + str(i)
         if cursorExec(ls_exec) < 0 :
             raise Exception("数据库执行失败")
 
-    l_recnam = '1'
+    l_recnam = request.session['userid']
     if l_sumact > l_sumpre:  # 实收费用比应收多。生成一个实收费用。
         l_actRecord = cursorSelect("select client_id, fee_typ, pay_type from act_fee where id = " + str( ldict['ex_parm']["actfeeid"][0] ) )
         l_clientid = l_actRecord[0][0]
@@ -203,6 +204,8 @@ def dealAuditFee(reqeust):
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
+    request.session['userid'] = "def"
+
     try:
         ldict = json.loads( request.POST['jpargs'] )
         log(ldict)
@@ -300,7 +303,7 @@ def dealPAjax(request):
             elif ldict['func'] == '已收费用维护':
                 return(updateClients(request))
             elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
-                return(HttpResponse(json.dumps( setMenuPrivilege(ldict) ,ensure_ascii = False) ))
+                return(HttpResponse(json.dumps( setMenuPrivilege(request) ,ensure_ascii = False) ))
             ########################################
             elif ldict['func'] == "取序列号":
                 return(HttpResponse(json.dumps( getSequence(ldict) ,ensure_ascii = False) ))
