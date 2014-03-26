@@ -13,6 +13,7 @@
             pagination: false,
             autoLoad: false,
             queryFuncName: '提单查询',
+            parentWin : {},
             columns: [
                 [
                     {% autoescape off %}
@@ -35,6 +36,14 @@
                 } else {
                     return false;
                 }
+            },
+            onSelect: function (record) {
+                //console.info(record);
+                var row = contract.tool.billsearch.combogrid('grid').datagrid('getSelected');
+                console.info('0');
+                var pWin = contract.tool.billsearch.combogrid('options').parentWin;
+                pWin.window('options').returnData = row['bill_no'];
+                pWin.window('close');
             }
         });
         contract.tool.billsearch.combogrid('showPanel');

@@ -370,13 +370,20 @@ $(function () {
             collapsible: false,
             minimizable: false,
             maximizable: false,
-
+            returnData:'',
             closable: true,
+            onBeforeClose:function(){
+                var bill_no = contract.contractview.billsearch.window('options').returnData;
+                if (bill_no != null && bill_no.length > 0){
+                    contract.contractview.refresh($.trim(bill_no));
+                }
+            },
             onClose: function () {
-                contract.contractview.billsearch.window('destroy');
+                //contract.contractview.billsearch.window('destroy');
                 contract.contractview.billsearch = null;
             }
         });
+        contract.tool.billsearch.combogrid('options').parentWin = contract.contractview.billsearch;
     });
 });
 </script>
