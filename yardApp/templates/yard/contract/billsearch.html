@@ -5,7 +5,7 @@
             idField: 'id',
             mode: 'remote',
             textField: 'bill_no',
-            url: "./dealPAjax/",
+            url: "./dealPAjax/searchContractByBill/",
             delay: 500,
             panelWidth: 600,
             width: 600,
@@ -29,44 +29,9 @@
                     {% endautoescape %}
                 ]
             ],
-             loader: function (param, success, error) {
-                 console.info(param);
-                 //var that = $(this);
-                 var dgrid = contract.tool.billsearch.combogrid('grid');
-                 var opts = dgrid.datagrid('options');
-                 opts.filterFields = [
-                     {cod: 'bill_no', operatorTyp: '包含', value: param['q']}
-                 ];
-                 opts.sortFields = [
-                     {cod: 'bill_no', order_typ: '升序'}
-                 ];
-                 //console.info(dgrid);
-                 return dgrid.data
-                 //dgrid.datagrid('reload');
-                 //return;
-                 //success([]);
-             },
             onBeforeLoad: function (param) {
                 if (param.hasOwnProperty("q")) {
-                    {% comment %} var q = param['q'];
-                     param = {
-                         reqtype: 'query',
-                         func: '提单查询',
-                         ex_parm: {},
-                         cols:['id','bill_no','client_id','in_port_date'],
-                         filter:[{cod:'bill_no',operatorTyp:'包含',value:q}],
-                         sort:[{cod:'bill_no',order_typ:'升序'}]
-                     };{% endcomment %}
-                   {% comment %} var dgrid = contract.tool.billsearch.combogrid('grid');
-                    var opts = dgrid.datagrid('options');
-                    opts.filterFields = [
-                        {cod: 'bill_no', operatorTyp: '包含', value: param['q']}
-                    ];
-                    opts.sortFields = [
-                        {cod: 'bill_no', order_typ: '升序'}
-                    ];{% endcomment %}
-                    //dgrid.datagrid('reload');
-                    //return false;
+
                 } else {
                     return false;
                 }
