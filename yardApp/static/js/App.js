@@ -240,6 +240,7 @@ sy.createSearchWindow = function (datagrid) {
             }
         }
     }
+
     sy.searchWindow = $('<div></div>').window({
         href: sy.searchWindowUrl,
         title: '查询',
