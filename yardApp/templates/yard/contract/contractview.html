@@ -194,6 +194,7 @@ $(function () {
             $('a[group=contract-contractview]').linkbutton('enable');
             $('a[group=contract-contractview-unlock]').linkbutton('disable');
         }
+        contract.contractview.billno.focus().select();
     }
     contract.contractview.billno.bind('change', function (e) {
         contract.contractview.refresh($.trim(this.value));
@@ -403,7 +404,9 @@ $(function () {
 
         }
     });
-
+    $('#contract-contract-form-insert-button').bind('click', function (e){
+        contract.contractview.refresh('');
+    });
     $('#contract-contract-form-search-button').bind('click', function (e) {
         contract.contractview.billsearch = $('<div></div>').window({
             href: "./dealmenureq/?menutext=提单查询",
@@ -494,6 +497,8 @@ $(function () {
         <div class="editform-toolbar">
             <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-search',group:'contract-contractview-search'">查询</a>
+            <a id="contract-contract-form-insert-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-add',group:'contract-contractview-search'">增加</a>
             <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-remove',group:'contract-contractview'">删除</a>
             <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
