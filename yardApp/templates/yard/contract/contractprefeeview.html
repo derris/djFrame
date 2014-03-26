@@ -1,0 +1,30 @@
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'true'">
+
+        <div class="editform-toolbar">
+            <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-search',group:'contract-contractview'">查询</a>
+            <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-remove',group:'contract-contractview'">删除</a>
+            <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-save',group:'contract-contractview'">保存</a>
+            <a id="contract-contract-form-lock-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
+            <a id="contract-contract-form-unlock-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
+
+        </div>
+    </div>
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
+        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+            <div title="委托动态">
+                <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
+                </table>
+            </div>
+            <div title="委托箱量">
+                <table id="contract-contractview-cntrdatagrid" data-options="border:'false'">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

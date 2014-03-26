@@ -431,7 +431,7 @@ $.extend($.fn.datagrid.defaults, {
             //data:queryParam,
             success: function (r, t, a) {
                 success(r);
-                $.ajaxSettings.success(r, t, a,false);
+                $.ajaxSettings.success(r, t, a, false);
             }
         });
     }
@@ -690,15 +690,15 @@ $.extend($.fn.datagrid.methods, {
                 );
             }
         }
-        return {i:insertArray,
-            u:updateArray,
-            d:deleteArray};
+        return {i: insertArray,
+            u: updateArray,
+            d: deleteArray};
     },
     //调用方式 datagrid('postUpdateAllData')
     postUpdateAllData: function (jq) {
         if ($(jq).datagrid('preSave') == 1) {
             var opts = jq.datagrid('options');
-            var dirtyObj = jq.datagrid('getDirtyData','all');
+            var dirtyObj = jq.datagrid('getDirtyData', 'all');
             var dirtyArray = dirtyObj.i.concat(dirtyObj.u).concat(dirtyObj.d);
             //删除只传id值
             var p = {
@@ -730,7 +730,7 @@ $.extend($.fn.datagrid.methods, {
                             $(jq).datagrid('afterSave');
                         }
                     }
-                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj,true);
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj, true);
                 }
 
             });
@@ -741,6 +741,7 @@ $.extend($.fn.datagrid.methods, {
 
 });
 //***************扩展datagrid ***********************//
+
 
 
 //***************扩展form****************************//
@@ -768,17 +769,17 @@ $.extend($.fn.form.methods, {
         jq.form('reset');
         $(jq).data('form').options.originalData = {};
     },
-    getUpdateData:function(jq){
+    getUpdateData: function (jq) {
         var oriData = $(jq).form('getOriData');
         var dirty = {};
-        $.each(jq.serializeJson(),function(name,value){
-            if (oriData.hasOwnProperty(name)){
-                if (oriData[name] != value){
-                    dirty[name] = [value,oriData[name]];
+        $.each(jq.serializeJson(), function (name, value) {
+            if (oriData.hasOwnProperty(name)) {
+                if (oriData[name] != value) {
+                    dirty[name] = [value, oriData[name]];
                 }
-            }else{
-                if (value != null && value.length > 0){
-                    dirty[name] = [value,""];
+            } else {
+                if (value != null && value.length > 0) {
+                    dirty[name] = [value, ""];
                 }
             }
         });
@@ -926,11 +927,11 @@ $.ajaxSetup({
     type: 'POST',
     contentType: 'application/x-www-form-urlencoded',
     dataType: 'json',
-    success: function (returnData, returnMsg, ajaxObj,msgShow) {
+    success: function (returnData, returnMsg, ajaxObj, msgShow) {
         var stateCod = parseInt(returnData.stateCod);
         if (returnData && !isNaN(stateCod)) {
             if (stateCod > 0) {//返回成功
-                if(msgShow == false){
+                if (msgShow == false) {
                     return;
                 }
                 if (stateCod >= 101 && stateCod <= 200) {

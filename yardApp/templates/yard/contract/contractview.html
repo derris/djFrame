@@ -188,9 +188,11 @@ $(function () {
         }
         if (contract.contractview.contractform.serializeJson()['finish_flag'] == 'true') {
             $('a[group=contract-contractview]').linkbutton('disable');
+            $('a[group=contract-contractview-unlock]').linkbutton('enable');
         }
         else {
             $('a[group=contract-contractview]').linkbutton('enable');
+            $('a[group=contract-contractview-unlock]').linkbutton('disable');
         }
     }
     contract.contractview.billno.bind('change', function (e) {
@@ -331,12 +333,20 @@ $(function () {
     });
     $('#contract-contract-form-lock-button').bind('click', function (e) {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
+            var finish_time = contract.contractview.contractform.serializeJson()['finish_time'];
+            var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
+            if (finish_time != null && finish_time.length > 0 ){
+
+            }else{
+                var curdate = new Date();
+                finish_time = curdate.getFullYear() + '-' + (curdate.getMonth() + 1) + '-' + curdate.getDate()
+            }
             var parm = {
                 reqtype: 'update',
-                func: '委托维护',
+                func: '委托锁定',
                 rows: [
                     {op: 'update',
-                        cols: {finish_flag: ['true', '']},
+                        cols: {finish_flag: ['true', 'false'],finish_time:[finish_time,'']},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
@@ -351,7 +361,7 @@ $(function () {
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 202) {
                             //保存成功刷新界面
-                            contract.contractview.refresh(parseInt($('#contract-contract-form-id').val()));
+                            contract.contractview.refresh(bill_no);
                         }
                     }
                     $.ajaxSettings.success(r, t, a, true);
@@ -360,6 +370,40 @@ $(function () {
 
         }
     });
+    $('#contract-contract-form-unlock-button').bind('click', function (e) {
+        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+            var finish_time = contract.contractview.contractform.serializeJson()['finish_time'];
+            var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
+            var parm = {
+                reqtype: 'update',
+                func: '委托解锁',
+                rows: [
+                    {op: 'update',
+                        cols: {finish_flag: ['false', 'true'],finish_time:['',finish_time]},
+                        table: 'contract',
+                        id: parseInt($('#contract-contract-form-id').val()),
+                        subs: { }
+                    }
+                ]
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(parm)},
+                success: function (r, t, a) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractview.refresh(bill_no);
+                        }
+                    }
+                    $.ajaxSettings.success(r, t, a, true);
+                }
+            });
+
+        }
+    });
+
     $('#contract-contract-form-search-button').bind('click', function (e) {
         contract.contractview.billsearch = $('<div></div>').window({
             href: "./dealmenureq/?menutext=提单查询",
@@ -379,7 +423,7 @@ $(function () {
                 }
             },
             onClose: function () {
-                //contract.contractview.billsearch.window('destroy');
+                contract.contractview.billsearch.window('destroy');
                 contract.contractview.billsearch = null;
             }
         });
@@ -449,13 +493,16 @@ $(function () {
         </form>
         <div class="editform-toolbar">
             <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-search',group:'contract-contractview'">查询</a>
+               data-options="iconCls:'icon-search',group:'contract-contractview-search'">查询</a>
             <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-remove',group:'contract-contractview'">删除</a>
             <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-save',group:'contract-contractview'">保存</a>
             <a id="contract-contract-form-lock-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
+            <a id="contract-contract-form-unlock-button" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-unlock',group:'contract-contractview-unlock'">解锁</a>
+
         </div>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">

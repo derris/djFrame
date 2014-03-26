@@ -34,17 +34,17 @@ def sysmenuview(request):
     return render(request,'yard/sysdata/sysmenu.html',locals())
 def sysfuncview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='id')
-    funcname = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='funcname')
-    remark = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='remark')
+    funcname = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='funcname',width=200)
+    remark = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='remark',width=250)
     return render(request,'yard/sysdata/sysfunc.html',locals())
 def sysmenufuncview(request):
     menuid = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='id')
-    menuname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menuname')
+    menuname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menuname',width=200)
     menu_parent_id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='parent_id',autoforeign=True,foreigndisplayfield='menushowname',hidden=True)
     id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='id')
     menu_id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='menu_id',hidden=True)
-    func_id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='func_id',autoforeign=True,foreigndisplayfield='funcname')
-    remark = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='remark')
+    func_id = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='func_id',autoforeign=True,foreigndisplayfield='funcname',width=200)
+    remark = easyuihelp.EasyuiFieldUI(model=models.SysMenuFunc,field='remark',width=200)
     return render(request,'yard/sysdata/sysmenufunc.html',locals())
 def syscodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysCode,field='id')

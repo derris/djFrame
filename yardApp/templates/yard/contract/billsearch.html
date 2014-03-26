@@ -5,7 +5,7 @@
             idField: 'id',
             mode: 'remote',
             textField: 'bill_no',
-            url: "./dealPAjax/searchContractByBill/",
+            url: "./dealPAjax/",
             delay: 500,
             panelWidth: 600,
             width: 600,
@@ -13,7 +13,21 @@
             pagination: false,
             autoLoad: false,
             queryFuncName: '提单查询',
-            parentWin : {},
+            ex_parm: {},
+            parentWin: {},
+            filterFields: [
+                {
+                    cod: 'bill_no',
+                    operatorTyp: '包含',
+                    value: ''
+                }
+            ],
+            sortFields: [
+                {
+                    cod: 'bill_no',
+                    order_typ: '升序'
+                }
+            ],
             columns: [
                 [
                     {% autoescape off %}
@@ -37,10 +51,72 @@
                     return false;
                 }
             },
+            loader: function (param, success, error) {
+                var dgrid = contract.tool.billsearch.combogrid('grid');
+                var opts = contract.tool.billsearch.combogrid('options');
+                if (!opts.url) {
+                    return false;
+                }
+
+                var queryParam = {
+                    reqtype: 'query',
+                    func: opts.queryFuncName,
+                    ex_parm: opts.ex_parm
+                };
+                //$.extend(queryParam, param);
+                queryParam.filter = new Array();
+                if (opts.filterFields.length != 0) {  //强制增加手动设置过滤条件
+                    queryParam.filter.push(opts.filterFields[0]);
+                    queryParam.filter[0].value = param['q'];  //combogrid 自动完成 默认向后台传送{q:'xxxx'}
+                }
+                if (opts.sortFields.length != 0) { //强制增加手动设置排序条件
+                    if (queryParam.sort == undefined) {
+                        queryParam.sort = new Array();
+                    }
+                    var ver = $.grep(opts.sortFields,function (data, index) {
+                        return true;
+                    }).reverse();
+                    $.each(ver, function (index, data) {
+                        for (var i = 0, ilen = queryParam.sort.length; i < ilen; i++) {
+                            if (queryParam.sort[i].cod == data.cod) {
+                                queryParam.sort.splice(i, 1);
+                                break;
+                            }
+                        }
+                        queryParam.sort.splice(0, 0, data);
+                    });
+
+                }
+                if (queryParam.cols == undefined) {
+                    var columns = dgrid.datagrid('getColumnFields').concat(dgrid.datagrid('getColumnFields', true));
+                    queryParam.cols = columns;
+                } else {
+                    queryParam.cols.push('id');
+                }
+                if (queryParam.page == undefined) {
+                    queryParam.page = -1;
+                }
+                if (queryParam.rows == undefined) {
+                    queryParam.rows = -1;
+                }
+                opts.loadNumber++;
+                if (opts.autoLoad == false && opts.loadNumber == 1) {
+                    return false;
+                }
+                $.ajax({
+                    url: opts.url,
+                    data: {jpargs: JSON.stringify(queryParam)},
+                    //data:queryParam,
+                    success: function (r, t, a) {
+                        success(r);
+                        //$.ajaxSettings.success(r, t, a, false);
+                    }
+                });
+            },
+
             onSelect: function (record) {
                 //console.info(record);
                 var row = contract.tool.billsearch.combogrid('grid').datagrid('getSelected');
-                console.info('0');
                 var pWin = contract.tool.billsearch.combogrid('options').parentWin;
                 pWin.window('options').returnData = row['bill_no'];
                 pWin.window('close');

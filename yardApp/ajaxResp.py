@@ -101,24 +101,7 @@ def getcontract(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractbybill(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,client_id,in_port_date,remark from contract"
-    q = request.POST['q']
-    ldict = {
-                "reqtype":"query",
-                "func":"权限查询",    # 检索标识。
-                "page":-1,
-                "rows":-1,
-                "cols":["id","bill_no","client_id","in_port_date"],
-                "filter":[ {
-                    'cod':'bill_no',
-                    'operatorTyp':'包含',
-                    'value':q
-                           }],
-                 'sort':[{
-                   'cod':'bill_no',
-                   'order_typ':'升序'
-                 }],
-                 'ex_parm':{}
-            }
+    ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getcontractaction(request):
@@ -310,6 +293,10 @@ def dealPAjax(request):
                 return(updateClients(request))
             elif ldict['func'] == '委托维护':
                 return(updateClients(request))
+            elif ldict['func'] == '委托锁定':
+                return(updateClients(request))
+            elif ldict['func'] == '委托解锁':
+                return(updateClients(request))
             elif ldict['func'] == '已收费用维护':
                 return(updateClients(request))
             elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
@@ -332,5 +319,3 @@ def dealPAjax(request):
             "stateCod":  -1 ,
             }
     return( HttpResponse(json.dumps( l_rtn,ensure_ascii = False) ))
-def searchContractByBill(request):
-    return(getcontractbybill(request))
