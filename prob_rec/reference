@@ -11,7 +11,7 @@ C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cd
 
 
 
-js文档
+
 http://w3school.com.cn/jsref/jsref_obj_string.asp
 easyui文档
 http://www.jeasyui.com/documentation/index.php#
@@ -30,7 +30,8 @@ postgresql文档
 http://www.postgresql.org/docs/9.1/static/index.html
 django文档
 https://docs.djangoproject.com/en/dev/topics/db/sql/
-
+postgresql触发器python
+js文档http://www.postgresql.org/docs/9.1/static/plpython.html
 
 在前台html加checkbox
     {field: 'check_flag',title: '选择',checkbox:true}
