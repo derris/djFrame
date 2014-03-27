@@ -441,3 +441,14 @@ def cursorSelect(aSql):
         l_cur.close
     return l_rtn
 
+def fetchSeq(aSeqName):
+    '''
+        execute sql: select nextval(seqname)
+        return seq_no
+    '''
+    ls_sql = "select nextval('" + aSeqName  + "')"
+    l_seq = cursorSelect(ls_sql)
+    if len(l_seq) > 0 :
+        return str(l_seq[0][0])
+    else:
+        return -1
