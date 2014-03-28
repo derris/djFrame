@@ -346,8 +346,8 @@ $(function () {
                 reqtype: 'update',
                 func: '委托锁定',
                 rows: [
-                    {op: 'update',
-                        cols: {finish_flag: ['true', 'false'],finish_time:[finish_time,'']},
+                    {op: '用updatedirty',
+                        cols: {finish_flag: ['true'],finish_time:[finish_time]},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
@@ -373,14 +373,13 @@ $(function () {
     });
     $('#contract-contract-form-unlock-button').bind('click', function (e) {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
-            var finish_time = contract.contractview.contractform.serializeJson()['finish_time'];
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
             var parm = {
-                reqtype: 'update',
+                reqtype: '用updatedirty',
                 func: '委托解锁',
                 rows: [
                     {op: 'update',
-                        cols: {finish_flag: ['false', 'true'],finish_time:['',finish_time]},
+                        cols: {finish_flag: ['false'],finish_time:['']},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
@@ -511,7 +510,7 @@ $(function () {
         </div>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
             <div title="委托动态">
                 <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
                 </table>

@@ -1,30 +1,46 @@
+<script>
+    Namespace.register('contract.contractprefeeview');
+    $(function () {
+        contract.contractprefeeview.contractform = null;
+        contract.contractprefeeview.prefeeingrid = null;
+        contract.contractprefeeview.prefeeoutgrid = null;
+        $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, contractform) {
+            contract.contractprefeeview.contractform = $(contractform);
+            contract.contractprefeeview.contractform.form('disableValidation');
+        });
+        $(document).on('refresh', '#control-contract-contractform-{{ seq }}', function (e, bill_no) {
+            contract.contractprefeeview.refresh(bill_no);
+        });
+        contract.contractprefeeview.refresh = function (bill_no) {
+            console.info('refresh:' + bill_no);
+            if (bill_no != null && bill_no.length > 0) {
+                console.info(contract.contractprefeeview.contractform.serializeJson());
+            } else {
+                control.contract.contractform.form_contract_{{ seq }}.form('extReset');
+                control.contract.prefeeingrid._{{ seq }}.datagrid('loadData', []);
+                control.contract.prefeeoutgrid._{{ seq }}.datagrid('loadData', []);
+            }
+        }
+        $(document).on('afterrender', '#control-contract-prefeeingrid-{{ seq }}', function (e, grid) {
+            contract.contractprefeeview.prefeeingrid = $(grid);
+            console.info(contract.contractprefeeview.prefeeingrid.datagrid('options'));
+        });
+        $(document).on('afterrender', '#control-contract-prefeeoutgrid-{{ seq }}', function (e, grid) {
+            contract.contractprefeeview.prefeeoutgrid = $(grid);
+        });
+    });
+</script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',border:'true'">
-            <table id="contract-contractprefeeview-contractdatagrid" data-options="border:'false'">
-            </table>
-        <div class="editform-toolbar">
-            <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-search',group:'contract-contractview'">查询</a>
-            <a id="contract-contract-form-delete-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-remove',group:'contract-contractview'">删除</a>
-            <a id="contract-contract-form-save-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-save',group:'contract-contractview'">保存</a>
-            <a id="contract-contract-form-lock-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
-            <a id="contract-contract-form-unlock-button" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
-
-        </div>
+    <div data-options="region:'center',border:'false'">
+        {% include 'yard/contract/contractform.html' %}
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div id="contract-contract-tabs" class="easyui-tabs" data-options="fit:'true',headerWidth:300">
-            <div title="委托动态">
-                <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
-                </table>
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+            <div title="应收费用">
+                {% include 'yard/contract/prefeeingrid.html' %}
             </div>
-            <div title="委托箱量">
-                <table id="contract-contractview-cntrdatagrid" data-options="border:'false'">
-                </table>
+            <div title="应付费用">
+                {% include 'yard/contract/prefeeoutgrid.html' %}
             </div>
         </div>
     </div>

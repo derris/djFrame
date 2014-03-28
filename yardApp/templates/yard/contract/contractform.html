@@ -1,0 +1,109 @@
+<script>
+    Namespace.register('control.contract.contractform');
+    $(function () {
+
+        {% autoescape off %}
+            control.contract.contractform.vb_billno_{{ seq }} = $('#control-contract-contractform-billno-{{ seq }}').validatebox({
+                validType: ['length[0,25]'],
+                width: 180,
+                required: true
+            });
+            $('#control-contract-contractform-client-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: true,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            $('#control-contract-contractform-custom-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                width: 180,
+                data:{{ customdata }}
+            });
+            $('#control-contract-contractform-shipcorp-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                width: 180,
+                data:{{ shipcorpdata }}
+            });
+            $('#control-contract-contractform-port-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                width: 180,
+                data:{{ portdata }}
+            });
+            $('#control-contract-contractform-yard-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                width: 180,
+                data:{{ yarddata }}
+            });
+        {% endautoescape %}
+        control.contract.contractform.form_contract_{{ seq }} = $('#control-contract-contractform-{{ seq }}').form({
+            url: './dealPAjax/'
+        });
+        control.contract.contractform.form_contract_{{ seq }}.trigger('afterrender',control.contract.contractform.form_contract_{{ seq }});
+        control.contract.contractform.vb_billno_{{ seq }}.bind('change', function (e) {
+            control.contract.contractform.form_contract_{{ seq }}.trigger('refresh', $.trim(this.value));
+        });
+    });
+</script>
+<form id="control-contract-contractform-{{ seq }}" class="editform" method="post">
+    <div>
+        <input id="control-contract-contractform-id-{{ seq }}" type="hidden" name="id"/>
+        <input type="hidden" name="finish_flag"/>
+        <label for="bill_no">提单号:</label>
+        <input id="control-contract-contractform-billno-{{ seq }}" type="text" name="bill_no"/>
+        <label for="vslvoy">船名航次:</label>
+        <input type="text" name="vslvoy" class="easyui-validatebox"
+               data-options="validType:['length[0,40]'],width:180"/>
+        <label for="cargo_name">货名:</label>
+        <input type="text" name="cargo_name" class="easyui-validatebox"
+               data-options="validType:['length[0,30]'],width:180"/>
+        <label for="origin_place">产地:</label>
+        <input type="text" name="origin_place" class="easyui-validatebox"
+               data-options="validType:['length[0,30]'],width:180"/>
+    </div>
+    <div>
+        <label for="client_id">委托客户:</label>
+        <input id="control-contract-contractform-client-{{ seq }}" type="text" name="client_id"/>
+        <label for="cargo_piece">件数:</label>
+        <input type="number" name="cargo_piece" class="easyui-numberbox"
+               data-options="min:0,width:180"/>
+        <label for="cargo_weight">重量:</label>
+        <input type="number" name="cargo_weight" class="easyui-numberbox"
+               data-options="min:0,precision:2,width:180"/>
+        <label for="cargo_volume">体积:</label>
+        <input type="number" name="cargo_volume" class="easyui-numberbox"
+               data-options="min:0,precision:3,width:180"/>
+    </div>
+    <div>
+        <label for="booking_date">接单日期:</label>
+        <input type="date" name="booking_date" class="easyui-datebox"
+               data-options="width:180"/>
+        <label for="in_port_date">到港日期:</label>
+        <input type="date" name="in_port_date" class="easyui-datebox"
+               data-options="width:180"/>
+        <label for="return_cntr_date">还箱日期:</label>
+        <input type="date" name="return_cntr_date" class="easyui-datebox"
+               data-options="width:180"/>
+        <label for="finish_tim">完结日期:</label>
+        <input type="date" name="finish_time" class="easyui-datebox"
+               data-options="width:180"/>
+    </div>
+    <div>
+        <label for="custom_id">报关行:</label>
+        <input id="control-contract-contractform-custom-{{ seq }}" type="text" name="custom_id"/>
+        <label for="ship_corp_id">船公司:</label>
+        <input id="control-contract-contractform-shipcorp-{{ seq }}" type="text" name="ship_corp_id"/>
+        <label for="yard_id">场站</label>
+        <input id="control-contract-contractform-yard-{{ seq }}" type="text" name="yard_id"/>
+        <label for="port_id">码头</label>
+        <input id="control-contract-contractform-port-{{ seq }}" type="text" name="port_id"/>
+    </div>
+    <div>
+        <label for="" remark>备注</label>
+        <input type="text" name="remark" style="width: 400px"/>
+    </div>
+</form>

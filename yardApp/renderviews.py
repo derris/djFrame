@@ -2,11 +2,11 @@ __author__ = 'zhangtao'
 # render 前台界面
 import json
 from django.shortcuts import render
-from yardApp import models,views
+from yardApp import models
 from zdCommon import easyuihelp
 from django.http import HttpResponse
 from zdCommon.sysjson import getMenuList
-
+from zdCommon.dbhelp import fetchSeq
 def logonview(request):
     return render(request,"yard/logon.html")
 
@@ -133,6 +133,7 @@ def paytypeview(request):
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
     return render(request,"yard/basedata/paytype.html",locals())
 def contractview(request):
+    #seq = str(fetchSeq('seq_html'))
     actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='id')
     actioncontractid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='contract_id',hidden=True)
     action_id = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='action_id',autoforeign=True,foreigndisplayfield='action_name')
@@ -181,6 +182,25 @@ def billsearch(request):
     in_port_date = easyuihelp.EasyuiFieldUI(model=models.Contract,field='in_port_date',width=150)
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/billsearch.html",locals())
+def prefeeview(request):
+    seq = str(fetchSeq('seq_html'))
+    id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='id')
+    contractid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='contract_id',hidden=True)
+    feetyp = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ',hidden=True)
+    feecod = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_cod',autoforeign=True,foreigndisplayfield='fee_name')
+    client = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    amount = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
+    feetim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
+    financialtim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_financial_tim')
+    lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag',readonly=True)
+    audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id',readonly=True)
+    remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    customdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    shipcorpdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    portdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    yarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    return render(request,"yard/contract/contractprefeeview.html",locals())
 ########################### 收费 、 核销 #########
 def actfeeview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
@@ -262,6 +282,9 @@ def dealMenuReq(request):
         return(contractview(request))
     elif ls_args == '提单查询':
         return(billsearch(request))
+    elif ls_args == '委托费用维护':
+        return(prefeeview(request))
+
     #######  费用 #############
     elif ls_args == "已收费用":
         return(actfeeview(request))

@@ -1,0 +1,61 @@
+<script>
+    Namespace.register('control.contract.prefeeingrid');
+    $(function () {
+        control.contract.prefeeingrid._{{ seq }} = $('#control-contract-prefeeingrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            fee_typ: 'I',
+            contract_id: 0,
+            client_id: 0,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ contractid.writeUI|safe|escape }},
+                        {{ feetyp.writeUI|safe|escape }},
+                        {{ feecod.writeUI|safe|escape }},
+                        {{ client.writeUI|safe|escape }},
+                        {{ amount.writeUI|safe|escape }},
+                        {{ feetim.writeUI|safe|escape }},
+                        {{ financialtim.writeUI|safe|escape }},
+                        {{ lock_flag.writeUI|safe|escape }},
+                        {{ audit_id.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'pre_fee',
+            showFooter: true,
+            toolbar: [
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group: '#control-contract-prefeeingrid-{{ seq }}',
+                    handler: function () {
+                        var opts = control.contract.prefeeingrid._{{ seq }}.datagrid('options');
+                        var curtim = new Date();
+                        var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
+                        control.contract.prefeeingrid._{{ seq }}.datagrid('insertData', {
+                            contract_id: opts.contract_id,
+                            client_id: opts.client_id,
+                            fee_typ: 'I',
+                            ex_feeid: 'O',
+                            fee_tim : stim,
+                            fee_financial_tim :stim
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group: '#control-contract-prefeeingrid-{{ seq }}',
+                    handler: function () {
+                        control.contract.prefeeingrid._{{ seq }}.datagrid('deleteData');
+                    }
+                }
+            ],
+            queryFuncName: '委托应收查询'
+        });
+        control.contract.prefeeingrid._{{ seq }}.trigger('afterrender',control.contract.prefeeingrid._{{ seq }});
+    });
+</script>
+<table id="control-contract-prefeeingrid-{{ seq }}" data-options="border:'false'">
+</table>

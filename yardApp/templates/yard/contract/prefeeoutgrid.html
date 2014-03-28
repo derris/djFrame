@@ -1,0 +1,56 @@
+<script>
+    Namespace.register('control.contract.prefeeoutgrid');
+    $(function () {
+        control.contract.prefeeoutgrid._{{ seq }} = $('#control-contract-prefeeoutgrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            fee_typ: 'O',
+            contract_id: 0,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ contractid.writeUI|safe|escape }},
+                        {{ feetyp.writeUI|safe|escape }},
+                        {{ feecod.writeUI|safe|escape }},
+                        {{ client.writeUI|safe|escape }},
+                        {{ amount.writeUI|safe|escape }},
+                        {{ feetim.writeUI|safe|escape }},
+                        {{ financialtim.writeUI|safe|escape }},
+                        {{ lock_flag.writeUI|safe|escape }},
+                        {{ audit_id.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'pre_fee',
+            showFooter: true,
+            toolbar: [
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group: '#control-contract-prefeeoutgrid-{{ seq }}',
+                    handler: function () {
+                        var opts = control.contract.prefeeoutgrid._{{ seq }}.datagrid('options');
+                        control.contract.prefeeoutgrid._{{ seq }}.datagrid('insertData', {
+                            contract_id: opts.contract_id,
+                            fee_typ: 'O',
+                            ex_feeid: 'O'
+                        });
+                    }
+
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group: '#control-contract-prefeeoutgrid-{{ seq }}',
+                    handler: function () {
+                        control.contract.prefeeoutgrid._{{ seq }}.datagrid('deleteData');
+                    }
+                }
+            ],
+            queryFuncName: '委托应付查询'
+        });
+        control.contract.prefeeoutgrid._{{ seq }}.trigger('afterrender', control.contract.prefeeoutgrid._{{ seq }});
+    });
+</script>
+<table id="control-contract-prefeeoutgrid-{{ seq }}" data-options="border:'false'">
+</table>

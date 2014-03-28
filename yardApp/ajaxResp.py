@@ -112,6 +112,19 @@ def getcontractcntr(request):
     ls_sql = "select id,contract_id,cntr_type,cntr_num,remark from contract_cntr"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcontractprefeein(request):
+    ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
+             "lock_flag,audit_id,remark from pre_fee" \
+             "where fee_typ = 'I' and ex_feeid = 'O'"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcontractprefeeout(request):
+    ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
+             "lock_flag,audit_id,remark from pre_fee" \
+             "where fee_typ = 'O' and ex_feeid = 'O'"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
 def getactfeeEx(request, aSql):
     '''已收核销查询'''
     ldict = json.loads( request.POST['jpargs'] )
@@ -250,7 +263,10 @@ def dealPAjax(request):
                 return(getcontractcntr(request))
             elif ldict['func'] == '提单查询':
                 return(getcontractbybill(request))
-
+            elif ldict['func'] == '委托应收查询':
+                return(getcontractprefeein(request))
+            elif ldict['func'] == '委托应付查询':
+                return(getcontractprefeeout(request))
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getactfeeEx(request, ls_sql))
