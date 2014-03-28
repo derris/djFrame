@@ -1,0 +1,15 @@
+gwyard
+    yard: urls.py:   url(r'^yard/',include('yardApp.yardurls')),
+        yardApp: yardurls.py:
+            url('^dealmenureq/$', renderviews.dealMenuReq,name='dealmenureq'),
+                renderviews.py :    dealMenuReq(request):
+                    dealMenuReq : return render(request,"yard/basedata/user.html",locals())
+            url('^dealPAjax/$', ajaxResp.dealPAjax,name='dealPAjax'),
+                ajaxResp.py :  dealPAjax(request)
+                    dealPAjax: ldict = json.loads( request.POST['jpargs'] ) if ldict['func'] == '功能查询':
+                        return(getsysmenu(request))
+                            return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+                                return { json }
+                        return(updateClients(request))
+                            return HttpResponse(json.dumps(dbhelp.py/json2upd(ldict),ensure_ascii = False))
+                                json2upd( -- excute sql --- )
