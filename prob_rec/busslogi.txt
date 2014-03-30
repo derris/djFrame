@@ -19,3 +19,4 @@ update act_fee set ex_over = '" + ls_seq + "', off_flag=true where id = " + str(
 update pre_fee set ex_over = '" + ls_seq + "', lock_flag=true where id = " + str(i)
 ----- 如果省的是actfee，就插入actfee，否则prefee，
 insert into act_fee/prefee  :  ex_from ls_seq,  ex_feeid : 'E'
+

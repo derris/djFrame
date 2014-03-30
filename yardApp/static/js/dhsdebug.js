@@ -44,7 +44,8 @@ function comOnCheck( aFeeGrid, rowIndex, rowData, aSync)
             if (aSync) {
                 var opts = fee.prefeeauditview.prefeegrid.datagrid('options');
                 opts.ex_parm = {
-                    client_id : l_client
+                    client_id : l_client,
+                    audit_id: false
                 };
                 fee.prefeeauditview.prefeegrid.datagrid('reload');
             }

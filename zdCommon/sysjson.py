@@ -22,6 +22,35 @@ def getMenuList():
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 
+def getMenuListByUser(aUserId):
+    '''
+        根据用户id得到2级菜单结构。
+    '''
+    ls_sqlmenu = "select menu_id from s_postmenu where post_id in (select post_id from s_postuser where user_id = %s)" % str(aUserId)
+    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id in (%s) order by sortno;' % ls_sqlmenu)
+    ldict_1 = []
+    if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
+        for i_m1 in l_menu1:
+            l_menu2 = cursorSelect('select id,menuname, menushowname from sys_menu where parent_id = %d and id in(%s) order by sortno;' % (i_m1[0], ls_sqlmenu))
+            ldict_2 = []
+            if len(l_menu2) > 0 :
+                for i_m2 in l_menu2:
+                    ldict_2.append({"id": i_m2[0], "text": i_m2[2], "attributes": i_m2[1]})
+            else:
+                pass # no child
+            ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": i_m1[1], 'children': ldict_2  } )
+    else:
+        pass   # no top menu ... how that posible ....
+    return(ldict_1)
+
+def getFunc4User(aUserId):
+    '''
+        返回funcid的list
+    '''
+    ls_sqlfunc = 'select func_id from s_postmenufunc where post_id in (select post_id from s_postuser where user_id = %s)' % str(aUserId)
+    l_userFunc = cursorSelect(ls_sqlfunc)    #  l_userFunc[0][0]   [(1), (2)] ...
+    return [i[0] for i in l_userFunc]
+
 def getAuth4post(aPostId, aMenuId):
     '''
         返回这个岗位在menu下面都有那些权限。

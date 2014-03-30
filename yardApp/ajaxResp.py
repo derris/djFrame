@@ -151,7 +151,7 @@ def getSequence(aDict):
     return ldict_rtn
 #############################################################    UPDATE    -----
 
-def updateClients(request):
+def updateRaw(request):
     ''' 客户维护  '''
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(json2upd(ldict),ensure_ascii = False))
@@ -283,41 +283,41 @@ def dealPAjax(request):
                 return(getclientsEx(request, ls_t))
             ############################################################################## update
             elif ldict['func'] == '功能维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '权限维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '功能权限维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '系统参数维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '用户维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '岗位维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '岗位用户维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '箱型维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '动态类型维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '费用分组类型维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '费用名称维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '协议费率维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '付款方式维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '客户维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '委托维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '委托锁定':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '委托解锁':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif ldict['func'] == '已收费用维护':
-                return(updateClients(request))
+                return(updateRaw(request))
             elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
                 return(HttpResponse(json.dumps( setMenuPrivilege(request) ,ensure_ascii = False) ))
             ########################################

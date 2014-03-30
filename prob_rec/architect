@@ -10,6 +10,13 @@ gwyard
                         return(getsysmenu(request))
                             return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
                                 return { json }
-                        return(updateClients(request))
-                            return HttpResponse(json.dumps(dbhelp.py/json2upd(ldict),ensure_ascii = False))
-                                json2upd( -- excute sql --- )
+                        return(updateRaw(request))    ####  更改自 updateClients  ... 在此前进行preValid，再调用。
+                                return json2upd( -- excute sql --- )
+                                    return HttpResponse(json.dumps(dbhelp.py/json2upd(ldict),ensure_ascii = False))
+
+------------ sysjson.py
+
+def getFunc4User(aUserId):   根据用户id返回sys_func的id的列表。
+    格式：[0, 2, 3 ... ]
+def getMenuListByUser(aUserId):   根据用户的id返回菜单列表。（2级菜单）
+    格式： ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": i_m1[1], 'children': ldict_2  } )
