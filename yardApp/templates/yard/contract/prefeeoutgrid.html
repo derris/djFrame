@@ -5,10 +5,12 @@
             autoLoad: false,
             fee_typ: 'O',
             contract_id: 0,
+            singleSelect:false,
             columns: [
                 [
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
+                        {field:'ck',checkbox:true},
                         {{ contractid.writeUI|safe|escape }},
                         {{ feetyp.writeUI|safe|escape }},
                         {{ feecod.writeUI|safe|escape }},
@@ -30,10 +32,14 @@
                     group: '#control-contract-prefeeoutgrid-{{ seq }}',
                     handler: function () {
                         var opts = control.contract.prefeeoutgrid._{{ seq }}.datagrid('options');
+                        var curtim = new Date();
+                        var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
                         control.contract.prefeeoutgrid._{{ seq }}.datagrid('insertData', {
                             contract_id: opts.contract_id,
                             fee_typ: 'O',
-                            ex_feeid: 'O'
+                            ex_feeid: 'O',
+                            fee_tim : stim,
+                            fee_financial_tim :stim
                         });
                     }
 

@@ -82,14 +82,14 @@ def postmenufuncview(request):
     return render(request,"yard/basedata/postmenufunc.html",locals())
 def clientview(request):
     idObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='id')
-    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name')
+    clientNameObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_name',width=200)
     clientFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='client_flag')
     customFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='custom_flag')
     shipcorpFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='ship_corp_flag')
     yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
     portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
     financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
-    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark')
+    remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark',width=200)
     return render(request,"yard/basedata/client.html",locals())
 def cntrtypeview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='id')

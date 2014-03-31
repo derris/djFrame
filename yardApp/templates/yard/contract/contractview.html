@@ -182,6 +182,7 @@ $(function () {
             });
         }
         else {
+            contract.contractview.contractform.form('clear');
             contract.contractview.contractform.form('extReset');
             contract.contractview.cntrdatagrid.datagrid('loadData', []);
             contract.contractview.actiondatagrid.datagrid('loadData', []);

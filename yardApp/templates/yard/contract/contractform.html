@@ -43,7 +43,8 @@
         control.contract.contractform.form_contract_{{ seq }} = $('#control-contract-contractform-{{ seq }}').form({
             url: './dealPAjax/'
         });
-        control.contract.contractform.form_contract_{{ seq }}.trigger('afterrender',control.contract.contractform.form_contract_{{ seq }});
+        $('#control-contract-contractform-{{ seq }}').trigger('afterrender',{form:control.contract.contractform.form_contract_{{ seq }},bill:control.contract.contractform.vb_billno_{{ seq }}} );
+{#        control.contract.contractform.vb_billno_{{ seq }}.trigger('afterrender', control.contract.contractform.vb_billno_{{ seq }});#}
         control.contract.contractform.vb_billno_{{ seq }}.bind('change', function (e) {
             control.contract.contractform.form_contract_{{ seq }}.trigger('refresh', $.trim(this.value));
         });
