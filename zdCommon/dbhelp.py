@@ -367,7 +367,7 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 l_newInsertId = aCursor.fetchone()[0]        # 返回的新的id，子记录需要把所有的都替换成。
                 artn['changeid'].update({i_row["uuid"] : l_newInsertId})
                 artn.update({ 'effectnum' : artn['effectnum'] + li_t  })
-            elif i_row['op'] in ('delete', 'update'):
+            elif i_row['op'] in ('delete', 'update', 'updatedirty'):
                 if lb_updateValid:
                     aCursor.execute(ls_sql)
                     li_t = aCursor.cursor.rowcount

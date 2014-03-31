@@ -217,7 +217,7 @@ def dealAuditFee(request):
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
-    request.session['userid'] = "def"
+    request.session['userid'] = "1"
 
     try:
         ldict = json.loads( request.POST['jpargs'] )

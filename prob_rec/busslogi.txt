@@ -30,3 +30,73 @@ update pre_fee set ex_over = '" + ls_seq + "', lock_flag=true where id = " + str
 ----- 如果省的是actfee，就插入actfee，否则prefee，
 insert into act_fee/prefee  :  ex_from ls_seq,  ex_feeid : 'E'
 
+
+
+------------------------------------- contract 触发器控制逻辑。
+east ocean 16:19:34
+
+CREATE OR REPLACE FUNCTION fun4tri_contract()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	count_fee integer;
+BEGIN
+	IF NEW.client_id <> OLD.client_id THEN
+		SELECT count(*) INTO count_fee FROM pre_fee WHERE contract_id = OLD.id;
+		IF count_fee > 0 THEN
+			RAISE EXCEPTION '已有应付费用不能更改客户。';
+		END IF;
+	END IF;
+
+	IF NEW.finish_flag = OLD.finish_flag AND NEW.finish_flag = true THEN
+		RAISE EXCEPTION '已经锁定不能修改';
+        END IF;
+
+        NEW.upd_tim := current_timestamp;
+        RETURN NEW;
+    END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION fun4tri_contract()
+  OWNER TO "yardAdmin";
+
+CREATE TRIGGER tri_contract
+  BEFORE UPDATE
+  ON contract
+  FOR EACH ROW
+  EXECUTE PROCEDURE fun4tri_contract();
+
+--------------------------------------  pre fee 触发器控制逻辑。
+CREATE OR REPLACE FUNCTION fun4tri_pre_fee()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+
+	IF NEW.lock_flag = true THEN
+	ELSE
+		IF NEW.audit_id = true THEN
+			RAISE EXCEPTION '已经核销不能修改';
+		END IF;
+        END IF;
+
+        NEW.upd_tim := current_timestamp;
+        RETURN NEW;
+    END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION fun4tri_pre_fee()
+  OWNER TO "yardAdmin";
+
+CREATE TRIGGER tri_pre_fee
+  BEFORE UPDATE
+  ON pre_fee
+  FOR EACH ROW
+  EXECUTE PROCEDURE fun4tri_pre_fee();
+
+
+
+
+
+

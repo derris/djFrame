@@ -1,18 +1,28 @@
 一 委托维护
   1.查询：弹出查询窗口，输入提单号返回模糊查询的委托列表，选择委托后，查询窗口关闭，
-         根据选择的提单号，刷新委托表单、委托动态表格、委托箱量表格。
-  2.增加：清空委托、委托动态、委托箱量
-  3.删除：删除当前委托，数据库级联删除委托动态、委托箱量
-  4.保存：将委托、委托动态、委托箱量打包保存
-  5.锁定：委托锁定,contract.finish_flag = true,contract.finish_time = '指定时间'
-  6.解锁：委托解锁,contract.finish_flag = null,contract.finish_time = null
-  7.增加动态：contract_action增加记录
-  8.删除动态：contract_action删除记录
-  9.增加箱量：contract_cntr增加记录
-  10.删除箱量：contract_cntr删除记录
+         根据选择的提单号，刷新委托表单、委托动态表格、委托箱量表格。                     ---     ok
+  2.增加：清空委托、委托动态、委托箱量                                                    ---   ok
+  3.删除：删除当前委托，数据库级联删除委托动态、委托箱量                              -- ok
+  4.保存：将委托、委托动态、委托箱量打包保存                                         -- ok
+  5.锁定：委托锁定,contract.finish_flag = true,contract.finish_time = '指定时间'    -- ok
+  6.解锁：委托解锁,contract.finish_flag = null,contract.finish_time = null       -- error :  see below
+  7.增加动态：contract_action增加记录                                                       ok
+  8.删除动态：contract_action删除记录                                                        ok
+  9.增加箱量：contract_cntr增加记录                                                            ok
+  10.删除箱量：contract_cntr删除记录                                                             ok
+
+  --------  有时候会出现 js 错误。怀疑是网页刷新代码不全导致的错误。
+
 二 委托应收付维护（pre_fee）
   1.查询：弹出查询窗口，输入提单号返回模糊查询的委托列表，选择委托后，查询窗口关闭，
-         根据选择的提单号，刷新委托表单、应收费用、应付费用。
-  2.保存：保存应收付费用
-  3.费用锁定：锁定选择的应收付费用，pre_fee.lock_flag = true
-  4.费用解锁：解锁选择的应收付费用，pre_fee.lock_flag = null.已核销的禁止执行。
+         根据选择的提单号，刷新委托表单、应收费用、应付费用。                            -- ok
+  2.保存：保存应收付费用                                                               -- ok
+  3.费用锁定：锁定选择的应收付费用，pre_fee.lock_flag = true                        -- ok
+  4.费用解锁：解锁选择的应收付费用，pre_fee.lock_flag = null.已核销的禁止执行。     -- ok
+
+
+
+
+--------------
+03-31 21:52:49 -> dealPAjax -> {'rows': [{'id': 4, 'table': 'contract', 'subs': {}, 'cols': {'finish_flag': [''], 'finish_time': ['']}, 'op': 'update'}], 'func': '委托解锁', 'reqtype': 'updatedirty'}
+委托解锁。功能写反了。 op：是updatedirty。。。。reqtype：是update
