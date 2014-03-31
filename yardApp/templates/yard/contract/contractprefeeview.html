@@ -196,6 +196,47 @@ $(function () {
             }
         });
     });
+    $('#contract-contractprefeeview-unlock-button').bind('click', function (e) {
+        var parmRows = new Array();
+        var parm = {
+            reqtype: 'update',
+            func: '应收付费用解锁'
+        };
+        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
+        for (var i = 0, ilen = rows.length; i < ilen; i++) {
+            if (rows[i].id != null && (rows[i].audit_id == null || rows[i].audit_id == false)) {
+                parmRows.push({
+                    op: 'updatedirty',
+                    table: 'pre_fee',
+                    cols: {lock_flag: ['']},
+                    subs: {},
+                    id: rows[i].id
+                });
+            } else {
+                $.messager.show({title: '错误信息',
+                    msg: (rows[i].fee_typ == 'I' ? '存在未保存或已核销的应收费用' : '存在未保存或已核销的应付费用'),
+                    timeout: 3000,
+                    showType: 'slide'});
+                return;
+            }
+        }
+        parm.rows = parmRows;
+
+        $.ajax({
+            url: "./dealPAjax/",
+            data: {jpargs: JSON.stringify(parm)},
+            success: function (r, t, a) {
+                var stateCod = parseInt(r.stateCod);
+                if (r && !isNaN(stateCod)) {
+                    if (stateCod == 202) {
+                        //保存成功刷新界面
+                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                    }
+                }
+                $.ajaxSettings.success(r, t, a, true);
+            }
+        });
+    });
 });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
