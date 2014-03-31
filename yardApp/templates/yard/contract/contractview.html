@@ -59,7 +59,7 @@ $(function () {
         ],
         dataTable: 'contract_action',
         toolbar: [
-            {text: '增加',
+            {text: '增加动态',
                 iconCls: 'icon-add',
                 group: 'contract-contractview-actiondatagrid',
                 handler: function () {
@@ -77,7 +77,7 @@ $(function () {
                 }
             },
             '-',
-            {text: '删除',
+            {text: '删除动态',
                 iconCls: 'icon-remove',
                 group: 'contract-contractview-actiondatagrid',
                 handler: function () {
@@ -103,7 +103,7 @@ $(function () {
         dataTable: 'contract_cntr',
         toolbar: [
 
-            {text: '增加',
+            {text: '增加箱量',
                 iconCls: 'icon-add',
                 group: 'contract-contractview-cntrdatagrid',
                 handler: function () {
@@ -114,7 +114,7 @@ $(function () {
                 }
             },
             '-',
-            {text: '删除',
+            {text: '删除箱量',
                 iconCls: 'icon-remove',
                 group: 'contract-contractview-cntrdatagrid',
                 handler: function () {
@@ -201,7 +201,7 @@ $(function () {
         contract.contractview.refresh($.trim(this.value));
     });
     $('#contract-contract-form-save-button').bind('click', function (e) {
-        contract.contractview.contractform.form('enableValidation')
+        contract.contractview.contractform.form('enableValidation');
         if (contract.contractview.actiondatagrid.datagrid('preSave') == 0) {
             $.messager.show({title: '错误信息',
                 msg: '委托动态数据验证失败',
@@ -347,7 +347,7 @@ $(function () {
                 reqtype: 'update',
                 func: '委托锁定',
                 rows: [
-                    {op: '用updatedirty',
+                    {op: 'updatedirty',
                         cols: {finish_flag: ['true'],finish_time:[finish_time]},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
@@ -376,11 +376,11 @@ $(function () {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
             var parm = {
-                reqtype: '用updatedirty',
+                reqtype: 'updatedirty',
                 func: '委托解锁',
                 rows: [
                     {op: 'update',
-                        cols: {finish_flag: ['false'],finish_time:['']},
+                        cols: {finish_flag: [''],finish_time:['']},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
