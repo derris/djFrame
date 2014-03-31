@@ -158,11 +158,12 @@
         $('#contract-contractprefeeview-lock-button').bind('click', function (e) {
             var parm = {
                 reqtype: 'update',
-                func: '应收付费用维护'
+                func: '应收付费用锁定'
             };
+            var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
+            for (var i = 0,ilen = rows.length;i < ilen;i++){
 
-            var infeeObj = contract.contractprefeeview.prefeeingrid.datagrid('getDirtyData', 'all');
-            var outfeeObj = contract.contractprefeeview.prefeeoutgrid.datagrid('getDirtyData', 'all');
+            }
             parm.rows = infeeObj.i.concat(infeeObj.u).concat(infeeObj.d).
                     concat(outfeeObj.i).concat(outfeeObj.u).concat(outfeeObj.d);
 

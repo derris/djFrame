@@ -114,13 +114,13 @@ def getcontractcntr(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractprefeein(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
-             "lock_flag,audit_id,remark from pre_fee" \
+             "lock_flag,audit_id,remark from pre_fee " \
              "where fee_typ = 'I' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractprefeeout(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
-             "lock_flag,audit_id,remark from pre_fee" \
+             "lock_flag,audit_id,remark from pre_fee " \
              "where fee_typ = 'O' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
@@ -315,6 +315,12 @@ def dealPAjax(request):
             elif ldict['func'] == '委托锁定':
                 return(updateRaw(request))
             elif ldict['func'] == '委托解锁':
+                return(updateRaw(request))
+            elif ldict['func'] == '应收付费用维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '应收付费用锁定':
+                return(updateRaw(request))
+            elif ldict['func'] == '应收付费用解锁':
                 return(updateRaw(request))
             elif ldict['func'] == '已收费用维护':
                 return(updateRaw(request))
