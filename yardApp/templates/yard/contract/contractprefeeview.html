@@ -1,188 +1,202 @@
 <script>
-    Namespace.register('contract.contractprefeeview');
-    $(function () {
-        contract.contractprefeeview.billnovb = null;
-        contract.contractprefeeview.contractform = null;
-        contract.contractprefeeview.prefeeingrid = null;
-        contract.contractprefeeview.prefeeoutgrid = null;
-        contract.contractprefeeview.refresh = function (bill_no) {
-            if (bill_no != null && bill_no.length > 0) {
-                var cols = new Array();
-                var formcols = contract.contractprefeeview.contractform.serializeArray();
-                for (var i = 0, ilen = formcols.length; i < ilen; i++) {
-                    cols.push(formcols[i].name);
-                }
-                var queryParam = {
-                    reqtype: 'query',
-                    func: '委托查询',
-                    page: 1,
-                    rows: 1,
-                    cols: cols,
-                    filter: [
-                        {cod: 'bill_no', operatorTyp: '等于', value: bill_no}
-                    ],
-                    sort: [],
-                    ex_parm: {}
-                };
-                $.ajax({
-                    url: "./dealPAjax/",
-                    data: {jpargs: JSON.stringify(queryParam)},
-                    success: function (r, t, a) {
-                        var stateCod = parseInt(r.stateCod);
-                        if (r && !isNaN(stateCod)) {
-                            var inOpts = contract.contractprefeeview.prefeeingrid.datagrid('options');
-                            var outOpts = contract.contractprefeeview.prefeeoutgrid.datagrid('options');
-                            if (stateCod == 1) {
-                                contract.contractprefeeview.contractform.form('load', r.rows[0]);
-                                inOpts.filterFields = [
-                                    {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
-                                ];
-                                inOpts.contract_id = r.rows[0].id;
-                                inOpts.client_id = r.rows[0].client_id;
-                                outOpts.filterFields = [
-                                    {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
-                                ];
-                                outOpts.contract_id = r.rows[0].id;
-                                contract.contractprefeeview.prefeeingrid.datagrid('reload');
-                                contract.contractprefeeview.prefeeoutgrid.datagrid('reload');
-                                //旧委托 刷新界面
-                            }
-                            if (stateCod == 201) {
-                                //新委托 清空界面 报错
-                                contract.contractprefeeview.contractform.form('clear');
-                                contract.contractprefeeview.contractform.form('extReset');
-                                contract.contractprefeeview.billnovb.val(bill_no);
-                                inOpts.contract_id = null;
-                                inOpts.client_id = null;
-                                outOpts.contract_id = null;
-                                contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
-                                contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
-                            }
-                        } else {
-                            $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
-                        }
-                    }
-                });
-            } else {
-                var inOpts = contract.contractprefeeview.prefeeingrid.datagrid('options');
-                var outOpts = contract.contractprefeeview.prefeeoutgrid.datagrid('options');
-                inOpts.contract_id = null;
-                inOpts.client_id = null;
-                outOpts.contract_id = null;
-                contract.contractprefeeview.contractform.form('clear');
-                contract.contractprefeeview.contractform.form('extReset');
-                contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
-                contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
+Namespace.register('contract.contractprefeeview');
+$(function () {
+    contract.contractprefeeview.billnovb = null;
+    contract.contractprefeeview.contractform = null;
+    contract.contractprefeeview.prefeeingrid = null;
+    contract.contractprefeeview.prefeeoutgrid = null;
+    contract.contractprefeeview.refresh = function (bill_no) {
+        if (bill_no != null && bill_no.length > 0) {
+            var cols = new Array();
+            var formcols = contract.contractprefeeview.contractform.serializeArray();
+            for (var i = 0, ilen = formcols.length; i < ilen; i++) {
+                cols.push(formcols[i].name);
             }
+            var queryParam = {
+                reqtype: 'query',
+                func: '委托查询',
+                page: 1,
+                rows: 1,
+                cols: cols,
+                filter: [
+                    {cod: 'bill_no', operatorTyp: '等于', value: bill_no}
+                ],
+                sort: [],
+                ex_parm: {}
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(queryParam)},
+                success: function (r, t, a) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        var inOpts = contract.contractprefeeview.prefeeingrid.datagrid('options');
+                        var outOpts = contract.contractprefeeview.prefeeoutgrid.datagrid('options');
+                        if (stateCod == 1) {
+                            contract.contractprefeeview.contractform.form('load', r.rows[0]);
+                            inOpts.filterFields = [
+                                {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
+                            ];
+                            inOpts.contract_id = r.rows[0].id;
+                            inOpts.client_id = r.rows[0].client_id;
+                            outOpts.filterFields = [
+                                {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
+                            ];
+                            outOpts.contract_id = r.rows[0].id;
+                            contract.contractprefeeview.prefeeingrid.datagrid('reload');
+                            contract.contractprefeeview.prefeeoutgrid.datagrid('reload');
+                            //旧委托 刷新界面
+                        }
+                        if (stateCod == 201) {
+                            //新委托 清空界面 报错
+                            contract.contractprefeeview.contractform.form('clear');
+                            contract.contractprefeeview.contractform.form('extReset');
+                            contract.contractprefeeview.billnovb.val(bill_no);
+                            inOpts.contract_id = null;
+                            inOpts.client_id = null;
+                            outOpts.contract_id = null;
+                            contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
+                            contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
+                        }
+                    } else {
+                        $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
+                    }
+                }
+            });
+        } else {
+            var inOpts = contract.contractprefeeview.prefeeingrid.datagrid('options');
+            var outOpts = contract.contractprefeeview.prefeeoutgrid.datagrid('options');
+            inOpts.contract_id = null;
+            inOpts.client_id = null;
+            outOpts.contract_id = null;
+            contract.contractprefeeview.contractform.form('clear');
+            contract.contractprefeeview.contractform.form('extReset');
+            contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
+            contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
         }
-        $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
-            contract.contractprefeeview.contractform = $(d.form);
-            contract.contractprefeeview.contractform.form('disableValidation');
-            contract.contractprefeeview.billnovb = $(d.bill);
-        });
-        $(document).on('refresh', '#control-contract-contractform-{{ seq }}', function (e, bill_no) {
-            contract.contractprefeeview.refresh(bill_no);
-        });
+    }
+    $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
+        contract.contractprefeeview.contractform = $(d.form);
+        contract.contractprefeeview.contractform.form('disableValidation');
+        contract.contractprefeeview.billnovb = $(d.bill);
+    });
+    $(document).on('refresh', '#control-contract-contractform-{{ seq }}', function (e, bill_no) {
+        contract.contractprefeeview.refresh(bill_no);
+    });
 
-        $(document).on('afterrender', '#control-contract-prefeeingrid-{{ seq }}', function (e, grid) {
-            contract.contractprefeeview.prefeeingrid = $(grid);
-        });
-        $(document).on('afterrender', '#control-contract-prefeeoutgrid-{{ seq }}', function (e, grid) {
-            contract.contractprefeeview.prefeeoutgrid = $(grid);
-        });
-        $('#contract-contractprefeeview-search-button').bind('click', function (e) {
-            contract.contractprefeeview.billsearch = $('<div></div>').window({
-                href: "./dealmenureq/?menutext=提单查询",
-                title: '提单查询',
-                width: window.innerWidth * 0.6,
-                height: window.innerHeight * 0.8,
-                modal: true,
-                collapsible: false,
-                minimizable: false,
-                maximizable: false,
-                returnData: '',
-                closable: true,
-                onBeforeClose: function () {
-                    var bill_no = contract.contractprefeeview.billsearch.window('options').returnData;
-                    if (bill_no != null && bill_no.length > 0) {
-                        contract.contractprefeeview.refresh($.trim(bill_no));
-                    }
-                },
-                onClose: function () {
-                    contract.contractprefeeview.billsearch.window('destroy');
-                    contract.contractprefeeview.billsearch = null;
+    $(document).on('afterrender', '#control-contract-prefeeingrid-{{ seq }}', function (e, grid) {
+        contract.contractprefeeview.prefeeingrid = $(grid);
+    });
+    $(document).on('afterrender', '#control-contract-prefeeoutgrid-{{ seq }}', function (e, grid) {
+        contract.contractprefeeview.prefeeoutgrid = $(grid);
+    });
+    $('#contract-contractprefeeview-search-button').bind('click', function (e) {
+        contract.contractprefeeview.billsearch = $('<div></div>').window({
+            href: "./dealmenureq/?menutext=提单查询",
+            title: '提单查询',
+            width: window.innerWidth * 0.6,
+            height: window.innerHeight * 0.8,
+            modal: true,
+            collapsible: false,
+            minimizable: false,
+            maximizable: false,
+            returnData: '',
+            closable: true,
+            onBeforeClose: function () {
+                var bill_no = contract.contractprefeeview.billsearch.window('options').returnData;
+                if (bill_no != null && bill_no.length > 0) {
+                    contract.contractprefeeview.refresh($.trim(bill_no));
                 }
-            });
-            contract.tool.billsearch.combogrid('options').parentWin = contract.contractprefeeview.billsearch;
+            },
+            onClose: function () {
+                contract.contractprefeeview.billsearch.window('destroy');
+                contract.contractprefeeview.billsearch = null;
+            }
         });
-        $('#contract-contractprefeeview-save-button').bind('click', function (e) {
-            if (contract.contractprefeeview.prefeeingrid.datagrid('preSave') == 0) {
-                $.messager.show({title: '错误信息',
-                    msg: '应收费用验证失败',
-                    timeout: 3000,
-                    showType: 'slide'});
-                return;
-            }
-            if (contract.contractprefeeview.prefeeoutgrid.datagrid('preSave') == 0) {
-                $.messager.show({title: '错误信息',
-                    msg: '应付费用验证失败',
-                    timeout: 3000,
-                    showType: 'slide'});
-                return;
-            }
-            var parm = {
-                reqtype: 'update',
-                func: '应收付费用维护'
-            };
+        contract.tool.billsearch.combogrid('options').parentWin = contract.contractprefeeview.billsearch;
+    });
+    $('#contract-contractprefeeview-save-button').bind('click', function (e) {
+        if (contract.contractprefeeview.prefeeingrid.datagrid('preSave') == 0) {
+            $.messager.show({title: '错误信息',
+                msg: '应收费用验证失败',
+                timeout: 3000,
+                showType: 'slide'});
+            return;
+        }
+        if (contract.contractprefeeview.prefeeoutgrid.datagrid('preSave') == 0) {
+            $.messager.show({title: '错误信息',
+                msg: '应付费用验证失败',
+                timeout: 3000,
+                showType: 'slide'});
+            return;
+        }
+        var parm = {
+            reqtype: 'update',
+            func: '应收付费用维护'
+        };
 
-            var infeeObj = contract.contractprefeeview.prefeeingrid.datagrid('getDirtyData', 'all');
-            var outfeeObj = contract.contractprefeeview.prefeeoutgrid.datagrid('getDirtyData', 'all');
-            parm.rows = infeeObj.i.concat(infeeObj.u).concat(infeeObj.d).
-                    concat(outfeeObj.i).concat(outfeeObj.u).concat(outfeeObj.d);
+        var infeeObj = contract.contractprefeeview.prefeeingrid.datagrid('getDirtyData', 'all');
+        var outfeeObj = contract.contractprefeeview.prefeeoutgrid.datagrid('getDirtyData', 'all');
+        parm.rows = infeeObj.i.concat(infeeObj.u).concat(infeeObj.d).
+                concat(outfeeObj.i).concat(outfeeObj.u).concat(outfeeObj.d);
 
-            $.ajax({
-                url: "./dealPAjax/",
-                data: {jpargs: JSON.stringify(parm)},
-                success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
-                        }
+        $.ajax({
+            url: "./dealPAjax/",
+            data: {jpargs: JSON.stringify(parm)},
+            success: function (r, t, a) {
+                var stateCod = parseInt(r.stateCod);
+                if (r && !isNaN(stateCod)) {
+                    if (stateCod == 202) {
+                        //保存成功刷新界面
+                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
                     }
-                    $.ajaxSettings.success(r, t, a, true);
                 }
-            });
-        });
-        $('#contract-contractprefeeview-lock-button').bind('click', function (e) {
-            var parm = {
-                reqtype: 'update',
-                func: '应收付费用锁定'
-            };
-            var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
-            for (var i = 0,ilen = rows.length;i < ilen;i++){
-
+                $.ajaxSettings.success(r, t, a, true);
             }
-            parm.rows = infeeObj.i.concat(infeeObj.u).concat(infeeObj.d).
-                    concat(outfeeObj.i).concat(outfeeObj.u).concat(outfeeObj.d);
-
-            $.ajax({
-                url: "./dealPAjax/",
-                data: {jpargs: JSON.stringify(parm)},
-                success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
-                        }
-                    }
-                    $.ajaxSettings.success(r, t, a, true);
-                }
-            });
         });
     });
+    $('#contract-contractprefeeview-lock-button').bind('click', function (e) {
+        var parmRows = new Array();
+        var parm = {
+            reqtype: 'update',
+            func: '应收付费用锁定'
+        };
+        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
+        for (var i = 0, ilen = rows.length; i < ilen; i++) {
+            if (rows[i].id != null) {
+                parmRows.push({
+                    op: 'updatedirty',
+                    table: 'pre_fee',
+                    cols: {lock_flag: [true]},
+                    subs: {},
+                    id: rows[i].id
+                });
+            } else {
+                $.messager.show({title: '错误信息',
+                    msg: (rows[i].fee_typ == 'I' ? '存在未保存的应收费用' : '存在未保存的应付费用'),
+                    timeout: 3000,
+                    showType: 'slide'});
+                return;
+            }
+        }
+        parm.rows = parmRows;
+
+        $.ajax({
+            url: "./dealPAjax/",
+            data: {jpargs: JSON.stringify(parm)},
+            success: function (r, t, a) {
+                var stateCod = parseInt(r.stateCod);
+                if (r && !isNaN(stateCod)) {
+                    if (stateCod == 202) {
+                        //保存成功刷新界面
+                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                    }
+                }
+                $.ajaxSettings.success(r, t, a, true);
+            }
+        });
+    });
+});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:'false'">
