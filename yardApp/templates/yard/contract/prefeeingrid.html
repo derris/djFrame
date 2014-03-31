@@ -35,6 +35,9 @@
                     group: '#control-contract-prefeeingrid-{{ seq }}',
                     handler: function () {
                         var opts = control.contract.prefeeingrid._{{ seq }}.datagrid('options');
+                        if (opts.contract_id == 0){
+                            return;
+                        }
                         var curtim = new Date();
                         var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
                         control.contract.prefeeingrid._{{ seq }}.datagrid('insertData', {
@@ -63,3 +66,4 @@
 </script>
 <table id="control-contract-prefeeingrid-{{ seq }}" data-options="border:'false'">
 </table>
+{#<table id="control-contract-prefeeingrid-{{ seq }}"#}

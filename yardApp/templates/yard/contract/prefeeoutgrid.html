@@ -33,6 +33,9 @@
                     group: '#control-contract-prefeeoutgrid-{{ seq }}',
                     handler: function () {
                         var opts = control.contract.prefeeoutgrid._{{ seq }}.datagrid('options');
+                        if (opts.contract_id == 0){
+                            return;
+                        }
                         var curtim = new Date();
                         var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
                         control.contract.prefeeoutgrid._{{ seq }}.datagrid('insertData', {

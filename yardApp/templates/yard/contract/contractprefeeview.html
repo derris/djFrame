@@ -43,8 +43,11 @@ $(function () {
                                 {cod: 'contract_id', operatorTyp: '等于', value: r.rows[0].id}
                             ];
                             outOpts.contract_id = r.rows[0].id;
+
                             contract.contractprefeeview.prefeeingrid.datagrid('reload');
                             contract.contractprefeeview.prefeeoutgrid.datagrid('reload');
+                            contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
+                            contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
                             //旧委托 刷新界面
                         }
                         if (stateCod == 201) {
@@ -52,11 +55,14 @@ $(function () {
                             contract.contractprefeeview.contractform.form('clear');
                             contract.contractprefeeview.contractform.form('extReset');
                             contract.contractprefeeview.billnovb.val(bill_no);
-                            inOpts.contract_id = null;
-                            inOpts.client_id = null;
-                            outOpts.contract_id = null;
+                            inOpts.contract_id = 0;
+                            inOpts.client_id = 0;
+                            outOpts.contract_id = 0;
                             contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
                             contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
+                            contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
+                            contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
+
                         }
                     } else {
                         $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
@@ -66,13 +72,16 @@ $(function () {
         } else {
             var inOpts = contract.contractprefeeview.prefeeingrid.datagrid('options');
             var outOpts = contract.contractprefeeview.prefeeoutgrid.datagrid('options');
-            inOpts.contract_id = null;
-            inOpts.client_id = null;
-            outOpts.contract_id = null;
+            inOpts.contract_id = 0;
+            inOpts.client_id = 0;
+            outOpts.contract_id = 0;
             contract.contractprefeeview.contractform.form('clear');
             contract.contractprefeeview.contractform.form('extReset');
             contract.contractprefeeview.prefeeingrid.datagrid('loadData', []);
             contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
+            contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
+            contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
+
         }
     }
     $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
@@ -172,6 +181,7 @@ $(function () {
                     id: rows[i].id
                 });
             } else {
+                console.info(rows[i]);
                 $.messager.show({title: '错误信息',
                     msg: (rows[i].fee_typ == 'I' ? '存在未保存的应收费用' : '存在未保存的应付费用'),
                     timeout: 3000,
