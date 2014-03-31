@@ -334,7 +334,6 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                     lb_updateValid = True
                     ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                 ls_set = ls_set[:-1]
-                ls_where = ls_where[:-5]
                 if 'upd_nam' in ls_set:
                     pass
                 else:
