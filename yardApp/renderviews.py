@@ -239,7 +239,7 @@ def actfeeview(request):
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     offFlagObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='off_flag',readonly=True)
     return render(request,"yard/fee/actfee.html",locals())
-def prefeeauditview(request):
+def prefeeauditview(request):    # 已收费用核销
     idObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     clientIdObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     feeTypObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')

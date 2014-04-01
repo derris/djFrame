@@ -15,11 +15,11 @@ def logon(request):
         l_userid = l_cur.fetchone()[0]
         request.session['userid'] = l_userid
         request.session['logon'] = True
-        l_rtn = { "stateCod" : 2}
+        l_rtn = { "stateCod" : 2, "msg": "登录成功。"}
     else:
         request.session['userid'] = ''
         request.session['logon'] = False
-        l_rtn = { "stateCod": -2 }
+        l_rtn = { "stateCod": -2 , "msg": "登录失败，用户名不存在或者密码错误。"}
     return HttpResponse(json.dumps(l_rtn,ensure_ascii = False))
 
 

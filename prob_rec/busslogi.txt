@@ -75,8 +75,9 @@ $BODY$
 BEGIN
 
 	IF NEW.lock_flag = true THEN
+		RAISE EXCEPTION '已经锁定不能修改';
 	ELSE
-		IF NEW.audit_id = true THEN
+		IF NEW.audit_id = true and OLD.audit_id = true THEN
 			RAISE EXCEPTION '已经核销不能修改';
 		END IF;
         END IF;
