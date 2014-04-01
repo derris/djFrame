@@ -376,10 +376,10 @@ $(function () {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
             var parm = {
-                reqtype: 'updatedirty',
+                reqtype: 'update',
                 func: '委托解锁',
                 rows: [
-                    {op: 'update',
+                    {op: 'updatedirty',
                         cols: {finish_flag: [''],finish_time:['']},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
