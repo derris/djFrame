@@ -10,23 +10,46 @@
     <script src="../../static/js/jquery-easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
     <script src="../../static/js/App.js" type="text/javascript"></script>
     <script src="../../static/js/datagridgroupview.js" type="text/javascript"></script>
-    <link href="../../static/css/test.css" rel="stylesheet" type="text/css" />
+    <link href="../../static/css/test.css" rel="stylesheet" type="text/css"/>
     <script src="../../static/js/dhsdebug.js"></script>
 
     <script>
-        sy.logonPath = "./dealmenureq/?menutext=登录窗口"
-        sy.searchWindowUrl = "./dealmenureq/?menutext=通用查询"
+        $(function () {
+            sy.logonPath = "./dealmenureq/?menutext=登录窗口";
+            sy.searchWindowUrl = "./dealmenureq/?menutext=通用查询";
+            sy.logonform = $('<div></div>').window({
+                href: sy.logonPath,
+                title: '系统登录',
+                width: window.innerWidth * 0.25,
+                height: window.innerHeight * 0.3,
+                modal: true,
+                collapsible: false,
+                minimizable: false,
+                maximizable: false,
+                closable: true,
+                onBeforeClose:function(){
+                    $('#mainmenu').panel('refresh','./dealmenureq/?menutext=导航菜单');
+                    $('#maintab').panel('refresh','./dealmenureq/?menutext=主窗口');
+                }
+            });
+
+        });
     </script>
 </head>
 <body class="easyui-layout">
 {% csrf_token %}
 {#    <div data-options="region:'north',split:true" style="height: 35px" href="{% url 'logonview' %}"></div>#}
-    <div data-options="region:'west',title:'功能列表',split:true"
+{% comment %}<div data-options="region:'west',title:'功能列表',split:true,collapsed:true"
          style="width: 200px" href="./dealmenureq/?menutext=导航菜单">
-    </div>
-    <div data-options="region:'center'" href="./dealmenureq/?menutext=主窗口">
+    </div>{% endcomment %}
+<div id="mainmenu"  data-options="region:'west',title:'功能列表',split:true"
+     style="width: 200px">
+</div>
+{% comment %}<div data-options="region:'center'" href="./dealmenureq/?menutext=主窗口">
 
-    </div>
+    </div>{% endcomment %}
+<div id="maintab" data-options="region:'center'">
 
+</div>
 </body>
 </html>

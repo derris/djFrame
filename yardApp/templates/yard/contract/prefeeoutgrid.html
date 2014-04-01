@@ -5,58 +5,60 @@
             autoLoad: false,
             fee_typ: 'O',
             contract_id: 0,
-            singleSelect:false,
+            singleSelect: false,
             columns: [
                 [
                     {% autoescape off %}
-                        {{ id.writeUI|safe|escape }},
-                        {field:'ck',checkbox:true},
-                        {{ contractid.writeUI|safe|escape }},
-                        {{ feetyp.writeUI|safe|escape }},
-                        {{ feecod.writeUI|safe|escape }},
-                        {{ client.writeUI|safe|escape }},
-                        {{ amount.writeUI|safe|escape }},
-                        {{ feetim.writeUI|safe|escape }},
-                        {{ financialtim.writeUI|safe|escape }},
-                        {{ lock_flag.writeUI|safe|escape }},
-                        {{ audit_id.writeUI|safe|escape }},
-                        {{ remark.writeUI|safe|escape }}
+                        {{ prefee_id.writeUI|safe|escape }},
+                        {field: 'ck', checkbox: true},
+                        {{ prefee_contractid.writeUI|safe|escape }},
+                        {{ prefee_feetyp.writeUI|safe|escape }},
+                        {{ prefee_feecod.writeUI|safe|escape }},
+                        {{ prefee_client.writeUI|safe|escape }},
+                        {{ prefee_amount.writeUI|safe|escape }},
+                        {{ prefee_feetim.writeUI|safe|escape }},
+                        {{ prefee_financialtim.writeUI|safe|escape }},
+                        {{ prefee_lock_flag.writeUI|safe|escape }},
+                        {{ prefee_audit_id.writeUI|safe|escape }},
+                        {{ prefee_remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
             dataTable: 'pre_fee',
             showFooter: true,
-            pagination:false,
-            toolbar: [
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: '#control-contract-prefeeoutgrid-{{ seq }}',
-                    handler: function () {
-                        var opts = control.contract.prefeeoutgrid._{{ seq }}.datagrid('options');
-                        if (opts.contract_id == 0){
-                            return;
+            pagination: false,
+            {% if display_toolbar %}
+                toolbar: [
+                    {text: '增加',
+                        iconCls: 'icon-add',
+                        group: '#control-contract-prefeeoutgrid-{{ seq }}',
+                        handler: function () {
+                            var opts = control.contract.prefeeoutgrid._{{ seq }}.datagrid('options');
+                            if (opts.contract_id == 0) {
+                                return;
+                            }
+                            var curtim = new Date();
+                            var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
+                            control.contract.prefeeoutgrid._{{ seq }}.datagrid('insertData', {
+                                contract_id: opts.contract_id,
+                                fee_typ: 'O',
+                                ex_feeid: 'O',
+                                fee_tim: stim,
+                                fee_financial_tim: stim
+                            });
                         }
-                        var curtim = new Date();
-                        var stim = curtim.getFullYear() + '-' + (curtim.getMonth() + 1) + '-' + curtim.getDate();
-                        control.contract.prefeeoutgrid._{{ seq }}.datagrid('insertData', {
-                            contract_id: opts.contract_id,
-                            fee_typ: 'O',
-                            ex_feeid: 'O',
-                            fee_tim : stim,
-                            fee_financial_tim :stim
-                        });
-                    }
 
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: '#control-contract-prefeeoutgrid-{{ seq }}',
-                    handler: function () {
-                        control.contract.prefeeoutgrid._{{ seq }}.datagrid('deleteData');
+                    },
+                    '-',
+                    {text: '删除',
+                        iconCls: 'icon-remove',
+                        group: '#control-contract-prefeeoutgrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.prefeeoutgrid._{{ seq }}.datagrid('deleteData');
+                        }
                     }
-                }
-            ],
+                ],
+            {% endif %}
             queryFuncName: '委托应付查询'
         });
         control.contract.prefeeoutgrid._{{ seq }}.trigger('afterrender', control.contract.prefeeoutgrid._{{ seq }});

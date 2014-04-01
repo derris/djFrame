@@ -1,0 +1,66 @@
+<script>
+    Namespace.register('contract.contractqueryview');
+    $(function () {
+        contract.contractqueryview.contractgrid = null;
+        contract.contractqueryview.actiongrid = null;
+        contract.contractqueryview.cntrgrid = null;
+        contract.contractqueryview.prefeeingrid = null;
+        contract.contractqueryview.prefeeoutgrid = null;
+        $(document).on('afterrender', '#control-contract-datagrid-{{ seq }}', function (e, grid) {
+            contract.contractqueryview.contractgrid = $(grid);
+        });
+        $(document).on('afterrender', '#control-contract-actiongrid-{{ seq }}', function (e, grid) {
+            contract.contractqueryview.actiongrid = $(grid);
+        });
+        $(document).on('afterrender', '#control-contract-cntrgrid-{{ seq }}', function (e, grid) {
+            contract.contractqueryview.cntrgrid = $(grid);
+        });
+        $(document).on('afterrender', '#control-contract-prefeeingrid-{{ seq }}', function (e, grid) {
+            contract.contractqueryview.prefeeingrid = $(grid);
+        });
+        $(document).on('afterrender', '#control-contract-prefeeoutgrid-{{ seq }}', function (e, grid) {
+            contract.contractqueryview.prefeeoutgrid = $(grid);
+        });
+        $(document).on('loadsuccess','#control-contract-datagrid-{{ seq }}',function(e){
+            contract.contractqueryview.actiongrid.datagrid('loadData',[]);
+            contract.contractqueryview.cntrgrid.datagrid('loadData',[]);
+            contract.contractqueryview.prefeeingrid.datagrid('loadData',[]);
+            contract.contractqueryview.prefeeoutgrid.datagrid('loadData',[]);
+        });
+        $(document).on('clickrow','#control-contract-datagrid-{{ seq }}',function(e,contract_id){
+            var filter = [{cod: 'contract_id', operatorTyp: '等于', value: contract_id}];
+            contract.contractqueryview.actiongrid.datagrid('options').filterFields = filter;
+            contract.contractqueryview.cntrgrid.datagrid('options').filterFields = filter;
+            contract.contractqueryview.prefeeingrid.datagrid('options').filterFields = filter;
+            contract.contractqueryview.prefeeoutgrid.datagrid('options').filterFields = filter;
+            contract.contractqueryview.actiongrid.datagrid('reload');
+            contract.contractqueryview.cntrgrid.datagrid('reload');
+            contract.contractqueryview.prefeeingrid.datagrid('reload');
+            contract.contractqueryview.prefeeoutgrid.datagrid('reload');
+
+        });
+    });
+
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        {% include 'yard/contract/contractgrid.html' %}
+    </div>
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+            <div title="委托动态">
+                {% include 'yard/contract/contractactiongrid.html' %}
+            </div>
+            <div title="委托箱量">
+                {% include 'yard/contract/contractcntrgrid.html' %}
+            </div>
+
+            <div title="应收费用">
+                {% include 'yard/contract/prefeeingrid.html' %}
+            </div>
+            <div title="应付费用">
+                {% include 'yard/contract/prefeeoutgrid.html' %}
+            </div>
+        </div>
+    </div>
+</div>

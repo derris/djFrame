@@ -206,7 +206,7 @@ class EasyuiFieldUI:
                 self.editor = {
                     'type': 'text'
                 }
-            self.width = columnWidth * 10
+            self.width = columnWidth * 18
         if isinstance(self.fObj, (models.ForeignKey,)):
             columnWidth = len(self.title)
             if self.autoforeign is not None and self.autoforeign:

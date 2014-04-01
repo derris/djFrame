@@ -339,8 +339,8 @@ $.extend($.fn.datagrid.defaults, {
     fit: true,
     idField: 'id',
     method: 'post',
-    pageList: [20, 40, 60, 80, 100],
-    pageSize: 20,
+    pageList: [50, 100, 150, 200, 250],
+    pageSize: 50,
     pagination: true,
     rownumbers: true,
     singleSelect: true,
@@ -947,7 +947,7 @@ $.ajaxSetup({
                     });
                 }
             } else {//返回错误
-                if (returnData.error.length > 0) {
+                if (returnData.error && returnData.error.length > 0) {
                     $.messager.show({
                         title: '错误信息',
                         msg: returnData.error.join('\n'),

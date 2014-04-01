@@ -14,3 +14,9 @@
     bottom:10px;
     left:5px;
 }
+.editform-toolbar-gridbottom{
+    position: absolute;
+    float:left;
+    bottom:30px;
+    left:5px;
+}

@@ -1,8 +1,8 @@
 <script>
-    Namespace.register('contract.contractview');
+    Namespace.register('control.contract.contractgrid');
     $(function () {
-        contract.contractview.datagrid = $('#contract-contract-datagrid').datagrid({
-            autoSave: true,
+        control.contract.contractgrid._{{ seq }} = $('#control-contract-datagrid-{{ seq }}').datagrid({
+            autoLoad: false,
             columns: [
                 [
                     {% autoescape off %}
@@ -23,54 +23,59 @@
                         {{ port_id.writeUI|safe|escape }},
                         {{ yard_id.writeUI|safe|escape }},
                         {{ finish_flag.writeUI|safe|escape }},
-                        {{ finish_tim.writeUI|safe|escape }},
+                        {{ finish_time.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
             dataTable: 'contract',
-            toolbar: [
-                {text: '查询',
-                    iconCls: 'icon-search',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        sy.createSearchWindow(basedata.clientsview.datagrid);
-                    }
-                },
-                '-',
-                {text: '增加',
-                    iconCls: 'icon-add',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('insertData', {
-                            client_name: '新客户名称'
-                        });
-                    }
-                },
-                '-',
-                {text: '删除',
-                    iconCls: 'icon-remove',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('deleteData');
-                    }
-                },
-                '-',
-                {text: '保存',
-                    iconCls: 'icon-save',
-                    group: 'contract-contract-datagrid',
-                    handler: function () {
-                        basedata.clientsview.datagrid.datagrid('postUpdateAllData');
-                    }
-                }
-            ]
 
+                toolbar: [
+                    {text: '查询',
+                        iconCls: 'icon-search',
+                        group: 'control-contract-datagrid-{{ seq }}',
+                        handler: function () {
+                            sy.createSearchWindow(control.contract.contractgrid._{{ seq }});
+                        }
+                    }{% comment %},
+                    '-',
+                    {text: '增加',
+                        iconCls: 'icon-add',
+                        group: 'control-contract-datagrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.contractgrid._{{ seq }}.datagrid('insertData', {
+
+                            });
+                        }
+                    },
+                    '-',
+                    {text: '删除',
+                        iconCls: 'icon-remove',
+                        group: 'control-contract-datagrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.contractgrid._{{ seq }}.datagrid('deleteData');
+                        }
+                    },
+                    '-',
+                    {text: '保存',
+                        iconCls: 'icon-save',
+                        group: 'control-contract-datagrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.contractgrid._{{ seq }}.datagrid('postUpdateAllData');
+                        }
+                    }{% endcomment %}
+                ],
+
+            queryFuncName: '委托查询',
+            onLoadSuccess:function(data){
+                control.contract.contractgrid._{{ seq }}.trigger('loadsuccess');
+            },
+            onClickRow:function(rowindex,rowdata){
+                control.contract.contractgrid._{{ seq }}.trigger('clickrow',rowdata.id);
+            }
         });
+        control.contract.contractgrid._{{ seq }}.trigger('afterrender',control.contract.contractgrid._{{ seq }});
     });
 </script>
-<div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',border:'true'">
-        <table id="contract-contract-datagrid" data-options="border:false">
-        </table>
-    </div>
-</div>
+<table id="control-contract-datagrid-{{ seq }}" data-options="border:false">
+</table>

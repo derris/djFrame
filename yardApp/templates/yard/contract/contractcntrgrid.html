@@ -1,0 +1,48 @@
+<script>
+    Namespace.register('control.contract.cntrgrid');
+    $(function () {
+        control.contract.cntrgrid._{{ seq }} = $('#control-contract-cntrgrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            contract_id: 0,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ cntrid.writeUI|safe|escape }},
+                        {{ cntrcontractid.writeUI|safe|escape }},
+                        {{ cntr_type.writeUI|safe|escape }},
+                        {{ cntr_num.writeUI|safe|escape }},
+                        {{ actionremark.writeUI|safe|escape }}
+
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'contract_cntr',
+            pagination:false,
+            {% if display_toolbar %}
+                toolbar: [
+                    {text: '增加箱量',
+                        iconCls: 'icon-add',
+                        group: 'control-contract-cntrgrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.cntrgrid._{{ seq }}.datagrid('insertData', {
+                                contract_id: control.contract.cntrgrid._{{ seq }}.datagrid('options').contract_id
+                            }
+                        }
+                    },
+                    '-',
+                    {text: '删除箱量',
+                        iconCls: 'icon-remove',
+                        group: 'control-contract-cntrgrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.cntrgrid._{{ seq }}.datagrid('deleteData');
+                        }
+                    }
+                ],
+            {% endif %}
+            queryFuncName: '委托箱查询'
+        });
+        control.contract.cntrgrid._{{ seq }}.trigger('afterrender',control.contract.cntrgrid._{{ seq }});
+    });
+</script>
+<table id="control-contract-cntrgrid-{{ seq }}" data-options="border:'false'">
+</table>

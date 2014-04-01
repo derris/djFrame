@@ -1,0 +1,55 @@
+<script>
+    Namespace.register('control.contract.actiongrid');
+    $(function () {
+        control.contract.actiongrid._{{ seq }} = $('#control-contract-actiongrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            contract_id: 0,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ actionid.writeUI|safe|escape }},
+                        {{ actioncontractid.writeUI|safe|escape }},
+                        {{ action_id.writeUI|safe|escape }},
+                        {{ finish_flag.writeUI|safe|escape }},
+                        {{ finish_time.writeUI|safe|escape }},
+                        {{ actionremark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'contract_action',
+            pagination:false,
+            {% if display_toolbar %}
+                toolbar: [
+                    {text: '增加动态',
+                        iconCls: 'icon-add',
+                        group: 'control-contract-actiongrid-{{ seq }}',
+                        handler: function () {
+                            var rowCount = control.contract.actiongrid._{{ seq }}.datagrid('getRows').length;
+                            var oaction = control.contract.actiongrid._{{ seq }}.datagrid('getColumnOption', 'action_id').editor.options.data;
+                            if (rowCount == oaction.length) {
+                                return;
+                            } else {
+                                control.contract.actiongrid._{{ seq }}.datagrid('insertData', {
+                                    contract_id: control.contract.actiongrid._{{ seq }}.datagrid('options').contract_id,
+                                    action_id: oaction[rowCount].value
+                                });
+                            }
+                        }
+                    },
+                    '-',
+                    {text: '删除动态',
+                        iconCls: 'icon-remove',
+                        group: 'control-contract-actiongrid-{{ seq }}',
+                        handler: function () {
+                            control.contract.actiongrid._{{ seq }}.datagrid('deleteData');
+                        }
+                    }
+                ],
+            {% endif %}
+            queryFuncName: '委托动态查询'
+        });
+        control.contract.actiongrid._{{ seq }}.trigger('afterrender',control.contract.actiongrid._{{ seq }});
+    });
+</script>
+<table id="control-contract-actiongrid-{{ seq }}" data-options="border:'false'">
+</table>

@@ -1,13 +1,16 @@
 <script type="text/javascript">
-    $(function(){
-        Namespace.register('logon');
+    Namespace.register('logon');
+    $(function () {
         logon.form = $('#logon-form').form({
 
         });
+        logon.form.form('disableValidation');
+        $('input[type=password]').val(null);
         logon.logonbutton = $('#logon-button').linkbutton({
             plain: true
         });
         logon.logonbutton.bind('click', function () {
+            logon.form.form('enableValidation');
             var param = null;
             var url = '';
             if (logon.logonbutton.linkbutton('options').text == '登录') {
@@ -21,31 +24,38 @@
             }
             $.ajax({
                 url: url,
-                data: {jpargs:JSON.stringify(param)},
+                data: {jpargs: JSON.stringify(param)},
                 success: function (returnData, returnMsg, ajaxObj) {
                     var stateCod = parseInt(returnData.stateCod);
                     if (!isNaN(stateCod)) {
                         $('input[type=password]').val(null);
                         if (returnData.stateCod == 2) { //登录成功
                             //关闭所有tabs页面，刷新菜单导航
+                            sy.logonform.window('close');
                         }
                         if (returnData.stateCod == 3 || returnData.stateCod == -1) { //注销 登录失败
                             //关闭所有tabs页面，清空菜单导航
                         }
                     }
-                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj);
+                    $.ajaxSettings.success(returnData, returnMsg, ajaxObj,false);
                 }
             });
         });
-        $('input[type=password]').val(null);
+
     });
 </script>
-<div style="float:right">
-    <form id="logon-form" method="post">
-        <label for="name">用户:</label>
-        <input class="easyui-validatebox" type="text" name="name" data-options="required:true"/>
-        <label for="password">密码:</label>
-        <input class="easyui-validatebox" type="password" name="password" data-options="required:true"/>
-        <a id="logon-button" href="#" style="margin-left:5px;margin-right: 25px">登录</a>
+<div>
+    <form id="logon-form" method="post" class="editform">
+        <div>
+            <label for="name">用户:</label>
+            <input class="easyui-validatebox" type="text" name="name" data-options="required:true"/>
+        </div>
+        <div>
+            <label for="password">密码:</label>
+            <input class="easyui-validatebox" type="password" name="password" data-options="required:true"/>
+        </div>
+        <div class="editform-toolbar">
+            <a id="logon-button" href="#" class="easyui-linkbutton">登录</a>
+        </div>
     </form>
 </div>

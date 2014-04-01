@@ -258,6 +258,7 @@ $(function () {
                     sy.searchWindowData[i].editor.options.multiple = true;
                     sy.searchWindowData[i].editor.options.onSelect = function (record) {
                         var cur_datagrid_row = common.createsearchform.filterdatagrid.datagrid('options').editRow;
+
                         common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
                         common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
 
@@ -277,7 +278,7 @@ $(function () {
                             panelHeight: 40,
                             multiple: false,
                             onSelect: function (record) {
-                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.datagrid('options').editRow;
                                 common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = $(this).combo('getValues');
                                 common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = $(this).combo('getText');
                             }
@@ -290,7 +291,7 @@ $(function () {
                         options: {
                             required: false,
                             onChange: function (newDate, oldDate) {
-                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.datagrid('options').editRow;
                                 if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
                                     if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
                                         common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
@@ -310,7 +311,7 @@ $(function () {
                         options: {
                             required: false,
                             onChange: function (newDate, oldDate) {
-                                var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                var cur_datagrid_row = common.createsearchform.filterdatagrid.datagrid('options').editRow;
                                 if (newDate != null && common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.indexOf(newDate) < 0) {
                                     if (common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value.length > 0) {
                                         common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value + ',' + newDate;
