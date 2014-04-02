@@ -178,6 +178,7 @@ sy.csrfSafeMethod = function (method) {
  sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
  sy.csrftoken csrf令牌
  * */
+sy.apptitle = '堆场系统';
 sy.logonPath = '';
 sy.onError = function (msg, logout) {
     /*msg:错误信息
@@ -947,6 +948,9 @@ $.ajaxSetup({
                     });
                 }
             } else {//返回错误
+                if (returnData.msg && returnData.msg.length > 0){
+                    $.messager.alert('提示',returnData.msg,'info');
+                }
                 if (returnData.error && returnData.error.length > 0) {
                     $.messager.show({
                         title: '错误信息',

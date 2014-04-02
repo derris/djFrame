@@ -314,7 +314,7 @@ def dealMenuReq(request):
         return(contractqueryview(request))
 
     #######  费用 #############
-    elif ls_args == "已收费用":
+    elif ls_args == "收款/付款":
         return(actfeeview(request))
     elif ls_args == "已收核销":
         return(prefeeauditview(request))

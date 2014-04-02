@@ -5,10 +5,8 @@
 
         });
         logon.form.form('disableValidation');
-        $('input[type=password]').val(null);
-        logon.logonbutton = $('#logon-button').linkbutton({
-            plain: true
-        });
+
+        logon.logonbutton = $('#logon-button').linkbutton({});
         logon.logonbutton.bind('click', function () {
             logon.form.form('enableValidation');
             var param = null;
@@ -26,22 +24,32 @@
                 url: url,
                 data: {jpargs: JSON.stringify(param)},
                 success: function (returnData, returnMsg, ajaxObj) {
+
                     var stateCod = parseInt(returnData.stateCod);
                     if (!isNaN(stateCod)) {
                         $('input[type=password]').val(null);
-                        if (returnData.stateCod == 2) { //登录成功
+                        if (stateCod == 2) { //登录成功
                             //关闭所有tabs页面，刷新菜单导航
+                            document.title = document.title + '-----' + '当前用户：' + param.name;
                             sy.logonform.window('close');
+
                         }
-                        if (returnData.stateCod == 3 || returnData.stateCod == -1) { //注销 登录失败
+                        if (stateCod == 3 ) { //注销 登录失败
                             //关闭所有tabs页面，清空菜单导航
+
                         }
+                        if (stateCod == -2) { //登录失败
+                            //关闭所有tabs页面，刷新菜单导航
+                            //sy.logonform.window('close');
+
+                        }
+
                     }
                     $.ajaxSettings.success(returnData, returnMsg, ajaxObj,false);
                 }
             });
         });
-
+        $('input[type=password]').val(null);
     });
 </script>
 <div>
@@ -55,7 +63,7 @@
             <input class="easyui-validatebox" type="password" name="password" data-options="required:true"/>
         </div>
         <div class="editform-toolbar">
-            <a id="logon-button" href="#" class="easyui-linkbutton">登录</a>
+            <a id="logon-button" data-options="iconCls:'icon-unlock'" href="#" class="easyui-linkbutton">登录</a>
         </div>
     </form>
 </div>

@@ -15,18 +15,19 @@
 
     <script>
         $(function () {
+            document.title = sy.apptitle;
             sy.logonPath = "./dealmenureq/?menutext=登录窗口";
             sy.searchWindowUrl = "./dealmenureq/?menutext=通用查询";
             sy.logonform = $('<div></div>').window({
                 href: sy.logonPath,
                 title: '系统登录',
                 width: window.innerWidth * 0.25,
-                height: window.innerHeight * 0.3,
+                height: window.innerHeight * 0.2,
                 modal: true,
                 collapsible: false,
                 minimizable: false,
                 maximizable: false,
-                closable: true,
+                closable: false,
                 onBeforeClose:function(){
                     $('#mainmenu').panel('refresh','./dealmenureq/?menutext=导航菜单');
                     $('#maintab').panel('refresh','./dealmenureq/?menutext=主窗口');
