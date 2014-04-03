@@ -18,14 +18,12 @@ def getColType(atable, aCol):
     return(tbDefCache[ls_tab][ls_col])
 
 def correctjsonfield(obj, atypecode):
-    if obj:
+    if obj is not None:
         if isinstance(obj, datetime):
             return obj.strftime('%Y-%m-%d %H:%M:%S')
         elif isinstance(obj,date):
             return obj.strftime('%Y-%m-%d')
-        elif isinstance(obj,bool):
-            return "true"
-        else:                 #
+        else:                 #  isinstance(obj,bool):
             return str(obj)
     else:
         if atypecode == 1043:    # varchar
