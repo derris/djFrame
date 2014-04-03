@@ -170,7 +170,7 @@ def rawsql4request(aSql, aRequestDict):
         ls_finorder = ' order by  ' + ls_ordersum
 
     ls_finSql = ls_select
-    ls_tablename = re.search(r'\bfrom\b\s*(\w*)', ls_sql).group(1)
+    ls_tablename = re.search(r'(?<=from).*', ls_select).group(0)
     ls_sqlcount = "select count(*) from " + ls_tablename
 
     if ls_finwhere:
@@ -455,3 +455,44 @@ def fetchSeq(aSeqName):
         return str(l_seq[0][0])
     else:
         return -1
+
+def sepSql(aSql):
+    '''
+        将sql语句分离出来 select where group order
+
+        SELECT product_id, p.name, (sum(s.units) * (p.price - p.cost)) AS profit
+            FROM products p LEFT JOIN sales s USING (product_id)
+            WHERE s.date > CURRENT_DATE - INTERVAL '4 weeks'
+            GROUP BY product_id, p.name, p.price, p.cost  HAVING sum(p.price * s.units) > 5000;
+            ORDER BY sort_expression1 [ASC | DESC] [NULLS { FIRST | LAST }]
+            LIMIT { number | ALL } ] OFFSET number ;
+    '''
+
+     # 处理原来的sql语句，准备加上新的条件。
+    ls_sql = aSql if aSql.find(';') > 0 else aSql + ";"  # 保证分号结束。 where group order limit
+    ls_rewhere = r'(\bwhere\b.*?)(\border\b|\bgroup\b|\blimit\b|;)'
+    ls_regroup = r'(\bgroup\b.*?)(\border\b|\blimit\b|;)'
+    ls_reorder = r'(\border\b.*?)(\bgroup\b|\blimit\b|;)'
+    ls_reselect = r'(.*?)(\bwhere\b|\blimit\b|\border\b|\bgroup\b|;)'
+
+    l_tmp = re.search(ls_reselect, ls_sql, re.IGNORECASE)   # 得到select主题语句
+    if l_tmp:
+        ls_select = l_tmp.group(1)
+    else:
+        ls_select = ''
+        logErr("得不到sql主体语句：%s" % ls_sql)
+        raise Exception("得不到sql主体语句，请与管理员联系")
+
+    l_tmp = re.search(ls_rewhere, ls_sql, re.IGNORECASE)
+    ls_where = l_tmp.group(1) if l_tmp else None   # 后台的sql语句。where条件。
+
+    l_tmp =  re.search(ls_regroup, ls_sql, re.IGNORECASE)
+    ls_group = l_tmp.group(1) if l_tmp else None
+
+    l_tmp = re.search(ls_reorder, ls_sql, re.IGNORECASE)
+    ls_order = l_tmp.group(1) if l_tmp else None
+
+    ls_finSql = ls_select
+    ls_tablename = re.search(r'(?<=from).*', ls_select).group(0)
+    ls_sqlcount = "select count(*) from " + ls_tablename
+
