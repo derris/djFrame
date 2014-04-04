@@ -33,7 +33,7 @@ def correctjsonfield(obj, atypecode):
         elif atypecode == 1083:  # time
             return ""
         elif atypecode == 16:    # bool
-            return ""
+            return "false"
         elif atypecode == 18:  # char            :
             return ""
         elif atypecode == 1114:  # datetime/ timestamp
@@ -274,6 +274,8 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                             else:
                                 if getColType(i_row['table'], icol) == "char": # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                                     ls_val += "'" + str(ival) + "',"
+                                elif getColType(i_row['table'], icol) == "bool":
+                                    ls_val += " false,"
                                 else:
                                     ls_val += "null,"
 
@@ -298,16 +300,20 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 for icol,ival in i_row['cols'].items():
                     lb_updateValid = True
                     if  str(ival[0]) == "":
-                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime", "bool"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime"):# 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                             ls_set += str(icol) + "= null,"
-                        else:
+                        elif getColType(i_row['table'], icol) == "bool":
+                             ls_set += str(icol) + "= false,"
+                        else: # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                             ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                     else:
                         ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
 
                     if str(ival[1]) == "":
-                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime", "bool"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                             ls_where += str(icol) + " is null and "
+                        elif  getColType(i_row['table'], icol) == "bool":
+                            ls_where += str(icol) + " = false and "
                         else:
                             ls_where += str(icol) + " = '" + str(ival[1]) + "' and "
                     else:
@@ -331,8 +337,10 @@ def json2exec(ajson, aCursor, artn, a2Replace):   # artn['effectnum'] + 1
                 for icol,ival in i_row['cols'].items():
                     lb_updateValid = True
                     if  str(ival[0]) == "":
-                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime", "bool"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
+                        if getColType(i_row['table'], icol) in ("number", "date", "time", "datetime"): # 是字符类型的字段。空不赋值为null，其余的，如果是空全部赋值为null。
                             ls_set += str(icol) + "= null,"
+                        elif getColType(i_row['table'], icol) == "bool":
+                            ls_set += str(icol) + "= false,"
                         else:
                             ls_set += str(icol) + "= '" + str(ival[0]) +  "',"
                     else:

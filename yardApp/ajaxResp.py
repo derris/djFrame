@@ -8,6 +8,8 @@ from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
 from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
+from datetime import datetime
+
 ##########################################################        GET    ----
 def getsysmenu(request):
     '''功能查询'''
@@ -162,14 +164,16 @@ def dealAuditFee(request):
      "ex_parm": {"actfeeid": l_actId , "prefeeid":l_preId}
     '''
     ldict = json.loads( request.POST['jpargs'] )
+    list_actId = ldict['ex_parm']["actfeeid"]
+    list_preId = ldict['ex_parm']["prefeeid"]
+    '''  前台bug排除，就没用了。
     list_actId = set(ldict['ex_parm']["actfeeid"])
     list_preId = set(ldict['ex_parm']["prefeeid"])
-
     if (len(list_actId) != len(ldict['ex_parm']["actfeeid"])):
         raise Exception("已收费用id重复")
     if (len(list_preId) != len(ldict['ex_parm']["prefeeid"])):
         raise Exception("应收费用id重复")
-
+    '''
     # 得到一个处理的seq{"seqnam":aSeqNam }
     ls_sql = "select nextval('seq_4_auditfee')"
     l_seq = cursorSelect(ls_sql)
@@ -178,40 +182,52 @@ def dealAuditFee(request):
         ls_seq = str(l_seq[0][0])
     else:
         raise Exception("取序列号失败")
-    l_sumact = 0.0
+    #
+    l_sumact = 0.0    # 实收费用
     l_sumpre = 0.0
-
-    for i in list_actId:
-        l_sumact += float( cursorSelect("select amount from act_fee where id =  " + str(i))[0][0] )
-        ls_exec = "update act_fee set ex_over = '" + ls_seq + "', audit_id=true where id = " + str(i)
-        if cursorExec(ls_exec) < 0 :
-            raise Exception("数据库执行失败")
-    for i in list_preId:
-        l_sumpre += float(cursorSelect("select amount from pre_fee where id =  " + str(i))[0][0] )
-        ls_exec = "update pre_fee set ex_over = '" + ls_seq + "', audit_id=true where id = " + str(i)
-        if cursorExec(ls_exec) < 0 :
-            raise Exception("数据库执行失败")
-
+    list_actId.reverse()
+    list_preId.reverse()
+    l_actId = 0
+    l_preId = 0
+    ls_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     l_recnam = request.session['userid']
-    if l_sumact > l_sumpre:  # 实收费用比应收多。生成一个实收费用。
-        l_actRecord = cursorSelect("select client_id, fee_typ, pay_type from act_fee where id = " + str( ldict['ex_parm']["actfeeid"][0] ) )
-        l_clientid = l_actRecord[0][0]
-        l_feetyp = l_actRecord[0][1]
-        l_paytype = l_actRecord[0][2]
-        ls_ins = "insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )"
-        ls_ins += "values(%s, %s, %s, %s,current_timestamp(0), %s, current_timestamp(0), %s, %s , %s)"
-        la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype,  l_recnam, ls_seq, 'E', '核销自动生成'))
-        cursorExec2(ls_ins, la_list)
-    else:    # 应收费用多。生成一个应收费用。
-        l_actRecord = cursorSelect("select client_id, fee_typ, fee_cod, contract_id from pre_fee where id = " + str( ldict['ex_parm']["prefeeid"][0] ) )
-        l_clientid = l_actRecord[0][0]
-        l_feetyp = l_actRecord[0][1]
-        l_feecod = l_actRecord[0][2]
-        l_contractid = l_actRecord[0][3]
-        ls_ins = "insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )"
-        ls_ins += "values(%s, %s, %s, %s,%s, current_timestamp(0), %s, current_timestamp(0), %s, %s, %s)"
-        la_list = list((l_clientid, l_contractid, l_feetyp, l_feecod, l_sumpre - l_sumact, l_recnam, ls_seq, 'E','核销自动生成'))
-        cursorExec2(ls_ins, la_list)
+    while True:
+        if l_sumact <= l_sumpre:
+            if len(list_actId) > 0 :  # 还有 实收 费用。
+                l_actId = list_actId.pop()
+                l_sumact += float( cursorSelect("select amount from act_fee where id =  " + str(l_actId))[0][0] )
+                ls_exec = "update act_fee set ex_over = '" + ls_seq + "', audit_id=true, audit_tim=current_timestamp(0) where id = " + str(l_actId)
+                if cursorExec(ls_exec) < 0 :
+                    raise Exception("数据库执行失败")
+            else  :# 没有实际费用了，prefee要多，所以插入剩下的prefee
+                l_actRecord = cursorSelect("select client_id, fee_typ, fee_cod, contract_id from pre_fee where id = " + str(l_preId ) )
+                l_clientid = l_actRecord[0][0]
+                l_feetyp = l_actRecord[0][1]
+                l_feecod = l_actRecord[0][2]
+                l_contractid = l_actRecord[0][3]
+                ls_ins = "insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )"
+                ls_ins += "values(%s, %s, %s, %s,%s, current_timestamp(0), %s, current_timestamp(0), %s, %s, %s)"
+                la_list = list((l_clientid, l_contractid, l_feetyp, l_feecod, l_sumpre - l_sumact, l_recnam, ls_seq, 'E','核销自动生成'))
+                cursorExec2(ls_ins, la_list)
+                break # 退出。没有实际费用
+        else:
+            if len(list_preId) > 0 :  # 还有 应收 费用。
+                l_preId = list_preId.pop()
+                l_sumpre += float(cursorSelect("select amount from pre_fee where id =  " + str(l_preId))[0][0] )
+                ls_exec = "update pre_fee set ex_over = '" + ls_seq + "', audit_id=true, audit_tim=current_timestamp(0) where id = " + str(l_preId)
+                if cursorExec(ls_exec) < 0 :
+                    raise Exception("数据库执行失败")
+            else:
+                l_actRecord = cursorSelect("select client_id, fee_typ, pay_type from act_fee where id = " + str( l_actId ) )
+                l_clientid = l_actRecord[0][0]
+                l_feetyp = l_actRecord[0][1]
+                l_paytype = l_actRecord[0][2]
+                ls_ins = "insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )"
+                ls_ins += "values(%s, %s, %s, %s,current_timestamp(0), %s, current_timestamp(0), %s, %s , %s)"
+                la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype,  l_recnam, ls_seq, 'E', '核销自动生成'))
+                cursorExec2(ls_ins, la_list)
+                break
+
     ldict_rtn = { "msg": "成功", "stateCod": "0" , "result":{} }
     return(ldict_rtn)
 #####################################################  common interface ----------
@@ -268,7 +284,7 @@ def dealPAjax(request):
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
             elif ldict['func'] == '已收费用查询':
-                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim from act_fee"
                 return(getactfeeEx(request, ls_sql))
             elif ldict['func'] == '实收付未核销查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
