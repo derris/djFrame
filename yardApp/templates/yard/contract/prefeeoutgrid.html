@@ -5,12 +5,10 @@
             autoLoad: false,
             fee_typ: 'O',
             contract_id: 0,
-            singleSelect: false,
             columns: [
                 [
                     {% autoescape off %}
                         {{ prefee_id.writeUI|safe|escape }},
-                        {field: 'ck', checkbox: true},
                         {{ prefee_contractid.writeUI|safe|escape }},
                         {{ prefee_feetyp.writeUI|safe|escape }},
                         {{ prefee_feecod.writeUI|safe|escape }},
