@@ -18,6 +18,7 @@
         });
         control.audit.actfeegrid._{{ seq }} = $('#control-audit-actfeegrid-{{ seq }}').datagrid({
             autoLoad: false,
+            sumAmount:0,
             columns: [
                 [
 
@@ -47,9 +48,19 @@
             },
             onDblClickRow:function(rowIndex, rowData){
                 return;
+            },
+            onCheck:function(rowIndex,rowData){
+                var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+                opts.sumAmount = opts.sumAmount + rowData.amount;
+            },
+            onUncheck:function(rowIndex,rowData){
+                var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+                opts.sumAmount = opts.sumAmount + rowData.amount;
             }
-
         });
+        control.audit.actfeegrid._{{ seq }}.refreshSum = function(){
+
+        }
         $('#control-audit-actfeegrid-toolbar-search-{{ seq }}').bind('click',function(e){
             var parm = {
                 client:control.audit.actfeegrid.client_{{ seq }}.combobox('getValue'),
@@ -71,5 +82,6 @@
                data-options="iconCls:'icon-search',group:'control-audit-actfeegrid-toolbar'">查询</a>
 </div>
 <div class="editform-toolbar-gridbottom">
-    haihsoidoas
+    <label id="control-audit-actfeegrid-sum-{{ seq }}">合计：</label>
+
 </div>
