@@ -1,0 +1,37 @@
+<script>
+    Namespace.register('control.audit.prefeegrid');
+    $(function () {
+        control.audit.prefeegrid._{{ seq }} = $('#control-audit-prefeegrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ prefee_id.writeUI|safe|escape }},
+                        {field: 'check_flag', checkbox: true},
+                        {field: 'bill_no', title: '提单号'},
+                        {{ prefee_contractid.writeUI|safe|escape }},
+                        {{ prefee_feetyp.writeUI|safe|escape }},
+                        {{ prefee_feecod.writeUI|safe|escape }},
+                        {{ prefee_client.writeUI|safe|escape }},
+                        {{ prefee_amount.writeUI|safe|escape }},
+                        {{ prefee_remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'pre_fee',
+            pagination: false,
+            singleSelect: false,
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            }
+
+
+        });
+        control.audit.prefeegrid._{{ seq }}.trigger('afterrender', control.audit.prefeegrid._{{ seq }});
+    });
+</script>
+<table id="control-audit-prefeegrid-{{ seq }}" data-options="border:'false'">
+</table>

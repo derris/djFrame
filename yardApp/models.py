@@ -222,14 +222,13 @@ class PreFee(BaseModel):
         db_table = 'pre_fee'
 class ActFee(BaseModel):
     id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',related_name='client_actfee',limit_choices_to={'client_flag':True},verbose_name='客户',db_column='client_id')
+    client_id = models.ForeignKey('Client',related_name='client_actfee',limit_choices_to={'financial_flag':True},verbose_name='客户',db_column='client_id')
     fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','已收'),('O','已付')))
     amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
     invoice_no = models.CharField('发票号',max_length=30,blank=True,null=True)
     check_no = models.CharField('支票号',max_length=30,blank=True,null=True)
     pay_type = models.ForeignKey('PayType',related_name='paytype_actfee',verbose_name='付费类型',db_column='pay_type')
     fee_tim = models.DateTimeField('付费时间')
-    off_flag = models.NullBooleanField('核销完毕标识',blank=True,null=True)
     ex_feeid = models.CharField('生成标记',max_length=1,choices=(('O','原生'),('E','拆分')))
     ex_from = models.CharField('来源号',max_length=36,blank=True,null=True)
     ex_over = models.CharField('完结号',max_length=36,blank=True,null=True)
@@ -240,11 +239,5 @@ class ActFee(BaseModel):
     class Meta:
         db_table = 'act_fee'
 
-class WriteOffFee(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    act_fee_id = models.ForeignKey('ActFee',related_name='actfee_writeofffee',verbose_name='已收付费用',db_column='act_fee_id')
-    pre_fee_id = models.ForeignKey('PreFee',related_name='prefee_writeofffee',verbose_name='应收付费用',db_column='pre_fee_id')
-    amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
-    class Meta:
-        db_table = 'writeoff_fee'
+
 

@@ -2,7 +2,7 @@
     Namespace.register('fee.actfeeview');
     $(function () {
         fee.actfeeview.datagrid = $('#fee-actfee-datagrid').datagrid({
-            autoSave: false,
+            autoLoad: false,
             columns: [
                 [
                     {% autoescape off %}
@@ -13,8 +13,8 @@
                         {{ invoiceNoObj.writeUI|safe|escape }},
                         {{ checkNoObj.writeUI|safe|escape }},
                         {{ payTypeObj.writeUI|safe|escape }},
-                        {{ feeTimObj.writeUI|safe|escape }},
-                        {{ offFlagObj.writeUI|safe|escape }}
+                        {{ feeTimObj.writeUI|safe|escape }}
+
                     {% endautoescape %}
                 ]
             ],

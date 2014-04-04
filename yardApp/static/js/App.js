@@ -337,6 +337,8 @@ $.extend($.fn.datagrid.defaults, {
     ex_parm: {}, //扩展查询参数 load()中使用
     //以上为扩展属性
     border: false,
+    checkOnSelect:false,
+    selectOnCheck:false,
     fit: true,
     idField: 'id',
     method: 'post',
@@ -355,9 +357,9 @@ $.extend($.fn.datagrid.defaults, {
         //console.info('click');
         $(this).datagrid('click', rowIndex);
     },
-    onLoadError: function () {
+    /*onLoadError: function () {
         sy.onError('加载数据错误', false);
-    },
+    },*/
     onAfterEdit: function (rowIndex, rowData, changes) {
         if ($(this).datagrid('options').autoSave) {
             var datagridid = $(this)[0].id;
@@ -432,8 +434,13 @@ $.extend($.fn.datagrid.defaults, {
             data: {jpargs: JSON.stringify(queryParam)},
             //data:queryParam,
             success: function (r, t, a) {
-                success(r);
-                $.ajaxSettings.success(r, t, a, false);
+                //console.info(r);
+                if ($.ajaxSettings.success(r, t, a, false)){
+                    success(r);
+                }else{
+                    error();
+                }
+                //$.ajaxSettings.success(r, t, a, false);
             }
         });
     }
@@ -934,7 +941,7 @@ $.ajaxSetup({
         if (returnData && !isNaN(stateCod)) {
             if (stateCod > 0) {//返回成功
                 if (msgShow == false) {
-                    return;
+                    return true;
                 }
                 if (stateCod >= 101 && stateCod <= 200) {
                     $.messager.alert('提示', returnData.msg || '执行成功！', 'info');
@@ -962,10 +969,12 @@ $.ajaxSetup({
                 if (stateCod <= -101 && stateCod >= -200) {//系统级错误返回登录界面
                     sy.onLoadError(returnData.msg);
                 }
+                return false;
             }
         }
     },
     error: function (xhr, msg, e) {
+
         sy.onError('服务器错误：' + msg, false);
     }
 

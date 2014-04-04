@@ -270,6 +270,18 @@ def dealPAjax(request):
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getactfeeEx(request, ls_sql))
+            elif ldict['func'] == '实收付未核销查询':
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
+                         "from act_fee " \
+                         "where COALESCE(audit_id,false) = false "
+                return(getactfeeEx(request, ls_sql))
+            elif ldict['func'] == '应收付未核销查询':
+                ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_cod," \
+                         "pre_fee.amount,pre_fee.fee_tim,pre_fee.ex_feeid,pre_fee.remark " \
+                         "from pre_fee,contract " \
+                         "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
+                return(getactfeeEx(request, ls_sql))
+
             elif ldict['func'] == '已收核销已收查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getactfeeEx(request, ls_sql))
@@ -330,7 +342,7 @@ def dealPAjax(request):
             elif ldict['func'] == "取序列号":
                 return(HttpResponse(json.dumps( getSequence(ldict) ,ensure_ascii = False) ))
             ##########################################     费     #######
-            elif ldict['func'] == "处理已收费用核销":
+            elif ldict['func'] == "核销":
                 return( HttpResponse(json.dumps( dealAuditFee(request),ensure_ascii = False) ))
             else:
                 pass

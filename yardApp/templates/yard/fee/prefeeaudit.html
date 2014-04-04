@@ -1,12 +1,12 @@
 <script>
-    Namespace.register('fee.prefeeauditview');
-$(function () {
+    Namespace.register('fee.auditview');
+    $(function () {
         fee.prefeeauditview.actfeegrid = $('#fee-prefeeaudit-actfee-datagrid').datagrid({
             autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
-                        {field: 'check_flag',title: '选择',checkbox:true},
+                        {field: 'check_flag', title: '选择', checkbox: true},
                         {{ idObj.writeUI|safe|escape }},
                         {{ clientIdObj.writeUI|safe|escape }},
                         {{ feeTypObj.writeUI|safe|escape }},
@@ -21,28 +21,30 @@ $(function () {
                 ]
             ],
             dataTable: 'act_fee',
+            singleSelect:false,
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'fee-prefeeaudit-datagrid',
+                    group: 'fee-prefeeaudit-datagrid',
                     handler: function () {
                         sy.createSearchWindow(fee.prefeeauditview.actfeegrid);
                     }
                 }
             ],
-            queryFuncName:'已收核销已收查询',
+            //queryFuncName: '已收核销已收查询',
+            queryFuncName:'实收付未核销查询',
             onDblClickRow: function (rowIndex, rowData) {
                 return;
             }
         });
 
         fee.prefeeauditview.prefeegrid = $('#fee-prefeeaudit-prefee-datagrid').datagrid({
-            autoLoad:false,
+            autoLoad: false,
             autoSave: false,
             columns: [
                 [
                     {% autoescape off %}
-                        {field: 'check_flag',title: '选择',checkbox:true},
+                        {field: 'check_flag', title: '选择', checkbox: true},
                         {{ idObj2.writeUI|safe|escape }},
                         {{ contracIdObj2.writeUI|safe|escape }},
                         {{ feeTypObj2.writeUI|safe|escape }},
@@ -60,28 +62,33 @@ $(function () {
             queryFuncName: '已收核销应收查询'
         })
 
-});
+    });
 
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div region="north" border="false" style="height: 250px" data-options="split:true">
-        <table id="fee-prefeeaudit-actfee-datagrid" border="false"
-               data-options="rownumbers:true,singleSelect:false,checkOnSelect:false, selectOnCheck:false,onCheck:onCheck1" >
+        <table id="fee-auditview-actfeedatagrid" border="false"
+               data-options="checkOnSelect:false, selectOnCheck:false,onCheck:onCheck1">
         </table>
     </div>
     <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
-        <table id="fee-prefeeaudit-prefee-datagrid" border="false" data-option="onCheck:onCheck2">
+        <table id="fee-auditview-prefeedatagrid" border="false" data-option="onCheck:onCheck2">
+        </table>
+    </div>
+    {% comment %}
+    <div data-options="region:'center',title:'应收',iconCls:'icon-ok'">
+        <table id="fee-auditview-prefeedatagrid" border="false" data-option="onCheck:onCheck2">
         </table>
     </div>
     <div data-options="region:'south',split:true" style="height:50px; padding: 5px;">
-        <a href="#" class="easyui-linkbutton" onclick="checkRule();" > 检查核销 </a>
+        <a href="#" class="easyui-linkbutton" onclick="checkRule();"> 检查核销 </a>
         &nbsp;&nbsp;
-        <span  id = "stat1">  已收费用 </span>
+        <span id="stat1">  已收费用 </span>
         &nbsp;&nbsp;
-        <span name ="stat2" id = "stat2">  应收费用 </span>
+        <span name="stat2" id="stat2">  应收费用 </span>
         &nbsp;&nbsp;
-        <span id = "stat3">  审核信息 </span>
-        <a href="#" id="dealAudit" class="easyui-linkbutton" onclick="dealAudit();" > 核销 </a>
-    </div>
+        <span id="stat3">  审核信息 </span>
+        <a href="#" id="dealAudit" class="easyui-linkbutton" onclick="dealAudit();"> 核销 </a>
+    </div>{% endcomment %}
 </div>
