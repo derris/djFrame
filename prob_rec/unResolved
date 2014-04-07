@@ -1,7 +1,0 @@
-json ok
-csrf 用django脚本   ok
-根据model类型 生成前台jqueryeasyui控件  ok
-
-datagrid footer汇总
-messager 按钮倒计时显示
-transaction.rollback()
