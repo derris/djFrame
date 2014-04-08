@@ -1,72 +1,87 @@
 <script>
     Namespace.register('control.audit.actfeegrid');
     $(function () {
-    {% autoescape off %}
-        control.audit.actfeegrid.client_{{ seq }} = $('#control-audit-actfeegrid-toolbar-client-{{ seq }}').combobox({
-            valueField: 'value',
-            textField: 'text',
-            required: false,
-            width: 180,
-            data:{{ clientdata }}
-        });
-        control.audit.actfeegrid.feetyp_{{ seq }} = $('#control-audit-actfeegrid-toolbar-feetyp-{{ seq }}').combobox({
-            valueField: 'value',
-            textField: 'text',
-            required: false,
-            width: 180,
-            data:{{ feetypdata }}
-        });
-        control.audit.actfeegrid._{{ seq }} = $('#control-audit-actfeegrid-{{ seq }}').datagrid({
+        {% autoescape off %}
+            control.audit.actfeegrid.client_{{ seq }} = $('#control-audit-actfeegrid-toolbar-client-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            control.audit.actfeegrid.feetyp_{{ seq }} = $('#control-audit-actfeegrid-toolbar-feetyp-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ feetypdata }}
+            });
+            control.audit.actfeegrid._{{ seq }} = $('#control-audit-actfeegrid-{{ seq }}').datagrid({
             autoLoad: false,
-            sumAmount:0,
+            sumAmount: 0,
             columns: [
                 [
 
-                        {field: 'check_flag', checkbox: true},
-                        {{ actfee_id.writeUI|safe|escape }},
-                        {{ actfee_client_Id.writeUI|safe|escape }},
-                        {{ actfee_fee_typ.writeUI|safe|escape }},
-                        {{ actfee_amount.writeUI|safe|escape }},
-                        {{ actfee_invoice_no.writeUI|safe|escape }},
-                        {{ actfee_check_no.writeUI|safe|escape }},
-                        {{ actfee_pay_type.writeUI|safe|escape }},
-                        {{ actfee_fee_tim.writeUI|safe|escape }},
-                        {{ actfee_ex_feeid.writeUI|safe|escape }},
-                        {{ actfee_audit_id.writeUI|safe|escape }}
+                    {field: 'check_flag', checkbox: true},
+                    {{ actfee_id.writeUI|safe|escape }},
+                    {{ actfee_client_Id.writeUI|safe|escape }},
+                    {{ actfee_fee_typ.writeUI|safe|escape }},
+                    {{ actfee_amount.writeUI|safe|escape }},
+                    {{ actfee_invoice_no.writeUI|safe|escape }},
+                    {{ actfee_check_no.writeUI|safe|escape }},
+                    {{ actfee_pay_type.writeUI|safe|escape }},
+                    {{ actfee_fee_tim.writeUI|safe|escape }},
+                    {{ actfee_ex_feeid.writeUI|safe|escape }},
+                    {{ actfee_audit_id.writeUI|safe|escape }}
 
                 ]
             ],
-          {% endautoescape %}
-            dataTable: 'act_fee',
-            {% if display_toolbar %}
-                toolbar: '#control-audit-actfeegrid-toolbar-{{ seq }}',
-            {% endif %}
-            pagination: false,
-            singleSelect: false,
-            onDblClickRow: function (rowIndex, rowData) {
-                return;
-            },
-            onDblClickRow:function(rowIndex, rowData){
-                return;
-            },
-            onCheck:function(rowIndex,rowData){
-                var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
-                opts.sumAmount = opts.sumAmount + rowData.amount;
-            },
-            onUncheck:function(rowIndex,rowData){
-                var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
-                opts.sumAmount = opts.sumAmount + rowData.amount;
-            }
-        });
-        control.audit.actfeegrid._{{ seq }}.refreshSum = function(){
-
+        {% endautoescape %}
+    dataTable: 'act_fee',
+    {% if display_toolbar %}
+        toolbar: '#control-audit-actfeegrid-toolbar-{{ seq }}',
+    {% endif %}
+    pagination: false,
+    singleSelect: false,
+    onDblClickRow: function (rowIndex, rowData) {
+        return;
+    },
+    onDblClickRow: function (rowIndex, rowData) {
+        return;
+    },
+    onCheck: function (rowIndex, rowData) {
+        var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = opts.sumAmount + parseFloat(rowData.amount);
+        control.audit.actfeegrid._{{ seq }}.refreshSum();
+    },
+    onUncheck: function (rowIndex, rowData) {
+        var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = opts.sumAmount - parseFloat(rowData.amount);
+        control.audit.actfeegrid._{{ seq }}.refreshSum();
+    },
+    onCheckAll: function (rows) {
+        var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+        for (var i = 0, ilen = rows.length; i < ilen; i++) {
+            opts.sumAmount = opts.sumAmount + parseFloat(rows[i].amount);
         }
-        $('#control-audit-actfeegrid-toolbar-search-{{ seq }}').bind('click',function(e){
+        control.audit.actfeegrid._{{ seq }}.refreshSum();
+    },
+    onUncheckAll: function (rows) {
+        var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = 0;
+        control.audit.actfeegrid._{{ seq }}.refreshSum();
+    }
+    });
+        control.audit.actfeegrid._{{ seq }}.refreshSum = function () {
+            $('#control-audit-actfeegrid-sum-{{ seq }}').text('合计:' + control.audit.actfeegrid._{{ seq }}.datagrid('options').sumAmount
+            );
+        }
+        $('#control-audit-actfeegrid-toolbar-search-{{ seq }}').bind('click', function (e) {
             var parm = {
-                client:control.audit.actfeegrid.client_{{ seq }}.combobox('getValue'),
-                feetpy:control.audit.actfeegrid.feetyp_{{ seq }}.combobox('getValue')
+                client: control.audit.actfeegrid.client_{{ seq }}.combobox('getValue'),
+                feetpy: control.audit.actfeegrid.feetyp_{{ seq }}.combobox('getValue')
             };
-            control.audit.actfeegrid._{{ seq }}.trigger('refresh',parm);
+            control.audit.actfeegrid._{{ seq }}.trigger('refresh', parm);
         });
         control.audit.actfeegrid._{{ seq }}.trigger('afterrender', control.audit.actfeegrid._{{ seq }});
     });
@@ -79,9 +94,9 @@
     <label for="fee_typ">费用类型:</label>
     <input id="control-audit-actfeegrid-toolbar-feetyp-{{ seq }}" type="text" name="client_id"/>
     <a id="control-audit-actfeegrid-toolbar-search-{{ seq }}" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-search',group:'control-audit-actfeegrid-toolbar'">查询</a>
+       data-options="iconCls:'icon-search',group:'control-audit-actfeegrid-toolbar'">查询</a>
 </div>
 <div class="editform-toolbar-gridbottom">
-    <label id="control-audit-actfeegrid-sum-{{ seq }}">合计：</label>
+    <label id="control-audit-actfeegrid-sum-{{ seq }}">合计:0：</label>
 
 </div>
