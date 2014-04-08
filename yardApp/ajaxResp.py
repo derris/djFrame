@@ -136,6 +136,10 @@ def getprefeeEx(request, aSql):
     #ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from pre_fee"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
+
+def getJson4sqlEx(request, aSql, aSqlCount):
+    return HttpResponse(json.dumps(rawsql2json(aSql, aSqlCount),ensure_ascii = False))
+
 def getSequence(aDict):
     ''' 因为要放到后台，暂时没用。
         aDict = {"ex_parm": {"seqname":"seq_4_auditfee"} }
@@ -305,6 +309,12 @@ def dealPAjax(request):
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
                 return(getactfeeEx(request, ls_sql))
+            elif ldict['func'] == '核销删除查询':
+                l_clientid = str(ldict['ex_parm']['client_id'])
+                l_feetyp = str(ldict['ex_parm']['fee_typ'])
+                ls_sql = "select * from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
+                ls_sqlcount = "select count(*) from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
+                return(getJson4sqlEx(request, ls_sql, ls_sqlcount))
             ######################
             elif ldict['func'] == '已收核销客户查询':
                 ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
