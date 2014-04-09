@@ -1,0 +1,50 @@
+<script>
+    Namespace.register('control.audit.filter');
+    $(function () {
+        {% autoescape off %}
+            control.audit.filter.client_{{ seq }} = $('#control-audit-filter-toolbar-client-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            control.audit.filter.feetyp_{{ seq }} = $('#control-audit-filter-toolbar-feetyp-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ feetypdata }}
+            });
+        {% endautoescape %}
+        $('#control-audit-filter-toolbar-search-{{ seq }}').bind('click', function (e) {
+            var parm = {
+                client: control.audit.filter.client_{{ seq }}.combobox('getValue'),
+                feetpy: control.audit.filter.feetyp_{{ seq }}.combobox('getValue')
+            };
+            $('#control-audit-filter-toolbar-{{ seq }}').trigger('refresh', parm);
+        });
+        $('#control-audit-filter-toolbar-audit-{{ seq }}').bind('click', function (e) {
+            $('#control-audit-filter-toolbar-{{ seq }}').trigger('audit', $('#control-audit-filter-toolbar-audit-{{ seq }}').text());
+        });
+    });
+</script>
+<div id="control-audit-filter-toolbar-{{ seq }}" class="datagrid-toolbar">
+    <label for="client_id">委托客户:</label>
+    <input id="control-audit-filter-toolbar-client-{{ seq }}" type="text" name="client_id"/>
+    <label for="fee_typ">费用类型:</label>
+    <input id="control-audit-filter-toolbar-feetyp-{{ seq }}" type="text" name="fee_typ"/>
+    <a id="control-audit-filter-toolbar-search-{{ seq }}" href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-search',group:'control-audit-filter-toolbar'">查询</a>
+
+    <a id="control-audit-filter-toolbar-audit-{{ seq }}" href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-save',group:'control-audit-filter-toolbar'">
+        {% if funcname == '核销' %}
+            核销
+        {% elif funcname == '核销删除' %}
+            取消
+        {% endif %}
+    </a>
+
+</div>
+

@@ -8,6 +8,8 @@
             audit.auditview.actfeegrid.datagrid('options').queryFuncName = '实收付未核销查询';
         });
         audit.auditview.refresh = function (param) {
+            audit.auditview.actfeegrid.datagrid('uncheckAll');
+            audit.auditview.prefeegrid.datagrid('uncheckAll');
             audit.auditview.actfeegrid.datagrid('options').filterFields = [];
             audit.auditview.prefeegrid.datagrid('options').filterFields = [];
             $('#audit-auditview-auditbutton').linkbutton('enable');
@@ -22,7 +24,7 @@
                     operatorTyp: '等于',
                     value: param.client
                 });
-            }else{
+            } else {
                 $('#audit-auditview-auditbutton').linkbutton('disable');
             }
             if (param.feetpy != null && param.feetpy.length > 0) {
@@ -36,33 +38,41 @@
                     operatorTyp: '等于',
                     value: param.feetpy
                 });
-            }else{
+            } else {
                 $('#audit-auditview-auditbutton').linkbutton('disable');
             }
             audit.auditview.actfeegrid.datagrid('reload');
             audit.auditview.prefeegrid.datagrid('reload');
         }
-        $(document).on('refresh', '#control-audit-actfeegrid-{{ seq }}', function (e, parm) {
+        $(document).on('refresh', '#control-audit-filter-toolbar-{{ seq }}', function (e, parm) {
             audit.auditview.refresh(parm);
         });
+        $(document).on('audit', '#control-audit-filter-toolbar-{{ seq }}', function (e, parm) {
+            if (parm == '核销') {
+                audit.auditview.audit();
+            } else {
+                //audit.auditview.unaudit();
+            }
+        });
+
         $(document).on('afterrender', '#control-audit-prefeegrid-{{ seq }}', function (e, grid) {
             audit.auditview.prefeegrid = $(grid);
             audit.auditview.prefeegrid.datagrid('options').queryFuncName = '应收付未核销查询';
         });
-        $('#audit-auditview-auditbutton').bind('click',function(e){
+        audit.auditview.audit = function () {
             var actRows = audit.auditview.actfeegrid.datagrid('getChecked');
             var preRows = audit.auditview.prefeegrid.datagrid('getChecked');
             param = {
-                func : "核销",
-                ex_parm:{
-                actfeeid:[],
-                prefeeid:[]
+                func: "核销",
+                ex_parm: {
+                    actfeeid: [],
+                    prefeeid: []
                 }
             }
-            for (var i = 0,ilen=actRows.length;i < ilen;i++){
+            for (var i = 0, ilen = actRows.length; i < ilen; i++) {
                 param.ex_parm.actfeeid.push(actRows[i].id);
             }
-            for (var i = 0,ilen=preRows.length;i < ilen;i++){
+            for (var i = 0, ilen = preRows.length; i < ilen; i++) {
                 param.ex_parm.prefeeid.push(preRows[i].id);
             }
             $.ajax({
@@ -79,19 +89,20 @@
                     $.ajaxSettings.success(r, t, a, true);
                 }
             });
-        });
+
+        }
+
 
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:'false'">
+        {% include 'yard/fee/auditfilterview.html' %}
+    </div>
     <div data-options="region:'center',border:'false'">
         {% include 'yard/fee/actfeegrid.html' %}
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
         {% include 'yard/fee/prefeegrid.html' %}
-        <div class="editform-toolbar-gridbottom">
-            <a id="audit-auditview-auditbutton" href="#" class="easyui-linkbutton"
-               data-options="iconCls:'icon-save',group:'audit-auditview'">核销</a>
-        </div>
     </div>
 </div>

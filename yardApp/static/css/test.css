@@ -20,3 +20,16 @@
     bottom:10px;
     left:5px;
 }
+.grid-sumbar-bottom-nopage{
+    border-top:medium none;
+    position: absolute;
+    float:left;
+    bottom:10px;
+    left:5px;
+}
+.grid-toolbar-bottom-page{
+    position: absolute;
+    float:left;
+    bottom:30px;
+    left:5px;
+}

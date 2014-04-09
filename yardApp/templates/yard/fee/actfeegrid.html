@@ -2,22 +2,9 @@
     Namespace.register('control.audit.actfeegrid');
     $(function () {
         {% autoescape off %}
-            control.audit.actfeegrid.client_{{ seq }} = $('#control-audit-actfeegrid-toolbar-client-{{ seq }}').combobox({
-                valueField: 'value',
-                textField: 'text',
-                required: false,
-                width: 180,
-                data:{{ clientdata }}
-            });
-            control.audit.actfeegrid.feetyp_{{ seq }} = $('#control-audit-actfeegrid-toolbar-feetyp-{{ seq }}').combobox({
-                valueField: 'value',
-                textField: 'text',
-                required: false,
-                width: 180,
-                data:{{ feetypdata }}
-            });
             control.audit.actfeegrid._{{ seq }} = $('#control-audit-actfeegrid-{{ seq }}').datagrid({
             autoLoad: false,
+            border:false,
             sumAmount: 0,
             columns: [
                 [
@@ -38,9 +25,6 @@
             ],
         {% endautoescape %}
     dataTable: 'act_fee',
-    {% if display_toolbar %}
-        toolbar: '#control-audit-actfeegrid-toolbar-{{ seq }}',
-    {% endif %}
     pagination: false,
     singleSelect: false,
     onDblClickRow: function (rowIndex, rowData) {
@@ -76,27 +60,19 @@
             $('#control-audit-actfeegrid-sum-{{ seq }}').text('合计:' + control.audit.actfeegrid._{{ seq }}.datagrid('options').sumAmount
             );
         }
-        $('#control-audit-actfeegrid-toolbar-search-{{ seq }}').bind('click', function (e) {
-            var parm = {
-                client: control.audit.actfeegrid.client_{{ seq }}.combobox('getValue'),
-                feetpy: control.audit.actfeegrid.feetyp_{{ seq }}.combobox('getValue')
-            };
-            control.audit.actfeegrid._{{ seq }}.trigger('refresh', parm);
-        });
         control.audit.actfeegrid._{{ seq }}.trigger('afterrender', control.audit.actfeegrid._{{ seq }});
     });
 </script>
-<table id="control-audit-actfeegrid-{{ seq }}" data-options="border:'false'">
-</table>
-<div id="control-audit-actfeegrid-toolbar-{{ seq }}">
-    <label for="client_id">委托客户:</label>
-    <input id="control-audit-actfeegrid-toolbar-client-{{ seq }}" type="text" name="client_id"/>
-    <label for="fee_typ">费用类型:</label>
-    <input id="control-audit-actfeegrid-toolbar-feetyp-{{ seq }}" type="text" name="client_id"/>
-    <a id="control-audit-actfeegrid-toolbar-search-{{ seq }}" href="#" class="easyui-linkbutton"
-       data-options="iconCls:'icon-search',group:'control-audit-actfeegrid-toolbar'">查询</a>
-</div>
-<div class="editform-toolbar-gridbottom">
-    <label id="control-audit-actfeegrid-sum-{{ seq }}">合计:0：</label>
 
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        <table id="control-audit-actfeegrid-{{ seq }}" data-options="border:'false'">
+        </table>
+    </div>
+    <div data-options="region:'south',border:'false'" style="border-top: none">
+
+            <label id="control-audit-actfeegrid-sum-{{ seq }}">合计:0</label>
+
+    </div>
 </div>
+

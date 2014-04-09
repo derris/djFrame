@@ -3,6 +3,7 @@
     $(function () {
         control.audit.prefeegrid._{{ seq }} = $('#control-audit-prefeegrid-{{ seq }}').datagrid({
             autoLoad: false,
+            sumAmount: 0,
             columns: [
                 [
                     {% autoescape off %}
@@ -26,12 +27,39 @@
             },
             onDblClickRow: function (rowIndex, rowData) {
                 return;
+            },
+            onCheck: function (rowIndex, rowData) {
+                var opts = control.audit.prefeegrid._{{ seq }}.datagrid('options');
+                opts.sumAmount = opts.sumAmount + parseFloat(rowData.amount);
+                control.audit.prefeegrid._{{ seq }}.refreshSum();
+            },
+            onUncheck: function (rowIndex, rowData) {
+                var opts = control.audit.prefeegrid._{{ seq }}.datagrid('options');
+                opts.sumAmount = opts.sumAmount - parseFloat(rowData.amount);
+                control.audit.prefeegrid._{{ seq }}.refreshSum();
+            },
+            onCheckAll: function (rows) {
+                var opts = control.audit.prefeegrid._{{ seq }}.datagrid('options');
+                for (var i = 0, ilen = rows.length; i < ilen; i++) {
+                    opts.sumAmount = opts.sumAmount + parseFloat(rows[i].amount);
+                }
+                control.audit.prefeegrid._{{ seq }}.refreshSum();
+            },
+            onUncheckAll: function (rows) {
+                var opts = control.audit.prefeegrid._{{ seq }}.datagrid('options');
+                opts.sumAmount = 0;
+                control.audit.prefeegrid._{{ seq }}.refreshSum();
             }
-
-
         });
+        control.audit.prefeegrid._{{ seq }}.refreshSum = function () {
+            $('#control-audit-prefeegrid-sum-{{ seq }}').text('合计:' + control.audit.prefeegrid._{{ seq }}.datagrid('options').sumAmount
+            );
+        }
         control.audit.prefeegrid._{{ seq }}.trigger('afterrender', control.audit.prefeegrid._{{ seq }});
     });
 </script>
 <table id="control-audit-prefeegrid-{{ seq }}" data-options="border:'false'">
 </table>
+<div class="grid-sumbar-bottom-nopage">
+    <label id="control-audit-prefeegrid-sum-{{ seq }}">合计:0：</label>
+</div>

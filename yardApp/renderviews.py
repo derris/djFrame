@@ -241,7 +241,7 @@ def actfeeview(request):
     return render(request,"yard/fee/actfee.html",locals())
 def auditview(request):    # 已收费用核销
     seq = str(fetchSeq('seq_html'))
-    display_toolbar = True
+    funcname = '核销删除'
     actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
