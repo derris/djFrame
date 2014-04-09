@@ -126,14 +126,8 @@ def getcontractprefeeout(request):
              "where fee_typ = 'O' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
-
-def getactfeeEx(request, aSql):
+def getJson4sql(request, aSql):
     '''已收核销查询'''
-    ldict = json.loads( request.POST['jpargs'] )
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
-def getprefeeEx(request, aSql):
-    '''已收核销查询'''
-    #ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from pre_fee"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)),ensure_ascii = False))
 
@@ -200,7 +194,7 @@ def dealAuditFee(request):
             if len(list_actId) > 0 :  # 还有 实收 费用。
                 l_actId = list_actId.pop()
                 l_sumact += float( cursorSelect("select amount from act_fee where id =  " + str(l_actId))[0][0] )
-                ls_exec = "update act_fee set ex_over = '" + ls_seq + "', audit_id=true, audit_tim=current_timestamp(0) where id = " + str(l_actId)
+                ls_exec = "update act_fee set ex_over = %s, audit_id=true, audit_tim=%s where id = %s" % ( ls_seq, ls_now, str(l_actId))
                 if cursorExec(ls_exec) < 0 :
                     raise Exception("数据库执行失败")
             else  :# 没有实际费用了，prefee要多，所以插入剩下的prefee
@@ -210,15 +204,15 @@ def dealAuditFee(request):
                 l_feecod = l_actRecord[0][2]
                 l_contractid = l_actRecord[0][3]
                 ls_ins = "insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )"
-                ls_ins += "values(%s, %s, %s, %s,%s, current_timestamp(0), %s, current_timestamp(0), %s, %s, %s)"
-                la_list = list((l_clientid, l_contractid, l_feetyp, l_feecod, l_sumpre - l_sumact, l_recnam, ls_seq, 'E','核销自动生成'))
+                ls_ins += "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                la_list = list((l_clientid, l_contractid, l_feetyp, l_feecod, l_sumpre - l_sumact, ls_now, l_recnam, ls_now,  ls_seq, 'E','核销自动生成'))
                 cursorExec2(ls_ins, la_list)
                 break # 退出。没有实际费用
         else:
             if len(list_preId) > 0 :  # 还有 应收 费用。
                 l_preId = list_preId.pop()
                 l_sumpre += float(cursorSelect("select amount from pre_fee where id =  " + str(l_preId))[0][0] )
-                ls_exec = "update pre_fee set ex_over = '" + ls_seq + "', audit_id=true, audit_tim=current_timestamp(0) where id = " + str(l_preId)
+                ls_exec = "update pre_fee set ex_over = %s, audit_id=true, audit_tim=%s where id = %s" (ls_seq, ls_now, str(l_preId))
                 if cursorExec(ls_exec) < 0 :
                     raise Exception("数据库执行失败")
             else:
@@ -227,8 +221,8 @@ def dealAuditFee(request):
                 l_feetyp = l_actRecord[0][1]
                 l_paytype = l_actRecord[0][2]
                 ls_ins = "insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )"
-                ls_ins += "values(%s, %s, %s, %s,current_timestamp(0), %s, current_timestamp(0), %s, %s , %s)"
-                la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype,  l_recnam, ls_seq, 'E', '核销自动生成'))
+                ls_ins += "values(%s, %s, %s, %s, %s, %s, %s, %s, %s , %s)"
+                la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, ls_now, l_paytype, l_recnam, ls_now, ls_seq, 'E', '核销自动生成'))
                 cursorExec2(ls_ins, la_list)
                 break
 
@@ -289,30 +283,36 @@ def dealPAjax(request):
                 return(getcontractprefeeout(request))
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim from act_fee"
-                return(getactfeeEx(request, ls_sql))
+                return(getJson4sql(request, ls_sql))
             elif ldict['func'] == '实收付未核销查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
                          "from act_fee " \
                          "where COALESCE(audit_id,false) = false "
-                return(getactfeeEx(request, ls_sql))
+                return(getJson4sql(request, ls_sql))
             elif ldict['func'] == '应收付未核销查询':
                 ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_cod," \
                          "pre_fee.amount,pre_fee.fee_tim,pre_fee.ex_feeid,pre_fee.remark " \
                          "from pre_fee,contract " \
                          "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
-                return(getactfeeEx(request, ls_sql))
+                return(getJson4sql(request, ls_sql))
 
             elif ldict['func'] == '已收核销已收查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
-                return(getactfeeEx(request, ls_sql))
+                return(getJson4sql(request, ls_sql))
             elif ldict['func'] == '已收核销应收查询':
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
-                return(getactfeeEx(request, ls_sql))
-            elif ldict['func'] == '核销删除应收付查询':
+                return(getJson4sql(request, ls_sql))
+            elif ldict['func'] == '核销删除查询':
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 l_feetyp = str(ldict['ex_parm']['fee_typ'])
-                ls_sql = "select * from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
+                ls_sql = "select ex_over, audit_tim from act_fee where client_id = %s and fee_typ= %s and audit_id = true order by id desc limit 1 " % (l_clientid, l_feetyp)
+                l_actRecord = cursorSelect(ls_sql)
+                ls_auditTim = l_actRecord[0][1]
+                ls_exOver = l_actRecord[0][0]
+                ls_sqlpre1 = "select * from pre_fee where audit_it = true and audit_tim = %s " % ls_auditTim
+                ls_sqlpre2 = "select * from pre_fee where audit_it = false and audit_tim = %s " % ls_auditTim
+                #得到prefee处理。
                 ls_sqlcount = "select count(*) from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
                 return(getJson4sqlEx(request, ls_sql, ls_sqlcount))
             ######################
