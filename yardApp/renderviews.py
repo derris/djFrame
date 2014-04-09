@@ -241,7 +241,7 @@ def actfeeview(request):
     return render(request,"yard/fee/actfee.html",locals())
 def auditview(request):    # 已收费用核销
     seq = str(fetchSeq('seq_html'))
-    funcname = '核销删除'
+    funcname = '核销'
     actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
@@ -267,6 +267,34 @@ def auditview(request):    # 已收费用核销
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
     return render(request,"yard/fee/auditview.html",locals())
+def unauditview(request):    # 已收费用核销
+    seq = str(fetchSeq('seq_html'))
+    funcname = '核销'
+    actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
+    actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
+    actfee_amount = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
+    actfee_invoice_no = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='invoice_no',width=100)
+    actfee_check_no = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no',width=100)
+    actfee_pay_type = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
+    actfee_fee_tim = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
+    actfee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='ex_feeid',hidden=True)
+    actfee_audit_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='audit_id',hidden=True)
+    actfee_remark = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='remark',width=200)
+    prefee_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='id')
+    prefee_contractid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='contract_id',hidden=True)
+    prefee_feetyp = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ')
+    prefee_feecod = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_cod',autoforeign=True,foreigndisplayfield='fee_name')
+    prefee_client = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name',hidden=True)
+    prefee_amount = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
+    #prefee_feetim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
+    #prefee_financialtim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_financial_tim')
+    #prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag',readonly=True)
+    #prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id',readonly=True)
+    prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
+    return render(request,"yard/fee/unauditview.html",locals())
 
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
@@ -322,5 +350,8 @@ def dealMenuReq(request):
         return(actfeeview(request))
     elif ls_args == "核销":
         return(auditview(request))
+    elif ls_args == "取消核销":
+        return(unauditview(request))
+
     else:
         return HttpResponse("找不到功能名，请联系管理员")

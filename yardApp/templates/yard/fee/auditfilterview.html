@@ -20,7 +20,7 @@
         $('#control-audit-filter-toolbar-search-{{ seq }}').bind('click', function (e) {
             var parm = {
                 client: control.audit.filter.client_{{ seq }}.combobox('getValue'),
-                feetpy: control.audit.filter.feetyp_{{ seq }}.combobox('getValue')
+                feetyp: control.audit.filter.feetyp_{{ seq }}.combobox('getValue')
             };
             $('#control-audit-filter-toolbar-{{ seq }}').trigger('refresh', parm);
         });
@@ -41,7 +41,7 @@
        data-options="iconCls:'icon-save',group:'control-audit-filter-toolbar'">
         {% if funcname == '核销' %}
             核销
-        {% elif funcname == '核销删除' %}
+        {% elif funcname == '取消核销' %}
             取消
         {% endif %}
     </a>

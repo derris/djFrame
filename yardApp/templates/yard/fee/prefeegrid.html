@@ -3,7 +3,9 @@
     $(function () {
         control.audit.prefeegrid._{{ seq }} = $('#control-audit-prefeegrid-{{ seq }}').datagrid({
             autoLoad: false,
+            border:false,
             sumAmount: 0,
+            title:'应收付费用',
             columns: [
                 [
                     {% autoescape off %}
@@ -58,8 +60,12 @@
         control.audit.prefeegrid._{{ seq }}.trigger('afterrender', control.audit.prefeegrid._{{ seq }});
     });
 </script>
-<table id="control-audit-prefeegrid-{{ seq }}" data-options="border:'false'">
-</table>
-<div class="grid-sumbar-bottom-nopage">
-    <label id="control-audit-prefeegrid-sum-{{ seq }}">合计:0：</label>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        <table id="control-audit-prefeegrid-{{ seq }}" data-options="border:'false'">
+        </table>
+    </div>
+    <div data-options="region:'south',border:'false'" style="border-top: none">
+        <label id="control-audit-prefeegrid-sum-{{ seq }}">合计:0：</label>
+    </div>
 </div>

@@ -36,8 +36,38 @@ insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, 
 insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )
 ==================================================================
 
-
-
+------------------------- 核销删除 ------------------------------
+1.核销删除查询：
+  接口参数：{
+    func:'核销删除查询',
+    ex_parm:{
+        client_id:'',
+        fee_typ:''
+    }
+  }
+  查询：根据传入的客户+费用类型，查询出最近一次核销。act_fee和pre_fee的ex_over要相同。
+  返回：
+  {
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     同时返回act_fee和pre_fee
+   }
+ 2.核销删除：
+   接口参数：{
+     func:'核销删除',
+     ex_parm:{
+        ex_over:''
+     }
+   }
+   删除：要求ex_over参数没有后续的核销
+       恢复act_fee和pre_fee至ex_over号核销前的数据，保证数据完整性。
+   返回：
+   {
+        "msg":"成功",
+        "stateCod": "202",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+   }
 
 
 

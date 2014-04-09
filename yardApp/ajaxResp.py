@@ -309,7 +309,7 @@ def dealPAjax(request):
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
                 return(getactfeeEx(request, ls_sql))
-            elif ldict['func'] == '核销删除查询':
+            elif ldict['func'] == '核销删除应收付查询':
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 l_feetyp = str(ldict['ex_parm']['fee_typ'])
                 ls_sql = "select * from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)

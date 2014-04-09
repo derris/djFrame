@@ -954,6 +954,7 @@ $.ajaxSetup({
                         showType: 'slide'
                     });
                 }
+                return true;
             } else {//返回错误
                 if (returnData.msg && returnData.msg.length > 0){
                     $.messager.alert('提示',returnData.msg,'info');
