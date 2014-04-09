@@ -48,6 +48,7 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
   查询：根据传入的客户+费用类型，查询出最近一次核销。act_fee和pre_fee的ex_over要相同。
         select ex_over, audit_tim from act_fee where client_id = %s and fee_typ= %s and audit_id = true order by id desc limit 1 " % (l_clientid, l_feetyp)
         得出最后的审核时间。这个时间应该是唯一的，为了确保唯一，我们还要确保ex_over是一样的。
+        累加prefee的东东。
   返回：
   {
         "msg":"查询成功",

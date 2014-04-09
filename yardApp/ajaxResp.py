@@ -312,7 +312,7 @@ def dealPAjax(request):
                 ls_exOver = l_actRecord[0][0]
                 ls_sqlpre1 = "select * from pre_fee where audit_it = true and audit_tim = %s " % ls_auditTim
                 ls_sqlpre2 = "select * from pre_fee where audit_it = false and audit_tim = %s " % ls_auditTim
-                #得到prefee处理。
+                #得到prefee处理。继续处理。。。通用actfee等等。。
                 ls_sqlcount = "select count(*) from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
                 return(getJson4sqlEx(request, ls_sql, ls_sqlcount))
             ######################
