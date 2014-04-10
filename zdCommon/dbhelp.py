@@ -420,7 +420,7 @@ def cursorExec(aSql):
         l_cur.close
     return l_rtn
 
-def cursorExec2(aSql, aList ):
+def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
     l_rtn = -1
     log(aSql + str(aList))
     try:

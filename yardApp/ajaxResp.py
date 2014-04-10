@@ -164,14 +164,11 @@ def dealAuditFee(request):
     ldict = json.loads( request.POST['jpargs'] )
     list_actId = ldict['ex_parm']["actfeeid"]
     list_preId = ldict['ex_parm']["prefeeid"]
-    '''  前台bug排除，就没用了。
-    list_actId = set(ldict['ex_parm']["actfeeid"])
-    list_preId = set(ldict['ex_parm']["prefeeid"])
-    if (len(list_actId) != len(ldict['ex_parm']["actfeeid"])):
+    #  前台bug排除，就没用了。
+    if (len(set(list_actId)) != len(list_actId)):
         raise Exception("已收费用id重复")
-    if (len(list_preId) != len(ldict['ex_parm']["prefeeid"])):
+    if (len(set(list_preId)) != len(list_preId)):
         raise Exception("应收费用id重复")
-    '''
     # 得到一个处理的seq{"seqnam":aSeqNam }
     ls_sql = "select nextval('seq_4_auditfee')"
     l_seq = cursorSelect(ls_sql)
@@ -194,7 +191,7 @@ def dealAuditFee(request):
             if len(list_actId) > 0 :  # 还有 实收 费用。
                 l_actId = list_actId.pop()
                 l_sumact += float( cursorSelect("select amount from act_fee where id =  " + str(l_actId))[0][0] )
-                ls_exec = "update act_fee set ex_over = %s, audit_id=true, audit_tim=%s where id = %s" % ( ls_seq, ls_now, str(l_actId))
+                ls_exec = "update act_fee set ex_over = %s, audit_id=true, audit_tim='%s' where id = %s" % ( ls_seq, ls_now, str(l_actId))
                 if cursorExec(ls_exec) < 0 :
                     raise Exception("数据库执行失败")
             else  :# 没有实际费用了，prefee要多，所以插入剩下的prefee
@@ -212,7 +209,7 @@ def dealAuditFee(request):
             if len(list_preId) > 0 :  # 还有 应收 费用。
                 l_preId = list_preId.pop()
                 l_sumpre += float(cursorSelect("select amount from pre_fee where id =  " + str(l_preId))[0][0] )
-                ls_exec = "update pre_fee set ex_over = %s, audit_id=true, audit_tim=%s where id = %s" (ls_seq, ls_now, str(l_preId))
+                ls_exec = "update pre_fee set ex_over = %s, audit_id=true, audit_tim='%s' where id = %s" % (ls_seq, ls_now, str(l_preId))
                 if cursorExec(ls_exec) < 0 :
                     raise Exception("数据库执行失败")
             else:
@@ -221,8 +218,8 @@ def dealAuditFee(request):
                 l_feetyp = l_actRecord[0][1]
                 l_paytype = l_actRecord[0][2]
                 ls_ins = "insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )"
-                ls_ins += "values(%s, %s, %s, %s, %s, %s, %s, %s, %s , %s)"
-                la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, ls_now, l_paytype, l_recnam, ls_now, ls_seq, 'E', '核销自动生成'))
+                ls_ins += "values(%s, %s, %s, %s,  %s, %s, %s, %s, %s , %s)"
+                la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype, ls_now, l_recnam, ls_now, ls_seq, 'E', '核销自动生成'))
                 cursorExec2(ls_ins, la_list)
                 break
 
