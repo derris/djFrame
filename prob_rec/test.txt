@@ -25,4 +25,16 @@
 
 --------------
 03-31 21:52:49 -> dealPAjax -> {'rows': [{'id': 4, 'table': 'contract', 'subs': {}, 'cols': {'finish_flag': [''], 'finish_time': ['']}, 'op': 'update'}], 'func': '委托解锁', 'reqtype': 'updatedirty'}
-委托解锁。功能写反了。 op：是updatedirty。。。。reqtype：是update
+委托解锁。功能写反了。 op：是updatedirty。。。。reqtype：是update        --ok
+
+三 核销
+  1.查询：查询条件 客户+费用类型(收/付)，根据此组合条件，查询未核销的act_fee和pre_fee，缺少任一条件，核销按钮禁用。
+  2.选择费用：选择要进行核销的act_fee和pre_fee,如果选择的act_fee数组或pre_fee数组为空，禁止核销。
+  3.核销：act_fee的拆分条件为 client_id + fee_typ + pay_typ
+         pre_fee的拆分条件为 client_id + fee_typ + contract_id + fee_cod
+    测试数据:
+    a. act_fee: 现金 1000
+                现金 500
+       pre_fee: 提单号：A  包干费：300
+       结果：act_fee从1000或500两个任意选一条核销，增加一条act_fee,金额700或200,
+            pre_fee 提单号：A  包干费：300已核销 未生成新记录

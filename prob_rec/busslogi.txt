@@ -56,7 +56,7 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
         "error": ["xxx", "xx"]...        # 错误数组。
         "result": {"act":[{},{},{}], "pre":[{},{},{}]}     同时返回act_fee和pre_fee
    }
- 2.核销删除：
+2.核销删除：
    接口参数：{
      func:'核销删除',
      ex_parm:{

@@ -972,6 +972,9 @@ $.ajaxSetup({
                 }
                 return false;
             }
+        }else{
+            $.messager.alert('错误','返回数据错误！','error');
+            return false;
         }
     },
     error: function (xhr, msg, e) {

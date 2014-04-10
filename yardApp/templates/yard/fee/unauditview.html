@@ -35,11 +35,12 @@
                     //console.info(r);
                     if ($.ajaxSettings.success(r, t, a, false)) {
                         //加载act_fee pre_fee数据
-                        //success(r);
+                        audit.unauditview.actfeegrid.datagrid('loadData', r.result.act);
+                        audit.unauditview.prefeegrid.datagrid('loadData', r.result.pre);
                     } else {
-                        error();
+                        audit.unauditview.actfeegrid.datagrid('loadData', []);
+                        audit.unauditview.prefeegrid.datagrid('loadData', []);
                     }
-                    //$.ajaxSettings.success(r, t, a, false);
                 }
             });
         }
@@ -49,8 +50,6 @@
         $(document).on('audit', '#control-audit-filter-toolbar-{{ seq }}', function (e, parm) {
             if (parm == '取消核销') {
                 audit.unauditview.unaudit();
-            } else {
-                //audit.auditview.unaudit();
             }
         });
 
@@ -58,40 +57,35 @@
             audit.unauditview.prefeegrid = $(grid);
             //audit.auditview.prefeegrid.datagrid('options').queryFuncName = '核销删除应收付查询';
         });
-        audit.auditview.unaudit = function () {
-            var actRows = audit.auditview.actfeegrid.datagrid('getChecked');
-            var preRows = audit.auditview.prefeegrid.datagrid('getChecked');
+        audit.unauditview.unaudit = function () {
+            var actRows = audit.auditview.actfeegrid.datagrid('getRows');
+            var preRows = audit.auditview.prefeegrid.datagrid('getRows');
+            if (actRows.length == 0 || preRows.length == 0) {
+                $.messager.alert('提示', '取消核销数据不完整', 'info');
+                return;
+            }
             param = {
                 func: "核销",
                 ex_parm: {
-                    actfeeid: [],
-                    prefeeid: []
+                    ex_over: actRows[0].ex_over
                 }
-            }
-            for (var i = 0, ilen = actRows.length; i < ilen; i++) {
-                param.ex_parm.actfeeid.push(actRows[i].id);
-            }
-            for (var i = 0, ilen = preRows.length; i < ilen; i++) {
-                param.ex_parm.prefeeid.push(preRows[i].id);
             }
             $.ajax({
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(param)},
                 success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            $('#control-audit-filter-toolbar-search-{{ seq }}').triggerHandler('click');
+                    if ($.ajaxSettings.success(r, t, a, true)) {
+                        var stateCod = parseInt(r.stateCod);
+                        if (r && !isNaN(stateCod)) {
+                            if (stateCod == 202) {
+                                //保存成功刷新界面
+                                $('#control-audit-filter-toolbar-search-{{ seq }}').triggerHandler('click');
+                            }
                         }
                     }
-                    $.ajaxSettings.success(r, t, a, true);
                 }
             });
-
         }
-
-
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
