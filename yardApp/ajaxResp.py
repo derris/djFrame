@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import json
 from django.db import transaction
-from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd
+from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
 from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
@@ -149,7 +149,7 @@ def getSequence(aDict):
     else:
         ldict_rtn.update(  {"stateCod": "-1" }  )
     return ldict_rtn
-#############################################################    UPDATE    -----
+###############################################################################################    UPDATE    -----
 
 def updateRaw(request):
     ''' 客户维护  '''
@@ -177,7 +177,6 @@ def dealAuditFee(request):
         ls_seq = str(l_seq[0][0])
     else:
         raise Exception("取序列号失败")
-    #
     l_sumact = 0.0    # 实收费用
     l_sumpre = 0.0
     list_actId.reverse()
@@ -222,9 +221,9 @@ def dealAuditFee(request):
                 la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype, ls_now, l_recnam, ls_now, ls_seq, 'E', '核销自动生成'))
                 cursorExec2(ls_ins, la_list)
                 break
-
     ldict_rtn = { "msg": "成功", "stateCod": "0" , "result":{} }
     return(ldict_rtn)
+
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
@@ -281,6 +280,7 @@ def dealPAjax(request):
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim from act_fee"
                 return(getJson4sql(request, ls_sql))
+            ################################################################################   核销  #############################
             elif ldict['func'] == '实收付未核销查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
                          "from act_fee " \
@@ -292,7 +292,6 @@ def dealPAjax(request):
                          "from pre_fee,contract " \
                          "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
                 return(getJson4sql(request, ls_sql))
-
             elif ldict['func'] == '已收核销已收查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getJson4sql(request, ls_sql))
@@ -307,12 +306,30 @@ def dealPAjax(request):
                 l_actRecord = cursorSelect(ls_sql)
                 ls_auditTim = l_actRecord[0][1]
                 ls_exOver = l_actRecord[0][0]
-                ls_sqlpre1 = "select * from pre_fee where audit_it = true and audit_tim = %s " % ls_auditTim
-                ls_sqlpre2 = "select * from pre_fee where audit_it = false and audit_tim = %s " % ls_auditTim
-                #得到prefee处理。继续处理。。。通用actfee等等。。
-                ls_sqlcount = "select count(*) from pre_fee where fee_tim = ( select fee_tim from pre_fee where client_id = %s  and fee_typ= %s order by id desc limit 1 )" % (l_clientid, l_feetyp)
-                return(getJson4sqlEx(request, ls_sql, ls_sqlcount))
-            ######################
+                ls_sqlpre1 = "select * from pre_fee where audit_it = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlpre2 = "select * from pre_fee where audit_it = false and audit_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlact1 = "select * from pre_fee where audit_it = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlact2 = "select * from pre_fee where audit_it = false and audit_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
+                l_rtn = {}
+                try:
+                    list_pre = rawSql2JsonDict(ls_sqlpre1).extend(rawSql2JsonDict(ls_sqlpre2))
+                    list_act = rawSql2JsonDict(ls_sqlact1).extend(rawSql2JsonDict(ls_sqlact2))
+                    l_result = { "act":list_act, "pre":list_pre }
+                    l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
+                except Exception as e:
+                    list_err = [].append(str(e.args))
+                    l_rtn.update( {"msg": "查询失败", "error": list_err , "stateCod" : -1 } )
+                return l_rtn
+            elif ldict['func'] == '核销删除':
+                ls_exOver = str(ldict['ex_parm']['ex_over'])
+                ls_sqlPre = "select count(*) from pre_fee where ex_from ='%s' and ex_over is null " % ls_exOver
+                ls_sqlAct = "select count(*) from act_fee where ex_from ='%s' and ex_over is null " % ls_exOver
+                l_rtn = {}
+                # 未完待续。。。。。。。。。。。。
+
+
+
+            #######################################################################################################
             elif ldict['func'] == '已收核销客户查询':
                 ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
                 return(getclientsEx(request, ls_t))

@@ -63,7 +63,9 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
         ex_over:''
      }
    }
-   删除：要求ex_over参数没有后续的核销
+   删除：要求ex_over参数没有后续的核销（ex_from = ex_over 的记录，ex_over是空。就可以保证。也就是说：
+   选择核销号，ex-from=核销号的记录，就是他产生新记录，如果这些新记录，没有exover的号，说明没有被进一步核销，就可以保证条件。）
+
        恢复act_fee和pre_fee至ex_over号核销前的数据，保证数据完整性。
    返回：
    {

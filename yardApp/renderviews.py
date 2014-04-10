@@ -345,7 +345,7 @@ def dealMenuReq(request):
     elif ls_args == '委托查询':
         return(contractqueryview(request))
 
-    #######  费用 #############
+    #######  费用 #############(func='已收费用维护')
     elif ls_args == "收款/付款":
         return(actfeeview(request))
     elif ls_args == "核销":
