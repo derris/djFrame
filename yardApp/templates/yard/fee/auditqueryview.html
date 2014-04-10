@@ -1,0 +1,61 @@
+<script>
+    Namespace.register('audit.auditqueryview');
+    $(function(){
+        audit.auditqueryview.sumgrid = null;
+        $(document).on('afterrender', '#control-audit-auditsumgrid-{{ seq }}', function (e, grid) {
+            audit.auditqueryview.sumgrid = $(grid);
+        });
+        $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
+            audit.auditqueryview.refresh(parm);
+        });
+        audit.auditqueryview.refresh = function(param){
+            audit.auditqueryview.sumgrid.datagrid('uncheckAll');
+            var p = {
+                func: '核销汇总查询',
+                ex_parm: {
+                    client_id: '',
+                    fee_typ: '',
+                    begin_audit_tim:'',
+                    end_audit_tim:''}
+            };
+            if (param.client != null && param.client.length > 0) {
+                p.ex_parm.client_id = param.client;
+            }
+            if (param.feetyp != null && param.feetyp.length > 0) {
+                p.ex_parm.fee_typ = param.feetyp;
+            }
+            if (param.auditbegintim != null && param.auditbegintim.length > 0) {
+                p.ex_parm.begin_audit_tim = param.auditbegintim;
+            }
+            if (param.auditendtim != null && param.auditendtim.length > 0) {
+                p.ex_parm.end_audit_tim = param.auditendtim;
+            }
+
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (r, t, a) {
+                    if ($.ajaxSettings.success(r, t, a, false)) {
+                        audit.auditqueryview.sumgrid.datagrid('loadData', r.rows);
+                    } else {
+                        audit.auditqueryview.sumgrid.datagrid('loadData', []);
+                    }
+                }
+            });
+
+        }
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:'false'">
+        {% include 'yard/fee/auditqueryfilterview.html' %}
+    </div>
+    <div data-options="region:'center',border:'false'">
+        {% include 'yard/fee/auditsumgrid.html' %}
+    </div>
+{% comment %}
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
+        {% include 'yard/fee/prefeegrid.html' %}
+    </div>
+{% endcomment %}
+</div>

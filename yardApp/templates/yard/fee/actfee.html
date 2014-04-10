@@ -13,8 +13,8 @@
                         {{ invoiceNoObj.writeUI|safe|escape }},
                         {{ checkNoObj.writeUI|safe|escape }},
                         {{ payTypeObj.writeUI|safe|escape }},
-                        {{ feeTimObj.writeUI|safe|escape }}
-
+                        {{ feeTimObj.writeUI|safe|escape }},
+                        {{ audit_id.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
@@ -42,6 +42,11 @@
                     iconCls: 'icon-remove',
                     group:'fee-actfee-datagrid',
                     handler: function () {
+                        var selectRow = fee.actfeeview.datagrid.datagrid('getSelected');
+                        if (selectRow.audit_id == true){
+                            $.messager.alert('提示','此费用已核销不能删除','info');
+                            return;
+                        }
                         fee.actfeeview.datagrid.datagrid('deleteData');
                     }
                 },

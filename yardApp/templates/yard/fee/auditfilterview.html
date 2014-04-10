@@ -25,6 +25,7 @@
             $('#control-audit-filter-toolbar-{{ seq }}').trigger('refresh', parm);
         });
         $('#control-audit-filter-toolbar-audit-{{ seq }}').bind('click', function (e) {
+            $('#control-audit-filter-toolbar-audit-{{ seq }}').linkbutton('disable');
             $('#control-audit-filter-toolbar-{{ seq }}').trigger('audit', $('#control-audit-filter-toolbar-audit-{{ seq }}').text());
         });
     });

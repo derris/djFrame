@@ -31,7 +31,7 @@
     onDblClickRow: function (rowIndex, rowData) {
         return;
     },
-    onDblClickRow: function (rowIndex, rowData) {
+    onClickRow: function (rowIndex, rowData) {
         return;
     },
     onCheck: function (rowIndex, rowData) {
@@ -46,6 +46,7 @@
     },
     onCheckAll: function (rows) {
         var opts = control.audit.actfeegrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = 0;
         for (var i = 0, ilen = rows.length; i < ilen; i++) {
             opts.sumAmount = opts.sumAmount + parseFloat(rows[i].amount);
         }

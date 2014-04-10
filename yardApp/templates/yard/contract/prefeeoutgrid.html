@@ -52,6 +52,11 @@
                         iconCls: 'icon-remove',
                         group: '#control-contract-prefeeoutgrid-{{ seq }}',
                         handler: function () {
+                            if (control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').audit_id == 'true'){
+                                $.messager.alert('提示','已核销不能删除','info');
+                                return;
+                            }
+
                             control.contract.prefeeoutgrid._{{ seq }}.datagrid('deleteData');
                         }
                     }

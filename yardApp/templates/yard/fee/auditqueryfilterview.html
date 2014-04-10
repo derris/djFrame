@@ -1,0 +1,51 @@
+<script>
+    Namespace.register('control.audit.queryfilter');
+    $(function () {
+        {% autoescape off %}
+            control.audit.queryfilter.client_{{ seq }} = $('#control-audit-queryfilter-toolbar-client-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            control.audit.queryfilter.feetyp_{{ seq }} = $('#control-audit-queryfilter-toolbar-feetyp-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ feetypdata }}
+            });
+            control.audit.queryfilter.auditbegintim_{{ seq }} = $('#control-audit-queryfilter-toolbar-auditbegintim-{{ seq }}').datetimebox({
+                width:180
+            });
+            control.audit.queryfilter.auditendtim_{{ seq }} = $('#control-audit-queryfilter-toolbar-auditendtim-{{ seq }}').datetimebox({
+                width:180
+            });
+        {% endautoescape %}
+        $('#control-audit-queryfilter-toolbar-search-{{ seq }}').bind('click', function (e) {
+            var parm = {
+                client: control.audit.queryfilter.client_{{ seq }}.combobox('getValue'),
+                feetyp: control.audit.queryfilter.feetyp_{{ seq }}.combobox('getValue'),
+                auditbegintim:control.audit.queryfilter.auditbegintim_{{ seq }}.datetimebox('getValue'),
+                auditendtim:control.audit.queryfilter.auditendtim_{{ seq }}.datetimebox('getValue')
+            };
+            $('#control-audit-queryfilter-toolbar-{{ seq }}').trigger('refresh', parm);
+        });
+
+    });
+</script>
+<div id="control-audit-queryfilter-toolbar-{{ seq }}" class="datagrid-toolbar">
+    <label for="client_id">委托客户:</label>
+    <input id="control-audit-queryfilter-toolbar-client-{{ seq }}" type="text" name="client_id"/>
+    <label for="fee_typ">费用类型:</label>
+    <input id="control-audit-queryfilter-toolbar-feetyp-{{ seq }}" type="text" name="fee_typ"/>
+    <label for="auditbegintime">核销时间:</label>
+    <input id="control-audit-queryfilter-toolbar-auditbegintim-{{ seq }}" type="text" name="auditbegintime" />
+    <label for="auditendtime">至:</label>
+    <input id="control-audit-queryfilter-toolbar-auditendtim-{{ seq }}" type="text" name="auditendtime" />
+    <a id="control-audit-queryfilter-toolbar-search-{{ seq }}" href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-search',group:'control-audit-queryfilter-toolbar'">查询</a>
+
+</div>
+

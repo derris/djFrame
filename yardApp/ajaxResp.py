@@ -149,7 +149,7 @@ def getSequence(aDict):
     else:
         ldict_rtn.update(  {"stateCod": "-1" }  )
     return ldict_rtn
-###############################################################################################    UPDATE    -----
+#############################################################    UPDATE    -----
 
 def updateRaw(request):
     ''' 客户维护  '''
@@ -177,6 +177,7 @@ def dealAuditFee(request):
         ls_seq = str(l_seq[0][0])
     else:
         raise Exception("取序列号失败")
+    #
     l_sumact = 0.0    # 实收费用
     l_sumpre = 0.0
     list_actId.reverse()
@@ -221,9 +222,9 @@ def dealAuditFee(request):
                 la_list = list((l_clientid, l_feetyp, l_sumact-l_sumpre, l_paytype, ls_now, l_recnam, ls_now, ls_seq, 'E', '核销自动生成'))
                 cursorExec2(ls_ins, la_list)
                 break
-    ldict_rtn = { "msg": "成功", "stateCod": "0" , "result":{} }
-    return(ldict_rtn)
 
+    ldict_rtn = { "msg": "成功", "stateCod": "202" , "result":{} }
+    return(ldict_rtn)
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
@@ -278,9 +279,10 @@ def dealPAjax(request):
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
             elif ldict['func'] == '已收费用查询':
-                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim from act_fee"
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,audit_id " \
+                         "from act_fee " \
+                         "where ex_feeid = 'O' "
                 return(getJson4sql(request, ls_sql))
-            ################################################################################   核销  #############################
             elif ldict['func'] == '实收付未核销查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
                          "from act_fee " \
@@ -292,6 +294,7 @@ def dealPAjax(request):
                          "from pre_fee,contract " \
                          "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
                 return(getJson4sql(request, ls_sql))
+
             elif ldict['func'] == '已收核销已收查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getJson4sql(request, ls_sql))
