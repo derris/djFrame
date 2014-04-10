@@ -193,6 +193,7 @@ def rawSql2JsonDict(aSql):
     '''
     l_cur = connection.cursor()
     try:
+        log(aSql)
         l_cur.execute(aSql)
         l_keys = [i for i in l_cur.description ]
         l_sum = []
@@ -217,6 +218,7 @@ def rawsql2json(aSql, aSqlCount):
     l_cur = connection.cursor()
     l_rtn = {"msg": "查询完毕", "error":[] }
     try:
+        log(aSql)
         l_cur.execute(aSql)
         l_keys = [i for i in l_cur.description ]
         l_sum = []

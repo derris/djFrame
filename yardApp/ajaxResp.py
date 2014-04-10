@@ -278,6 +278,7 @@ def dealPAjax(request):
                 return(getcontractprefeein(request))
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
+            #---------------------------------------------------------------
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,audit_id " \
                          "from act_fee " \
@@ -303,32 +304,56 @@ def dealPAjax(request):
                 ls_sql = "select  id,contract_id, fee_typ, fee_cod, client_id,amount,fee_tim,lock_flag, remark from pre_fee where client_id = %s" % l_clientid
                 return(getJson4sql(request, ls_sql))
             elif ldict['func'] == '核销删除查询':
+                l_rtn = {}
                 l_clientid = str(ldict['ex_parm']['client_id'])
                 l_feetyp = str(ldict['ex_parm']['fee_typ'])
-                ls_sql = "select ex_over, audit_tim from act_fee where client_id = %s and fee_typ= %s and audit_id = true order by id desc limit 1 " % (l_clientid, l_feetyp)
+                ls_sql = "select ex_over, audit_tim from act_fee where client_id=%s and fee_typ='%s' and audit_id=true order by id desc limit 1 " % (l_clientid, l_feetyp)
                 l_actRecord = cursorSelect(ls_sql)
+                if len(l_actRecord) > 0 :
+                    pass
+                else:
+                    l_rtn.update( {"msg": "查询成功，但没有符合条件记录", "error": '',"stateCod":101,"result":{"act":[], "pre":[]} } )
+                    return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
                 ls_auditTim = l_actRecord[0][1]
                 ls_exOver = l_actRecord[0][0]
-                ls_sqlpre1 = "select * from pre_fee where audit_it = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
-                ls_sqlpre2 = "select * from pre_fee where audit_it = false and audit_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
-                ls_sqlact1 = "select * from pre_fee where audit_it = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
-                ls_sqlact2 = "select * from pre_fee where audit_it = false and audit_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
-                l_rtn = {}
+                ls_sqlpre1 = "select * from pre_fee where audit_id = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlpre2 = "select * from pre_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlact1 = "select * from act_fee where audit_id = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+                ls_sqlact2 = "select * from act_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
                 try:
-                    list_pre = rawSql2JsonDict(ls_sqlpre1).extend(rawSql2JsonDict(ls_sqlpre2))
-                    list_act = rawSql2JsonDict(ls_sqlact1).extend(rawSql2JsonDict(ls_sqlact2))
+                    list_pre = rawSql2JsonDict(ls_sqlpre1)
+                    list_pre.extend(rawSql2JsonDict(ls_sqlpre2))
+                    list_act = rawSql2JsonDict(ls_sqlact1)
+                    list_act.extend(rawSql2JsonDict(ls_sqlact2))
                     l_result = { "act":list_act, "pre":list_pre }
                     l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
                 except Exception as e:
-                    list_err = [].append(str(e.args))
-                    l_rtn.update( {"msg": "查询失败", "error": list_err , "stateCod" : -1 } )
-                return l_rtn
+                    l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+                return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+
+            ###------------------------------核销删除功能
             elif ldict['func'] == '核销删除':
                 ls_exOver = str(ldict['ex_parm']['ex_over'])
-                ls_sqlPre = "select count(*) from pre_fee where ex_from ='%s' and ex_over is null " % ls_exOver
-                ls_sqlAct = "select count(*) from act_fee where ex_from ='%s' and ex_over is null " % ls_exOver
+                ls_sqlPre = "select count(*) from pre_fee where ex_from ='%s' and ex_over<>'' " % ls_exOver
+                ls_sqlAct = "select count(*) from act_fee where ex_from ='%s' and ex_over<>'' " % ls_exOver
                 l_rtn = {}
-                # 未完待续。。。。。。。。。。。。
+                li_pre = int(cursorSelect(ls_sqlPre)[0][0])
+                li_act = int(cursorSelect(ls_sqlAct)[0][0])
+                if li_act + li_pre > 0 :
+                    l_rtn.update( {"msg": "核销删除失败", "error":"核销号不是最后一次。请选择最后一次进行核销" , "stateCod" : -1 } )
+                else:  # 可以删除该核销，删除掉生成的记录，然后update回去原来的号码。
+                    try:
+                        l_sql = []
+                        with transaction.atomic():
+                            l_sql.append("delete * from pre_fee where ex_from='%s'" % ls_exOver)
+                            l_sql.append("delete * from act_fee where ex_from='%s'" % ls_exOver)
+                            l_sql.append("update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
+                            l_sql.append("update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
+                            for i in l_sql:
+                                cursorExec(i)
+                            l_rtn.update( {"msg": "删除成功", "error":[], "stateCod" : 1, "result": [] } )
+                    except Exception as e:
+                        l_rtn.update( {"msg": "删除失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
 
 
 
