@@ -91,12 +91,12 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
         end_audit_tim:''
     }
   }
-查询：
+查询：参数空 则去掉对应的where条件
     select s.ex_over,s.audit_tim,s.amount - sum(COALESCE(a.amount,0)) amount
     from act_fee a right join
     (select ex_over,audit_tim,sum(amount) amount
     from act_fee
-    where audit_id = true and client_id = 3 and fee_typ = 'I' and ( audit_tim between '' and '')
+    where audit_id = true and client_id = ? and fee_typ = '?' and ( audit_tim between '?' and '?')
     group by ex_over,audit_tim) s
     on a.ex_from = s.ex_over
     group by s.ex_over,s.audit_tim,s.amount

@@ -1,0 +1,70 @@
+<script>
+    Namespace.register('control.audit.auditsumgrid');
+    $(function () {
+        {% autoescape off %}
+            control.audit.auditsumgrid._{{ seq }} = $('#control-audit-auditsumgrid-{{ seq }}').datagrid({
+            autoLoad: false,
+            border: false,
+            sumAmount: 0,
+            title: '核销汇总',
+            columns: [
+                [
+                    {field: 'check_flag', checkbox: true},
+                    {{ audit_ex_over.writeUI|safe|escape }},
+                    {{ audit_tim.writeUI|safe|escape }},
+                    {{ audit_amount.writeUI|safe|escape }}
+                ]
+            ],
+        {% endautoescape %}
+    pagination: false,
+    singleSelect: false,
+    onDblClickRow: function (rowIndex, rowData) {
+        return;
+    },
+    onClickRow: function (rowIndex, rowData) {
+        return;
+    },
+    onCheck: function (rowIndex, rowData) {
+        var opts = control.audit.auditsumgrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = opts.sumAmount + parseFloat(rowData.amount);
+        control.audit.auditsumgrid._{{ seq }}.refreshSum();
+    },
+    onUncheck: function (rowIndex, rowData) {
+        var opts = control.audit.auditsumgrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = opts.sumAmount - parseFloat(rowData.amount);
+        control.audit.auditsumgrid._{{ seq }}.refreshSum();
+    },
+    onCheckAll: function (rows) {
+        var opts = control.audit.auditsumgrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = 0;
+        for (var i = 0, ilen = rows.length; i < ilen; i++) {
+            opts.sumAmount = opts.sumAmount + parseFloat(rows[i].amount);
+        }
+        control.audit.auditsumgrid._{{ seq }}.refreshSum();
+    },
+    onUncheckAll: function (rows) {
+        var opts = control.audit.auditsumgrid._{{ seq }}.datagrid('options');
+        opts.sumAmount = 0;
+        control.audit.actauditsumgridfeegrid._{{ seq }}.refreshSum();
+    }
+    });
+        control.audit.auditsumgrid._{{ seq }}.refreshSum = function () {
+            $('#control-audit-auditsumgrid-sum-{{ seq }}').text('合计:' + control.audit.auditsumgrid._{{ seq }}.datagrid('options').sumAmount
+            );
+        }
+        control.audit.auditsumgrid._{{ seq }}.trigger('afterrender', control.audit.auditsumgrid._{{ seq }});
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        <table id="control-audit-auditsumgrid-{{ seq }}" data-options="border:'false'">
+        </table>
+    </div>
+    <div data-options="region:'south',border:'false'" style="border-top: none">
+
+        <label id="control-audit-auditsumgrid-sum-{{ seq }}">合计:0</label>
+
+    </div>
+</div>
+
