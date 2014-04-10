@@ -81,6 +81,45 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
 
 
 -------------------------核销查询--------------------------
-
-
-
+1.核销汇总查询
+接口参数：{
+    func:'核销汇总查询',
+    ex_parm:{
+        client_id:'',
+        fee_typ:'',
+        begin_audit_tim:'',
+        end_audit_tim:''
+    }
+  }
+查询：
+    select s.ex_over,s.audit_tim,s.amount - sum(COALESCE(a.amount,0)) amount
+    from act_fee a right join
+    (select ex_over,audit_tim,sum(amount) amount
+    from act_fee
+    where audit_id = true and client_id = 3 and fee_typ = 'I' and ( audit_tim between '' and '')
+    group by ex_over,audit_tim) s
+    on a.ex_from = s.ex_over
+    group by s.ex_over,s.audit_tim,s.amount
+返回：
+{
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "rows":[{},{},{}]
+}
+2.核销明细查询
+接口参数：{
+    func:'核销明细查询',
+    ex_parm:{
+        ex_over:''
+    }
+  }
+查询：
+    根据ex_over，查询出act_fee和pre_fee中的记录。同时返回。
+返回：
+  {
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     同时返回act_fee和pre_fee
+   }
