@@ -223,7 +223,7 @@ def dealAuditFee(request):
                 cursorExec2(ls_ins, la_list)
                 break
 
-    ldict_rtn = { "msg": "成功", "stateCod": "0" , "result":{} }
+    ldict_rtn = { "msg": "成功", "stateCod": "202" , "result":{} }
     return(ldict_rtn)
 #####################################################  common interface ----------
 def dealPAjax(request):
@@ -279,7 +279,9 @@ def dealPAjax(request):
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
             elif ldict['func'] == '已收费用查询':
-                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim from act_fee"
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,audit_id " \
+                         "from act_fee " \
+                         "where ex_feeid = 'O' "
                 return(getJson4sql(request, ls_sql))
             elif ldict['func'] == '实收付未核销查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \

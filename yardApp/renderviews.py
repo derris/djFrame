@@ -238,6 +238,7 @@ def actfeeview(request):
     checkNoObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='check_no',width=100)
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
+    audit_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='audit_id',hidden=True)
     return render(request,"yard/fee/actfee.html",locals())
 def auditview(request):    # 已收费用核销
     seq = str(fetchSeq('seq_html'))

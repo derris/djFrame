@@ -24,9 +24,16 @@
 2.应收付费用锁定：
 3.应收付费用解锁:已核销(audit_id)禁止解锁
 ==========================================================
+-------------------------- 收/付费用维护--------------------
+修改、删除(func='已收费用维护')：已核销的费用禁止修改、删除。
+
+==========================================================
 
 
--------------------------- 已收核销 ----------------------------
+-------------------------- 核销 ----------------------------
+核销接收参数检查：
+1.actfeeid和prefeeid 两个数组不能为空，id不能重复
+2.actfeeid和prefeeid 所有对应的act_fee和pre_fee client_id和fee_typ 要一致，audit_id=false
 核销动作：
 分别循环选中的actfee和prefee，--》 actId.pop()， preId.pop() 直到有一方金额不足，就停止pop。标记已经pop的为核销。
 update act_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = actId
@@ -73,6 +80,7 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
    }
 
 
+-------------------------核销查询--------------------------
 
 
 
