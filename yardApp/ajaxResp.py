@@ -278,24 +278,12 @@ def dealPAjax(request):
                 return(getcontractprefeein(request))
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
-            #---------------------------------------------------------------
+            #-------核销费用查询--------------------------------------------------------
             elif ldict['func'] == '已收费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,audit_id " \
                          "from act_fee " \
                          "where ex_feeid = 'O' "
                 return(getJson4sql(request, ls_sql))
-            elif ldict['func'] == '实收付未核销查询':
-                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
-                         "from act_fee " \
-                         "where COALESCE(audit_id,false) = false "
-                return(getJson4sql(request, ls_sql))
-            elif ldict['func'] == '应收付未核销查询':
-                ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_cod," \
-                         "pre_fee.amount,pre_fee.fee_tim,pre_fee.ex_feeid,pre_fee.remark " \
-                         "from pre_fee,contract " \
-                         "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
-                return(getJson4sql(request, ls_sql))
-
             elif ldict['func'] == '已收核销已收查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,off_flag from act_fee"
                 return(getJson4sql(request, ls_sql))
@@ -355,8 +343,6 @@ def dealPAjax(request):
                     except Exception as e:
                         l_rtn.update( {"msg": "删除失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
 
-
-
             #######################################################################################################
             elif ldict['func'] == '已收核销客户查询':
                 ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
@@ -409,9 +395,21 @@ def dealPAjax(request):
             ########################################
             elif ldict['func'] == "取序列号":
                 return(HttpResponse(json.dumps( getSequence(ldict) ,ensure_ascii = False) ))
-            ##########################################     费     #######
-            elif ldict['func'] == "核销":
+            ################################################  商务、核销     #######
+            elif ldict['func'] == "核销":        # 导航
                 return( HttpResponse(json.dumps( dealAuditFee(request),ensure_ascii = False) ))
+            elif ldict['func'] == '实收付未核销查询':    # ajax 查询
+                ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,ex_feeid,remark " \
+                         "from act_fee " \
+                         "where COALESCE(audit_id,false) = false "
+                return(getJson4sql(request, ls_sql))
+            elif ldict['func'] == '应收付未核销查询':   # ajax 查询
+                ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_cod," \
+                         "pre_fee.amount,pre_fee.fee_tim,pre_fee.ex_feeid,pre_fee.remark " \
+                         "from pre_fee,contract " \
+                         "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "
+                return(getJson4sql(request, ls_sql))
+            #########################################################3
             else:
                 pass
     except Exception as e:
