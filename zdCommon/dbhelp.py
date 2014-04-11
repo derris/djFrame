@@ -23,7 +23,9 @@ def correctjsonfield(obj, atypecode):
             return obj.strftime('%Y-%m-%d %H:%M:%S')
         elif isinstance(obj,date):
             return obj.strftime('%Y-%m-%d')
-        else:                 #  isinstance(obj,bool):
+        elif isinstance(obj,bool):
+            return "true" if obj else "false"
+        else:                 #
             return str(obj)
     else:
         if atypecode == 1043:    # varchar
