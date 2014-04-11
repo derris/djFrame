@@ -33,7 +33,7 @@
                 //data:queryParam,
                 success: function (r, t, a) {
                     //console.info(r);
-                    if ($.ajaxSettings.success(r, t, a, false)) {
+                    if ($.ajaxSettings.success(r, t, a, true)) {
                         //加载act_fee pre_fee数据
                         audit.unauditview.actfeegrid.datagrid('loadData', r.result.act);
                         audit.unauditview.prefeegrid.datagrid('loadData', r.result.pre);
@@ -48,7 +48,8 @@
             audit.unauditview.refresh(parm);
         });
         $(document).on('audit', '#control-audit-filter-toolbar-{{ seq }}', function (e, parm) {
-            if (parm == '取消核销') {
+            console.info(parm);
+            if (parm == '取消') {
                 audit.unauditview.unaudit();
             }
         });
@@ -58,14 +59,14 @@
             //audit.auditview.prefeegrid.datagrid('options').queryFuncName = '核销删除应收付查询';
         });
         audit.unauditview.unaudit = function () {
-            var actRows = audit.auditview.actfeegrid.datagrid('getRows');
-            var preRows = audit.auditview.prefeegrid.datagrid('getRows');
+            var actRows = audit.unauditview.actfeegrid.datagrid('getRows');
+            var preRows = audit.unauditview.prefeegrid.datagrid('getRows');
             if (actRows.length == 0 || preRows.length == 0) {
                 $.messager.alert('提示', '取消核销数据不完整', 'info');
                 return;
             }
             param = {
-                func: "核销",
+                func: "取消核销",
                 ex_parm: {
                     ex_over: actRows[0].ex_over
                 }
