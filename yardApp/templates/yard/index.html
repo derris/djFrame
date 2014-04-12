@@ -3,15 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>堆场系统</title>
-    <link href="../../static/js/jquery-easyui/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
-    <link href="../../static/js/jquery-easyui/themes/icon.css" rel="stylesheet" type="text/css"/>
-    <script src="../../static/js/jquery-easyui/jquery.min.js" type="text/javascript"></script>
-    <script src="../../static/js/jquery-easyui/jquery.easyui.min.js" type="text/javascript"></script>
-    <script src="../../static/js/jquery-easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
-    <script src="../../static/js/App.js" type="text/javascript"></script>
-    <script src="../../static/js/datagridgroupview.js" type="text/javascript"></script>
-    <link href="../../static/css/test.css" rel="stylesheet" type="text/css"/>
-    <script src="../../static/js/dhsdebug.js"></script>
+     {% load static from staticfiles %}
+
+    <link href="{% static "js/jquery-easyui/themes/default/easyui.css" %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static "js/jquery-easyui/themes/icon.css" %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static "js/jquery-easyui/jquery.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery-easyui/jquery.easyui.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery-easyui/locale/easyui-lang-zh_CN.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/App.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/datagridgroupview.js" %}" type="text/javascript"></script>
+    <link href="{% static "css/test.css" %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static "js/dhsdebug.js" %}" type="text/javascript"></script>
 
     <script>
         $(function () {
@@ -22,7 +24,7 @@
                 href: sy.logonPath,
                 title: '系统登录',
                 width: window.innerWidth * 0.25,
-                height: window.innerHeight * 0.2,
+                height: window.innerHeight * 0.23,
                 modal: true,
                 collapsible: false,
                 minimizable: false,

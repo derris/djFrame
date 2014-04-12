@@ -333,8 +333,8 @@ def dealPAjax(request):
                     try:
                         l_sql = []
                         with transaction.atomic():
-                            l_sql.append("delete * from pre_fee where ex_from='%s'" % ls_exOver)
-                            l_sql.append("delete * from act_fee where ex_from='%s'" % ls_exOver)
+                            l_sql.append("delete from pre_fee where ex_from='%s'" % ls_exOver)
+                            l_sql.append("delete from act_fee where ex_from='%s'" % ls_exOver)
                             l_sql.append("update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
                             l_sql.append("update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
                             for i in l_sql:
