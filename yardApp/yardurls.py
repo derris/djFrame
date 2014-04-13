@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^lab/$',"yardApp.lab.index", name='labindex'),
     url(r'^lab/getfunc/$',"yardApp.lab.getfunc", name='labgetfunc'),
     url(r'^lab/post/$',"yardApp.lab.getJsonPost", name='labpost'),
+    url(r'^lab/test/$',"yardApp.lab.test", name='labtest'),
     # http://127.0.0.1:8000/yard/lab/getfunc/?func=getJson1&&args=%22aaa%22
 )
 

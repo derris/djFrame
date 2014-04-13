@@ -72,6 +72,12 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
    }
    删除：要求ex_over参数没有后续的核销（ex_from = ex_over 的记录，ex_over是空。就可以保证。也就是说：
    选择核销号，ex-from=核销号的记录，就是他产生新记录，如果这些新记录，没有exover的号，说明没有被进一步核销，就可以保证条件。）
+    delete from pre_fee where ex_from='%s'" % ls_exOver)     删除生成的剩余费用。
+    delete from act_fee where ex_from='%s'" % ls_exOver)     删除生成的剩余费用。
+    ## 回滚插入语句：insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )
+    update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  恢复原来的核销费用。
+    update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  恢复原来的核销费用。
+    ## 回滚核销语句：update act_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = actId
 
        恢复act_fee和pre_fee至ex_over号核销前的数据，保证数据完整性。
    返回：

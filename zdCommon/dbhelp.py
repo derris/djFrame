@@ -1,18 +1,22 @@
 __author__ = 'dh'
-
+'''
+    this only support postgresql .infact , all the database relative SQL should wirte in here.
+    and for the convinient, instead, we put them all around in the other files.
+'''
 import json
 from datetime import date,datetime
 from django.db import connection, transaction
 import re
 from zdCommon.utils import logErr, log
 
-tbDefCache = {}  # table的定义缓存。
+tbDefCache = {}  # table的定义缓存。 write here could share the data with other session .
 def getColType(atable, aCol):
     global tbDefCache
     ls_tab = atable.lower()
     ls_col = aCol.lower()
     if ls_tab not in tbDefCache.keys():
         tbDefCache.update(  { ls_tab : getTableInfo(ls_tab)}  )
+        #log( " here create new " + ls_tab + ":" +   str(getTableInfo(ls_tab)))
     if not ls_col in tbDefCache[ls_tab].keys():
         raise Exception(atable + "中不存在字段" + aCol)
     return(tbDefCache[ls_tab][ls_col])
@@ -440,6 +444,7 @@ def cursorExec(aSql):
         l_cur = connection.cursor()
         l_cur.execute(aSql)
         l_rtn = l_cur.cursor.rowcount
+        l_rtn = 1
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         raise e

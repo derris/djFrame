@@ -42,7 +42,6 @@ def getfunc(request):
     print(ls_t)
     return eval(ls_t)
 
-
 from yardApp import models
 
 def getJson2(request):
@@ -59,3 +58,10 @@ def getJsonPost(request):
     B = eval(A)
     print(B)
     return  HttpResponse(str(B))
+
+
+def test(request):
+    from zdCommon.dbhelp import getColType
+    import datetime
+    getColType('act_fee', 'client_id')
+    return HttpResponse("nothing to show " + str(datetime.datetime.now() ))

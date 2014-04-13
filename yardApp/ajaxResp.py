@@ -322,9 +322,13 @@ def dealPAjax(request):
             ###------------------------------核销删除功能
             elif ldict['func'] == '核销删除':
                 ls_exOver = str(ldict['ex_parm']['ex_over'])
+                l_rtn = { }
+                if len(ls_exOver) < 1 :
+                    l_rtn.update( {"msg": "核销删除失败", "error":"没有核销号。请选择已核销的单据" , "stateCod" : -1 } )
+                    return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
                 ls_sqlPre = "select count(*) from pre_fee where ex_from ='%s' and ex_over<>'' " % ls_exOver
                 ls_sqlAct = "select count(*) from act_fee where ex_from ='%s' and ex_over<>'' " % ls_exOver
-                l_rtn = {}
+
                 li_pre = int(cursorSelect(ls_sqlPre)[0][0])
                 li_act = int(cursorSelect(ls_sqlAct)[0][0])
                 if li_act + li_pre > 0 :
@@ -335,14 +339,14 @@ def dealPAjax(request):
                         with transaction.atomic():
                             l_sql.append("delete from pre_fee where ex_from='%s'" % ls_exOver)
                             l_sql.append("delete from act_fee where ex_from='%s'" % ls_exOver)
-                            l_sql.append("update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
-                            l_sql.append("update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_from='%s'" % ls_exOver)
+                            l_sql.append("update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)
+                            l_sql.append("update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)
                             for i in l_sql:
                                 cursorExec(i)
-                            l_rtn.update( {"msg": "删除成功", "error":[], "stateCod" : 1, "result": [] } )
+                            l_rtn.update( {"msg": "删除成功", "error":[], "stateCod" : 101, "result": [] } )
                     except Exception as e:
                         l_rtn.update( {"msg": "删除失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
-
+                return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             #######################################################################################################
             elif ldict['func'] == '已收核销客户查询':
                 ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
