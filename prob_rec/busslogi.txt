@@ -124,6 +124,10 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
   }
 查询：
     根据ex_over，查询出act_fee和pre_fee中的记录。同时返回。
+    list_pre = rawSql2JsonDict("select * from pre_fee where ex_over = '%s'" % ls_exOver)
+    list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
+    list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
+    list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
 返回：
   {
         "msg":"查询成功",
