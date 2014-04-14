@@ -2,8 +2,40 @@
     Namespace.register('audit.auditqueryview');
     $(function(){
         audit.auditqueryview.sumgrid = null;
+        audit.auditqueryview.actgrid = null;
+        audit.auditqueryview.pregrid = null;
         $(document).on('afterrender', '#control-audit-auditsumgrid-{{ seq }}', function (e, grid) {
             audit.auditqueryview.sumgrid = $(grid);
+        });
+        $(document).on('afterrender', '#control-audit-actfeegrid-{{ seq }}', function (e, grid) {
+            audit.auditqueryview.actgrid = $(grid);
+            audit.auditqueryview.actgrid.datagrid('options').rowStyle = function(){
+                return 'background-color:#6293BB;color:#fff;';
+            }
+        });
+        $(document).on('dbClickRow', '#control-audit-actfeegrid-{{ seq }}', function (e, ex_over) {
+            var p = {
+                func: '核销明细查询',
+                ex_parm: {
+                    ex_over:ex_over}
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (r, t, a) {
+                    if ($.ajaxSettings.success(r, t, a, false)) {
+                        audit.auditqueryview.actgrid.datagrid('loadData', r.result.act);
+                        audit.auditqueryview.pregrid.datagrid('loadData', r.result.pre);
+                    } else {
+                        audit.auditqueryview.actgrid.datagrid('loadData', []);
+                        audit.auditqueryview.pregrid.datagrid('loadData', []);
+                    }
+                }
+            });
+        });
+
+        $(document).on('afterrender', '#control-audit-prefeegrid-{{ seq }}', function (e, grid) {
+            audit.auditqueryview.pregrid = $(grid);
         });
         $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
             audit.auditqueryview.refresh(parm);
@@ -44,6 +76,7 @@
             });
 
         }
+
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -53,9 +86,14 @@
     <div data-options="region:'center',border:'false'">
         {% include 'yard/fee/auditsumgrid.html' %}
     </div>
-{% comment %}
-    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        {% include 'yard/fee/prefeegrid.html' %}
+    <div data-options="region:'south',split:'true',height:window.innerHeight * 0.6,border:'false'">
+        <div class="easyui-layout" data-options="fit:true,border:false">
+            <div data-options="region:'center',border:'false'">
+                {% include 'yard/fee/actfeegrid.html' %}
+            </div>
+            <div data-options="region:'south',split:'true',height:window.innerHeight * 0.3,border:'false'">
+                {% include 'yard/fee/prefeegrid.html' %}
+            </div>
+        </div>
     </div>
-{% endcomment %}
 </div>

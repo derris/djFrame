@@ -744,7 +744,7 @@ $.extend($.fn.datagrid.methods, {
 
             });
         } else {
-            console.info('失败');
+            sy.onError('数据验证失败', false);
         }
     }
 

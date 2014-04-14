@@ -19,6 +19,7 @@
     pagination: false,
     singleSelect: false,
     onDblClickRow: function (rowIndex, rowData) {
+        control.audit.auditsumgrid._{{ seq }}.trigger('dbClickRow', rowData.ex_over);
         return;
     },
     onClickRow: function (rowIndex, rowData) {
@@ -45,7 +46,7 @@
     onUncheckAll: function (rows) {
         var opts = control.audit.auditsumgrid._{{ seq }}.datagrid('options');
         opts.sumAmount = 0;
-        control.audit.actauditsumgridfeegrid._{{ seq }}.refreshSum();
+        control.audit.auditsumgrid._{{ seq }}.refreshSum();
     }
     });
         control.audit.auditsumgrid._{{ seq }}.refreshSum = function () {
