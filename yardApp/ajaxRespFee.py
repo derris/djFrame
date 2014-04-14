@@ -2,11 +2,10 @@ __author__ = 'blaczom@163.com'
 
 import json
 from django.db import transaction
-from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
+from zdCommon.dbhelp import rawSql2JsonDict
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
-from yardApp.ajaxRespFee import *
 
 def dealAuditFee(request):
     '''
