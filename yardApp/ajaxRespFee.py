@@ -142,7 +142,7 @@ def auditSumQuery(request, ldict):
     ls_end = str(ldict['ex_parm']['end_audit_tim'])
     # 处理参数
     ls_clientsql = " client_id > 0 " if len(ls_clientid) < 1 or int(ls_clientid) < 1 else (" client_id = " + ls_clientid)
-    ls_feesql = " and fee_typ like '%' " if len(ls_feetyp) < 1 else (" fee_typ = '%s' " % ls_feetyp)
+    ls_feesql = " and fee_typ like '%' " if len(ls_feetyp) < 1 else (" and fee_typ = '%s' " % ls_feetyp)
     ls_timesql = ""
     if len(ls_begin) > 0 : ls_timesql += " and audit_tim > '%s' " % ls_begin
     if len(ls_end) > 0 : ls_timesql  += " and audit_tim < '%s' " % ls_end
