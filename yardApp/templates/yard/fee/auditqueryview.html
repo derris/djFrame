@@ -1,6 +1,6 @@
 <script>
     Namespace.register('audit.auditqueryview');
-    $(function(){
+    $(function () {
         audit.auditqueryview.sumgrid = null;
         audit.auditqueryview.actgrid = null;
         audit.auditqueryview.pregrid = null;
@@ -14,7 +14,7 @@
             var p = {
                 func: '核销明细查询',
                 ex_parm: {
-                    ex_over:ex_over}
+                    ex_over: ex_over}
             };
             $.ajax({
                 url: "./dealPAjax/",
@@ -37,15 +37,15 @@
         $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
             audit.auditqueryview.refresh(parm);
         });
-        audit.auditqueryview.refresh = function(param){
+        audit.auditqueryview.refresh = function (param) {
             audit.auditqueryview.sumgrid.datagrid('uncheckAll');
             var p = {
                 func: '核销汇总查询',
                 ex_parm: {
                     client_id: '',
                     fee_typ: '',
-                    begin_audit_tim:'',
-                    end_audit_tim:''}
+                    begin_audit_tim: '',
+                    end_audit_tim: ''}
             };
             if (param.client != null && param.client.length > 0) {
                 p.ex_parm.client_id = param.client;
@@ -69,6 +69,8 @@
                     } else {
                         audit.auditqueryview.sumgrid.datagrid('loadData', []);
                     }
+                    audit.auditqueryview.actgrid.datagrid('loadData', []);
+                    audit.auditqueryview.pregrid.datagrid('loadData', []);
                 }
             });
 
