@@ -24,9 +24,9 @@ if BASE_DIR[-1] != '/':
 SECRET_KEY = 'fsfci)_%wfvnaopz)$w)n(0wcfzyrfdyl99)9%m6ij(v)z6mmi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

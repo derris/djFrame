@@ -9,9 +9,6 @@
         });
         $(document).on('afterrender', '#control-audit-actfeegrid-{{ seq }}', function (e, grid) {
             audit.auditqueryview.actgrid = $(grid);
-            audit.auditqueryview.actgrid.datagrid('options').rowStyler = function(){
-                return 'background-color:#6293BB;color:#fff;';
-            }
         });
         $(document).on('dbClickRow', '#control-audit-auditsumgrid-{{ seq }}', function (e, ex_over) {
             var p = {
