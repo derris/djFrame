@@ -81,7 +81,6 @@ $(function () {
             contract.contractprefeeview.prefeeoutgrid.datagrid('loadData', []);
             contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
             contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
-
         }
     }
     $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
@@ -168,21 +167,22 @@ $(function () {
         var p = {
             func: '委托协议费用生成',
             ex_parm: {
-                contract_id:parseInt($('#control-contract-contractform-id-{{ seq }}').val())
+                contract_id: parseInt($('#control-contract-contractform-id-{{ seq }}').val())
             }
         };
         $.ajax({
             url: "./dealPAjax/",
             data: {jpargs: JSON.stringify(p)},
             success: function (r, t, a) {
-                var stateCod = parseInt(r.stateCod);
-                if (r && !isNaN(stateCod)) {
-                    if (stateCod == 202) {
-                        //保存成功刷新界面
-                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                if ($.ajaxSettings.success(r, t, a, true) == true) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                        }
                     }
                 }
-                $.ajaxSettings.success(r, t, a, true);
             }
         });
     });
