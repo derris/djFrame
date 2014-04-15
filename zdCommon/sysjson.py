@@ -4,6 +4,7 @@ from zdCommon.dbhelp import cursorSelect
 from django.db import connection
 from zdCommon.utils import logErr, log
 import json
+
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -26,12 +27,13 @@ def getMenuListByUser(aUserId):
     '''
         根据用户id得到2级菜单结构。
     '''
+    ls_admin = "" if aUserId == 1 else 'and sys_flag=false '
     ls_sqlmenu = "select menu_id from s_postmenu where post_id in (select post_id from s_postuser where user_id = %s)" % str(aUserId)
-    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id in (%s) order by sortno;' % ls_sqlmenu)
+    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 ' + ls_admin + ' and id in (%s) order by sortno;' % ls_sqlmenu)
     ldict_1 = []
     if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
         for i_m1 in l_menu1:
-            l_menu2 = cursorSelect('select id,menuname, menushowname from sys_menu where parent_id = %d and id in(%s) order by sortno;' % (i_m1[0], ls_sqlmenu))
+            l_menu2 = cursorSelect('select id,menuname, menushowname from sys_menu where parent_id = %d ' + ls_admin + ' and id in(%s) order by sortno;' % (i_m1[0], ls_sqlmenu))
             ldict_2 = []
             if len(l_menu2) > 0 :
                 for i_m2 in l_menu2:

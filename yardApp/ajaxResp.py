@@ -158,7 +158,7 @@ def updateRaw(request):
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
-    request.session['userid'] = "1"
+    #request.session['userid'] = "1"
     try:
         ldict = json.loads( request.POST['jpargs'] )
         log(ldict)
