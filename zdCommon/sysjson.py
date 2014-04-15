@@ -66,7 +66,7 @@ def getMenuPrivilege(aPostid):
     l_func = dict(cursorSelect('select id, funcname from sys_func'))
     #l_funcid = [i[0] for i in l_func]       # 得到功能id 的list
     #l_funcname = [i[1] for i in l_func]       # 得到功能名称 的list
-
+    l_rtn = { }
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
     ldict_1 = []
     if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
@@ -105,8 +105,9 @@ def getMenuPrivilege(aPostid):
             ldict_1.append( { "id": i_m1[0], "text": i_m1[2], "attributes": l_attr, 'children': ldict_2 } ) # , "checked": l_oldval  } )
     else:
         pass   # no top menu ... how that posible ....
-    log(ldict_1)
-    return(ldict_1)
+    #log(ldict_1)
+    l_rtn = { "msg":"查询成功", "stateCod": 1, "error": [], "rows": ldict_1   }
+    return(l_rtn)
 
 def setMenuPrivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
