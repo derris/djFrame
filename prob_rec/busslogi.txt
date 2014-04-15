@@ -123,7 +123,16 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
     }
   }
 查询：
-    根据ex_over，查询出act_fee和pre_fee中的记录。同时返回。
+    根据ex_over，查询出act_fee和pre_fee中的记录。同时返回。 act_fee和pre_fee同样处理
+select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
+from pre_fee p right join
+(select ex_over,contract_id,fee_cod,sum(amount) amount
+from pre_fee
+where ex_over = '7'
+group by ex_over,contract_id,fee_cod) a
+on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
+group by a.contract_id,a.fee_cod,a.amount
+
     list_pre = rawSql2JsonDict("select * from pre_fee where ex_over = '%s'" % ls_exOver)
     list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
     list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
