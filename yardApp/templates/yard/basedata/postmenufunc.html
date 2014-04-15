@@ -30,9 +30,11 @@
                 data: {jpargs: JSON.stringify(param)},
                 success: function (r, t, a) {
                     //console.info(r);
-                    basedata.postmenufuncview.menufunctree.tree('loadData', r.rows);
-                    basedata.postmenufuncview.menufunctree.tree('collapseAll');
-                    $.ajaxSettings.success(r, t, a);
+                    if ($.ajaxSettings.success(r, t, a, false) == true) {
+                        basedata.postmenufuncview.menufunctree.tree('loadData', r.rows);
+                        basedata.postmenufuncview.menufunctree.tree('collapseAll');
+                    }
+                    //$.ajaxSettings.success(r, t, a);
                 }
             });
         }
