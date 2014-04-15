@@ -17,8 +17,8 @@ def maintabview(request):
     return render(request,"yard/MainTab.html")
 
 def mainmenutreeview(request):    #
-    l_userid = int(request.session['userid'])
-    if l_userid == 1:
+    l_userid = str(request.session['userid'])
+    if l_userid == "1":
         menudata = getMenuList()
     else:
         menudata = getMenuListByUser(l_userid)
