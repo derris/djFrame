@@ -151,9 +151,9 @@ def auditSumQuery(request, ldict):
                 ( select client_id, fee_typ, ex_over,audit_tim,sum(amount) amount from act_fee
             '''
     ls_sql2 = " where audit_id = true and " + ls_clientsql + ls_feesql + ls_timesql
-    ls_sql3 = ''' group by ex_over,audit_tim) s
+    ls_sql3 = ''' group by client_id, fee_typ, ex_over,audit_tim) s
             on a.ex_from = s.ex_over
-            group by s.ex_over,s.audit_tim,s.amount
+            group by s.client_id, s.fee_typ, s.ex_over,s.audit_tim,s.amount
         '''
     # 执行并返回。
     try:
@@ -176,6 +176,10 @@ def auditDetailQuery(request,ldict):
         #list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
         #list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
         #list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
+
+
+
+
         ls_pre = '''
             select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
             from pre_fee p right join
