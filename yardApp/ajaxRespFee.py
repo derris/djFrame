@@ -146,9 +146,9 @@ def auditSumQuery(request, ldict):
     if len(ls_begin) > 0 : ls_timesql += " and audit_tim > '%s' " % ls_begin
     if len(ls_end) > 0 : ls_timesql  += " and audit_tim < '%s' " % ls_end
     # 生成sql语句
-    ls_sql1 = '''select s.ex_over,s.audit_tim,s.amount - sum(COALESCE(a.amount,0)) amount
+    ls_sql1 = '''select s.client_id, s.fee_typ, s.ex_over,s.audit_tim,s.amount - sum(COALESCE(a.amount,0)) amount
                   from act_fee a right join
-                ( select ex_over,audit_tim,sum(amount) amount from act_fee
+                ( select client_id, fee_typ, ex_over,audit_tim,sum(amount) amount from act_fee
             '''
     ls_sql2 = " where audit_id = true and " + ls_clientsql + ls_feesql + ls_timesql
     ls_sql3 = ''' group by ex_over,audit_tim) s
@@ -171,10 +171,35 @@ def auditDetailQuery(request,ldict):
         return l_rtn
 
     try:
-        list_pre = rawSql2JsonDict("select * from pre_fee where ex_over = '%s'" % ls_exOver)
-        list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
-        list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
-        list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
+
+        #list_pre = rawSql2JsonDict("select * from pre_fee where ex_over = '%s'" % ls_exOver)
+        #list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
+        #list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
+        #list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
+        ls_pre = '''
+            select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
+            from pre_fee p right join
+            (select ex_over,contract_id,fee_cod,sum(amount) amount
+            from pre_fee
+            where ex_over = %s
+            group by ex_over,contract_id,fee_cod) a
+            on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
+            group by a.contract_id,a.fee_cod,a.amount
+        '''
+        ls_act = '''
+            select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
+            from act_fee p right join
+            (select ex_over,contract_id,fee_cod,sum(amount) amount
+            from act_fee
+            where ex_over = %s
+            group by ex_over,contract_id,fee_cod) a
+            on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
+            group by a.contract_id,a.fee_cod,a.amount
+        '''
+
+        list_pre = rawSql2JsonDict(ls_pre % ls_exOver)
+        list_act = rawSql2JsonDict(ls_act % ls_exOver)
+
         l_result = { "act":list_act, "pre":list_pre }
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
     except Exception as e:
