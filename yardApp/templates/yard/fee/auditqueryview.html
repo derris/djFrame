@@ -27,6 +27,8 @@
                         audit.auditqueryview.actgrid.datagrid('loadData', []);
                         audit.auditqueryview.pregrid.datagrid('loadData', []);
                     }
+                    audit.auditqueryview.actgrid.datagrid('checkAll');
+                    audit.auditqueryview.pregrid.datagrid('checkAll');
                 }
             });
         });
@@ -71,7 +73,9 @@
                     }
                     audit.auditqueryview.actgrid.datagrid('loadData', []);
                     audit.auditqueryview.pregrid.datagrid('loadData', []);
-                    audit.auditqueryview.sumgrid.trigger('onCheckAll');
+                    audit.auditqueryview.sumgrid.datagrid('checkAll');
+                    audit.auditqueryview.actgrid.datagrid('checkAll');
+                    audit.auditqueryview.pregrid.datagrid('checkAll');
                 }
             });
 

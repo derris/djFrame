@@ -247,6 +247,7 @@ def actfeeview(request):
 def auditview(request):    # 已收费用核销
     seq = str(fetchSeq('seq_html'))
     funcname = '核销'
+    check_flag = True
     actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')
@@ -275,6 +276,7 @@ def auditview(request):    # 已收费用核销
 def unauditview(request):    # 取消核销
     seq = str(fetchSeq('seq_html'))
     funcname = '取消核销'
+    check_flag = False
     actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')

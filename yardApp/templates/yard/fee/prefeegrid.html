@@ -10,7 +10,9 @@
                 [
                     {% autoescape off %}
                         {{ prefee_id.writeUI|safe|escape }},
+                        {% if check_flag == True %}
                         {field: 'check_flag', checkbox: true},
+                        {% endif %}
                         {field: 'bill_no', title: '提单号'},
                         {{ prefee_contractid.writeUI|safe|escape }},
                         {{ prefee_feetyp.writeUI|safe|escape }},

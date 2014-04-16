@@ -27,14 +27,15 @@
             } else {
                 $('#control-audit-filter-toolbar-audit-{{ seq }}').linkbutton('disable');
             }
+            if (p.ex_parm.client_id.length == 0 || p.ex_parm.fee_typ.length == 0){
+                $.messager.alert('提示','缺少必要查询条件','info');
+                return;
+            }
             $.ajax({
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(p)},
-                //data:queryParam,
                 success: function (r, t, a) {
-                    //console.info(r);
                     if ($.ajaxSettings.success(r, t, a, true)) {
-                        //加载act_fee pre_fee数据
                         audit.unauditview.actfeegrid.datagrid('loadData', r.result.act);
                         audit.unauditview.prefeegrid.datagrid('loadData', r.result.pre);
                     } else {
