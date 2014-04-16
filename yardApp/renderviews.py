@@ -299,6 +299,7 @@ def unauditview(request):    # 取消核销
     return render(request,"yard/fee/unauditview.html",locals())
 def auditqueryview(request):    # 核销查询
     seq = str(fetchSeq('seq_html'))
+    check_flag = False
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
     audit_amount = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
@@ -322,7 +323,7 @@ def auditqueryview(request):    # 核销查询
     prefee_feecod = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_cod',autoforeign=True,foreigndisplayfield='fee_name')
     prefee_client = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name',hidden=True)
     prefee_amount = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
-    prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
+    prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200,hidden=True)
 
     return render(request,"yard/fee/auditqueryview.html",locals())
 

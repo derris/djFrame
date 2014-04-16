@@ -9,8 +9,9 @@
             title:'实收付费用',
             columns: [
                 [
-
+                    {% if check_flag == True %}
                     {field: 'check_flag', checkbox: true},
+                    {% endif %}
                     {{ actfee_id.writeUI|safe|escape }},
                     {{ actfee_client_Id.writeUI|safe|escape }},
                     {{ actfee_fee_typ.writeUI|safe|escape }},
