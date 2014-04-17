@@ -36,6 +36,7 @@
             }
         });
         basedata.postuserview.postuserdg = $('#basedata-postuser-postuserdg').datagrid({
+            autoLoad:false,
             columns: [
                 [   {% autoescape off %}
                     {{ id.writeUI|safe|escape }},

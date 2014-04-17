@@ -177,6 +177,7 @@ $(function () {
                             contract.contractview.cntrdatagrid.datagrid('loadData', []);
                             contract.contractview.actiondatagrid.datagrid('loadData', []);
                         }
+
                     } else {
                         $.messager.alert('错误', '系统错误，请联系系统管理员', 'error');
                     }
@@ -197,6 +198,7 @@ $(function () {
             $('a[group=contract-contractview]').linkbutton('enable');
             $('a[group=contract-contractview-unlock]').linkbutton('disable');
         }
+        $('#contract-contractview-tabs').tabs('select',0);
         contract.contractview.billno.focus().select();
     }
     contract.contractview.billno.bind('change', function (e) {
@@ -513,7 +515,7 @@ $(function () {
         </div>
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300" id="contract-contractview-tabs">
             <div title="委托动态">
                 <table id="contract-contractview-actiondatagrid" data-options="border:'false'">
                 </table>

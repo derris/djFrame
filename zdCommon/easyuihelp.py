@@ -60,7 +60,8 @@ class EasyuiFieldUI:
     def __init__(self, model=None, field=None, title=None, width=None, rowspan=None, colspan=None,
                  align=None, halign=None, sortable=None, order=None, resizable=None,
                  fixed=None, hidden=None, checkbox=None, formatter=None, styler=None,
-                 sorter=None, editor=None, readonly=False, autoforeign=None,foreigndisplayfield=None):
+                 sorter=None, editor=None, readonly=False, autoforeign=None,foreigndisplayfield=None,
+                 foreignexclude={}):
         self.model = model
         self.field = field
         if (self.model is None or self.field is None):
@@ -68,6 +69,7 @@ class EasyuiFieldUI:
         self.fObj = model._meta.get_field_by_name(self.field)[0]
         self.autoforeign = autoforeign
         self.foreigndisplayfield = foreigndisplayfield
+        self.foreignexclude = foreignexclude
         self.defaultAttribute()
 
         if title is not None:
@@ -213,8 +215,12 @@ class EasyuiFieldUI:
                 dataList = []
                 displayField = self.foreigndisplayfield or 'id'
                 getData = None
-                if (len(self.fObj.rel.limit_choices_to) > 0):
+                if (len(self.fObj.rel.limit_choices_to) > 0 and len(self.foreignexclude) > 0 ):
+                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to).exclude(**self.foreignexclude)
+                elif (len(self.fObj.rel.limit_choices_to) > 0):
                     getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to)
+                elif (len(self.foreignexclude) > 0):
+                    getData = self.fObj.rel.to.objects.exclude(**self.foreignexclude)
                 else:
                     getData = self.fObj.rel.to.objects.all()
                 for item in getData:

@@ -70,15 +70,15 @@ def userview(request):
 def postview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
     postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
-    remark = easyuihelp.EasyuiFieldUI(model=models.Post,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Post,field='remark',width=180)
     return render(request,"yard/basedata/post.html",locals())
 def postuserview(request):
     postid = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
     postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
     id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='id')
     post_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='post_id',hidden=True)
-    user_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='user_id',autoforeign=True,foreigndisplayfield='username')
-    remark = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='remark')
+    user_id = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='user_id',autoforeign=True,foreigndisplayfield='username',foreignexclude={'username':'Admin'})
+    remark = easyuihelp.EasyuiFieldUI(model=models.PostUser,field='remark',width=180)
     return render(request,"yard/basedata/postuser.html",locals())
 def postmenufuncview(request):
     postid = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
@@ -98,20 +98,20 @@ def clientview(request):
 def cntrtypeview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='id')
     cntrtype = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type',width=100)
-    cntrtypename = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type_name')
-    remark = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='remark')
+    cntrtypename = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='cntr_type_name',width=180)
+    remark = easyuihelp.EasyuiFieldUI(model=models.CntrType,field='remark',width=180)
     return render(request,"yard/basedata/cntrtype.html",locals())
 def actionview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Action,field='id')
     action_name = easyuihelp.EasyuiFieldUI(model=models.Action,field='action_name')
     require_flag = easyuihelp.EasyuiFieldUI(model=models.Action,field='require_flag')
     sortno = easyuihelp.EasyuiFieldUI(model=models.Action,field='sortno')
-    remark = easyuihelp.EasyuiFieldUI(model=models.Action,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Action,field='remark',width=180)
     return render(request,"yard/basedata/action.html",locals())
 def feegroupview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='id')
     group_name = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='group_name',width=120)
-    remark = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model=models.FeeGroup,field='remark',width=180)
     return render(request,"yard/basedata/feegroup.html",locals())
 def feecodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
@@ -119,7 +119,7 @@ def feecodview(request):
     fee_group_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_group_id',autoforeign=True,foreigndisplayfield='group_name')
     pair_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='pair_flag')
     protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
-    remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark',width=180)
     return render(request,"yard/basedata/feecod.html",locals())
 def feeprotocolview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='id')
@@ -134,7 +134,7 @@ def feeprotocolview(request):
 def paytypeview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.PayType,field='id')
     pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
-    remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark')
+    remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark',width=180)
     return render(request,"yard/basedata/paytype.html",locals())
 def contractview(request):
     #seq = str(fetchSeq('seq_html'))

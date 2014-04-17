@@ -82,6 +82,7 @@ $(function () {
             contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
             contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
         }
+        $('#contract-contractprefeeview-tabs').tabs('select',0);
     }
     $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
         contract.contractprefeeview.contractform = $(d.form);
@@ -193,7 +194,7 @@ $(function () {
             reqtype: 'update',
             func: '应收付费用锁定'
         };
-        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
+        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getRows').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getRows'));
         for (var i = 0, ilen = rows.length; i < ilen; i++) {
             if (rows[i].id != null) {
                 parmRows.push({
@@ -235,7 +236,7 @@ $(function () {
             reqtype: 'update',
             func: '应收付费用解锁'
         };
-        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getChecked').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getChecked'));
+        var rows = contract.contractprefeeview.prefeeingrid.datagrid('getRows').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getRows'));
         for (var i = 0, ilen = rows.length; i < ilen; i++) {
             if (rows[i].id != null && (rows[i].audit_id == null || rows[i].audit_id == false)) {
                 parmRows.push({
@@ -290,7 +291,7 @@ $(function () {
 
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300" id="contract-contractprefeeview-tabs">
             <div title="应收费用">
                 {% include 'yard/contract/prefeeingrid.html' %}
             </div>
