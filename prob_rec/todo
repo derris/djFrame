@@ -1,5 +1,5 @@
 
-todo \u5E94\u6536\u4ED8\u8D39\u7528
+todo 应收付费用
 1.func == '\u5E94\u6536\u4ED8\u8D39\u7528\u7EF4\u62A4',\u7B26\u5408\u4EE5\u4E0B\u6761\u4EF6\u7981\u6B62\u5220\u9664\u3001\u4FEE\u6539
   lock_flag=true or audit_id=true or ex_feeid='E'
 
