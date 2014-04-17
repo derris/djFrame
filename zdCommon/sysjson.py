@@ -68,7 +68,7 @@ def getMenuPrivilege(aPostid):
     #l_funcid = [i[0] for i in l_func]       # 得到功能id 的list
     #l_funcname = [i[1] for i in l_func]       # 得到功能名称 的list
     l_rtn = { }
-    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
+    l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 and sys_flag = false order by sortno;')
     ldict_1 = []
     if len(l_menu1) > 0:  # 有1级菜单，循环读出到dict中。
         for i_m1 in l_menu1:
