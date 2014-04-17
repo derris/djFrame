@@ -71,3 +71,49 @@ CREATE TRIGGER tri_pre_fee
   FOR EACH ROW
   EXECUTE PROCEDURE fun4tri_pre_fee();
 
+-----------------------------------------   未完。
+
+CREATE OR REPLACE FUNCTION fun4fee_genlumpsumup(in aContractId int, out aRtn int, out aError TEXT )
+AS $$
+DECLARE
+    l_rowfee c_fee%ROWTYPE;
+    l_count int;
+    l_lumpsumId int;
+    l_rowContract contract%ROWTYPE;
+
+    l_curContract CURSOR (cId int) FOR SELECT * FROM contract where id = cId;
+
+BEGIN
+
+    FOR for_CFee IN select * from c_fee where protocol_flag = true and fee_name in ('包干费') LOOP
+	if fee_name == '包干费' then
+	    -- for_CFee.id 包干费的id
+	    -- 根据委托号，查询委托费（pre_fee），如果下面有了任何一条包干费，就不自动生成。
+            select count(*) into l_count from pre_fee where contract_id = aContractId and fee_cod = for_CFee.id;
+            if l_count > 0 then
+            else
+                -- 没有包干费，可以根据条件进行对比搞定。
+                OPEN l_curContract(aContractId);
+
+		FETCH l_curContract INTO l_rowContract;   -- 得到contract的记录。
+
+                -- 根据委托id，搞到委托箱。
+                select * from contract_cntr where contract_id = aContractId:
+                    -- 根据委托箱型尺寸数量，委托的客户类型和委托类型，得到费率，根据数量*费率搞到费用。
+
+			-- 根据clientid得到c_fee_protocol的具体数据。
+			select * from c_fee_protocol where clientid = clientid and fee_cod = for_CFee.id;
+			     -- 得到不通的尺子、费率。进行计算。这个最好搞到一个数组里面，备用。
+
+                        -- sum出来进行处理。
+
+                -- 统一插入到应收费用中去。
+
+
+	CLOSE l_curContract;
+
+
+    END LOOP;
+
+END
+$$ LANGUAGE plpgsql;
