@@ -1,111 +1,110 @@
--------------------------- \u59D4\u6258\u7EF4\u62A4 ---------------
-1.\u59D4\u6258contract:
-  delete:\u4E0D\u5141\u8BB8\u5220\u9664\u6761\u4EF6
-    a:  pre_fee\u4E2D\u6709\u6B64\u59D4\u6258\u8BB0\u5F55
-    b:  \u6B64\u59D4\u6258\u9501\u5B9A finish_flag=true
-  update:\u7981\u6B62\u4FEE\u6539\u6761\u4EF6
-    a:  pre_fee\u4E2D\u6709\u6B64\u59D4\u6258\u8BB0\u5F55\u7981\u6B62\u4FEE\u6539client_id
-    b:  \u59D4\u6258\u9501\u5B9A\u7981\u6B62\u4FEE\u6539   finish_flag=true
+-------------------------- 委托维护 ---------------
+1.委托contract:
+  delete:不允许删除条件
+    a:  pre_fee中有此委托记录
+    b:  此委托锁定 finish_flag=true
+  update:禁止修改条件
+    a:  pre_fee中有此委托记录禁止修改client_id
+    b:  委托锁定禁止修改   finish_flag=true
 
-2.\u59D4\u6258\u52A8\u6001contract_action\uFF1A
-  delete:   \u53EA\u80FD\u4ECE\u6700\u540E\u4E00\u4E2A\u52A8\u6001\u5F00\u59CB\u5220\u9664\u3002contract.finish_flag=true \u4E0D\u80FD\u5220\u9664
-  insert/update: \u52A8\u6001\u8981\u6C42\u6309\u7167\u987A\u5E8F\u589E\u52A0\uFF0C\u53EA\u6709\u5728   c_action  \u4E2D\u7684  require_flag  \u4E3Afalse\u7684\u60C5\u51B5\u4E0B\uFF0C
-            \u53EF\u4EE5\u8DF3\u8FC7\u6B64action\u800C\u63D2\u5165\u4E0B\u4E00\u4E2Aaction\u3002
-  update:contract.finish_flag=true \u4E0D\u80FD\u4FEE\u6539
+2.委托动态contract_action：
+  delete:   只能从最后一个动态开始删除。
+  insert/update: 动态要求按照顺序增加，只有在   c_action  中的  require_flag  为false的情况下，
+            可以跳过此action而插入下一个action。
 =======================================================
 
-------------------------\u59D4\u6258\u5E94\u6536\u4ED8\u7EF4\u62A4--------------
-1.\u59D4\u6258\u5E94\u6536\u4ED8\u8D39\u7528\u7EF4\u62A4\uFF1Apre_fee
-  insert:\u63D2\u5165\u5E94\u4ED8(fee_typ='O')\u8D39\u7528\u65F6,\u5904\u7406\u4EE3\u6536\u4EE3\u4ED8\u8D39\u7528\u3002\u5224\u65ADfee_cod\u5728\u8D39\u7528\u4EE3\u7801\u8868c_fee\u4E2D\u7684pair_flag\u7684\u503C\uFF0C
-         true\u5219\u81EA\u52A8\u63D2\u5165\u76F8\u540C\u91D1\u989D\u7684\u5E94\u6536\u8D39\u7528\uFF0C\u63D2\u5165\u524D\u5224\u65AD\u662F\u5426\u5DF2\u5B58\u5728\u6B64\u5E94\u6536\u8D39\u7528\uFF0C\u5DF2\u5B58\u5728\u4E0D\u518D\u63D2\u5165
-  update:\u7981\u6B62\u4FEE\u6539\u6761\u4EF6
-        a: \u5DF2\u9501\u5B9A(lock_flag)\u6216\u5DF2\u6838\u9500(audit_id)
-  delete\uFF1A\u7981\u6B62\u5220\u9664\u6761\u4EF6
-        a: \u5DF2\u6838\u9500(audit_id)
-2.\u5E94\u6536\u4ED8\u8D39\u7528\u9501\u5B9A\uFF1A
-3.\u5E94\u6536\u4ED8\u8D39\u7528\u89E3\u9501:\u5DF2\u6838\u9500(audit_id)\u7981\u6B62\u89E3\u9501
-4.\u534F\u8BAE\u8D39\u7528\uFF1A\u63A5\u6536\u53C2\u6570
+------------------------委托应收付维护--------------
+1.委托应收付费用维护：pre_fee
+  insert:插入应付(fee_typ='O')费用时,处理代收代付费用。判断fee_cod在费用代码表c_fee中的pair_flag的值，
+         true则自动插入相同金额的应收费用，插入前判断是否已存在此应收费用，已存在不再插入
+  update:禁止修改条件
+        a: 已锁定(lock_flag)或已核销(audit_id)
+  delete：禁止删除条件
+        a: 已核销(audit_id)
+2.应收付费用锁定：
+3.应收付费用解锁:已核销(audit_id)禁止解锁
+4.协议费用：接收参数
   {
-    func:'\u59D4\u6258\u534F\u8BAE\u8D39\u7528\u751F\u6210',
+    func:'委托协议费用生成',
     ex_parm:{
         contract_id:''
     }
   }
-  a.\u534F\u8BAE\u8D39\u7528\u751F\u6210\uFF1Ac_fee.protocol_flag = true \u4E3A\u534F\u8BAE\u8D39\u7528\uFF0C\u76EE\u524D\u53EA\u6709\u5305\u5E72\u8D39\uFF0C\u751F\u6210\u524D\u5224\u65AD\u662F\u5426\u5DF2\u6709\u6B64\u8D39\u7528\uFF0C\u6709\u6B64\u8D39\u7528\u5FFD\u7565\u3002
-    \u5305\u5E72\u8D39\uFF1A\u4ECEcontract\u4E2D\u53D6client_id\u3001contract_type,\u4ECEcontract_action\u4E2D\u53D6cntr_type\u3001cntr_num\uFF0C
-          \u6839\u636Ec_fee_protocol\u7684\u8D39\u7387\u4EA7\u751F\u8D39\u7528\u3002
-  b.\u4EE3\u6536\u4EE3\u4ED8\u8D39\u7528\uFF1A\u5BF9\u6B64contract_id\u4E0B\u7684\u6240\u6709\u5E94\u4ED8\u8D39\u7528\uFF0Cc_fee.pair_flag = true\u7684\uFF0C\u5224\u65AD\u662F\u5426\u6709\u5BF9\u5E94\u7684\u5E94\u6536\u8D39\u7528\uFF0C\u5982\u6CA1\u6709\uFF0C
-          \u63D2\u5165\u4E00\u6761\u91D1\u989D\u76F8\u540C\u7684\u5E94\u6536\u8D39\u7528\u3002
+  a.协议费用生成：c_fee.protocol_flag = true 为协议费用，目前只有包干费，生成前判断是否已有此费用，有此费用忽略。
+    包干费：从contract中取client_id、contract_type,从contract_action中取cntr_type、cntr_num，
+          根据c_fee_protocol的费率产生费用。
+  b.代收代付费用：对此contract_id下的所有应付费用，c_fee.pair_flag = true的，判断是否有对应的应收费用，如没有，
+          插入一条金额相同的应收费用。
 
 ==========================================================
--------------------------- \u6536/\u4ED8\u8D39\u7528\u7EF4\u62A4--------------------
-\u4FEE\u6539\u3001\u5220\u9664(func='\u5DF2\u6536\u8D39\u7528\u7EF4\u62A4')\uFF1A\u5DF2\u6838\u9500\u7684\u8D39\u7528\u7981\u6B62\u4FEE\u6539\u3001\u5220\u9664\u3002
+-------------------------- 收/付费用维护--------------------
+修改、删除(func='已收费用维护')：已核销的费用禁止修改、删除。
 
 ==========================================================
 
 
--------------------------- \u6838\u9500 ----------------------------
-\u6838\u9500\u63A5\u6536\u53C2\u6570\u68C0\u67E5\uFF1A
-1.actfeeid\u548Cprefeeid \u4E24\u4E2A\u6570\u7EC4\u4E0D\u80FD\u4E3A\u7A7A\uFF0Cid\u4E0D\u80FD\u91CD\u590D
-2.actfeeid\u548Cprefeeid \u6240\u6709\u5BF9\u5E94\u7684act_fee\u548Cpre_fee client_id\u548Cfee_typ \u8981\u4E00\u81F4\uFF0Caudit_id=false
-\u6838\u9500\u52A8\u4F5C\uFF1A
-\u5206\u522B\u5FAA\u73AF\u9009\u4E2D\u7684actfee\u548Cprefee\uFF0C--\u300B actId.pop()\uFF0C preId.pop() \u76F4\u5230\u6709\u4E00\u65B9\u91D1\u989D\u4E0D\u8DB3\uFF0C\u5C31\u505C\u6B62pop\u3002\u6807\u8BB0\u5DF2\u7ECFpop\u7684\u4E3A\u6838\u9500\u3002
+-------------------------- 核销 ----------------------------
+核销接收参数检查：
+1.actfeeid和prefeeid 两个数组不能为空，id不能重复
+2.actfeeid和prefeeid 所有对应的act_fee和pre_fee client_id和fee_typ 要一致，audit_id=false
+核销动作：
+分别循环选中的actfee和prefee，--》 actId.pop()， preId.pop() 直到有一方金额不足，就停止pop。标记已经pop的为核销。
 update act_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = actId
 update pre_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = preId
------ \u7701\u7684\u662F\u8C01\u5C31\u63D2\u5165\u8C01\u3002actfee\u6216prefee\uFF1A
+----- 省的是谁就插入谁。actfee或prefee：
 insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )
 insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_tim, ex_from, ex_feeid ,remark )
 ==================================================================
 
-------------------------- \u6838\u9500\u5220\u9664 ------------------------------
-1.\u6838\u9500\u5220\u9664\u67E5\u8BE2\uFF1A
-  \u63A5\u53E3\u53C2\u6570\uFF1A{
-    func:'\u6838\u9500\u5220\u9664\u67E5\u8BE2',
+------------------------- 核销删除 ------------------------------
+1.核销删除查询：
+  接口参数：{
+    func:'核销删除查询',
     ex_parm:{
         client_id:'',
         fee_typ:''
     }
   }
-  \u67E5\u8BE2\uFF1A\u6839\u636E\u4F20\u5165\u7684\u5BA2\u6237+\u8D39\u7528\u7C7B\u578B\uFF0C\u67E5\u8BE2\u51FA\u6700\u8FD1\u4E00\u6B21\u6838\u9500\u3002act_fee\u548Cpre_fee\u7684ex_over\u8981\u76F8\u540C\u3002
+  查询：根据传入的客户+费用类型，查询出最近一次核销。act_fee和pre_fee的ex_over要相同。
         select ex_over, audit_tim from act_fee where client_id = %s and fee_typ= %s and audit_id = true order by id desc limit 1 " % (l_clientid, l_feetyp)
-        \u5F97\u51FA\u6700\u540E\u7684\u5BA1\u6838\u65F6\u95F4\u3002\u8FD9\u4E2A\u65F6\u95F4\u5E94\u8BE5\u662F\u552F\u4E00\u7684\uFF0C\u4E3A\u4E86\u786E\u4FDD\u552F\u4E00\uFF0C\u6211\u4EEC\u8FD8\u8981\u786E\u4FDDex_over\u662F\u4E00\u6837\u7684\u3002
-        \u7D2F\u52A0prefee\u7684\u4E1C\u4E1C\u3002
-  \u8FD4\u56DE\uFF1A
+        得出最后的审核时间。这个时间应该是唯一的，为了确保唯一，我们还要确保ex_over是一样的。
+        累加prefee的东东。
+  返回：
   {
-        "msg":"\u67E5\u8BE2\u6210\u529F",
-        "stateCod": "1",   #  \u9519\u8BEF < 0 > \u6B63\u786E--\u4E0D\u5F39\u51FA\u63D0\u793A\u6846--100--\u4E2D\u5FC3\u5F39\u51FA\u63D0\u793A--200--\u53F3\u4E0B\u5F39\u51FA\u63D0\u793A--300
-        "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
-        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     \u540C\u65F6\u8FD4\u56DEact_fee\u548Cpre_fee
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     同时返回act_fee和pre_fee
    }
-2.\u6838\u9500\u5220\u9664\uFF1A
-   \u63A5\u53E3\u53C2\u6570\uFF1A{
-     func:'\u6838\u9500\u5220\u9664',
+2.核销删除：
+   接口参数：{
+     func:'核销删除',
      ex_parm:{
         ex_over:''
      }
    }
-   \u5220\u9664\uFF1A\u8981\u6C42ex_over\u53C2\u6570\u6CA1\u6709\u540E\u7EED\u7684\u6838\u9500\uFF08ex_from = ex_over \u7684\u8BB0\u5F55\uFF0Cex_over\u662F\u7A7A\u3002\u5C31\u53EF\u4EE5\u4FDD\u8BC1\u3002\u4E5F\u5C31\u662F\u8BF4\uFF1A
-   \u9009\u62E9\u6838\u9500\u53F7\uFF0Cex-from=\u6838\u9500\u53F7\u7684\u8BB0\u5F55\uFF0C\u5C31\u662F\u4ED6\u4EA7\u751F\u65B0\u8BB0\u5F55\uFF0C\u5982\u679C\u8FD9\u4E9B\u65B0\u8BB0\u5F55\uFF0C\u6CA1\u6709exover\u7684\u53F7\uFF0C\u8BF4\u660E\u6CA1\u6709\u88AB\u8FDB\u4E00\u6B65\u6838\u9500\uFF0C\u5C31\u53EF\u4EE5\u4FDD\u8BC1\u6761\u4EF6\u3002\uFF09
-    delete from pre_fee where ex_from='%s'" % ls_exOver)     \u5220\u9664\u751F\u6210\u7684\u5269\u4F59\u8D39\u7528\u3002
-    delete from act_fee where ex_from='%s'" % ls_exOver)     \u5220\u9664\u751F\u6210\u7684\u5269\u4F59\u8D39\u7528\u3002
-    ## \u56DE\u6EDA\u63D2\u5165\u8BED\u53E5\uFF1Ainsert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )
-    update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  \u6062\u590D\u539F\u6765\u7684\u6838\u9500\u8D39\u7528\u3002
-    update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  \u6062\u590D\u539F\u6765\u7684\u6838\u9500\u8D39\u7528\u3002
-    ## \u56DE\u6EDA\u6838\u9500\u8BED\u53E5\uFF1Aupdate act_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = actId
+   删除：要求ex_over参数没有后续的核销（ex_from = ex_over 的记录，ex_over是空。就可以保证。也就是说：
+   选择核销号，ex-from=核销号的记录，就是他产生新记录，如果这些新记录，没有exover的号，说明没有被进一步核销，就可以保证条件。）
+    delete from pre_fee where ex_from='%s'" % ls_exOver)     删除生成的剩余费用。
+    delete from act_fee where ex_from='%s'" % ls_exOver)     删除生成的剩余费用。
+    ## 回滚插入语句：insert into pre_fee(client_id, contract_id, fee_typ, fee_cod, amount,  fee_tim, rec_nam, rec_tim, ex_from, ex_feeid, remark  )
+    update act_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  恢复原来的核销费用。
+    update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)  恢复原来的核销费用。
+    ## 回滚核销语句：update act_fee set ex_over = ls_seq, audit_id=true, audit_tim=current_timestamp(0) where id = actId
 
-       \u6062\u590Dact_fee\u548Cpre_fee\u81F3ex_over\u53F7\u6838\u9500\u524D\u7684\u6570\u636E\uFF0C\u4FDD\u8BC1\u6570\u636E\u5B8C\u6574\u6027\u3002
-   \u8FD4\u56DE\uFF1A
+       恢复act_fee和pre_fee至ex_over号核销前的数据，保证数据完整性。
+   返回：
    {
-        "msg":"\u6210\u529F",
-        "stateCod": "202",   #  \u9519\u8BEF < 0 > \u6B63\u786E--\u4E0D\u5F39\u51FA\u63D0\u793A\u6846--100--\u4E2D\u5FC3\u5F39\u51FA\u63D0\u793A--200--\u53F3\u4E0B\u5F39\u51FA\u63D0\u793A--300
-        "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
+        "msg":"成功",
+        "stateCod": "202",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
    }
 
 
--------------------------\u6838\u9500\u67E5\u8BE2--------------------------
-1.\u6838\u9500\u6C47\u603B\u67E5\u8BE2
-\u63A5\u53E3\u53C2\u6570\uFF1A{
-    func:'\u6838\u9500\u6C47\u603B\u67E5\u8BE2',
+-------------------------核销查询--------------------------
+1.核销汇总查询
+接口参数：{
+    func:'核销汇总查询',
     ex_parm:{
         client_id:'',
         fee_typ:'',
@@ -113,7 +112,7 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
         end_audit_tim:''
     }
   }
-\u67E5\u8BE2\uFF1A\u53C2\u6570\u7A7A \u5219\u53BB\u6389\u5BF9\u5E94\u7684where\u6761\u4EF6
+查询：参数空 则去掉对应的where条件
     select s.ex_over,s.audit_tim,s.amount - sum(COALESCE(a.amount,0)) amount
     from act_fee a right join
     (select ex_over,audit_tim,sum(amount) amount
@@ -122,22 +121,22 @@ insert into act_fee(client_id, fee_typ, amount, pay_type, fee_tim, rec_nam, rec_
     group by ex_over,audit_tim) s
     on a.ex_from = s.ex_over
     group by s.ex_over,s.audit_tim,s.amount
-\u8FD4\u56DE\uFF1A
+返回：
 {
-        "msg":"\u67E5\u8BE2\u6210\u529F",
-        "stateCod": "1",   #  \u9519\u8BEF < 0 > \u6B63\u786E--\u4E0D\u5F39\u51FA\u63D0\u793A\u6846--100--\u4E2D\u5FC3\u5F39\u51FA\u63D0\u793A--200--\u53F3\u4E0B\u5F39\u51FA\u63D0\u793A--300
-        "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
         "rows":[{},{},{}]
 }
-2.\u6838\u9500\u660E\u7EC6\u67E5\u8BE2
-\u63A5\u53E3\u53C2\u6570\uFF1A{
-    func:'\u6838\u9500\u660E\u7EC6\u67E5\u8BE2',
+2.核销明细查询
+接口参数：{
+    func:'核销明细查询',
     ex_parm:{
         ex_over:''
     }
   }
-\u67E5\u8BE2\uFF1A
-    \u6839\u636Eex_over\uFF0C\u67E5\u8BE2\u51FAact_fee\u548Cpre_fee\u4E2D\u7684\u8BB0\u5F55\u3002\u540C\u65F6\u8FD4\u56DE\u3002 act_fee\u548Cpre_fee\u540C\u6837\u5904\u7406
+查询：
+    根据ex_over，查询出act_fee和pre_fee中的记录。同时返回。 act_fee和pre_fee同样处理
 select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
 from pre_fee p right join
 (select ex_over,contract_id,fee_cod,sum(amount) amount
@@ -151,10 +150,10 @@ group by a.contract_id,a.fee_cod,a.amount
     list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
     list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
     list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
-\u8FD4\u56DE\uFF1A
+返回：
   {
-        "msg":"\u67E5\u8BE2\u6210\u529F",
-        "stateCod": "1",   #  \u9519\u8BEF < 0 > \u6B63\u786E--\u4E0D\u5F39\u51FA\u63D0\u793A\u6846--100--\u4E2D\u5FC3\u5F39\u51FA\u63D0\u793A--200--\u53F3\u4E0B\u5F39\u51FA\u63D0\u793A--300
-        "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
-        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     \u540C\u65F6\u8FD4\u56DEact_fee\u548Cpre_fee
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "result": {"act":[{},{},{}], "pre":[{},{},{}]}     同时返回act_fee和pre_fee
    }
