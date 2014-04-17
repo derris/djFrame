@@ -3,8 +3,6 @@ __author__ = 'dh'
 import unittest
 import json
 
-
-
 class autotest(unittest.TestCase):
     jpargs =""" {   "reqtype":"query",
             "rows":20,
@@ -18,7 +16,6 @@ class autotest(unittest.TestCase):
                     ]
         }
     """
-
     l_query1 = json.loads( jpargs)
     l_query2 =   { 'reqtype':'query', 'page':10, 'rows':-1   }
     l_query3 =   { 'reqtype':'query', 'page':100, 'rows':12   }
@@ -41,11 +38,11 @@ class autotest(unittest.TestCase):
 
     def test_rawsql4request(self):
         '''test dbhelp.py / rawsql4request'''
-        import dbhelp
+        import zdCommon.dbhelp
         import os
         for i_query in self.l_query:
             for i_sql in self.l_sql:
-                print(dbhelp.rawsql4request(i_sql, i_query))
+                print(zdCommon.dbhelp.rawsql4request(i_sql, i_query))
                 print(os.linesep)
             #self.assertEqual(a, a)
 
@@ -60,8 +57,8 @@ class autotest(unittest.TestCase):
                     'subs': {}
                     }]
         }
-        import dbhelp
-        print(dbhelp.json2insert(dict_test))
+        import zdCommon.dbhelp
+        print(zdCommon.dbhelp.json2insert(dict_test))
 
 if __name__ == '__main__':
     unittest.main()
