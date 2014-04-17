@@ -22,12 +22,21 @@
             contract.contractqueryview.prefeeoutgrid = $(grid);
         });
         $(document).on('loadsuccess','#control-contract-datagrid-{{ seq }}',function(e){
-            contract.contractqueryview.actiongrid.datagrid('loadData',[]);
-            contract.contractqueryview.cntrgrid.datagrid('loadData',[]);
-            contract.contractqueryview.prefeeingrid.datagrid('loadData',[]);
-            contract.contractqueryview.prefeeoutgrid.datagrid('loadData',[]);
+            if (contract.contractqueryview.contractgrid.datagrid('getRows').length > 0){
+                var contract_id = contract.contractqueryview.contractgrid.datagrid('getRows')[0].id;
+                contract.contractqueryview.contractgrid.datagrid('selectRow',0);
+                contract.contractqueryview.contractgrid.datagrid('scrollTo',0);
+                contract.contractqueryview.contractgrid.trigger('clickrow',contract_id);
+            }else{
+                contract.contractqueryview.actiongrid.datagrid('loadData',[]);
+                contract.contractqueryview.cntrgrid.datagrid('loadData',[]);
+                contract.contractqueryview.prefeeingrid.datagrid('loadData',[]);
+                contract.contractqueryview.prefeeoutgrid.datagrid('loadData',[]);
+                $('#contract-contractqueryview-tabs').tabs('select',0);
+            }
         });
         $(document).on('clickrow','#control-contract-datagrid-{{ seq }}',function(e,contract_id){
+
             var filter = [{cod: 'contract_id', operatorTyp: '等于', value: contract_id}];
             contract.contractqueryview.actiongrid.datagrid('options').filterFields = filter;
             contract.contractqueryview.cntrgrid.datagrid('options').filterFields = filter;
@@ -37,7 +46,7 @@
             contract.contractqueryview.cntrgrid.datagrid('reload');
             contract.contractqueryview.prefeeingrid.datagrid('reload');
             contract.contractqueryview.prefeeoutgrid.datagrid('reload');
-
+            $('#contract-contractqueryview-tabs').tabs('select',0);
         });
     });
 
@@ -47,7 +56,7 @@
         {% include 'yard/contract/contractgrid.html' %}
     </div>
     <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
-        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300">
+        <div class="easyui-tabs" data-options="fit:'true',headerWidth:300" id="contract-contractqueryview-tabs">
             <div title="委托动态">
                 {% include 'yard/contract/contractactiongrid.html' %}
             </div>

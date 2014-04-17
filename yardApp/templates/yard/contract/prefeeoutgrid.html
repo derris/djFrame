@@ -23,7 +23,6 @@
                 ]
             ],
             dataTable: 'pre_fee',
-            showFooter: true,
             pagination: false,
             {% if display_toolbar %}
                 toolbar: [
@@ -52,8 +51,8 @@
                         iconCls: 'icon-remove',
                         group: '#control-contract-prefeeoutgrid-{{ seq }}',
                         handler: function () {
-                            if (control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').audit_id == 'true'){
-                                $.messager.alert('提示','已核销不能删除','info');
+                            if (control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').audit_id == 'true') {
+                                $.messager.alert('提示', '已核销不能删除', 'info');
                                 return;
                             }
 
@@ -62,10 +61,27 @@
                     }
                 ],
             {% endif %}
-            queryFuncName: '委托应付查询'
+            queryFuncName: '委托应付查询',
+            onLoadSuccess: function (data) {
+                var rows = control.contract.prefeeoutgrid._{{ seq }}.datagrid('getRows');
+                var sum = 0;
+                for (var i = 0, ilen = rows.length; i < ilen; i++) {
+                    sum = sum + parseFloat(rows[i].amount);
+                }
+                $('#control-contract-prefeeoutgrid-sum-{{ seq }}').text('合计:' + sum);
+            }
         });
         control.contract.prefeeoutgrid._{{ seq }}.trigger('afterrender', control.contract.prefeeoutgrid._{{ seq }});
     });
 </script>
-<table id="control-contract-prefeeoutgrid-{{ seq }}" data-options="border:'false'">
-</table>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+
+        <table id="control-contract-prefeeoutgrid-{{ seq }}" data-options="border:'false'">
+        </table>
+    </div>
+    <div data-options="region:'south',border:'false'" style="border-top: none">
+        <label id="control-contract-prefeeoutgrid-sum-{{ seq }}">合计:0</label>
+
+    </div>
+</div>
