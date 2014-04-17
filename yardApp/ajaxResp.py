@@ -208,7 +208,7 @@ def dealPAjax(request):
             elif ldict['func'] == '委托应付查询':
                 return(getcontractprefeeout(request))
             #-------核销费用查询--------------------------------------------------------
-            elif ldict['func'] == '已收费用查询':
+            elif ldict['func'] == '已收付费用查询':
                 ls_sql = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type,fee_tim,audit_id " \
                          "from act_fee " \
                          "where ex_feeid = 'O' "
