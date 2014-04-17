@@ -1,13 +1,13 @@
 
-todo 应收付费用
-1.func == '\u5E94\u6536\u4ED8\u8D39\u7528\u7EF4\u62A4',\u7B26\u5408\u4EE5\u4E0B\u6761\u4EF6\u7981\u6B62\u5220\u9664\u3001\u4FEE\u6539
+todo 应收付费用维护 (pre_fee)
+1.func = '应收付费用维护',以下条件禁止修改、删除
   lock_flag=true or audit_id=true or ex_feeid='E'
 
 
-todo \u5B9E\u6536\u4ED8\u8D39\u7528
-1.func == '\u5DF2\u6536\u4ED8\u8D39\u7528\u7EF4\u62A4',\u7B26\u5408\u4EE5\u4E0B\u6761\u4EF6\u7981\u6B62\u5220\u9664\u3001\u4FEE\u6539
+todo 已收付费用维护
+1.func = '已收付费用维护',以下条件禁止修改、删除
   audit_id=true or ex_feeid='E'
 
-todo \u59D4\u6258\u534F\u8BAE\u8D39\u7528\u751F\u6210
+todo 委托协议费用生成
 
-todo \u6838\u9500\u660E\u7EC6\u67E5\u8BE2
+todo 核销明细查询
