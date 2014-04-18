@@ -223,6 +223,7 @@ def prefeeview(request):
     prefee_financialtim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_financial_tim')
     prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag',readonly=True)
     prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id',readonly=True)
+    prefee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid',hidden=True)
     prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     customdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
@@ -243,6 +244,7 @@ def actfeeview(request):
     payTypeObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='pay_type',autoforeign=True,foreigndisplayfield='pay_name')
     feeTimObj = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim')
     audit_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='audit_id',hidden=True)
+    ex_feeid = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='ex_feeid',hidden=True)
     return render(request,"yard/fee/actfee.html",locals())
 def auditview(request):    # 已收费用核销
     seq = str(fetchSeq('seq_html'))

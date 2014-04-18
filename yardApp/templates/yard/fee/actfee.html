@@ -14,7 +14,8 @@
                         {{ checkNoObj.writeUI|safe|escape }},
                         {{ payTypeObj.writeUI|safe|escape }},
                         {{ feeTimObj.writeUI|safe|escape }},
-                        {{ audit_id.writeUI|safe|escape }}
+                        {{ audit_id.writeUI|safe|escape }},
+                        {{ ex_feeid.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
@@ -43,7 +44,7 @@
                     group:'fee-actfee-datagrid',
                     handler: function () {
                         var selectRow = fee.actfeeview.datagrid.datagrid('getSelected');
-                        if (selectRow.audit_id == true){
+                        if (selectRow.audit_id == 'true' || selectRow.ex_feeid == 'E'){
                             $.messager.alert('提示','此费用已核销不能删除','info');
                             return;
                         }

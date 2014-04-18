@@ -9,5 +9,5 @@ todo 已收付费用维护
   audit_id=true or ex_feeid='E'
 
 todo 委托协议费用生成
-
+此委托下已存在核销、锁定费用的情况，禁止执行。
 todo 核销明细查询

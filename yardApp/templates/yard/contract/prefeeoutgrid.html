@@ -18,6 +18,7 @@
                         {{ prefee_financialtim.writeUI|safe|escape }},
                         {{ prefee_lock_flag.writeUI|safe|escape }},
                         {{ prefee_audit_id.writeUI|safe|escape }},
+                        {{ prefee_ex_feeid.writeUI|safe|escape }},
                         {{ prefee_remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
@@ -26,7 +27,7 @@
             pagination: false,
             {% if display_toolbar %}
                 toolbar: [
-                    {text: '增加',
+                    {text: '增加应付费用',
                         iconCls: 'icon-add',
                         group: '#control-contract-prefeeoutgrid-{{ seq }}',
                         handler: function () {
@@ -47,12 +48,14 @@
 
                     },
                     '-',
-                    {text: '删除',
+                    {text: '删除应付费用',
                         iconCls: 'icon-remove',
                         group: '#control-contract-prefeeoutgrid-{{ seq }}',
                         handler: function () {
-                            if (control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').audit_id == 'true') {
-                                $.messager.alert('提示', '已核销不能删除', 'info');
+                            if (control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').audit_id == 'true'
+                                    || control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').lock_flag == 'true'
+                                    || control.contract.prefeeoutgrid._{{ seq }}.datagrid('getSelected').ex_feeid == 'E') {
+                                $.messager.alert('提示', '已核销或已锁定不能删除', 'info');
                                 return;
                             }
 
