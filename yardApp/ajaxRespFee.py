@@ -210,27 +210,10 @@ def auditDetailQuery(request,ldict):
 def contrProFeeGen(aRequest, aDict):
     l_rtn = { }
     ls_contractid = str(aDict["ex_parm"]["contract_id"])
-
-    ls_fee = "select * from c_fee where protocol_flag = true" # get the protocel fee.
+    ls_fee = "select fun4fee_genlumpsum(%s)" % ls_contractid   # get the protocel fee.
     l_fee = cursorSelect(ls_fee)
-    for i in l_fee:
-        if i["fee_nam"] == "包干费":   # 生成前判断是否已有此费用，有此费用忽略。
-            #从contract 取出client,contract_type. 从contract_action中取cntr_type、cntr_num，
-            ls_contrsql = "select * from contract where contract_id = %s" % (ls_contractid)
-            ls_action = "select * from contract_action where contract_id = %s" % (ls_contractid)
-            # 循环读出箱子
-            l_cntr = cursorSelect(ls_action)
-            for j in l_cntr:
-                 # 根据c_fee_protocol的费率产生费用。
-                ls_1 = "select count(*) from pre_fee where contract_id = %s and fee_cod = %d" % (ls_contractid, i["id"])
-                if int(cursorSelect(ls_1)[0][0]) < 1 :
-                    # 根据c_fee_protocol的费率产生费用。 根据箱型得到费用费用。
-                    pass
-                else:
-                    pass
-    ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
-    '''
-    b.代收代付费用：对此contract_id下的所有应付费用，c_fee.pair_flag = true的，判断是否有对应的应收费用，如没有，
-          插入一条金额相同的应收费用。
-
-              '''
+    if l_fee[0][0] < 0 :
+        l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
+    else:
+        l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
+    return l_rtn
