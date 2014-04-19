@@ -215,7 +215,8 @@ def contrProFeeGen(aRequest, aDict):
     l_fee = cursorSelect(ls_fee)
     #if l_fee[0][0] < 0 :
     if l_fee[0][0] != 'SUC' :
-        l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
+        #l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
+        l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][0])], "stateCod" : -1 } )
     else:
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
     return l_rtn
