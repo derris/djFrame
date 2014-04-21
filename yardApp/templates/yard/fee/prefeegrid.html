@@ -26,6 +26,12 @@
             dataTable: 'pre_fee',
             pagination: false,
             singleSelect: false,
+            rowStyler : function(rowIndex,rowData){
+                //console.info(rowData);
+                if (rowData.amount < 0 ){
+                    return 'color:red';
+                }
+            },
             onDblClickRow: function (rowIndex, rowData) {
                 return;
             },

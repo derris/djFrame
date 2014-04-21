@@ -144,7 +144,7 @@ class FeeProtocol(BaseModel):
     client_id = models.ForeignKey('Client',related_name='client_feeprotocol',verbose_name='客户',db_column='client_id')
     fee_id = models.ForeignKey('FeeCod',related_name='feecod_feeprotocol',verbose_name='费用代码',db_column='fee_id')
     contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',limit_choices_to={'fld_eng':'contract_type'},verbose_name='业务类型',db_column='contract_type')
-    fee_cal_type = models.ForeignKey('SysCode',related_name='fee_cal_type_feeprotocol',limit_choices_to={'fld_eng':'fee_cal_type'},verbose_name='计费单位',db_column='fee_cal_type')
+    fee_cal_type = models.ForeignKey('CntrType',related_name='fee_cal_type_cntrtype',verbose_name='计费单位',db_column='fee_cal_type')
     rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
     free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
     def __str__(self):

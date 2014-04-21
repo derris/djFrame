@@ -4,13 +4,13 @@
         {% autoescape off %}
             control.audit.actfeegrid._{{ seq }} = $('#control-audit-actfeegrid-{{ seq }}').datagrid({
             autoLoad: false,
-            border:false,
+            border: false,
             sumAmount: 0,
-            title:'实收付费用',
+            title: '实收付费用',
             columns: [
                 [
                     {% if check_flag == True %}
-                    {field: 'check_flag', checkbox: true},
+                        {field: 'check_flag', checkbox: true},
                     {% endif %}
                     {{ actfee_id.writeUI|safe|escape }},
                     {{ actfee_client_Id.writeUI|safe|escape }},
@@ -29,6 +29,12 @@
     dataTable: 'act_fee',
     pagination: false,
     singleSelect: false,
+    rowStyler: function (rowIndex, rowData) {
+        //console.info(rowData);
+        if (rowData.amount < 0) {
+            return 'color:red';
+        }
+    },
     onDblClickRow: function (rowIndex, rowData) {
         return;
     },
@@ -74,7 +80,7 @@
     </div>
     <div data-options="region:'south',border:'false'" style="border-top: none">
 
-            <label id="control-audit-actfeegrid-sum-{{ seq }}">合计:0</label>
+        <label id="control-audit-actfeegrid-sum-{{ seq }}">合计:0</label>
 
     </div>
 </div>

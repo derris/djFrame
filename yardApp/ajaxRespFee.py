@@ -172,34 +172,38 @@ def auditDetailQuery(request,ldict):
 
     try:
 
-        #list_pre = rawSql2JsonDict("select * from pre_fee where ex_over = '%s'" % ls_exOver)
-        #list_pre.extend(rawSql2JsonDict("select * from pre_fee where ex_from = '%s'" % ls_exOver))
-        #list_act = rawSql2JsonDict("select * from act_fee where ex_over = '%s'" % ls_exOver)
-        #list_act.extend(rawSql2JsonDict("select * from act_fee where ex_from = '%s'" % ls_exOver))
+        list_pre = rawSql2JsonDict("select bill_no,fee_typ,fee_cod,amount from pre_fee,contract "
+                                   "where contract.id = pre_fee.contract_id"
+                                   "  and ex_over = '%s'" % ls_exOver)
+        list_pre.extend(rawSql2JsonDict("select bill_no,fee_typ,fee_cod,(0-amount) amount from pre_fee,contract "
+                                        " where contract.id = pre_fee.contract_id"
+                                        "   and ex_from = '%s'" % ls_exOver))
+        list_act = rawSql2JsonDict("select client_id,fee_typ,amount,pay_type,invoice_no,check_no  from act_fee where ex_over = '%s'" % ls_exOver)
+        list_act.extend(rawSql2JsonDict("select client_id,fee_typ,(0-amount) amount,pay_type,invoice_no,check_no from act_fee where ex_from = '%s'" % ls_exOver))
 
-        ls_pre = '''
-            select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
-            from pre_fee p right join
-            (select ex_over,contract_id,fee_cod,sum(amount) amount
-            from pre_fee
-            where ex_over = %s
-            group by ex_over,contract_id,fee_cod) a
-            on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
-            group by a.contract_id,a.fee_cod,a.amount
-        '''
-        ls_act = '''
-            select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
-            from act_fee p right join
-            (select ex_over,contract_id,fee_cod,sum(amount) amount
-            from act_fee
-            where ex_over = %s
-            group by ex_over,contract_id,fee_cod) a
-            on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
-            group by a.contract_id,a.fee_cod,a.amount
-        '''
-
-        list_pre = rawSql2JsonDict(ls_pre % ls_exOver)
-        list_act = rawSql2JsonDict(ls_act % ls_exOver)
+        # ls_pre = '''
+        #     select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
+        #     from pre_fee p right join
+        #     (select ex_over,contract_id,fee_cod,sum(amount) amount
+        #     from pre_fee
+        #     where ex_over = %s
+        #     group by ex_over,contract_id,fee_cod) a
+        #     on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
+        #     group by a.contract_id,a.fee_cod,a.amount
+        # '''
+        # ls_act = '''
+        #     select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
+        #     from act_fee p right join
+        #     (select ex_over,contract_id,fee_cod,sum(amount) amount
+        #     from act_fee
+        #     where ex_over = %s
+        #     group by ex_over,contract_id,fee_cod) a
+        #     on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
+        #     group by a.contract_id,a.fee_cod,a.amount
+        # '''
+        #
+        # list_pre = rawSql2JsonDict(ls_pre % ls_exOver)
+        # list_act = rawSql2JsonDict(ls_act % ls_exOver)
 
         l_result = { "act":list_act, "pre":list_pre }
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
@@ -218,5 +222,6 @@ def contrProFeeGen(aRequest, aDict):
         #l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
         l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][0])], "stateCod" : -1 } )
     else:
-        l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
+        #l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
+        l_rtn.update( {"msg": '生成成功', "error":[], "stateCod" : 202 } )
     return l_rtn

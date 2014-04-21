@@ -126,7 +126,8 @@ def feeprotocolview(request):
     client_id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     fee_id = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name')
     contract_type = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='contract_type',autoforeign=True,foreigndisplayfield='cod_name')
-    fee_cal_type = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_cal_type',autoforeign=True,foreigndisplayfield='cod_name')
+    fee_cal_type = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_cal_type',autoforeign=True,foreigndisplayfield='cntr_type')
+
     rate = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='rate')
     free_day = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='free_day')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='remark')
