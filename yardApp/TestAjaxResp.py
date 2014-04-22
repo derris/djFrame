@@ -13,9 +13,9 @@ if __name__ == '__main__':
 
 class dataPack():
     '''
-    from yardApp.TestAjaxResp import dataPack
-    a = dataPack()
-    a.fillContr()
+from yardApp.TestAjaxResp import dataPack
+a = dataPack()
+a.fillContr()
     '''
     def __init__(self):
         pass

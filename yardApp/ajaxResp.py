@@ -270,13 +270,13 @@ def dealPAjax(request):
             elif ldict['func'] == '委托解锁':
                 return(updateRaw(request))
             elif ldict['func'] == '应收付费用维护':
-                return(updateRaw(request))
+                return(HttpResponse(json.dumps( update_oughtfee(request, ldict) ,ensure_ascii = False) ))
             elif ldict['func'] == '应收付费用锁定':
                 return(updateRaw(request))
             elif ldict['func'] == '应收付费用解锁':
                 return(updateRaw(request))
             elif ldict['func'] == '已收付费用维护':
-                return(updateRaw(request))
+                return(HttpResponse(json.dumps( update_gotfee(request, ldict) ,ensure_ascii = False) ))
             elif  ldict['func'] == "menufuncpost" or ldict['func'] == "岗位权限维护":
                 return(HttpResponse(json.dumps( setMenuPrivilege(request) ,ensure_ascii = False) ))
             ########################################

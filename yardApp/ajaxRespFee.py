@@ -4,7 +4,7 @@ import json
 from django.db import transaction
 from zdCommon.dbhelp import rawSql2JsonDict
 from zdCommon.utils import log, logErr
-from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
+from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd
 from datetime import datetime
 
 def dealAuditFee(request):
@@ -224,4 +224,32 @@ def contrProFeeGen(aRequest, aDict):
     else:
         #l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
         l_rtn.update( {"msg": '生成成功', "error":[], "stateCod" : 202 } )
+    return l_rtn
+
+def update_oughtfee(request, adict):
+    '''  应收费用  lock_flag=true or audit_id=true or ex_feeid='E'   '''
+    l_rtn = { }
+    list_PreId = []
+    for i_row in  adict['rows']: #
+        if i_row['op'] in ('delete', 'update', 'updatedirty'):
+            list_PreId.append( i_row['id'] )
+    l_count = cursorSelect("select count(*) from pre_fee where id in ( %s ) and (lock_flag=true or audit_id=true or ex_feeid='E') " % ",".join(list_PreId))
+    if l_count[0][0] > 0 :
+        l_rtn.update( { "msg": "失败", "error":["变更委托应付费用被锁或者已经核销"], "stateCod" : -1 } )
+    else:
+        l_rtn.update( json2upd(adict) )
+    return l_rtn
+
+def update_gotfee(request, adict):
+    '''  应收费用  lock_flag=true or audit_id=true or ex_feeid='E'   '''
+    l_rtn = { }
+    list_ActId = []
+    for i_row in  adict['rows']: #
+        if i_row['op'] in ('delete', 'update', 'updatedirty'):
+            list_ActId.append( i_row['id'] )
+    l_count = cursorSelect("select count(*) from act_fee where id in ( %s ) and (audit_id=true or ex_feeid='E') " % ",".join(list_ActId))
+    if l_count[0][0] > 0 :
+        l_rtn.update( { "msg": "失败", "error":["变更的已收费用被锁或者已经核销"], "stateCod" : -1 } )
+    else:
+        l_rtn.update( json2upd(adict) )
     return l_rtn
