@@ -234,7 +234,7 @@ def dealPAjax(request):
             elif ldict['func'] == '委托协议费用生成':
                 l_rtn = contrProFeeGen(request, ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
-            ############################################################################## update
+            ########################################################## update
             elif ldict['func'] == '功能维护':
                 return(updateRaw(request))
             elif ldict['func'] == '权限维护':

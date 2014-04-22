@@ -227,7 +227,7 @@ def contrProFeeGen(aRequest, aDict):
     return l_rtn
 
 def update_oughtfee(request, adict):
-    '''  应收费用  lock_flag=true or audit_id=true or ex_feeid='E'   '''
+    '''  应收费用  lock_flag=true or audit_id=true or ex_feeid='E' 不能更改   '''
     l_rtn = { }
     list_PreId = []
     for i_row in  adict['rows']: #
