@@ -413,7 +413,7 @@ $(function () {
     });
     $('#contract-contract-form-search-button').bind('click', function (e) {
         contract.contractview.billsearch = $('<div></div>').window({
-            href: "./dealmenureq/?menutext=提单查询",
+            href: encodeURI("./dealmenureq/?menutext=提单查询"),
             title: '提单查询',
             width: window.innerWidth * 0.6,
             height: window.innerHeight * 0.8,

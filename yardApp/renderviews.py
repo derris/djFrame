@@ -198,8 +198,9 @@ def contractqueryview(request):
     prefee_amount = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount')
     prefee_feetim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_tim')
     prefee_financialtim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_financial_tim')
-    prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag',readonly=True)
-    prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id',readonly=True)
+    prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
+    prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id')
+    prefee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid')
     prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
     display_toolbar = False
     return render(request,"yard/contract/contractqueryview.html",locals())
