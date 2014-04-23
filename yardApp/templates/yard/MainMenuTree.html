@@ -18,7 +18,7 @@
                     } else {                        
                         system.maintabs.tabs.tabs('add', {
                             title: node.text,
-                            href: "./dealmenureq/?menutext=" + node.attributes,
+                            href: encodeURI("./dealmenureq/?menutext=" + node.attributes),
                             closable: true
                         });
                     }

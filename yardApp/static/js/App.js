@@ -934,7 +934,8 @@ $.ajaxSetup({
         }
     },
     type: 'POST',
-    contentType: 'application/x-www-form-urlencoded',
+    //contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+
     dataType: 'json',
     success: function (returnData, returnMsg, ajaxObj, msgShow) {
         var stateCod = parseInt(returnData.stateCod);

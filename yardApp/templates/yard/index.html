@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>堆场系统</title>
      {% load static from staticfiles %}
 
@@ -18,8 +18,8 @@
     <script>
         $(function () {
             document.title = sy.apptitle;
-            sy.logonPath = "./dealmenureq/?menutext=登录窗口";
-            sy.searchWindowUrl = "./dealmenureq/?menutext=通用查询";
+            sy.logonPath = encodeURI("./dealmenureq/?menutext=登录窗口");
+            sy.searchWindowUrl = encodeURI("./dealmenureq/?menutext=通用查询");
             sy.logonform = $('<div></div>').window({
                 href: sy.logonPath,
                 title: '系统登录',
@@ -31,8 +31,8 @@
                 maximizable: false,
                 closable: false,
                 onBeforeClose:function(){
-                    $('#mainmenu').panel('refresh','./dealmenureq/?menutext=导航菜单');
-                    $('#maintab').panel('refresh','./dealmenureq/?menutext=主窗口');
+                    $('#mainmenu').panel('refresh',encodeURI('./dealmenureq/?menutext=导航菜单'));
+                    $('#maintab').panel('refresh',encodeURI('./dealmenureq/?menutext=主窗口'));
                 }
             });
 
