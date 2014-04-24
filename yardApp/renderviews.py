@@ -67,6 +67,8 @@ def userview(request):
     lock = easyuihelp.EasyuiFieldUI(model=models.User,field='lock')
     remark = easyuihelp.EasyuiFieldUI(model = models.User,field='remark',width=180)
     return render(request,"yard/basedata/user.html",locals())
+def pwupdateview(request):
+    return render(request,"yard/option/pwupdateview.html",locals())
 def postview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Post,field='id')
     postname = easyuihelp.EasyuiFieldUI(model=models.Post,field='postname')
@@ -353,6 +355,8 @@ def dealMenuReq(request):
         return(syscodview(request))
     elif ls_args == '用户维护':
         return(userview(request))
+    elif ls_args == '密码修改':
+        return(pwupdateview(request))
     elif ls_args == '岗位维护':
         return(postview(request))
     elif ls_args == '岗位用户维护':

@@ -1,0 +1,71 @@
+<script>
+    Namespace.register('option.pwupdateview');
+    $(function () {
+        option.pwupdateview.form = $('#option-pwupdateview-form').form({
+            url: './dealPAjax/'
+        });
+        $('#option-pwupdateview-form-save-button').bind('click', function (e) {
+            var formcols = option.pwupdateview.form.serializeJson();
+            if (formcols.newpw == formcols.confirmpw) {
+                if (option.pwupdateview.form.form('validate')) {
+                    var p = {
+                        func: '密码修改',
+                        ex_parm: {
+                            oldpw: formcols.oldpw,
+                            newpw: formcols.newpw
+                        }
+                    }
+                    $.ajax({
+                        url: "./dealPAjax/",
+                        data: {jpargs: JSON.stringify(p)},
+                        success: function (r, t, a) {
+                            if ($.ajaxSettings.success(r, t, a, true) == true) {
+                                var stateCod = parseInt(r.stateCod);
+                                if (r && !isNaN(stateCod)) {
+                                    if (stateCod == 202) {
+                                        //保存成功关闭此页面
+                                        system.maintabs.tabs.tabs('close', '密码修改');
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            )
+                ;
+            }
+        }
+        else
+        {
+            $.messager.alert('提示', '密码确认与新密码不相符', 'info');
+            return;
+        }
+    });
+    })
+    ;
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'true'">
+        <form id="option-pwupdateview-form" class="editform" method="post">
+            <div>
+                <label for="oldpw">旧密码：</label>
+                <input type="password" name="oldpw" class="easyui-validatebox"
+                       data-options="required:true"/>
+            </div>
+            <div>
+                <label for="newpw">新密码：</label>
+                <input type="password" name="newpw" class="easyui-validatebox"
+                       data-options="required:true"/>
+            </div>
+            <div>
+                <label for="confirmpw">密码确认:</label>
+                <input type="password" name="confirmpw" class="easyui-validatebox"
+                       data-options="required:true"/>
+            </div>
+            <div>
+                <a id="option-pwupdateview-form-save-button" href="#" class="easyui-linkbutton"
+                   data-options="iconCls:'icon-save',group:'option-pwupdateview-form'">保存</a>
+            </div>
+        </form>
+    </div>
+</div>
