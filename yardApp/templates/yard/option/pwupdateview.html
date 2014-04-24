@@ -31,16 +31,12 @@
                         }
                     });
                 }
-            )
-                ;
             }
-        }
-        else
-        {
-            $.messager.alert('提示', '密码确认与新密码不相符', 'info');
-            return;
-        }
-    });
+            else {
+                $.messager.alert('提示', '密码确认与新密码不相符', 'info');
+                return;
+            }
+        });
     })
     ;
 </script>
