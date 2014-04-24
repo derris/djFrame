@@ -423,8 +423,9 @@ def json2upd(aJsonDict):
              "effectnum": 0 ,
              "changeid" : {'uuid1':'id1'} }
     try:
-        l_cur = connection.cursor()
-        json2exec(aJsonDict, l_cur, l_rtn, ("",""))
+        with transaction.atomic():
+            l_cur = connection.cursor()
+            json2exec(aJsonDict, l_cur, l_rtn, ("",""))
         l_rtn.update({"stateCod": 202})
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
@@ -441,10 +442,10 @@ def cursorExec(aSql):
     l_rtn = -1
     log(aSql)
     try:
-        l_cur = connection.cursor()
-        l_cur.execute(aSql)
-        l_rtn = l_cur.cursor.rowcount
-        l_rtn = 1
+        with transaction.atomic():
+            l_cur = connection.cursor()
+            l_cur.execute(aSql)
+            l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         raise e
@@ -456,9 +457,10 @@ def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
     l_rtn = -1
     log(aSql + str(aList))
     try:
-        l_cur = connection.cursor()
-        l_cur.execute(aSql, aList)
-        l_rtn = l_cur.cursor.rowcount
+        with transaction.atomic():
+            l_cur = connection.cursor()
+            l_cur.execute(aSql, aList)
+            l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         raise e

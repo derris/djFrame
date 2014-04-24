@@ -233,11 +233,12 @@ def update_oughtfee(request, adict):
     for i_row in  adict['rows']: #
         if i_row['op'] in ('delete', 'update', 'updatedirty'):
             list_PreId.append( i_row['id'] )
-    l_count = cursorSelect("select count(*) from pre_fee where id in ( %s ) and (lock_flag=true or audit_id=true or ex_feeid='E') " % ",".join(list_PreId))
-    if l_count[0][0] > 0 :
-        l_rtn.update( { "msg": "失败", "error":["变更委托应付费用被锁或者已经核销"], "stateCod" : -1 } )
-    else:
-        l_rtn.update( json2upd(adict) )
+    if len(list_PreId) > 0 :
+        l_count = cursorSelect("select count(*) from pre_fee where id in ( %s ) and (lock_flag=true or audit_id=true or ex_feeid='E') " % ",".join(list_PreId))
+        if l_count[0][0] > 0 :
+            l_rtn.update( { "msg": "失败", "error":["变更委托应付费用被锁或者已经核销"], "stateCod" : -1 } )
+            return l_rtn
+    l_rtn.update( json2upd(adict) )
     return l_rtn
 
 def update_gotfee(request, adict):
@@ -247,9 +248,10 @@ def update_gotfee(request, adict):
     for i_row in  adict['rows']: #
         if i_row['op'] in ('delete', 'update', 'updatedirty'):
             list_ActId.append( i_row['id'] )
-    l_count = cursorSelect("select count(*) from act_fee where id in ( %s ) and (audit_id=true or ex_feeid='E') " % ",".join(list_ActId))
-    if l_count[0][0] > 0 :
-        l_rtn.update( { "msg": "失败", "error":["变更的已收费用被锁或者已经核销"], "stateCod" : -1 } )
-    else:
-        l_rtn.update( json2upd(adict) )
+    if len(list_ActId) > 0 :
+        l_count = cursorSelect("select count(*) from act_fee where id in ( %s ) and (audit_id=true or ex_feeid='E') " % ",".join(list_ActId))
+        if l_count[0][0] > 0 :
+            l_rtn.update( { "msg": "失败", "error":["变更的已收费用被锁或者已经核销"], "stateCod" : -1 } )
+        return l_rtn
+    l_rtn.update( json2upd(adict) )
     return l_rtn
