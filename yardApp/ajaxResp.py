@@ -32,6 +32,8 @@ def getuser(request):
     '''用户查询'''
     ldict = json.loads( request.POST['jpargs'] )
     #加上密码字段过滤
+    if 'password' in ldict['cols']:
+        del ldict['cols'][ldict['cols'].index('password')]
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_user where username <> 'Admin'"
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getpost(request):

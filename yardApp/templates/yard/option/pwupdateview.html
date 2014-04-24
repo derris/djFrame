@@ -20,13 +20,7 @@
                         data: {jpargs: JSON.stringify(p)},
                         success: function (r, t, a) {
                             if ($.ajaxSettings.success(r, t, a, true) == true) {
-                                var stateCod = parseInt(r.stateCod);
-                                if (r && !isNaN(stateCod)) {
-                                    if (stateCod == 202) {
-                                        //保存成功关闭此页面
-                                        system.maintabs.tabs.tabs('close', '密码修改');
-                                    }
-                                }
+                                return;
                             }
                         }
                     });

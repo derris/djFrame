@@ -1,28 +1,6 @@
 
-todo 应收付费用维护 (pre_fee)
-1.func = '应收付费用维护',以下条件禁止修改、删除
-  lock_flag=true or audit_id=true or ex_feeid='E'
-
-
-todo 已收付费用维护
-1.func = '已收付费用维护',以下条件禁止修改、删除
-  audit_id=true or ex_feeid='E'
 
 todo s_user
-ldict['func'] == '用户查询'  禁止返回密码字段
+
 ldict['func'] == '用户维护'  增加：默认密码 ok，前台不传密码  修改：不能修改密码
 
-todo pwupdate
-新加 func = '密码修改'
-接口参数:{
-          func: '密码修改',
-          ex_parm: {
-             oldpw: '旧密码',
-             newpw: '新密码'
-          }
-        }
-返回参数：{
-        "msg":"保存密码成功",
-        "stateCod": "202",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
-        "error": ["xxx", "xx"]...        # 错误数组。
-   }
