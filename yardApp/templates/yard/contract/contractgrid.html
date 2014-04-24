@@ -30,14 +30,14 @@
             ],
             dataTable: 'contract',
 
-                toolbar: [
-                    {text: '查询',
-                        iconCls: 'icon-search',
-                        group: 'control-contract-datagrid-{{ seq }}',
-                        handler: function () {
-                            sy.createSearchWindow(control.contract.contractgrid._{{ seq }});
-                        }
-                    }{% comment %},
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group: 'control-contract-datagrid-{{ seq }}',
+                    handler: function () {
+                        sy.createSearchWindow(control.contract.contractgrid._{{ seq }});
+                    }
+                }{% comment %},
                     '-',
                     {text: '增加',
                         iconCls: 'icon-add',
@@ -64,17 +64,20 @@
                             control.contract.contractgrid._{{ seq }}.datagrid('postUpdateAllData');
                         }
                     }{% endcomment %}
-                ],
+            ],
 
             queryFuncName: '委托查询',
-            onLoadSuccess:function(data){
+            onLoadSuccess: function (data) {
                 control.contract.contractgrid._{{ seq }}.trigger('loadsuccess');
             },
-            onClickRow:function(rowindex,rowdata){
-                control.contract.contractgrid._{{ seq }}.trigger('clickrow',rowdata.id);
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            }
+            onClickRow: function (rowindex, rowdata) {
+                control.contract.contractgrid._{{ seq }}.trigger('clickrow', rowdata.id);
             }
         });
-        control.contract.contractgrid._{{ seq }}.trigger('afterrender',control.contract.contractgrid._{{ seq }});
+        control.contract.contractgrid._{{ seq }}.trigger('afterrender', control.contract.contractgrid._{{ seq }});
     });
 </script>
 <table id="control-contract-datagrid-{{ seq }}" data-options="border:false">

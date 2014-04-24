@@ -178,7 +178,7 @@ class Contract(BaseModel):
     yard_id = models.ForeignKey('Client',blank=True,null=True,verbose_name='场站',limit_choices_to={'yard_flag':True},related_name='yard_contract',db_column='yard_id')
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
-    vslvoy = models.CharField('船名航次',max_length=40)
+    vslvoy = models.CharField('船名航次',max_length=40,blank=True,null=True)
     def __str__(self):
         return self.bill_no
     class Meta:
