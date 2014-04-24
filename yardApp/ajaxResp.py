@@ -10,7 +10,7 @@ from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
 from yardApp.ajaxRespFee import *
-
+from yardApp.views import changePassword
 
 ##########################################################        GET    ----
 def getsysmenu(request):
@@ -305,6 +305,10 @@ def dealPAjax(request):
                 l_rtn = auditDetailQuery(request,ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             #########################################################3
+            elif ldict['func'] == '密码修改':   # ajax 查询
+                # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}
+                l_rtn = changePassword(request,ldict)
+                return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             else:
                 pass
     except Exception as e:
