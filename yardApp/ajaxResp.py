@@ -10,7 +10,7 @@ from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
 from yardApp.ajaxRespFee import *
-from yardApp.views import changePassword
+from yardApp.ajaxRespBase import *
 
 ##########################################################        GET    ----
 def getsysmenu(request):
@@ -255,7 +255,7 @@ def dealPAjax(request):
             elif ldict['func'] == '系统参数维护':
                 return(updateRaw(request))
             elif ldict['func'] == '用户维护':
-                return(updateRaw(request))
+                return(HttpResponse(json.dumps( update_user(request, ldict) ,ensure_ascii = False) ))
             elif ldict['func'] == '岗位维护':
                 return(updateRaw(request))
             elif ldict['func'] == '岗位用户维护':

@@ -5,8 +5,8 @@ from yardApp import renderviews, ajaxResp
 
 urlpatterns = patterns('',
     url(r'^$',renderviews.indexview,name='index'),
-    url(r'^logon/$',views.logon,name='logon'),
-    url(r'^logout/$',views.logout,name='logout'),
+    url(r'^logon/$',"yardApp.ajaxRespBase.logon",name='logon'),
+    url(r'^logout/$',"yardApp.ajaxRespBase.logout",name='logout'),
 
     #url(r'^clients/getclients2/$',views.getclients2,name='getclients2'),
     #url(r'^clients/updateclients/$',views.updateClients,name='updateclients'),

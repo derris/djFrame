@@ -1,16 +1,4 @@
-todo  1
-gogogo
-中文。
+todo  over
 
-\u59D4\u6258\u534F\u8BAE\u8D39\u7528\u751F\u6210
-\u5728\u540E\u53F0\u5B8C\u6210\u903B\u8F91
-django\u8FDB\u884C\u8C03\u7528
+ldict['func'] == '用户维护'  增加：默认密码 ok，前台不传密码  修改：不能修改密码
 
-
-todo  2
- \u6D4B\u8BD5\u6570\u636E\u7C7B
-django\u7AEF\u751F\u6210\u6570\u636E\u3002
-
-
-todo  3
- dbhelp\u51FD\u6570\u5206\u5C42
