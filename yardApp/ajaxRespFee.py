@@ -252,6 +252,6 @@ def update_gotfee(request, adict):
         l_count = cursorSelect("select count(*) from act_fee where id in ( %s ) and (audit_id=true or ex_feeid='E') " % ",".join(list_ActId))
         if l_count[0][0] > 0 :
             l_rtn.update( { "msg": "失败", "error":["变更的已收费用被锁或者已经核销"], "stateCod" : -1 } )
-        return l_rtn
+            return l_rtn
     l_rtn.update( json2upd(adict) )
     return l_rtn

@@ -237,6 +237,7 @@ class ActFee(BaseModel):
     amount = models.DecimalField('金额',blank=True,null=True,max_digits=10,decimal_places=2)
     invoice_no = models.CharField('发票号',max_length=30,blank=True,null=True)
     check_no = models.CharField('支票号',max_length=30,blank=True,null=True)
+    accept_no = models.CharField('承兑号',max_length=30,blank=True,null=True)
     pay_type = models.ForeignKey('PayType',related_name='paytype_actfee',verbose_name='付费类型',db_column='pay_type')
     fee_tim = models.DateTimeField('付费时间')
     ex_feeid = models.CharField('生成标记',max_length=1,choices=(('O','原生'),('E','拆分')))
