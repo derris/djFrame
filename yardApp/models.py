@@ -122,6 +122,13 @@ class Action(BaseModel):
         return self.action_name
     class Meta:
         db_table = 'c_contract_action'
+class Dispatch(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    place_name = models.CharField('发货地',max_length=30)
+    def __str__(self):
+        return self.place_name
+    class Meta:
+        db_table = 'c_dispatch'
 class FeeGroup(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     group_name = models.CharField('分组名称',max_length=10)
@@ -179,6 +186,8 @@ class Contract(BaseModel):
     finish_time = models.DateTimeField('完成时间',blank=True,null=True)
     finish_flag = models.NullBooleanField('完成标识',blank=True,null=True)
     vslvoy = models.CharField('船名航次',max_length=40,blank=True,null=True)
+    contract_no = models.CharField('合同号',max_length=20,blank=True,null=True)
+    dispatch_place = models.ForeignKey('Dispatch',verbose_name='发货地',related_name='dispatchplace_contract',db_column='dispatch_place')
     def __str__(self):
         return self.bill_no
     class Meta:

@@ -1,0 +1,60 @@
+<script>
+    Namespace.register('basedata.dispatchpalceview');
+    $(function () {
+        basedata.dispatchpalceview.datagrid = $('#basedata-dispatchplace-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ place_name.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_dispatch',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-dispatchplace-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.dispatchpalceview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-dispatchplace-datagrid',
+                    handler: function () {
+                        basedata.dispatchpalceview.datagrid.datagrid('insertData', {
+                            place_name: '新发货地'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-dispatchplace-datagrid',
+                    handler: function () {
+                        basedata.dispatchpalceview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-dispatchplace-datagrid',
+                    handler: function () {
+                        basedata.dispatchpalceview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'发货地查询',
+            updateFuncName:'发货地维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-dispatchplace-datagrid" border="false">
+        </table>
+    </div>
+</div>

@@ -77,6 +77,12 @@ def getaction(request):
     ls_sql = "select id,action_name,require_flag,sortno,remark from c_contract_action"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getdispatch(request):
+    '''发货地查询'''
+    ls_sql = "select id,place_name,remark from c_dispatch"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
 def getfeegroup(request):
     '''费用分组类型查询'''
     ls_sql = "select id,group_name,remark from c_fee_group"
@@ -103,7 +109,7 @@ def getprivilege(request):
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
-             "yard_id,finish_flag,finish_time,remark from contract"
+             "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractbybill(request):
@@ -185,6 +191,8 @@ def dealPAjax(request):
                 return(getcntrtype(request))
             elif ldict['func'] == '动态类型查询':
                 return(getaction(request))
+            elif ldict['func'] == '发货地查询':
+                return(getdispatch(request))
             elif ldict['func'] == '费用分组类型查询':
                 return(getfeegroup(request))
             elif ldict['func'] == '费用名称查询':
@@ -253,6 +261,8 @@ def dealPAjax(request):
             elif ldict['func'] == '岗位用户维护':
                 return(updateRaw(request))
             elif ldict['func'] == '箱型维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '发货地维护':
                 return(updateRaw(request))
             elif ldict['func'] == '动态类型维护':
                 return(updateRaw(request))

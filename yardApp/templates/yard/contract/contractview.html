@@ -38,6 +38,12 @@ $(function () {
             width: 180,
             data:{{ yarddata }}
         });
+        contract.contractview.dispatchcombo = $('#contract-contract-form-dispatch').combobox({
+            valueField:'value',
+            textField:'text',
+            width:180,
+            data:{{ dispatchdata }}
+        });
     {% endautoescape %}
     contract.contractview.contractform = $('#contract-contract-form').form({
         url: './dealPAjax/'
@@ -198,7 +204,7 @@ $(function () {
             $('a[group=contract-contractview]').linkbutton('enable');
             $('a[group=contract-contractview-unlock]').linkbutton('disable');
         }
-        $('#contract-contractview-tabs').tabs('select',0);
+        $('#contract-contractview-tabs').tabs('select', 0);
         contract.contractview.billno.focus().select();
     }
     contract.contractview.billno.bind('change', function (e) {
@@ -341,9 +347,9 @@ $(function () {
         if (parseInt($('#contract-contract-form-id').val()) > 0) {
             var finish_time = contract.contractview.contractform.serializeJson()['finish_time'];
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
-            if (finish_time != null && finish_time.length > 0 ){
+            if (finish_time != null && finish_time.length > 0) {
 
-            }else{
+            } else {
                 var curdate = new Date();
                 finish_time = curdate.getFullYear() + '-' + (curdate.getMonth() + 1) + '-' + curdate.getDate()
             }
@@ -352,7 +358,7 @@ $(function () {
                 func: '委托锁定',
                 rows: [
                     {op: 'updatedirty',
-                        cols: {finish_flag: ['true'],finish_time:[finish_time]},
+                        cols: {finish_flag: ['true'], finish_time: [finish_time]},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
@@ -384,7 +390,7 @@ $(function () {
                 func: '委托解锁',
                 rows: [
                     {op: 'updatedirty',
-                        cols: {finish_flag: [''],finish_time:['']},
+                        cols: {finish_flag: [''], finish_time: ['']},
                         table: 'contract',
                         id: parseInt($('#contract-contract-form-id').val()),
                         subs: { }
@@ -408,7 +414,7 @@ $(function () {
 
         }
     });
-    $('#contract-contract-form-insert-button').bind('click', function (e){
+    $('#contract-contract-form-insert-button').bind('click', function (e) {
         contract.contractview.refresh('');
     });
     $('#contract-contract-form-search-button').bind('click', function (e) {
@@ -421,11 +427,11 @@ $(function () {
             collapsible: false,
             minimizable: false,
             maximizable: false,
-            returnData:'',
+            returnData: '',
             closable: true,
-            onBeforeClose:function(){
+            onBeforeClose: function () {
                 var bill_no = contract.contractview.billsearch.window('options').returnData;
-                if (bill_no != null && bill_no.length > 0){
+                if (bill_no != null && bill_no.length > 0) {
                     contract.contractview.refresh($.trim(bill_no));
                 }
             },
@@ -449,6 +455,14 @@ $(function () {
                 <label for="vslvoy">船名航次:</label>
                 <input type="text" name="vslvoy" class="easyui-validatebox"
                        data-options="validType:['length[0,40]'],width:180"/>
+                <label for="contract_no">合同号:</label>
+                <input type="text" name="contract_no"/>
+                <label for="dispatch_place">发货地:</label>
+                <input id="contract-contract-form-dispatch" type="text" name="dispatch_place" />
+            </div>
+            <div>
+                <label for="client_id">委托客户:</label>
+                <input id="contract-contract-form-client" type="text" name="client_id"/>
                 <label for="cargo_name">货名:</label>
                 <input type="text" name="cargo_name" class="easyui-validatebox"
                        data-options="validType:['length[0,30]'],width:180"/>
@@ -457,8 +471,6 @@ $(function () {
                        data-options="validType:['length[0,30]'],width:180"/>
             </div>
             <div>
-                <label for="client_id">委托客户:</label>
-                <input id="contract-contract-form-client" type="text" name="client_id"/>
                 <label for="cargo_piece">件数:</label>
                 <input type="number" name="cargo_piece" class="easyui-numberbox"
                        data-options="min:0,width:180"/>
@@ -488,13 +500,13 @@ $(function () {
                 <input id="contract-contract-form-custom" type="text" name="custom_id"/>
                 <label for="ship_corp_id">船公司:</label>
                 <input id="contract-contract-form-shipcorp" type="text" name="ship_corp_id"/>
-                <label for="yard_id">场站</label>
+                <label for="yard_id">场站:</label>
                 <input id="contract-contract-form-yard" type="text" name="yard_id"/>
-                <label for="port_id">码头</label>
+                <label for="port_id">码头:</label>
                 <input id="contract-contract-form-port" type="text" name="port_id"/>
             </div>
             <div>
-                <label for="" remark>备注</label>
+                <label for="" remark>备注:</label>
                 <input type="text" name="remark" style="width: 400px"/>
             </div>
         </form>

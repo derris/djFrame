@@ -9,6 +9,8 @@
                         {{ id.writeUI|safe|escape }},
                         {{ bill_no.writeUI|safe|escape }},
                         {{ vslvoy.writeUI|safe|escape }},
+                        {{ contract_no.writeUI|safe|escape }},
+                        {{ dispatch_place.writeUI|safe|escape }},
                         {{ cargo_name.writeUI|safe|escape }},
                         {{ origin_place.writeUI|safe|escape }},
                         {{ client_id.writeUI|safe|escape }},
@@ -37,33 +39,7 @@
                     handler: function () {
                         sy.createSearchWindow(control.contract.contractgrid._{{ seq }});
                     }
-                }{% comment %},
-                    '-',
-                    {text: '增加',
-                        iconCls: 'icon-add',
-                        group: 'control-contract-datagrid-{{ seq }}',
-                        handler: function () {
-                            control.contract.contractgrid._{{ seq }}.datagrid('insertData', {
-
-                            });
-                        }
-                    },
-                    '-',
-                    {text: '删除',
-                        iconCls: 'icon-remove',
-                        group: 'control-contract-datagrid-{{ seq }}',
-                        handler: function () {
-                            control.contract.contractgrid._{{ seq }}.datagrid('deleteData');
-                        }
-                    },
-                    '-',
-                    {text: '保存',
-                        iconCls: 'icon-save',
-                        group: 'control-contract-datagrid-{{ seq }}',
-                        handler: function () {
-                            control.contract.contractgrid._{{ seq }}.datagrid('postUpdateAllData');
-                        }
-                    }{% endcomment %}
+                }
             ],
 
             queryFuncName: '委托查询',
