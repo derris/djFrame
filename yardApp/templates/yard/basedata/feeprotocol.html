@@ -2,6 +2,7 @@
     Namespace.register('basedata.feeprotocolview');
     $(function () {
         basedata.feeprotocolview.datagrid = $('#basedata-feeprotocol-datagrid').datagrid({
+            autoLoad:false,
             columns: [
                 [
                     {% autoescape off %}
@@ -9,6 +10,7 @@
                         {{ client_id.writeUI|safe|escape }},
                         {{ fee_id.writeUI|safe|escape }},
                         {{ contract_type.writeUI|safe|escape }},
+                        {{ dispatch_place.writeUI|safe|escape }},
                         {{ fee_cal_type.writeUI|safe|escape }},
                         {{ rate.writeUI|safe|escape }},
                         {{ free_day.writeUI|safe|escape }},
@@ -20,7 +22,7 @@
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',
-                    group:'basedata-feeprotocol-datagrid',
+                    group: 'basedata-feeprotocol-datagrid',
                     handler: function () {
                         sy.createSearchWindow(basedata.feeprotocolview.datagrid);
                     }
@@ -28,7 +30,7 @@
                 '-',
                 {text: '增加',
                     iconCls: 'icon-add',
-                    group:'basedata-feeprotocol-datagrid',
+                    group: 'basedata-feeprotocol-datagrid',
                     handler: function () {
                         basedata.feeprotocolview.datagrid.datagrid('insertData', {
 
@@ -38,7 +40,7 @@
                 '-',
                 {text: '删除',
                     iconCls: 'icon-remove',
-                    group:'basedata-feeprotocol-datagrid',
+                    group: 'basedata-feeprotocol-datagrid',
                     handler: function () {
                         basedata.feeprotocolview.datagrid.datagrid('deleteData');
                     }
@@ -46,15 +48,49 @@
                 '-',
                 {text: '保存',
                     iconCls: 'icon-save',
-                    group:'basedata-feeprotocol-datagrid',
+                    group: 'basedata-feeprotocol-datagrid',
                     handler: function () {
                         basedata.feeprotocolview.datagrid.datagrid('postUpdateAllData');
                     }
+                },
+                '-',
+                {text: '批量增加',
+                    iconCls: 'icon-edit',
+                    group: 'basedata-feeprotocol-datagrid',
+                    handler: function () {
+                        basedata.feeprotocolview.batchoption = $('<div></div>').window({
+                            href: encodeURI("./dealmenureq/?menutext=批量协议费率选项"),
+                            title: '协议费率批量生成选项',
+                            width: window.innerWidth * 0.6,
+                            height: window.innerHeight * 0.8,
+                            modal: true,
+                            collapsible: false,
+                            minimizable: false,
+                            maximizable: false,
+                            closable: true,
+                            onClose: function () {
+                                basedata.feeprotocolview.batchoption.window('destroy');
+                                basedata.feeprotocolview.batchoption = null;
+                            }
+                        });
+                    }
+
                 }
             ],
-            queryFuncName:'协议费率查询',
-            updateFuncName:'协议费率维护'
+            queryFuncName: '协议费率查询',
+            updateFuncName: '协议费率维护'
         });
+        basedata.feeprotocolview.datagrid.batchprotocol = function (p) {
+            {% comment %}p = {encodeURI("./dealmenureq/?menutext=通用查询");
+                client_id:'', //客户
+                fee_id:'', //费用名称
+                contract_type:'',//委托类型
+                dispatch_place:'',//发货地
+                fee_cal_type:''//计费单位
+            }{% endcomment %}
+
+
+        }
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">

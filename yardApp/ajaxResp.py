@@ -95,7 +95,7 @@ def getfeecod(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getfeeprotocol(request):
     '''费用名称查询'''
-    ls_sql = "select id,client_id,fee_id,contract_type,fee_cal_type,rate,free_day,remark from c_fee_protocol"
+    ls_sql = "select id,client_id,fee_id,contract_type,dispatch_place,fee_cal_type,rate,free_day,remark from c_fee_protocol"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getpaytype(request):
