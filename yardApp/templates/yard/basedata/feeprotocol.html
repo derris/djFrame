@@ -52,7 +52,7 @@
                     handler: function () {
                         basedata.feeprotocolview.datagrid.datagrid('postUpdateAllData');
                     }
-                },
+                }{% comment %},
                 '-',
                 {text: '批量增加',
                     iconCls: 'icon-edit',
@@ -75,7 +75,7 @@
                         });
                     }
 
-                }
+                }{% endcomment %}
             ],
             queryFuncName: '协议费率查询',
             updateFuncName: '协议费率维护'

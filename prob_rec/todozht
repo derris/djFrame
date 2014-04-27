@@ -1,8 +1,12 @@
 
 todo excel
 导出excel文件
-
-todo s_user
-
-ldict['func'] == '用户维护'  增加：默认密码 ok，前台不传密码  修改：不能修改密码
-
+todo 1
+在dealPAjax方法中进行权限判断，根据session中的user从s_postuser中取post，可能有多个post，
+再从s_postmenufunc中进行权限判断，有权限的继续执行，没有权限的返回
+{
+    "error": []
+    "msg":'无权限',
+    "stateCod":  -2 ,
+}
+Admin用户直接跳过检查
