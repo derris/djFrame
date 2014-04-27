@@ -1,4 +1,15 @@
 todo  over
 
-ldict['func'] == '用户维护'  增加：默认密码 ok，前台不传密码  修改：不能修改密码
 
+todo 1 question
+权限要和具体名字对应。比如都有那些按钮，那些功能。最好有个功能列表自动取。否则就通用：insert，update，delelte。
+如果是菜单显示的话目前前台显示已经实现了。
+
+在dealPAjax方法中进行权限判断，根据session中的user从s_postuser中取post，可能有多个post，
+再从s_postmenufunc中进行权限判断，有权限的继续执行，没有权限的返回
+{
+    "error": []
+    "msg":'无权限',
+    "stateCod":  -2 ,
+}
+Admin用户直接跳过检查
