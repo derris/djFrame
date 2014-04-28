@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import json
 from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
-from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege
+from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege, getFunc4User
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
@@ -167,10 +167,20 @@ def updateRaw(request):
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
-    #request.session['userid'] = "1"
+    ls_userid = str(request.session['userid'])
     try:
         ldict = json.loads( request.POST['jpargs'] )
         log(ldict)
+        # 判断是否有调用的权限。
+        if (ldict['func'] in getFunc4User(ls_userid)) or (ls_userid == '1') or (ldict['func'] in ('功能查询','权限查询', '功能权限查询')):
+            pass
+        else:
+            l_rtn = {"error": [ls_err],
+                        "msg":ldict['func'] + "没有执行权限",
+                        "stateCod":-1}
+            return( HttpResponse(json.dumps( l_rtn,ensure_ascii = False) ))
+
+
         with transaction.atomic():
             #################################################  get
             if ldict['func'] == '功能查询':

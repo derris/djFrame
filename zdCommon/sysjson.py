@@ -48,9 +48,9 @@ def getMenuListByUser(aUserId):
 
 def getFunc4User(aUserId):
     '''
-        返回funcid的list
+        返回funcid的list    post_id > 0;
     '''
-    ls_sqlfunc = 'select func_id from s_postmenufunc where post_id in (select post_id from s_postuser where user_id = %s)' % str(aUserId)
+    ls_sqlfunc = 'select distinct funcname from s_postmenufunc as a, sys_func as b where a.func_id = b.id and a.post_id in (select post_id from s_postuser where user_id = %s)' % str(aUserId)
     l_userFunc = cursorSelect(ls_sqlfunc)    #  l_userFunc[0][0]   [(1), (2)] ...
     return [i[0] for i in l_userFunc]
 
