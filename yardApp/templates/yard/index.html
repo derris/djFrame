@@ -18,10 +18,10 @@
     <script>
         $(function () {
             document.title = sy.apptitle;
-            sy.logonPath = encodeURI("./dealmenureq/?menutext=登录窗口");
+            //sy.logonPath = encodeURI("./dealmenureq/?menutext=登录窗口");
             sy.searchWindowUrl = encodeURI("./dealmenureq/?menutext=通用查询");
             sy.logonform = $('<div></div>').window({
-                href: sy.logonPath,
+                href: encodeURI("./dealmenureq/?menutext=登录窗口"),
                 title: '系统登录',
                 width: window.innerWidth * 0.25,
                 height: window.innerHeight * 0.23,

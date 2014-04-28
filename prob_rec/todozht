@@ -10,3 +10,33 @@ todo 1
 }
 Admin用户直接跳过检查
 
+todo 2
+新func:'客户费用明细报表'
+接收结构：{
+    func:'客户费用明细报表',
+    ex_parm:{
+        client_id:'', //客户id
+        fee_typ:'', //费用类型
+        begin_tim:'', //开始时间
+        end_tim:'' //截止时间
+    }
+}
+执行sql语句
+select bill_no,sum(case fee_cod when 1 then amount else 0 end) baogan,sum(case fee_cod when 2 then amount else 0 end) chaoqi,
+sum(case fee_cod when 3 then amount else 0 end) duicun,sum(case fee_cod when 4 then amount else 0 end) banyi,
+sum(case fee_cod when 5 then amount else 0 end) yanhuo,sum(case fee_cod when 6 then amount else 0 end) xunzheng,
+sum(case fee_cod when 7 then amount else 0 end) changdi,sum(case fee_cod when 8 then amount else 0 end) tuoche,
+sum(case fee_cod when 11 then amount else 0 end) zhibao,
+sum(case fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
+from pre_fee,contract
+where  client_id = 'X' and fee_typ = 'X' and ex_feeid = 'O'
+  and (fee_financial_tim between '' and '')
+  and pre_fee.contract_id = contract.id
+group by contract.bill_no
+返回：
+{
+        "msg":"查询成功",
+        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+        "error": ["xxx", "xx"]...        # 错误数组。
+        "rows":[{},{},{}]
+}

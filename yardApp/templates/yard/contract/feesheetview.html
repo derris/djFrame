@@ -1,0 +1,20 @@
+<script>
+    Namespace.register('contract.feesheet');
+    $(function(){
+        $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
+            contract.feesheet.refresh(parm);
+        });
+
+        contract.feesheet.refresh = function(p){
+
+        }
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:'false'">
+        {% include 'yard/fee/auditfilterview.html' %}
+    </div>
+    <div data-options="region:'center',border:'false'">
+        {% include 'yard/contract/feesheetgrid.html' %}
+    </div>
+</div>

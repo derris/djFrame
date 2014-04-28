@@ -179,7 +179,7 @@ sy.csrfSafeMethod = function (method) {
  sy.csrftoken csrf令牌
  * */
 sy.apptitle = '堆场系统';
-sy.logonPath = '';
+//sy.logonPath = '';
 sy.onError = function (msg, logout) {
     /*msg:错误信息
      logout:true 退出系统
@@ -187,7 +187,8 @@ sy.onError = function (msg, logout) {
     var defaultMsg = '系统错误,请通知管理员：\n' + msg;
     $.messager.alert('注意', defaultMsg, 'error');
     if (logout) {
-        window.location.href = sy.logonPath;
+        //window.location.href = sy.logonPath;
+        window.location.reload();
     }
 }
 sy.csrftoken = sy.getCookie('csrftoken');
@@ -969,7 +970,7 @@ $.ajaxSetup({
                     });
                 }
                 if (stateCod <= -101 && stateCod >= -200) {//系统级错误返回登录界面
-                    sy.onLoadError(returnData.msg);
+                    sy.onError(returnData.msg,true);
                 }
                 return false;
             }
