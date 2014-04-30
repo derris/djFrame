@@ -255,3 +255,27 @@ def update_gotfee(request, adict):
             return l_rtn
     l_rtn.update( json2upd(adict) )
     return l_rtn
+
+def clientFeeDetailReport(request, adict):
+    '''  客户费用明细报表   ex_parm:{ client_id:'', //客户id  fee_typ:'', //费用类型  begin_tim:'', //开始时间 end_tim:'' //截止时间 }'''
+    l_rtn = { }
+    ls_sql = '''
+        select bill_no,sum(case fee_cod when 1 then amount else 0 end) baogan,sum(case fee_cod when 2 then amount else 0 end) chaoqi,
+        sum(case fee_cod when 3 then amount else 0 end) duicun,sum(case fee_cod when 4 then amount else 0 end) banyi,
+        sum(case fee_cod when 5 then amount else 0 end) yanhuo,sum(case fee_cod when 6 then amount else 0 end) xunzheng,
+        sum(case fee_cod when 7 then amount else 0 end) changdi,sum(case fee_cod when 8 then amount else 0 end) tuoche,
+        sum(case fee_cod when 11 then amount else 0 end) zhibao,
+        sum(case fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
+        from pre_fee,contract
+        where  client_id = %s and fee_typ = %s and ex_feeid = '0'
+        and (fee_financial_tim between %s and %s)
+        and pre_fee.contract_id = contract.id
+        group by contract.bill_no
+        '''
+    list_arg = [ str(adict['client_id']), str(adict['fee_typ']), str(adict['begin_tim']) ,str(adict['end_tim']) ]
+    try:
+        list_rtn = cursorExec2(ls_sql, list_arg)
+        l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": list_rtn } )
+    except Exception as e:
+        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+    return l_rtn

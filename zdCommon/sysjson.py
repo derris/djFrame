@@ -5,6 +5,10 @@ from django.db import connection
 from zdCommon.utils import logErr, log
 import json
 
+def loginOnly():
+    pass
+
+
 def getMenuList():
     '''导航菜单 返回除根节点外的所有节点对象数组'''
     l_menu1 = cursorSelect('select id, menuname, menushowname from sys_menu where parent_id = 0 and id <> 0 order by sortno;')
@@ -45,7 +49,8 @@ def getMenuListByUser(aUserId):
     else:
         pass   # no top menu ... how that posible ....
     return(ldict_1)
-
+from django.contrib.auth.decorators import login_required
+@login_required
 def getFunc4User(aUserId):
     '''
         返回funcid的list    post_id > 0;
