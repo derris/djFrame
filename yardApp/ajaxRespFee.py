@@ -272,10 +272,9 @@ def clientFeeDetailReport(request, adict):
         and p.contract_id = c.id
         group by c.bill_no
         '''
-    list_arg = [ str(adict['ex_parm']['client_id']), str(adict['ex_parm']['fee_typ']), str(adict['ex_parm']['begin_tim']) ,str(adict['ex_parm']['end_tim']) ]
+    list_arg = [str(adict['ex_parm']['client_id']), str(adict['ex_parm']['fee_typ']), str(adict['ex_parm']['begin_tim']) ,str(adict['ex_parm']['end_tim'])]
     try:
         list_rtn = cursorExec2(ls_sql, list_arg)
-        print(list_rtn)
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": list_rtn } )
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
