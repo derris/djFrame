@@ -354,7 +354,22 @@ def auditqueryview(request):    # 核销查询
     prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200,hidden=True)
 
     return render(request,"yard/fee/auditqueryview.html",locals())
+def feesheetview(request):
+    bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no',width=180)
+    baogan = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='baogan',title='包干费')
+    chaoqi = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='chaoqi',title='超期费')
+    duicun = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='duicun',title='堆存费')
+    banyi = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='banyi',title='搬移费')
+    yanhuo = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='yanhuo',title='验货费')
+    xunzheng = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='xunzheng',title='熏蒸费')
+    changdi = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='changdi',title='场地费')
+    tuoche = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='tuoche',title='拖车费')
+    zhibao = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='zhibao',title='滞报金')
+    qita = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='qita',title='其他')
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
 
+    return render(request,"yard/contract/feesheetview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -409,7 +424,8 @@ def dealMenuReq(request):
         return(prefeeview(request))
     elif ls_args == '委托查询':
         return(contractqueryview(request))
-
+    elif ls_args == '账单':
+        return(feesheetview(request))
     #######  费用 #############(func='已收费用维护')
     elif ls_args == "收款/付款":
         return(actfeeview(request))

@@ -167,6 +167,13 @@ def updateRaw(request):
 #####################################################  common interface ----------
 def dealPAjax(request):
     ls_err = ""
+    if ('userid' not in request.session):
+        l_rtn = {
+            'error':[],
+            'msg':'登录过期，请重新登录',
+            'stateCod':-101
+        }
+        return( HttpResponse(json.dumps( l_rtn,ensure_ascii = False) ))
     ls_userid = str(request.session['userid'])
     try:
         ldict = json.loads( request.POST['jpargs'] )

@@ -1,14 +1,5 @@
 todo excel
 导出excel文件
-todo 1
-在dealPAjax方法中进行权限判断，根据session中的user从s_postuser中取post，可能有多个post，
-再从s_postmenufunc中进行权限判断，有权限的继续执行，没有权限的返回
-{
-    "error": []
-    "msg":'无权限',
-    "stateCod":  -2 ,
-}
-Admin用户直接跳过检查
 
 todo 2
 新func:'客户费用明细报表'
@@ -30,7 +21,7 @@ sum(case fee_cod when 11 then amount else 0 end) zhibao,
 sum(case fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
 from pre_fee,contract
 where  client_id = 'X' and fee_typ = 'X' and ex_feeid = 'O'
-  and (fee_financial_tim between '' and '')
+  and (fee_financial_tim between 'X' and 'X')
   and pre_fee.contract_id = contract.id
 group by contract.bill_no
 返回：

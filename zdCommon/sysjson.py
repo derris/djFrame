@@ -50,7 +50,7 @@ def getMenuListByUser(aUserId):
         pass   # no top menu ... how that posible ....
     return(ldict_1)
 from django.contrib.auth.decorators import login_required
-@login_required
+#@login_required
 def getFunc4User(aUserId):
     '''
         返回funcid的list    post_id > 0;

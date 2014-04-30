@@ -1,20 +1,64 @@
 <script>
     Namespace.register('contract.feesheet');
-    $(function(){
+    $(function () {
+        {% autoescape off %}
+            contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
+            autoLoad: false,
+            border: false,
+            columns: [
+                [
+                    {{ bill_no.writeUI|safe|escape }},
+                    {{ baogan.writeUI|safe|escape }},
+                    {{ chaoqi.writeUI|safe|escape }},
+                    {{ duicun.writeUI|safe|escape }},
+                    {{ banyi.writeUI|safe|escape }},
+                    {{ yanhuo.writeUI|safe|escape }},
+                    {{ xunzheng.writeUI|safe|escape }},
+                    {{ changdi.writeUI|safe|escape }},
+                    {{ tuoche.writeUI|safe|escape }},
+                    {{ zhibao.writeUI|safe|escape }},
+                    {{ qita.writeUI|safe|escape }}
+
+                ]
+            ],
+        {% endautoescape %}
+    pagination: false
+    });
         $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
             contract.feesheet.refresh(parm);
         });
 
-        contract.feesheet.refresh = function(p){
-
+        contract.feesheet.refresh = function (p) {
+            var p = {
+                func: '客户费用明细报表',
+                ex_parm: {
+                    client_id: p.client,
+                    fee_typ: p.feetyp,
+                    begin_tim: p.auditbegintim,
+                    end_tim: p.auditendtim}
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (r, t, a) {
+                    if ($.ajaxSettings.success(r, t, a, false)) {
+                        //contract.feesheet.datagrid.datagrid('loadData', r.rows);
+                    } else {
+                        contract.feesheet.datagrid.datagrid('loadData', []);
+                    }
+                }
+            });
         }
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:'false'">
-        {% include 'yard/fee/auditfilterview.html' %}
+        {% include 'yard/fee/auditqueryfilterview.html' %}
     </div>
+
     <div data-options="region:'center',border:'false'">
-        {% include 'yard/contract/feesheetgrid.html' %}
+        <table id="contract-feesheet-datagrid" data-options="border:'false'">
+        </table>
     </div>
+
 </div>

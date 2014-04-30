@@ -61,7 +61,7 @@ class EasyuiFieldUI:
                  align=None, halign=None, sortable=None, order=None, resizable=None,
                  fixed=None, hidden=None, checkbox=None, formatter=None, styler=None,
                  sorter=None, editor=None, readonly=False, autoforeign=None,foreigndisplayfield=None,
-                 foreignexclude={}):
+                 foreignexclude={},displayfield=None):
         self.model = model
         self.field = field
         if (self.model is None or self.field is None):
@@ -104,6 +104,7 @@ class EasyuiFieldUI:
             self.sorter = sorter
         if editor is not None:
             self.editor = editor
+        self.displayfield = displayfield
         self.readonly = readonly
 
     def defaultAttribute(self):
