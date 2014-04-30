@@ -42,7 +42,7 @@
                 data: {jpargs: JSON.stringify(p)},
                 success: function (r, t, a) {
                     if ($.ajaxSettings.success(r, t, a, false)) {
-                        //contract.feesheet.datagrid.datagrid('loadData', r.rows);
+                        contract.feesheet.datagrid.datagrid('loadData', r.rows);
                     } else {
                         contract.feesheet.datagrid.datagrid('loadData', []);
                     }
