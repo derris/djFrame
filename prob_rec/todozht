@@ -3,15 +3,13 @@ todo excel
 
 todo 2
 新func:'客户费用明细报表'
-接收结构：{
-    func:'客户费用明细报表',
+接收结构：adict = { func:'客户费用明细报表',
     ex_parm:{
-        client_id:'', //客户id
-        fee_typ:'', //费用类型
-        begin_tim:'', //开始时间
-        end_tim:'' //截止时间
-    }
-}
+        client_id:'0', //客户id
+        fee_typ:'1', //费用类型
+        begin_tim:'2014-1-1', //开始时间
+        end_tim:'2014-12-12' //截止时间
+    } }
 执行sql语句
 select bill_no,sum(case fee_cod when 1 then amount else 0 end) baogan,sum(case fee_cod when 2 then amount else 0 end) chaoqi,
 sum(case fee_cod when 3 then amount else 0 end) duicun,sum(case fee_cod when 4 then amount else 0 end) banyi,

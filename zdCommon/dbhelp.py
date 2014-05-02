@@ -453,6 +453,20 @@ def cursorExec(aSql):
         l_cur.close
     return l_rtn
 
+def cursorSelectList(aSql, aList):
+    log(aSql + " "  + str(aList))
+    l_rtn = ""
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql, aList)
+        l_rtn = l_cur.fetchall()
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+        raise e
+    finally:
+        l_cur.close
+    return l_rtn
+
 def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
     l_rtn = -1
     log(aSql + str(aList))
