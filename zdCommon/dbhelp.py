@@ -193,14 +193,17 @@ def rawsql4request(aSql, aRequestDict):
     log( ls_finSql + " - page - " +  ls_sqlcount )
     return( (ls_finSql, ls_sqlcount) )
 
-def rawSql2JsonDict(aSql):
+def rawSql2JsonDict(aSql, aList=None):
     '''
         根据sql语句，返回数据字典的list
     '''
     l_cur = connection.cursor()
     try:
-        log(aSql)
-        l_cur.execute(aSql)
+        log(aSql + " " + str(aList))
+        if aList:
+            l_cur.execute(aSql, aList)
+        else:
+            l_cur.execute(aSql)
         l_keys = [i for i in l_cur.description ]
         l_sum = []
         l_count = 0
@@ -453,20 +456,6 @@ def cursorExec(aSql):
         l_cur.close
     return l_rtn
 
-def cursorSelectList(aSql, aList):
-    log(aSql + " "  + str(aList))
-    l_rtn = ""
-    try:
-        l_cur = connection.cursor()
-        l_cur.execute(aSql, aList)
-        l_rtn = l_cur.fetchall()
-    except Exception as e:
-        logErr("数据库执行错误：%s" % str(e.args))
-        raise e
-    finally:
-        l_cur.close
-    return l_rtn
-
 def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
     l_rtn = -1
     log(aSql + str(aList))
@@ -485,7 +474,7 @@ def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
 def cursorSelect(aSql):
     '''
         execute sql use cursor, return all. fetchall()
-        l_rtn[0][0]  单值。
+        l_rtn[0][0]  单值。 注意此结构不能json序列话。
     '''
     log(aSql)
     l_rtn = -1

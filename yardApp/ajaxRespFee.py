@@ -4,7 +4,7 @@ import json
 from django.db import transaction
 from zdCommon.dbhelp import rawSql2JsonDict
 from zdCommon.utils import log, logErr
-from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd, cursorSelectList
+from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd
 from datetime import datetime
 
 def dealAuditFee(request):
@@ -274,7 +274,7 @@ def clientFeeDetailReport(request, adict):
         '''
     list_arg = [str(adict['ex_parm']['client_id']), str(adict['ex_parm']['fee_typ']), str(adict['ex_parm']['begin_tim']) ,str(adict['ex_parm']['end_tim'])]
     try:
-        list_rtn = cursorSelectList(ls_sql, list_arg)
+        list_rtn = rawSql2JsonDict(ls_sql, list_arg)
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": list_rtn } )
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
