@@ -19,6 +19,7 @@
                     {{ zhibao.writeUI|safe|escape }},
                     {{ qita.writeUI|safe|escape }},
                     {
+                        field:'heji',
                         title:'合计',
                         formatter : function(value,data,index){
                             return data.baogan + data.chaoqi + data.duicun + data.banyi +
