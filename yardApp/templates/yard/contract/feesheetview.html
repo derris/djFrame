@@ -17,7 +17,15 @@
                     {{ changdi.writeUI|safe|escape }},
                     {{ tuoche.writeUI|safe|escape }},
                     {{ zhibao.writeUI|safe|escape }},
-                    {{ qita.writeUI|safe|escape }}
+                    {{ qita.writeUI|safe|escape }},
+                    {
+                        title:'合计',
+                        formatter : function(value,data,index){
+                            return data.baogan + data.chaoqi + data.duicun + data.banyi +
+                                    data.yanhuo + data.xunzheng + data.changdi + data.tuoche +
+                                    data.zhibao + data.qita;
+                        }
+                    }
 
                 ]
             ],
@@ -25,6 +33,22 @@
     pagination: false
     });
         $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
+            if (parm.client.length == 0){
+                $.messager.alert('提示','客户不能空','info');
+                return;
+            }
+            if (parm.feetyp.length == 0){
+                $.messager.alert('提示','费用类型不能空','info');
+                return;
+            }
+            if (parm.auditbegintim.length == 0){
+                $.messager.alert('提示','开始时间不能空','info');
+                return;
+            }
+            if (parm.auditendtim.length == 0){
+                $.messager.alert('提示','截止时间不能空','info');
+                return;
+            }
             contract.feesheet.refresh(parm);
         });
 

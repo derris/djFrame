@@ -309,6 +309,20 @@ sy.createSearchWindow = function (datagrid) {
       return fmt;
     }
 
+//***************扩展datebox,datetimebox************//
+$.extend($.fn.datebox.defaults,{
+    onSelect:function(date){
+        $(this).datebox('setValue',date.Format("yyyy-MM-dd"));
+        $(this).datebox('hidePanel');
+    }
+});
+$.extend($.fn.datetimebox.defaults,{
+    onSelect:function(date){
+        $(this).datetimebox('setValue',date.Format("yyyy-MM-dd hh:mm:ss"));
+        $(this).datetimebox('hidePanel');
+    }
+});
+
 //***************扩展datagrid editor ****************
 //1.datetimebox 日期时间选择
 
