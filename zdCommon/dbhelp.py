@@ -103,7 +103,7 @@ def rawsql4request(aSql, aRequestDict):
 
             ls_value =  str(l_dictwhere['value'])
             ls_getwhere = ''
-            if ls_oper == (' between ', ' not between '):
+            if ls_oper in (' between ', ' not between '):
                 ls_getwhere = l_dictwhere['cod'] + " between '" + ls_value.split(',')[0] + "' and '" + ls_value.split(',')[1] + "'"
             elif ls_oper in (' in ', ' not in '):
                 ls_getwhere = l_dictwhere['cod'] + ls_oper + "('" + ls_value.replace(",", "','") + "')"
