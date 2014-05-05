@@ -62,7 +62,8 @@ $(function () {
                             panelHeight: 250,
                             onChange: function (newData, oldData) {
                                 if (newData.length == 0) {
-                                    var cur_datagrid_row = common.createsearchform.filterdatagrid.editRow;
+                                    var opts = common.createsearchform.filterdatagrid.datagrid('options');
+                                    var cur_datagrid_row = opts.editRow;
                                     common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value = '';
                                     common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].value_text = '';
                                     common.createsearchform.filterdatagrid.datagrid('getRows')[cur_datagrid_row].display_value = '';

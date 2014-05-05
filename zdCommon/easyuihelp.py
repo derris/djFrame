@@ -275,8 +275,11 @@ class EasyuiFieldUI:
                     }})
 
     def writeUI(self):
-        strUI = "{field: '" + self.field + "',\n" + \
-                "title: '" + self.title + "',\n"
+        strUI = "{title: '" + self.title + "',\n"
+        if ( self.displayfield is not None):
+            strUI = strUI + "field: '" + self.displayfield + "',\n"
+        else:
+            strUI = strUI + "field: '" + self.field + "',\n"
         if ('align' in self.__dict__):
             strUI = strUI + "align: '" + str(self.align) + "',\n"
         if ('halign' in self.__dict__):
