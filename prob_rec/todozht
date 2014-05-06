@@ -1,23 +1,7 @@
 todo excel
 导出excel文件
 
-todo 2
-func:'客户费用明细报表' 返回错误时返回数据
-{
-        "msg":"查询成功",
-        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
-        "error": ["xxx", "xx"]...        # 错误数组。
-        "rows":[{},{},{}]
-}
-如果error没内容就返回[],现在返回[""]
-todo 3
-通用查询
-条件 ‘属于’ ‘不属于’  int型 生成where语句，报错
-     from contract where  client_id like '%39,45%'  limit 50 offset 0
-条件 ‘介于’，‘不介于’ 生成where语句，报错
-  from contract
-  where  return_cntr_date between '2014-04-01,2014-05-05'  limit 50 offset 0
-测试时用‘委托查询’测试 那里面字段类型齐
+
 todo 4
 表结构改动，看完后清掉
 c_client增加 'landtrans_flag' boolean 车队标识
@@ -33,4 +17,7 @@ contract增加 'custom_title1' varchar(30) 报关抬头1
             'cargo_type' integer 货物种类
             'cntr_freedays' integer 箱使天数
         修改 'cargo_name','origin_place' 改为integer型 外键
+contract_cntr增加 'check_num' integer 查验箱量
+todo 5
+通用查询条件可保存，分全局和个人两种
 
