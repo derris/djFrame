@@ -1,0 +1,60 @@
+<script>
+    Namespace.register('basedata.cargotypeview');
+    $(function () {
+        basedata.cargotypeview.datagrid = $('#basedata-cargotype-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ typename.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_cargo_type',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-cargotype-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.cargotypeview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-cargotype-datagrid',
+                    handler: function () {
+                        basedata.cargotypeview.datagrid.datagrid('insertData', {
+                            type_name: '新货物分类'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-cargotype-datagrid',
+                    handler: function () {
+                        basedata.cargotypeview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-cargotype-datagrid',
+                    handler: function () {
+                        basedata.cargotypeview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'货物分类查询',
+            updateFuncName:'货物分类维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-cargotype-datagrid" border="false">
+        </table>
+    </div>
+</div>

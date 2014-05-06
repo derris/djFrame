@@ -1,54 +1,13 @@
 <script>
 Namespace.register('contract.contractview');
 $(function () {
-    {% autoescape off %}
-        contract.contractview.billno = $('#contract-contract-form-billno').validatebox({
-            validType: ['length[0,25]'],
-            width: 180,
-            required: true
-        });
-        contract.contractview.clientcombo = $('#contract-contract-form-client').combobox({
-            valueField: 'value',
-            textField: 'text',
-            required: true,
-            width: 180,
-            data:{{ clientdata }}
-        });
-        contract.contractview.customcombo = $('#contract-contract-form-custom').combobox({
-            valueField: 'value',
-            textField: 'text',
-            width: 180,
-            data:{{ customdata }}
-        });
-        contract.contractview.shipcorpcombo = $('#contract-contract-form-shipcorp').combobox({
-            valueField: 'value',
-            textField: 'text',
-            width: 180,
-            data:{{ shipcorpdata }}
-        });
-        contract.contractview.portcombo = $('#contract-contract-form-port').combobox({
-            valueField: 'value',
-            textField: 'text',
-            width: 180,
-            data:{{ portdata }}
-        });
-        contract.contractview.yardcombo = $('#contract-contract-form-yard').combobox({
-            valueField: 'value',
-            textField: 'text',
-            width: 180,
-            data:{{ yarddata }}
-        });
-        contract.contractview.dispatchcombo = $('#contract-contract-form-dispatch').combobox({
-            valueField:'value',
-            textField:'text',
-            width:180,
-            data:{{ dispatchdata }}
-        });
-    {% endautoescape %}
-    contract.contractview.contractform = $('#contract-contract-form').form({
-        url: './dealPAjax/'
+    contract.contractview.contractform = null;
+    contract.contractview.billnovb = null;
+    $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
+        contract.contractview.contractform = $(d.form);
+        contract.contractview.contractform.form('disableValidation');
+        contract.contractview.billnovb = $(d.bill);
     });
-    contract.contractview.contractform.form('disableValidation');
     contract.contractview.actiondatagrid = $('#contract-contractview-actiondatagrid').datagrid({
         autoLoad: false,
         columns: [
@@ -158,7 +117,6 @@ $(function () {
                     var stateCod = parseInt(r.stateCod);
                     if (r && !isNaN(stateCod)) {
                         if (stateCod == 1) {
-
                             contract.contractview.contractform.form('load', r.rows[0]);
                             var actionOpts = contract.contractview.actiondatagrid.datagrid('options');
                             var cntrOpts = contract.contractview.cntrdatagrid.datagrid('options');
@@ -177,8 +135,8 @@ $(function () {
                             contract.contractview.contractform.form('clear');
                             contract.contractview.contractform.form('extReset');
                             contract.contractview.contractform.form('disableValidation')
-                            contract.contractview.billno.val(bill_no);
-                            $('#contract-contract-form-id').val(-1);
+                            contract.contractview.billnovb.val(bill_no);
+                            $('#control-contract-contractform-id-{{ seq }}').val(-1);
                             contract.contractview.contractform.form('enableValidation')
                             contract.contractview.cntrdatagrid.datagrid('loadData', []);
                             contract.contractview.actiondatagrid.datagrid('loadData', []);
@@ -193,6 +151,8 @@ $(function () {
         else {
             contract.contractview.contractform.form('clear');
             contract.contractview.contractform.form('extReset');
+            contract.contractview.contractform.form('disableValidation')
+            $('#control-contract-contractform-id-{{ seq }}').val(-1);
             contract.contractview.cntrdatagrid.datagrid('loadData', []);
             contract.contractview.actiondatagrid.datagrid('loadData', []);
         }
@@ -205,11 +165,12 @@ $(function () {
             $('a[group=contract-contractview-unlock]').linkbutton('disable');
         }
         $('#contract-contractview-tabs').tabs('select', 0);
-        contract.contractview.billno.focus().select();
+        contract.contractview.billnovb.focus().select();
     }
-    contract.contractview.billno.bind('change', function (e) {
-        contract.contractview.refresh($.trim(this.value));
+    $(document).on('refresh', '#control-contract-contractform-{{ seq }}', function (e, bill_no) {
+        contract.contractview.refresh(bill_no);
     });
+
     $('#contract-contract-form-save-button').bind('click', function (e) {
         contract.contractview.contractform.form('enableValidation');
         if (contract.contractview.actiondatagrid.datagrid('preSave') == 0) {
@@ -237,7 +198,7 @@ $(function () {
             reqtype: 'update',
             func: '委托维护'
         };
-        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+        if (parseInt($('#control-contract-contractform-id-{{ seq }}').val()) > 0) {
             //旧委托 修改
             var actionObj = contract.contractview.actiondatagrid.datagrid('getDirtyData', 'all');
             var cntrObj = contract.contractview.cntrdatagrid.datagrid('getDirtyData', 'all');
@@ -299,19 +260,20 @@ $(function () {
             url: "./dealPAjax/",
             data: {jpargs: JSON.stringify(parm)},
             success: function (r, t, a) {
-                var stateCod = parseInt(r.stateCod);
-                if (r && !isNaN(stateCod)) {
-                    if (stateCod == 202) {
-                        //保存成功刷新界面
-                        contract.contractview.refresh($.trim(contract.contractview.billno.val()));
+                if ($.ajaxSettings.success(r, t, a, true) == true) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractview.refresh($.trim(contract.contractview.billnovb.val()));
+                        }
                     }
                 }
-                $.ajaxSettings.success(r, t, a, true);
             }
         });
     });
     $('#contract-contract-form-delete-button').bind('click', function (e) {
-        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+        if (parseInt($('#control-contract-contractform-id-{{ seq }}').val()) > 0) {
             $.messager.confirm('确认', '确认删除此委托下所有数据?', function (r) {
                 if (r) {
                     var parm = {
@@ -320,7 +282,7 @@ $(function () {
                         rows: [
                             {op: 'delete',
                                 table: 'contract',
-                                id: parseInt($('#contract-contract-form-id').val()),
+                                id: parseInt($('#control-contract-contractform-id-{{ seq }}').val()),
                                 subs: { }
                             }
                         ]
@@ -329,14 +291,15 @@ $(function () {
                         url: "./dealPAjax/",
                         data: {jpargs: JSON.stringify(parm)},
                         success: function (r, t, a) {
-                            var stateCod = parseInt(r.stateCod);
-                            if (r && !isNaN(stateCod)) {
-                                if (stateCod == 202) {
-                                    //保存成功刷新界面
-                                    contract.contractview.refresh(null);
+                            if ($.ajaxSettings.success(r, t, a, true) == true) {
+                                var stateCod = parseInt(r.stateCod);
+                                if (r && !isNaN(stateCod)) {
+                                    if (stateCod == 202) {
+                                        //保存成功刷新界面
+                                        contract.contractview.refresh(null);
+                                    }
                                 }
                             }
-                            $.ajaxSettings.success(r, t, a, true);
                         }
                     });
                 }
@@ -344,7 +307,7 @@ $(function () {
         }
     });
     $('#contract-contract-form-lock-button').bind('click', function (e) {
-        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+        if (parseInt($('#control-contract-contractform-id-{{ seq }}').val()) > 0) {
             var finish_time = contract.contractview.contractform.serializeJson()['finish_time'];
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
             if (finish_time != null && finish_time.length > 0) {
@@ -360,7 +323,7 @@ $(function () {
                     {op: 'updatedirty',
                         cols: {finish_flag: ['true'], finish_time: [finish_time]},
                         table: 'contract',
-                        id: parseInt($('#contract-contract-form-id').val()),
+                        id: parseInt($('#control-contract-contractform-id-{{ seq }}').val()),
                         subs: { }
                     }
                 ]
@@ -369,21 +332,22 @@ $(function () {
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(parm)},
                 success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractview.refresh(bill_no);
+                    if ($.ajaxSettings.success(r, t, a, true) == true) {
+                        var stateCod = parseInt(r.stateCod);
+                        if (r && !isNaN(stateCod)) {
+                            if (stateCod == 202) {
+                                //保存成功刷新界面
+                                contract.contractview.refresh(bill_no);
+                            }
                         }
                     }
-                    $.ajaxSettings.success(r, t, a, true);
                 }
             });
 
         }
     });
     $('#contract-contract-form-unlock-button').bind('click', function (e) {
-        if (parseInt($('#contract-contract-form-id').val()) > 0) {
+        if (parseInt($('#control-contract-contractform-id-{{ seq }}').val()) > 0) {
             var bill_no = contract.contractview.contractform.serializeJson()['bill_no'];
             var parm = {
                 reqtype: 'update',
@@ -392,7 +356,7 @@ $(function () {
                     {op: 'updatedirty',
                         cols: {finish_flag: [''], finish_time: ['']},
                         table: 'contract',
-                        id: parseInt($('#contract-contract-form-id').val()),
+                        id: parseInt($('#control-contract-contractform-id-{{ seq }}').val()),
                         subs: { }
                     }
                 ]
@@ -401,14 +365,15 @@ $(function () {
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(parm)},
                 success: function (r, t, a) {
-                    var stateCod = parseInt(r.stateCod);
-                    if (r && !isNaN(stateCod)) {
-                        if (stateCod == 202) {
-                            //保存成功刷新界面
-                            contract.contractview.refresh(bill_no);
+                    if ($.ajaxSettings.success(r, t, a, true) == true) {
+                        var stateCod = parseInt(r.stateCod);
+                        if (r && !isNaN(stateCod)) {
+                            if (stateCod == 202) {
+                                //保存成功刷新界面
+                                contract.contractview.refresh(bill_no);
+                            }
                         }
                     }
-                    $.ajaxSettings.success(r, t, a, true);
                 }
             });
 
@@ -418,7 +383,7 @@ $(function () {
         contract.contractview.refresh('');
     });
     $('#contract-contract-form-search-button').bind('click', function (e) {
-       contract.contractview.billsearch = $('<div></div>').window({
+        contract.contractview.billsearch = $('<div></div>').window({
             href: encodeURI("./dealmenureq/?menutext=提单查询"),
             title: '提单查询',
             width: window.innerWidth * 0.6,
@@ -446,70 +411,7 @@ $(function () {
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:'true'">
-        <form id="contract-contract-form" class="editform" method="post">
-            <div>
-                <input id="contract-contract-form-id" type="hidden" name="id"/>
-                <input type="hidden" name="finish_flag"/>
-                <label for="bill_no">提单号:</label>
-                <input id="contract-contract-form-billno" type="text" name="bill_no"/>
-                <label for="vslvoy">船名航次:</label>
-                <input type="text" name="vslvoy" class="easyui-validatebox"
-                       data-options="validType:['length[0,40]'],width:180"/>
-                <label for="contract_no">合同号:</label>
-                <input type="text" name="contract_no"/>
-                <label for="dispatch_place">发货地:</label>
-                <input id="contract-contract-form-dispatch" type="text" name="dispatch_place" />
-            </div>
-            <div>
-                <label for="client_id">委托客户:</label>
-                <input id="contract-contract-form-client" type="text" name="client_id"/>
-                <label for="cargo_name">货名:</label>
-                <input type="text" name="cargo_name" class="easyui-validatebox"
-                       data-options="validType:['length[0,30]'],width:180"/>
-                <label for="origin_place">产地:</label>
-                <input type="text" name="origin_place" class="easyui-validatebox"
-                       data-options="validType:['length[0,30]'],width:180"/>
-            </div>
-            <div>
-                <label for="cargo_piece">件数:</label>
-                <input type="number" name="cargo_piece" class="easyui-numberbox"
-                       data-options="min:0,width:180"/>
-                <label for="cargo_weight">重量:</label>
-                <input type="number" name="cargo_weight" class="easyui-numberbox"
-                       data-options="min:0,precision:2,width:180"/>
-                <label for="cargo_volume">体积:</label>
-                <input type="number" name="cargo_volume" class="easyui-numberbox"
-                       data-options="min:0,precision:3,width:180"/>
-            </div>
-            <div>
-                <label for="booking_date">接单日期:</label>
-                <input type="date" name="booking_date" class="easyui-datebox"
-                       data-options="width:180"/>
-                <label for="in_port_date">到港日期:</label>
-                <input type="date" name="in_port_date" class="easyui-datebox"
-                       data-options="width:180"/>
-                <label for="return_cntr_date">还箱日期:</label>
-                <input type="date" name="return_cntr_date" class="easyui-datebox"
-                       data-options="width:180"/>
-                <label for="finish_tim">完结日期:</label>
-                <input type="date" name="finish_time" class="easyui-datebox"
-                       data-options="width:180"/>
-            </div>
-            <div>
-                <label for="custom_id">报关行:</label>
-                <input id="contract-contract-form-custom" type="text" name="custom_id"/>
-                <label for="ship_corp_id">船公司:</label>
-                <input id="contract-contract-form-shipcorp" type="text" name="ship_corp_id"/>
-                <label for="yard_id">场站:</label>
-                <input id="contract-contract-form-yard" type="text" name="yard_id"/>
-                <label for="port_id">码头:</label>
-                <input id="contract-contract-form-port" type="text" name="port_id"/>
-            </div>
-            <div>
-                <label for="" remark>备注:</label>
-                <input type="text" name="remark" style="width: 400px"/>
-            </div>
-        </form>
+        {% include 'yard/contract/contractform.html' %}
         <div class="editform-toolbar">
             <a id="contract-contract-form-search-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-search',group:'contract-contractview-search'">查询</a>
@@ -523,10 +425,9 @@ $(function () {
                data-options="iconCls:'icon-lock',group:'contract-contractview'">锁定</a>
             <a id="contract-contract-form-unlock-button" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-unlock',group:'contract-contractview-unlock'">解锁</a>
-
         </div>
     </div>
-    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
         <div class="easyui-tabs" data-options="fit:'true',headerWidth:300" id="contract-contractview-tabs">
             <div title="委托动态">
                 <table id="contract-contractview-actiondatagrid" data-options="border:'false'">

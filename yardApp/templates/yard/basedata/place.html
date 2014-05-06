@@ -1,0 +1,60 @@
+<script>
+    Namespace.register('basedata.placeview');
+    $(function () {
+        basedata.placeview.datagrid = $('#basedata-place-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ placename.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'c_place',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'basedata-place-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(basedata.placeview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'basedata-place-datagrid',
+                    handler: function () {
+                        basedata.placeview.datagrid.datagrid('insertData', {
+                            place_name: '新货物产地'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'basedata-place-datagrid',
+                    handler: function () {
+                        basedata.placeview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'basedata-place-datagrid',
+                    handler: function () {
+                        basedata.placeview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'产地查询',
+            updateFuncName:'产地维护'
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="basedata-place-datagrid" border="false">
+        </table>
+    </div>
+</div>

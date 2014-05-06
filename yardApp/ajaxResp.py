@@ -82,6 +82,21 @@ def getdispatch(request):
     ls_sql = "select id,place_name,remark from c_dispatch"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcargo(request):
+    '''货物查询'''
+    ls_sql = "select id,cargo_name,remark from c_cargo"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getcargotype(request):
+    '''货物分类查询'''
+    ls_sql = "select id,type_name,remark from c_cargo_type"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getplace(request):
+    '''产地查询'''
+    ls_sql = "select id,place_name,remark from c_place"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getfeegroup(request):
     '''费用分组类型查询'''
@@ -109,7 +124,8 @@ def getprivilege(request):
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
-             "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place from contract"
+             "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place,custom_title1," \
+             "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractbybill(request):
@@ -222,6 +238,13 @@ def dealPAjax(request):
                 return(getclients(request))
             elif ldict['func'] == '岗位权限查询':
                 return(getprivilege(request))
+            elif ldict['func'] == '货物查询':
+                return(getcargo(request))
+            elif ldict['func'] == '货物分类查询':
+                return(getcargotype(request))
+            elif ldict['func'] == '产地查询':
+                return(getplace(request))
+
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
                 return(getcontract(request))
@@ -292,6 +315,12 @@ def dealPAjax(request):
             elif ldict['func'] == '付款方式维护':
                 return(updateRaw(request))
             elif ldict['func'] == '客户维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '货物维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '货物分类维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '产地维护':
                 return(updateRaw(request))
             elif ldict['func'] == '委托维护':
                 return(updateRaw(request))

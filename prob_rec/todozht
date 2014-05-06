@@ -18,3 +18,19 @@ todo 3
   from contract
   where  return_cntr_date between '2014-04-01,2014-05-05'  limit 50 offset 0
 测试时用‘委托查询’测试 那里面字段类型齐
+todo 4
+表结构改动，看完后清掉
+c_client增加 'landtrans_flag' boolean 车队标识
+            'credit_flag' boolean 信用证公司标识
+增加了3个基础代码表：
+c_cargo:货名  c_cargo_type:货物分类  c_place:产地
+contract增加 'custom_title1' varchar(30) 报关抬头1
+            'custom_title2' varchar(30) 报关抬头2
+            'landtrans_id' integer 车队
+            'check_yard_id' integer 查验场站
+            'unbox_yard_id' integer 拆箱场站
+            'credit_id' integer 信用证公司
+            'cargo_type' integer 货物种类
+            'cntr_freedays' integer 箱使天数
+        修改 'cargo_name','origin_place' 改为integer型 外键
+

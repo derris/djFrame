@@ -82,7 +82,7 @@ $(function () {
             contract.contractprefeeview.prefeeingrid.datagrid('uncheckAll');
             contract.contractprefeeview.prefeeoutgrid.datagrid('uncheckAll');
         }
-        $('#contract-contractprefeeview-tabs').tabs('select',0);
+        $('#contract-contractprefeeview-tabs').tabs('select', 0);
     }
     $(document).on('afterrender', '#control-contract-contractform-{{ seq }}', function (e, d) {
         contract.contractprefeeview.contractform = $(d.form);
@@ -153,14 +153,16 @@ $(function () {
             url: "./dealPAjax/",
             data: {jpargs: JSON.stringify(parm)},
             success: function (r, t, a) {
-                var stateCod = parseInt(r.stateCod);
-                if (r && !isNaN(stateCod)) {
-                    if (stateCod == 202) {
-                        //保存成功刷新界面
-                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                if ($.ajaxSettings.success(r, t, a, true) == true) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                        }
                     }
+
                 }
-                $.ajaxSettings.success(r, t, a, true);
             }
         });
     });
@@ -219,14 +221,15 @@ $(function () {
             url: "./dealPAjax/",
             data: {jpargs: JSON.stringify(parm)},
             success: function (r, t, a) {
-                var stateCod = parseInt(r.stateCod);
-                if (r && !isNaN(stateCod)) {
-                    if (stateCod == 202) {
-                        //保存成功刷新界面
-                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                if ($.ajaxSettings.success(r, t, a, true) == true) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                        }
                     }
                 }
-                $.ajaxSettings.success(r, t, a, true);
             }
         });
     });
@@ -238,7 +241,7 @@ $(function () {
         };
         var rows = contract.contractprefeeview.prefeeingrid.datagrid('getRows').concat(contract.contractprefeeview.prefeeoutgrid.datagrid('getRows'));
         for (var i = 0, ilen = rows.length; i < ilen; i++) {
-            if (rows[i].id != null && (rows[i].audit_id == null || rows[i].audit_id == false)) {
+            if (rows[i].id != null && (rows[i].audit_id == null || rows[i].audit_id == 'false')) {
                 parmRows.push({
                     op: 'updatedirty',
                     table: 'pre_fee',
@@ -260,14 +263,15 @@ $(function () {
             url: "./dealPAjax/",
             data: {jpargs: JSON.stringify(parm)},
             success: function (r, t, a) {
-                var stateCod = parseInt(r.stateCod);
-                if (r && !isNaN(stateCod)) {
-                    if (stateCod == 202) {
-                        //保存成功刷新界面
-                        contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                if ($.ajaxSettings.success(r, t, a, true) == true) {
+                    var stateCod = parseInt(r.stateCod);
+                    if (r && !isNaN(stateCod)) {
+                        if (stateCod == 202) {
+                            //保存成功刷新界面
+                            contract.contractprefeeview.refresh($.trim(contract.contractprefeeview.billnovb.val()));
+                        }
                     }
                 }
-                $.ajaxSettings.success(r, t, a, true);
             }
         });
     });
@@ -290,7 +294,7 @@ $(function () {
         </div>
 
     </div>
-    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.6,border:false">
+    <div data-options="region:'south', split:'true',height:window.innerHeight * 0.4,border:false">
         <div class="easyui-tabs" data-options="fit:'true',headerWidth:300" id="contract-contractprefeeview-tabs">
             <div title="应收费用">
                 {% include 'yard/contract/prefeeingrid.html' %}

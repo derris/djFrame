@@ -95,6 +95,8 @@ def clientview(request):
     yardFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='yard_flag')
     portFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='port_flag')
     financialFlagObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='financial_flag')
+    landtransflag = easyuihelp.EasyuiFieldUI(model=models.Client,field='landtrans_flag')
+    creditflag = easyuihelp.EasyuiFieldUI(model=models.Client,field='credit_flag')
     remarkObj = easyuihelp.EasyuiFieldUI(model=models.Client,field='remark',width=200)
     return render(request,"yard/basedata/client.html",locals())
 def cntrtypeview(request):
@@ -110,6 +112,22 @@ def actionview(request):
     sortno = easyuihelp.EasyuiFieldUI(model=models.Action,field='sortno')
     remark = easyuihelp.EasyuiFieldUI(model=models.Action,field='remark',width=180)
     return render(request,"yard/basedata/action.html",locals())
+def cargoview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Cargo,field='id')
+    cargoname = easyuihelp.EasyuiFieldUI(model=models.Cargo,field='cargo_name')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Cargo,field='remark',width=180)
+    return render(request,"yard/basedata/cargo.html",locals())
+def cargotypeview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.CargoType,field='id')
+    typename = easyuihelp.EasyuiFieldUI(model=models.CargoType,field='type_name')
+    remark = easyuihelp.EasyuiFieldUI(model=models.CargoType,field='remark',width=180)
+    return render(request,"yard/basedata/cargotype.html",locals())
+def placeview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.Place,field='id')
+    placename = easyuihelp.EasyuiFieldUI(model=models.Place,field='place_name')
+    remark = easyuihelp.EasyuiFieldUI(model=models.Place,field='remark',width=180)
+    return render(request,"yard/basedata/place.html",locals())
+
 def dispatchview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Dispatch,field='id')
     place_name = easyuihelp.EasyuiFieldUI(model=models.Dispatch,field='place_name',width=180)
@@ -152,7 +170,7 @@ def paytypeview(request):
     remark = easyuihelp.EasyuiFieldUI(model=models.PayType,field='remark',width=180)
     return render(request,"yard/basedata/paytype.html",locals())
 def contractview(request):
-    #seq = str(fetchSeq('seq_html'))
+    seq = str(fetchSeq('seq_html'))
     actionid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='id')
     actioncontractid = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='contract_id',hidden=True)
     action_id = easyuihelp.EasyuiFieldUI(model=models.ContractAction,field='action_id',autoforeign=True,foreigndisplayfield='action_name')
@@ -169,7 +187,14 @@ def contractview(request):
     shipcorpdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     portdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     yarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    landtransdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='landtrans_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    #checkyarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='check_yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    #unboxyarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='unbox_yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    creditdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='credit_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     dispatchdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='dispatch_place',autoforeign=True,foreigndisplayfield='place_name').editor['options']['data'],ensure_ascii = False)
+    cargonamedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name',autoforeign=True,foreigndisplayfield='cargo_name').editor['options']['data'],ensure_ascii = False)
+    cargotypedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_type',autoforeign=True,foreigndisplayfield='type_name').editor['options']['data'],ensure_ascii = False)
+    originplacedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place',autoforeign=True,foreigndisplayfield='place_name').editor['options']['data'],ensure_ascii = False)
     display_toolbar = True
     return render(request,"yard/contract/contractview.html",locals())
 
@@ -180,8 +205,16 @@ def contractqueryview(request):
     vslvoy = easyuihelp.EasyuiFieldUI(model=models.Contract,field='vslvoy',width=180)
     contract_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='contract_no',width=180)
     dispatch_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='dispatch_place',autoforeign=True,foreigndisplayfield='place_name',width=100)
-    cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name')
-    origin_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place',width=150)
+    cargo_type = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_type',autoforeign=True,foreigndisplayfield='type_name')
+    cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name',autoforeign=True,foreigndisplayfield='cargo_name')
+    origin_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place',autoforeign=True,foreigndisplayfield='place_name')
+    custom_title1 = easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_title1')
+    custom_title2 = easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_title2')
+    landtrans_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='landtrans_id',autoforeign=True,foreigndisplayfield='client_name')
+    check_yard_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='check_yard_id',autoforeign=True,foreigndisplayfield='client_name')
+    unbox_yard_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='unbox_yard_id',autoforeign=True,foreigndisplayfield='client_name')
+    credit_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='credit_id',autoforeign=True,foreigndisplayfield='client_name')
+    cntr_freedays = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cntr_freedays')
     client_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     cargo_piece = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_piece')
     cargo_weight = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_weight')
@@ -249,6 +282,13 @@ def prefeeview(request):
     shipcorpdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='ship_corp_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     portdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='port_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     yarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    landtransdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='landtrans_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    #checkyarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='check_yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    #unboxyarddata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='unbox_yard_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    creditdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='credit_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    cargonamedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name',autoforeign=True,foreigndisplayfield='cargo_name').editor['options']['data'],ensure_ascii = False)
+    cargotypedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_type',autoforeign=True,foreigndisplayfield='type_name').editor['options']['data'],ensure_ascii = False)
+    originplacedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place',autoforeign=True,foreigndisplayfield='place_name').editor['options']['data'],ensure_ascii = False)
     dispatchdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='dispatch_place',autoforeign=True,foreigndisplayfield='place_name').editor['options']['data'],ensure_ascii = False)
     display_toolbar = True
     return render(request,"yard/contract/contractprefeeview.html",locals())
@@ -416,6 +456,12 @@ def dealMenuReq(request):
         return(paytypeview(request))
     elif ls_args == '客户维护':
         return(clientview(request))
+    elif ls_args == '货物维护':
+        return(cargoview(request))
+    elif ls_args == '货物分类维护':
+        return(cargotypeview(request))
+    elif ls_args == '产地维护':
+        return(placeview(request))
     elif ls_args == '委托维护':
         return(contractview(request))
     elif ls_args == '提单查询':
