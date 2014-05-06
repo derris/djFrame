@@ -217,13 +217,13 @@ class EasyuiFieldUI:
                 displayField = self.foreigndisplayfield or 'id'
                 getData = None
                 if (len(self.fObj.rel.limit_choices_to) > 0 and len(self.foreignexclude) > 0 ):
-                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to).exclude(**self.foreignexclude)
+                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to).exclude(**self.foreignexclude).order_by(displayField)
                 elif (len(self.fObj.rel.limit_choices_to) > 0):
-                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to)
+                    getData = self.fObj.rel.to.objects.filter(**self.fObj.rel.limit_choices_to).order_by(displayField)
                 elif (len(self.foreignexclude) > 0):
-                    getData = self.fObj.rel.to.objects.exclude(**self.foreignexclude)
+                    getData = self.fObj.rel.to.objects.exclude(**self.foreignexclude).order_by(displayField)
                 else:
-                    getData = self.fObj.rel.to.objects.all()
+                    getData = self.fObj.rel.to.objects.all().order_by(displayField)
                 for item in getData:
                     if columnWidth < len(eval('item.' + displayField)):
                         columnWidth = len(eval('item.' + displayField))
