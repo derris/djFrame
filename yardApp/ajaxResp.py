@@ -138,7 +138,7 @@ def getcontractaction(request):
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractcntr(request):
-    ls_sql = "select id,contract_id,cntr_type,cntr_num,remark from contract_cntr"
+    ls_sql = "select id,contract_id,cntr_type,cntr_num,check_num,remark from contract_cntr"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 def getcontractprefeein(request):

@@ -34,7 +34,7 @@ $(function () {
                     if (rowCount == oaction.length) {
                         return;
                     } else {
-                        var contract_id = parseInt($('#contract-contract-form-id').val());
+                        var contract_id = parseInt($('#control-contract-contractform-id-{{ seq }}').val());
                         contract.contractview.actiondatagrid.datagrid('insertData', {
                             contract_id: (isNaN(contract_id) ? -1 : contract_id),
                             action_id: oaction[rowCount].value
@@ -62,6 +62,7 @@ $(function () {
                     {{ cntrcontractid.writeUI|safe|escape }},
                     {{ cntr_type.writeUI|safe|escape }},
                     {{ cntr_num.writeUI|safe|escape }},
+                    {{ check_num.writeUI|safe|escape }},
                     {{ actionremark.writeUI|safe|escape }}
                 {% endautoescape %}
             ]
@@ -74,7 +75,7 @@ $(function () {
                 iconCls: 'icon-add',
                 group: 'contract-contractview-cntrdatagrid',
                 handler: function () {
-                    var contract_id = parseInt($('#contract-contract-form-id').val());
+                    var contract_id = parseInt($('#control-contract-contractform-id-{{ seq }}').val());
                     contract.contractview.cntrdatagrid.datagrid('insertData', {
                         contract_id: (isNaN(contract_id) ? -1 : contract_id)
                     });

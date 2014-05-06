@@ -239,6 +239,7 @@ class ContractCntr(BaseModel):
     contract_id = models.ForeignKey('Contract',related_name='contract_contractcntr',verbose_name='委托',db_column='contract_id')
     cntr_type = models.ForeignKey('CntrType',related_name='cntrtype_contractcntr',verbose_name='箱型',db_column='cntr_type')
     cntr_num = models.IntegerField('箱量')
+    check_num = models.IntegerField('查验箱量',blank=True,null=True)
     def __str__(self):
         return self.contract_id.bill_no + '/' + self.cntr_type + '/' + str(self.cntr_num)
     class Meta:
