@@ -62,13 +62,23 @@ WSGI_APPLICATION = 'yard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
+DATABASES111 = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'yard',
         'USER': 'yardAdmin',
         'PASSWORD': 'zht+dh=sql2',
         'HOST': '172.40.68.103',
+        'PORT': '5432',
+    }
+}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'yard',
+        'USER': 'yardAdmin',
+        'PASSWORD': 'zht+dh=sql2',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
