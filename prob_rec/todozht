@@ -3,7 +3,10 @@ todo excel
 
 todo 5
 通用查询条件可保存，分全局和个人两种
+
 todo 6
+不建议用存储过程。django实现就好。 初步完成，请测试~~  ajaxResp.py
+
 1.func='业务明细报表查询' 在现有委托查询的基础上，增加‘当前委托动态’和‘箱量’，
   ‘当前委托动态’ current_action :此委托下委托动态中序号(c_contract_action.sortno)最大的动态名称
   ‘箱量’ cntr_sum :箱量合计的文字描述 '20GPX10,40GPX20'

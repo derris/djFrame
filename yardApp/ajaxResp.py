@@ -128,6 +128,40 @@ def getcontract(request):
              "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getContractDetail(request):
+    ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
+             "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
+             "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place,custom_title1," \
+             "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
+    ldict = json.loads(request.POST['jpargs'])
+    lrtn = rawsql2json(*rawsql4request(ls_sql, ldict))
+    # lrtn 包含提单号、用于统计后续箱量。所有的提单号，用于统计所有箱量。
+    ls_sqlsum = ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum  from contract_cntr as A , c_cntr_type as B
+                    where A.contract_id in (select id from contract where bill_no in ( %s ) )
+                    and A.cntr_type = B.id
+                    group by b.cntr_type
+                '''
+    list_billno = []
+    for i in lrtn["rows"]:
+        it = rawSql2JsonDict(ls_sqlsum, [i["bill_no"]] )
+        list_billno.append(i["bill_no"])
+        if len(it) > 0:
+            ls = ";".join([x["showsum"] for x in it])
+            i.update({ "cntr_sum": ls  })
+        else:
+            i.update({ "cntr_sum": "None"  })
+    ldict_sum = rawSql2JsonDict(ls_sqlsum, list_billno )
+    if len(ldict_sum) > 0 :
+        ls_sumall = ";".join([x["showsum"] for x in ldict_sum])
+        lrtn.update( { "footer" : [{"cntr_num":ls_sumall , "bill_no": "举个例子" } ] } )
+    else:
+        lrtn.update( { "footer" : [{"cntr_num":"None" , "bill_no": "举个例子" } ] } )
+
+    return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
+    '''   test:
+    from zdCommon.dbhelp import rawSql2JsonDict
+    a = rawSql2JsonDict(ls_sqlsum,[ "563178209" ])
+   '''
 def getcontractbybill(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,client_id,in_port_date,remark from contract"
     ldict = json.loads(request.POST['jpargs'])
@@ -248,6 +282,8 @@ def dealPAjax(request):
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
                 return(getcontract(request))
+            elif ldict['func'] == '业务明细报表查询':
+                return(getContractDetail(request))
             elif ldict['func'] == '委托动态查询':
                 return(getcontractaction(request))
             elif ldict['func'] == '委托箱查询':

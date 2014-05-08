@@ -456,7 +456,11 @@ def cursorExec(aSql):
         l_cur.close
     return l_rtn
 
-def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
+def cursorExec2(aSql, aList ):  #list 方式不会自动会转换数据类型。
+    '''
+        注意返回的是一个值。
+        lrtn = cursorExec2("update s_user set password = %s where id = %s and password = %s ", [ls_newpass,l_userid, ls_oldpass])
+    '''
     l_rtn = -1
     log(aSql + str(aList))
     try:
@@ -474,7 +478,7 @@ def cursorExec2(aSql, aList ):  #list 方式自动会转换数据类型。
 def cursorSelect(aSql):
     '''
         execute sql use cursor, return all. fetchall()
-        l_rtn[0][0]  单值。 注意此结构不能json序列话。
+        l_rtn[0][0]  单值。 注意此结构不能json序列话，因为没有进行json列处理。
     '''
     log(aSql)
     l_rtn = -1
