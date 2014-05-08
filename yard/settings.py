@@ -78,7 +78,7 @@ DATABASES = {
         'NAME': 'yard',
         'USER': 'yardAdmin',
         'PASSWORD': 'zht+dh=sql2',
-        'HOST': '127.0.0.1',
+        'HOST': '172.40.68.103',
         'PORT': '5432',
     }
 }

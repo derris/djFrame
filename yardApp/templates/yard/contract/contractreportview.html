@@ -1,0 +1,72 @@
+<script>
+    Namespace.register('contract.contractreportview');
+    $(function () {
+        contract.contractreportview.grid = $('#contract-contractreportview-datagrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ bill_no.writeUI|safe|escape }},
+                        {{ cntr_sum.writeUI|safe|escape }},
+                        {{ current_action.writeUI|safe|escape }},
+                        {{ vslvoy.writeUI|safe|escape }},
+                        {{ contract_no.writeUI|safe|escape }},
+                        {{ cargo_type.writeUI|safe|escape }},
+                        {{ cargo_name.writeUI|safe|escape }},
+                        {{ origin_place.writeUI|safe|escape }},
+                        {{ dispatch_place.writeUI|safe|escape }},
+                        {{ client_id.writeUI|safe|escape }},
+                        {{ cargo_piece.writeUI|safe|escape }},
+                        {{ cargo_weight.writeUI|safe|escape }},
+                        {{ cargo_volume.writeUI|safe|escape }},
+                        {{ custom_title1.writeUI|safe|escape }},
+                        {{ custom_title2.writeUI|safe|escape }},
+                        {{ booking_date.writeUI|safe|escape }},
+                        {{ in_port_date.writeUI|safe|escape }},
+                        {{ return_cntr_date.writeUI|safe|escape }},
+                        {{ custom_id.writeUI|safe|escape }},
+                        {{ ship_corp_id.writeUI|safe|escape }},
+                        {{ port_id.writeUI|safe|escape }},
+                        {{ yard_id.writeUI|safe|escape }},
+                        {{ landtrans_id.writeUI|safe|escape }},
+                        {{ check_yard_id.writeUI|safe|escape }},
+                        {{ unbox_yard_id.writeUI|safe|escape }},
+                        {{ credit_id.writeUI|safe|escape }},
+                        {{ cntr_freedays.writeUI|safe|escape }},
+                        {{ finish_flag.writeUI|safe|escape }},
+                        {{ finish_time.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'contract',
+            showFooter:true,
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group: 'contract-contractreportview-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(contract.contractreportview.grid);
+                    }
+                }
+            ],
+            queryFuncName: '业务明细报表查询',
+            onLoadSuccess: function (data) {
+                return;
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowindex, rowdata) {
+                return;
+            }
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        <table id="contract-contractreportview-datagrid" data-options="border:false">
+        </table>
+    </div>
+</div>
