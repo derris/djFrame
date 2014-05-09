@@ -184,9 +184,9 @@ def getContractDetail(request):
         ls_sumCheck = ";".join([x["checksum"] for x in ldict_sumCheckCntr])
     if len(ldict_sum) > 0 :
         ls_sumall = ";".join([x["showsum"] for x in ldict_sum])
-        lrtn.update( { "footer" : [{"cntr_num":ls_sumall , "bill_no": "汉字箱量合计", "check_num": ls_sumCheck } ] } )
+        lrtn.update( { "footer" : [{"cntr_num":ls_sumall , "bill_no": "箱量合计", "check_num": ls_sumCheck } ] } )
     else:
-        lrtn.update( { "footer" : [{"cntr_num":"None" , "bill_no": "汉字箱量合计", "check_num": ls_sumCheck } ] } )
+        lrtn.update( { "footer" : [{"cntr_num":"None" , "bill_no": "箱量合计", "check_num": ls_sumCheck } ] } )
     # get all the cntr for check  from the contract.
 
     return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
