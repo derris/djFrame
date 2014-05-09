@@ -40,7 +40,7 @@ def correctjsonfield(obj, atypecode):
             return ""
         elif atypecode == 16:    # bool
             return "false"
-        elif atypecode == 18:  # char            :
+        elif atypecode in (18,25):  # char            :
             return ""
         elif atypecode == 1114:  # datetime/ timestamp
             return ""
@@ -50,7 +50,7 @@ def correctjsonfield(obj, atypecode):
             return ""
         else:
             logErr("无法识别的数据库对象类型代码d%，请查询：SELECT typname, oid FROM pg_type;" % atypecode)
-            raise Exception("无法识别的数据库对象类型，请通知管理员。")
+            raise Exception("无法识别的数据库对象类型d%，请通知管理员。" % atypecode)
     return ""
 
 
