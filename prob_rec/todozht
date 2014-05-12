@@ -4,116 +4,41 @@ todo excel
 todo 5
 通用查询条件可保存，分全局和个人两种
 
-todo 6
-不建议用存储过程。django实现就好。 初步完成，请测试~~  ajaxResp.py
 
-1.func='业务明细报表查询' 在现有委托查询的基础上，增加‘当前委托动态’和‘箱量’，
-  ‘当前委托动态’ current_action :此委托下委托动态中序号(c_contract_action.sortno)最大的动态名称
-  ‘箱量’ cntr_sum :箱量合计的文字描述 '20GPX10,40GPX20'
-  接收接口结构：通用查询接收接口结构(和func='委托查询' 一样)
-  返回接口结构：通用查询返回接口结构，增加'footer'属性.例子如下：
-  {"stateCod": 1, "rows": [
+todo 7
+func: '业务汇总报表查询'
+查询条件：客户，还箱日期段。客户为空，查询全部客户，日期段不能空
+查询内容：体积、箱量、查验箱量
+分组：客户+货物分类+货名+产地
+接收参数接口：
+{
+    func: '业务汇总报表查询',
+    ex_parm: {
+        client_id: '客户ID', //int型 客户id
+        begindate: '还箱开始日期', //date型
+        enddate: '还箱截止日期'} //date型
+}
+返回接口：
+  {"stateCod": 1,
+   "rows": [
     {
-        "cargo_type": "",
-        "booking_date": "2014-04-18",
-        "bill_no": "563178209",
-        "id": "10",
-        "finish_flag": "false",
-        "cargo_volume": "409.508",
-        "client_id": "39",
-        "cargo_weight": "397933.00",
-        "cargo_piece": "837",
-        "return_cntr_date": "",
-        "in_port_date": "2014-05-05",
-        "vslvoy": "LICA MAERSK/433N",
-        "custom_title2": "",
-        "check_yard_id": "",
-        "cntr_freedays": "",
-        "yard_id": "",
-        "credit_id": "",
-        "cargo_name": "",
-        "custom_title1": "",
-        "dispatch_place": "1",
-        "unbox_yard_id": "",
-        "ship_corp_id": "",
-        "remark": "",
-        "contract_no": "",
-        "port_id": "",
-        "finish_time": "",
-        "landtrans_id": "",
-        "origin_place": "",
-        "custom_id": "",
-        "current_action":'查验',
-        "cntr_sum":'20GPX10'
-    },
-    {
-        "cargo_type": "",
-        "booking_date": "2014-04-21",
-        "bill_no": "562709562",
-        "id": "11",
-        "finish_flag": "false",
-        "cargo_volume": "",
-        "client_id": "53",
-        "cargo_weight": "",
-        "cargo_piece": "",
-        "return_cntr_date": "",
-        "in_port_date": "2014-04-14",
-        "vslvoy": "",
-        "custom_title2": "",
-        "check_yard_id": "",
-        "cntr_freedays": "",
-        "yard_id": "",
-        "credit_id": "",
-        "cargo_name": "",
-        "custom_title1": "",
-        "dispatch_place": "1",
-        "unbox_yard_id": "",
-        "ship_corp_id": "",
-        "remark": "",
-        "contract_no": "",
-        "port_id": "",
-        "finish_time": "",
-        "landtrans_id": "",
-        "origin_place": "",
-        "custom_id": "",
-        "current_action":'查验',
-        "cntr_sum":'20GPX10'
-    },
-    {
-        "cargo_type": "2",
-        "booking_date": "2014-04-16",
-        "bill_no": "951383492",
-        "id": "12",
-        "finish_flag": "false",
-        "cargo_volume": "518.981",
-        "client_id": "53",
-        "cargo_weight": "458050.23",
-        "cargo_piece": "1653",
-        "return_cntr_date": "2014-04-18",
-        "in_port_date": "2014-04-08",
-        "vslvoy": "CMA CGM RABELAIS A28E",
-        "custom_title2": "",
-        "check_yard_id": "",
-        "cntr_freedays": "12",
-        "yard_id": "",
-        "credit_id": "",
-        "cargo_name": "2",
-        "custom_title1": "",
-        "dispatch_place": "2",
-        "unbox_yard_id": "",
-        "ship_corp_id": "",
-        "remark": "",
-        "contract_no": "999",
-        "port_id": "",
-        "finish_time": "",
-        "landtrans_id": "",
-        "origin_place": "1",
-        "custom_id": "",
-        "current_action":'查验',
-        "cntr_sum":'20GPX10'
+        "client_id": 53, //客户ID
+        "cargo_type": 2   //货物分类
+        "cargo_name": 2 //货物名称,
+        "origin_place": 1 //产地,
+        "cargo_volume": "409.508" //体积,
+        "cntr_num": "20GPX5,40GPX10",
+        "check_num": "20GPX3,40GPX6"
     }
-], "total": 3, "error": [], "msg": "查询完毕",
-"footer":[{"cntr_num":"箱量合计描述","bill_no":"汉字箱量合计"}]}
-
+    ],
+   "total": 1,
+   "error": [],
+   "msg": "查询完毕",
+   "footer":[
+        {"cntr_num":"20GPX5,40GPX10",
+         "client_id":"合计",
+         "check_num":"20GPX3,40GPX6"
+        }]
+ }
 
 

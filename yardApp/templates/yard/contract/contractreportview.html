@@ -9,6 +9,7 @@
                         {{ id.writeUI|safe|escape }},
                         {{ bill_no.writeUI|safe|escape }},
                         {{ cntr_sum.writeUI|safe|escape }},
+                        {{ check_num.writeUI|safe|escape }},
                         {{ current_action.writeUI|safe|escape }},
                         {{ vslvoy.writeUI|safe|escape }},
                         {{ contract_no.writeUI|safe|escape }},
@@ -52,9 +53,7 @@
                 }
             ],
             queryFuncName: '业务明细报表查询',
-            onLoadSuccess: function (data) {
-                return;
-            },
+
             onDblClickRow: function (rowIndex, rowData) {
                 return;
             },

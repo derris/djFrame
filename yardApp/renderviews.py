@@ -262,6 +262,7 @@ def contractreportview(request):
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no',width=180)
     current_action = easyuihelp.EasyuiFieldUI(model=models.Action,field='action_name',title='当前动态',displayfield='current_action')
     cntr_sum = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark',title='箱量',displayfield='cntr_sum',width=150)
+    check_num = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark',title='查验箱量',displayfield='check_num',width=150)
     vslvoy = easyuihelp.EasyuiFieldUI(model=models.Contract,field='vslvoy',width=180)
     contract_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='contract_no',width=180)
     dispatch_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='dispatch_place',autoforeign=True,foreigndisplayfield='place_name',width=100)
@@ -290,6 +291,16 @@ def contractreportview(request):
     finish_flag = easyuihelp.EasyuiFieldUI(model=models.Contract,field='finish_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark')
     return render(request,"yard/contract/contractreportview.html",locals())
+def contractgroupreportview(request):
+    seq = str(fetchSeq('seq_html'))
+    cntr_num = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark',title='箱量',displayfield='cntr_num',width=150)
+    check_num = easyuihelp.EasyuiFieldUI(model=models.Contract,field='remark',title='查验箱量',displayfield='check_num',width=150)
+    client_id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
+    cargo_type = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_type',autoforeign=True,foreigndisplayfield='type_name')
+    cargo_name = easyuihelp.EasyuiFieldUI(model=models.Contract,field='cargo_name',autoforeign=True,foreigndisplayfield='cargo_name')
+    origin_place = easyuihelp.EasyuiFieldUI(model=models.Contract,field='origin_place',autoforeign=True,foreigndisplayfield='place_name')
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    return render(request,"yard/contract/contractgroupreportview.html",locals())
 def billsearchview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Contract,field='id')
     bill_no = easyuihelp.EasyuiFieldUI(model=models.Contract,field='bill_no',width=150)
@@ -508,6 +519,8 @@ def dealMenuReq(request):
         return(contractqueryview(request))
     elif ls_args == '业务明细报表':
         return(contractreportview(request))
+    elif ls_args == '业务汇总报表':
+        return(contractgroupreportview(request))
     elif ls_args == '账单':
         return(feesheetview(request))
     #######  费用 #############(func='已收费用维护')

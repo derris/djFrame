@@ -1,0 +1,81 @@
+<script>
+    Namespace.register('contract.contractgroupreportview');
+    $(function(){
+        {% autoescape off %}
+        contract.contractgroupreportview.grid = $('#contract-contractgroupreportview-datagrid').datagrid({
+            autoLoad:false,
+            border: false,
+            columns: [
+                [
+                    {{ client_id.writeUI|safe|escape }},
+                    {{ cargo_type.writeUI|safe|escape }},
+                    {{ cargo_name.writeUI|safe|escape }},
+                    {{ origin_place.writeUI|safe|escape }},
+                    {{ cntr_num.writeUI|safe|escape }},
+                    {{ check_num.writeUI|safe|escape }}
+                ]
+            ],
+            pagination: false,
+            showFooter:true,
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                return;
+            }
+        });
+        {% endautoescape %}
+        contract.contractgroupreportview.refresh = function(param){
+            var p = {
+                func: '业务汇总报表查询',
+                ex_parm: {
+                    client_id: '',
+                    begindate: '',
+                    enddate: ''}
+            };
+            if (param.client != null && param.client.length > 0) {
+                p.ex_parm.client_id = param.client;
+            }
+            if (param.begin != null && param.begin.length > 0) {
+                p.ex_parm.begindate = param.begin;
+            }
+            else{
+                $.messager.alert('提示','开始日期不能为空','info');
+                return;
+            }
+            if (param.end != null && param.end.length > 0) {
+                p.ex_parm.enddate = param.end;
+            }
+            else{
+                $.messager.alert('提示','截止日期不能为空','info');
+                return;
+            }
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (r, t, a) {
+                    if ($.ajaxSettings.success(r, t, a, false)) {
+                        contract.contractgroupreportview.grid.datagrid('loadData', r.rows);
+                        contract.contractgroupreportview.grid.datagrid('reloadFooter', r.footer);
+                    } else {
+                        contract.contractgroupreportview.grid.datagrid('loadData', []);
+                    }
+                }
+            });
+
+        }
+        $(document).on('refresh', '#component-selectclientdate-{{ seq }}', function (e, parm) {
+            contract.contractgroupreportview.refresh(parm);
+        });
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:'false'">
+        {% include 'yard/component/selectclientdate.html' %}
+    </div>
+    <div data-options="region:'center',border:'false'">
+        <table id="contract-contractgroupreportview-datagrid" border="false">
+        </table>
+    </div>
+</div>

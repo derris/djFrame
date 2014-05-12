@@ -1,0 +1,38 @@
+<script>
+    Namespace.register('component.selectclientdate');
+    $(function(){
+        {% autoescape off %}
+            component.selectclientdate.client_{{ seq }} = $('#component-selectclientdate-client-{{ seq }}').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            component.selectclientdate.begin_{{ seq }} = $('#component-selectclientdate-begin-{{ seq }}').datebox({
+                width:180
+            });
+            component.selectclientdate.end_{{ seq }} = $('#component-selectclientdate-end-{{ seq }}').datebox({
+                width:180
+            });
+        {% endautoescape %}
+        $('#component-selectclientdate-search-{{ seq }}').bind('click', function (e) {
+            var parm = {
+                client: component.selectclientdate.client_{{ seq }}.combobox('getValue'),
+                begin:component.selectclientdate.begin_{{ seq }}.datebox('getValue'),
+                end:component.selectclientdate.end_{{ seq }}.datebox('getValue')
+            };
+            $('#component-selectclientdate-{{ seq }}').trigger('refresh', parm);
+        });
+    });
+</script>
+<div id="component-selectclientdate-{{ seq }}" class="datagrid-toolbar">
+    <label for="client_id">委托客户:</label>
+    <input id="component-selectclientdate-client-{{ seq }}" type="text" name="client_id"/>
+    <label for="begin">日期:</label>
+    <input id="component-selectclientdate-begin-{{ seq }}" type="text" name="begin" />
+    <label for="end">至:</label>
+    <input id="component-selectclientdate-end-{{ seq }}" type="text" name="end" />
+    <a id="component-selectclientdate-search-{{ seq }}" href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-search',group:'component-selectclientdate'">查询</a>
+</div>

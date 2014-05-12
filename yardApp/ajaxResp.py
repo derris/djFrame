@@ -3,6 +3,7 @@ __author__ = 'dddh'
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import json
+from django.shortcuts import render
 from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
 from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege, getFunc4User
@@ -172,9 +173,9 @@ def getContractDetail(request):
         l_checkCntr = rawSql2JsonDict(ls_sumCheckCntr % str(i["id"]) )
         if len(l_checkCntr) > 0:
             ls = ";".join([x["checksum"] for x in l_checkCntr])
-            i.update({ "check_cntr_sum": ls  })
+            i.update({ "check_num": ls  })
         else:
-            i.update({ "check_cntr_sum": "None"  })
+            i.update({ "check_num": "None"  })
 
     # get all the cntr for all the sum bill .
     ldict_sum = rawSql2JsonDict(ls_sqlsum % ( ",".join(list_contrId) ) )
@@ -184,9 +185,9 @@ def getContractDetail(request):
         ls_sumCheck = ";".join([x["checksum"] for x in ldict_sumCheckCntr])
     if len(ldict_sum) > 0 :
         ls_sumall = ";".join([x["showsum"] for x in ldict_sum])
-        lrtn.update( { "footer" : [{"cntr_num":ls_sumall , "bill_no": "箱量合计", "check_num": ls_sumCheck } ] } )
+        lrtn.update( { "footer" : [{"cntr_sum":ls_sumall , "bill_no": "合计", "check_num": ls_sumCheck } ] } )
     else:
-        lrtn.update( { "footer" : [{"cntr_num":"None" , "bill_no": "箱量合计", "check_num": ls_sumCheck } ] } )
+        lrtn.update( { "footer" : [{"cntr_sum":"None" , "bill_no": "合计", "check_num": ls_sumCheck } ] } )
     # get all the cntr for check  from the contract.
 
     return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
@@ -317,6 +318,8 @@ def dealPAjax(request):
                 return(getcontract(request))
             elif ldict['func'] == '业务明细报表查询':
                 return(getContractDetail(request))
+            elif ldict['func'] == '业务汇总报表查询':
+                return render(request,"yard/test.json")
             elif ldict['func'] == '委托动态查询':
                 return(getcontractaction(request))
             elif ldict['func'] == '委托箱查询':
