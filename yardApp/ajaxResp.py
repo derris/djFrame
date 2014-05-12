@@ -318,8 +318,6 @@ def dealPAjax(request):
                 return(getcontract(request))
             elif ldict['func'] == '业务明细报表查询':
                 return(getContractDetail(request))
-            elif ldict['func'] == '业务汇总报表查询':
-                return render(request,"yard/test.json")
             elif ldict['func'] == '委托动态查询':
                 return(getcontractaction(request))
             elif ldict['func'] == '委托箱查询':
