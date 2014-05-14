@@ -263,7 +263,10 @@ def dealPAjax(request):
         ldict = json.loads( request.POST['jpargs'] )
         log(ldict)
         # 判断是否有调用的权限。
-        if (ldict['func'] in getFunc4User(ls_userid)) or (ls_userid == '1') or (ldict['func'] in ('功能查询','权限查询', '功能权限查询')):
+        if (ldict['func'] in getFunc4User(ls_userid)) \
+                or (ls_userid == '1') \
+                or (ldict['func'] in ('功能查询','权限查询','功能权限查询',
+                                      '查询条件查询','查询体查询','查询增加','查询条件删除')):
             pass
         else:
             l_rtn = {"error": [ls_err],
@@ -282,6 +285,10 @@ def dealPAjax(request):
                 return(getsysmenufunc(request))
             elif ldict['func'] == '系统参数查询':
                 return(getsyscod(request))
+            elif ldict['func'] == '查询条件查询':
+                return(getfilterhead(request))
+            elif ldict['func'] == '查询体查询':
+                return(getfilterbody(request))
             elif ldict['func'] == '用户查询':
                 return(getuser(request))
             elif ldict['func'] == '岗位查询':
@@ -363,6 +370,10 @@ def dealPAjax(request):
             elif ldict['func'] == '功能权限维护':
                 return(updateRaw(request))
             elif ldict['func'] == '系统参数维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '查询增加':
+                return(HttpResponse(json.dumps( insert_filter(request,ldict),ensure_ascii=False)))
+            elif ldict['func'] == '查询条件删除':
                 return(updateRaw(request))
             elif ldict['func'] == '用户维护':
                 return(HttpResponse(json.dumps( update_user(request, ldict) ,ensure_ascii = False) ))

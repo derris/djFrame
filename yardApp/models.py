@@ -282,6 +282,24 @@ class ActFee(BaseModel):
         return self.client_id.client_name + '/' + self.fee_typ + '/' + self.pay_type.pay_name + '/' + str(self.amount)
     class Meta:
         db_table = 'act_fee'
-
-
-
+class FilterHead(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    datagrid = models.CharField('datagrid名称',max_length=100)
+    filter_type = models.CharField('查询类型',max_length=1,choices=(('G','全局'),('P','个人')))
+    filter_owner = models.ForeignKey('User',related_name='user_filterhead',verbose_name='查询人员',db_column='filter_owner')
+    filter_name = models.CharField('查询名称',max_length=50)
+    def __str__(self):
+        return self.filter_name
+    class Meta:
+        db_table = 's_filter_head'
+class FilterBody(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    filter_id = models.ForeignKey('FilterHead',related_name='filterhead_filtebody',verbose_name='查询头',db_column='filter_id')
+    content_type = models.CharField('查询内容类型',max_length=1,choices=(('W','where条件'),('S','排序条件'),('C','字段列表')))
+    content_col = models.CharField('查询字段名',max_length=30)
+    content_condition = models.CharField('查询条件',max_length=10,blank=True,null=True)
+    content_value = models.CharField('查询值',max_length=50,blank=True,null=True)
+    value_text = models.CharField('字面值',max_length=100,blank=True,null=True)
+    display_value = models.CharField('显示值',max_length=100,blank=True,null=True)
+    class Meta:
+        db_table = 's_filter_body'

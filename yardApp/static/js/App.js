@@ -262,6 +262,7 @@ sy.createSearchWindow = function (datagrid) {
             common.createsearchform.filterdatagrid = null;
             common.createsearchform.sorterdatagrid = null;
             common.createsearchform.colsdatagrid = null;
+            common.createsearchform.datagridid = null;
             sy.searchWindow.window('destroy');
             sy.searchWindow = null;
             if (sy.searchWindowReturnData.refreshFlag) {
@@ -281,6 +282,13 @@ sy.createSearchWindow = function (datagrid) {
             }
         }
     });
+    var idarray = datagrid[0].id.split('-');
+    if (isNaN(parseInt(idarray[idarray.length - 1]))){
+        common.createsearchform.datagridid = idarray.join('-');
+    }else{
+        idarray.length = idarray.length - 1;
+        common.createsearchform.datagridid = idarray.join('-');
+    }
 }
 
 //***************全局用到的对象**********************//

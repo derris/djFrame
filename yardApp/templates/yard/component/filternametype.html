@@ -1,0 +1,33 @@
+<script>
+    Namespace.register("component.filternametype");
+    $(function(){
+        component.filternametype.form = $('#component-filternametype-form').form({
+            parentWin: {}
+        });
+        $('#component-filternametype-ok').bind('click',function(e){
+            var p = component.filternametype.form.serializeJson();
+            if (p.filtername != null && p.filtername.length > 0){
+                var pWin = component.filternametype.form.parentWin;
+                component.filternametype.form = null;
+                pWin.window('options').returnData = p;
+                pWin.window('close');
+            }else{
+                $.messager.alert('提示','查询名称不能空','提示');
+                return;
+            }
+        });
+    });
+</script>
+<form id="component-filternametype-form" class="editform">
+    <div>
+        <label for="filtertype">查询类型:</label>
+        <input type="radio" name="filtertype" value="G" checked="true"/>全局
+        <input type="radio" name="filtertype" value="P" />个人
+    </div>
+    <div>
+        <label for="filtername">查询名称:</label>
+        <input type="text" name="filtername"/>
+    </div>
+</form>
+<a id="component-filternametype-ok" href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-ok',group:'component-filternametype'">确定</a>

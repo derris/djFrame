@@ -1,0 +1,50 @@
+<script>
+    Namespace.register("component.filterselect");
+    $(function () {
+        component.filterselect.datagrid = $('#component-filterselect-datagrid').datagrid({
+            autoLoad: true,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ datagrid.writeUI|safe|escape }},
+                        {{ filter_type.writeUI|safe|escape }},
+                        {{ filter_name.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 's_filter_head',
+            filterFields: [{
+                cod:'datagrid',
+                operatorTyp:'等于',
+                value:common.createsearchform.datagridid
+            }],
+            pagination:false,
+            parentWin:{},
+            queryFuncName:'查询条件查询',
+            updateFuncName:'查询条件删除',
+            toolbar: [
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'component-filterselect-datagrid',
+                    handler: function () {
+                        component.filterselect.datagrid.datagrid('deleteData');
+                        component.filterselect.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            onDblClickRow:function(rowIndex, rowData){
+                var p = rowData.id;
+                var pWin = component.filterselect.datagrid.datagrid('options').parentWin;
+                component.filterselect.datagrid = null;
+                pWin.window('options').returnData = p;
+                pWin.window('close');
+            },
+            onClickRow:function(rowIndex, rowData){
+                return;
+            }
+        });
+    });
+</script>
+<table id="component-filterselect-datagrid" border="false">
+</table>

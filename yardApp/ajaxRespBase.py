@@ -2,7 +2,7 @@ __author__ = 'blaczom@163.com'
 
 import json
 from django.db import transaction, connection
-from zdCommon.dbhelp import rawSql2JsonDict
+from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd
 from datetime import datetime
@@ -57,3 +57,21 @@ def changePassword(request,ldict):
             return l_rtn
     return l_rtn
 
+def insert_filter(request,adict):
+    l_rtn = { }
+    for i_row in adict['rows']: #
+        if i_row['op'] in ('insert'):
+            i_row['cols'].update( { 'filter_owner': request.session['userid'] } )
+    l_rtn.update( json2upd(adict) )
+    return l_rtn
+def getfilterhead(request):
+    '''查询条件查询'''
+    ls_sql = "select id,datagrid,filter_type,filter_name from s_filter_head " \
+             "where (filter_type = 'G' or filter_owner = %s)" % (request.session['userid'])
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getfilterbody(request):
+    '''查询体查询'''
+    ldict = json.loads( request.POST['jpargs'] )
+    ls_sql = "select " + ", ".join(ldict['cols']) + " from s_filter_body "
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))

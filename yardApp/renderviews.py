@@ -25,8 +25,13 @@ def mainmenutreeview(request):    #
     return render(request,"yard/MainMenuTree.html",locals())
 
 def getcommonsearchview(request):
-    return render(request,"commonSearchTemplate.html")
-
+    return render(request,"yard/component/commonSearchTemplate.html")
+def filterview(request):
+    id = easyuihelp.EasyuiFieldUI(model=models.FilterHead,field='id')
+    datagrid = easyuihelp.EasyuiFieldUI(model=models.FilterHead,field='datagrid',hidden=True)
+    filter_type = easyuihelp.EasyuiFieldUI(model=models.FilterHead,field='filter_type')
+    filter_name = easyuihelp.EasyuiFieldUI(model=models.FilterHead,field='filter_name',autoforeign=True,foreigndisplayfield='username')
+    return render(request,"yard/component/filterselect.html",locals())
 def sysmenuview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='id')
     menuname = easyuihelp.EasyuiFieldUI(model=models.SysMenu,field='menuname')
@@ -457,6 +462,8 @@ def feesheetview(request):
     feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
 
     return render(request,"yard/contract/feesheetview.html",locals())
+def filteroptionview(request):
+    return render(request,"yard/component/filternametype.html")
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -467,6 +474,10 @@ def dealMenuReq(request):
         return(mainmenutreeview(request))
     elif ls_args == '通用查询':
         return(getcommonsearchview(request))
+    elif ls_args == '查询保存':
+        return(filteroptionview(request))
+    elif ls_args == '查询选择':
+        return(filterview(request))
     elif ls_args == '功能维护':
         return(sysmenuview(request))
     elif ls_args == '权限维护':

@@ -1,6 +1,9 @@
 .editform input {
     width: 180px;
 }
+.editform input[type=radio] {
+    width: 10px;
+}
 .editform label {
     width:60px;
     display: inline-block;
