@@ -12,6 +12,7 @@ from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
 from yardApp.ajaxRespFee import *
 from yardApp.ajaxRespBase import *
+from yardApp.ajaxRespQuery import *
 
 ##########################################################        GET    ----
 def getsysmenu(request):
@@ -130,72 +131,7 @@ def getcontract(request):
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
-def getContractDetail(request):
-    ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
-             "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
-             "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place,custom_title1," \
-             "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
 
-    ldict = json.loads(request.POST['jpargs'])
-    lrtn = rawsql2json(*rawsql4request(ls_sql, ldict))
-    # lrtn 包含提单号、用于统计后续箱量。所有的提单号，用于统计所有箱量。
-    ls_sqlsum = ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum  from contract_cntr as A , c_cntr_type as B
-                    where A.contract_id in ( %s )
-                    and A.cntr_type = B.id
-                    group by b.cntr_type
-                '''
-    ls_sumCheckCntr = ''' select b.cntr_type  || ' X ' ||  sum(check_num) as checksum  from contract_cntr as A , c_cntr_type as B
-                where A.contract_id in ( %s )
-                and A.cntr_type = B.id
-                group by b.cntr_type
-            '''
-    ls_sql4action = ''' select action_name from  contract_action as A, c_contract_action as B
-                        where  contract_id = %s and A.action_id = B.id order by B.sortno desc limit 1;
-                    '''
-    list_contrId = []
-    for i in lrtn["rows"]:
-        #get all the cntr in the bill
-        l_sumCntr = rawSql2JsonDict(ls_sqlsum % str(i["id"])  )
-        list_contrId.append(str(i["id"]))
-        if len(l_sumCntr) > 0:
-            ls = ";".join([x["showsum"] for x in l_sumCntr])
-            i.update({ "cntr_sum": ls  })
-        else:
-            i.update({ "cntr_sum": "None"  })
-        # get the last cntr action , as to say, have the biggest sortno of the c_cntr_action
-        l_lastAction = rawSql2JsonDict(ls_sql4action % str(i["id"]) )
-        if len(l_lastAction) > 0:
-            ls = ";".join([x["action_name"] for x in l_lastAction])
-            i.update({ "current_action": ls  })
-        else:
-            i.update({ "current_action": "None"  })
-        # get the check cntr num from contract
-        l_checkCntr = rawSql2JsonDict(ls_sumCheckCntr % str(i["id"]) )
-        if len(l_checkCntr) > 0:
-            ls = ";".join([x["checksum"] for x in l_checkCntr])
-            i.update({ "check_num": ls  })
-        else:
-            i.update({ "check_num": "None"  })
-
-    # get all the cntr for all the sum bill .
-    ldict_sum = rawSql2JsonDict(ls_sqlsum % ( ",".join(list_contrId) ) )
-    ldict_sumCheckCntr = rawSql2JsonDict(ls_sumCheckCntr % ( ",".join(list_contrId) ) )
-    ls_sumCheck = "None"
-    if len(ldict_sumCheckCntr) > 0 :
-        ls_sumCheck = ";".join([x["checksum"] for x in ldict_sumCheckCntr])
-    if len(ldict_sum) > 0 :
-        ls_sumall = ";".join([x["showsum"] for x in ldict_sum])
-        lrtn.update( { "footer" : [{"cntr_sum":ls_sumall , "bill_no": "合计", "check_num": ls_sumCheck } ] } )
-    else:
-        lrtn.update( { "footer" : [{"cntr_sum":"None" , "bill_no": "合计", "check_num": ls_sumCheck } ] } )
-    # get all the cntr for check  from the contract.
-
-    return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
-
-    '''   test:
-    from zdCommon.dbhelp import rawSql2JsonDict
-    a = rawSql2JsonDict(ls_sqlsum,[ "563178209" ])
-   '''
 def getcontractbybill(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,client_id,in_port_date,remark from contract"
     ldict = json.loads(request.POST['jpargs'])
@@ -451,8 +387,17 @@ def dealPAjax(request):
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}
                 l_rtn = changePassword(request,ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+            elif ldict['func'] == '业务汇总报表查询':
+                l_rtn = getBussSumary(request,ldict)
+                return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+
+
+
+
             else:
                 pass
+
+
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
         ls_err = str(e.args)
