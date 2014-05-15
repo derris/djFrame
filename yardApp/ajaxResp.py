@@ -260,7 +260,7 @@ def dealPAjax(request):
             elif ldict['func'] == '委托查询':
                 return(getcontract(request))
             elif ldict['func'] == '业务明细报表查询':
-                return(getContractDetail(request))
+                return(getContractDetail(request, ldict))
             elif ldict['func'] == '委托动态查询':
                 return(getcontractaction(request))
             elif ldict['func'] == '委托箱查询':
@@ -388,8 +388,7 @@ def dealPAjax(request):
                 l_rtn = changePassword(request,ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             elif ldict['func'] == '业务汇总报表查询':
-                l_rtn = getBussSumary(request,ldict)
-                return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+                return getBussSumary(request,ldict)
 
 
 

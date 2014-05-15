@@ -2343,10 +2343,14 @@
       <column name="ex_feeid" sqlType="varchar" length="1" precision="0" nullable="false" jdbcType="12" def="J08n" remarks="55Sf5oiQ5qCH6K+GJ08n5Y6f55SfICdFJ+aguOmUgOaLhuWIhg=="/>
       <column name="audit_id" sqlType="bool" length="1" precision="0" nullable="true" jdbcType="-7" def="ZmFsc2U="/>
       <column name="audit_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="5qC46ZSA5pe26Ze0"/>
+      <column name="accept_no" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5om/5YWR5Y+3"/>
       <primary-key name="pk_act_fee" columns="id"/>
-      <foreign-key name="fk_act_fee_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_act_fee_pay" columns="pay_type" ref-table="c_pay_type" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <exported-key name="fk_writeoff_fee_act" table="writeoff_fee" schema="public" catalog="yard" columns="act_fee_id"/>
+      <foreign-key name="fk_act_fee_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_act_fee_pay" columns="pay_type" ref-table="c_pay_type" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <index name="idx_act_fee_audit" unique="false" columns="audit_id"/>
+      <index name="idx_act_fee_audit_tim" unique="false" columns="audit_tim"/>
+      <index name="idx_act_fee_ex_from" unique="false" columns="ex_from"/>
+      <index name="idx_act_fee_ex_over" unique="false" columns="ex_over"/>
     </table>
     <table name="act_fee_id_seq" schema="public" catalog="yard" type="SEQUENCE">
       <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
@@ -2505,6 +2509,54 @@
       <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
       <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
     </table>
+    <table name="c_cargo" schema="public" catalog="yard" type="TABLE" remarks="6LSn54mp5ZCN56ew">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19jYXJnb19pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="true" jdbcType="12"/>
+      <column name="cargo_name" sqlType="varchar" length="20" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <primary-key name="pk_c_cargo" columns="id"/>
+      <exported-key name="fk_contract_cargoname" table="contract" schema="public" catalog="yard" columns="cargo_name"/>
+      <index name="uk_c_cargo" unique="true" columns="cargo_name"/>
+    </table>
+    <table name="c_cargo_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
+    <table name="c_cargo_type" schema="public" catalog="yard" type="TABLE">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19jYXJnb190eXBlX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
+      <column name="type_name" sqlType="varchar" length="20" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="6LSn54mp5YiG57G75ZCN56ew"/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="true" jdbcType="12"/>
+      <primary-key name="pk_c_cargo_type" columns="id"/>
+      <exported-key name="fk_contract_cargotype" table="contract" schema="public" catalog="yard" columns="cargo_type"/>
+      <index name="uk_c_cargo_type" unique="true" columns="type_name"/>
+    </table>
+    <table name="c_cargo_type_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
     <table name="c_client" schema="public" catalog="yard" type="TABLE" remarks="5Z+656GA5Luj56CB5a6i5oi35Luj56CB6KGo">
       <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19jbGllbnRfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
       <column name="client_name" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" remarks="5a6i5oi35ZCN56ew"/>
@@ -2519,14 +2571,20 @@
       <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
       <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
       <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="landtrans_flag" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U=" remarks="6L2m6Zif5qCH56S6"/>
+      <column name="credit_flag" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U=" remarks="5L+h55So6K+B5Y2V5L2N5qCH6K+G"/>
       <primary-key name="pk_c_client" columns="id"/>
       <exported-key name="fk_act_fee_client" table="act_fee" schema="public" catalog="yard" columns="client_id"/>
       <exported-key name="fk_fee_protocol_client" table="c_fee_protocol" schema="public" catalog="yard" columns="client_id"/>
       <exported-key name="fk_contract_client" table="contract" schema="public" catalog="yard" columns="client_id"/>
+      <exported-key name="fk_contract_credit" table="contract" schema="public" catalog="yard" columns="credit_id"/>
       <exported-key name="fk_contract_custom" table="contract" schema="public" catalog="yard" columns="custom_id"/>
-      <exported-key name="fk_contract_port" table="contract" schema="public" catalog="yard" columns="port_id"/>
-      <exported-key name="fk_contract_ship_corp" table="contract" schema="public" catalog="yard" columns="ship_corp_id"/>
+      <exported-key name="fk_contract_landtrans" table="contract" schema="public" catalog="yard" columns="landtrans_id"/>
       <exported-key name="fk_contract_yard" table="contract" schema="public" catalog="yard" columns="yard_id"/>
+      <exported-key name="fk_contract_checkyard" table="contract" schema="public" catalog="yard" columns="check_yard_id"/>
+      <exported-key name="fk_contract_ship_corp" table="contract" schema="public" catalog="yard" columns="ship_corp_id"/>
+      <exported-key name="fk_contract_unboxyard" table="contract" schema="public" catalog="yard" columns="unbox_yard_id"/>
+      <exported-key name="fk_contract_port" table="contract" schema="public" catalog="yard" columns="port_id"/>
       <exported-key name="fk_pre_fee_client" table="pre_fee" schema="public" catalog="yard" columns="client_id"/>
       <index name="uk_c_client" unique="true" columns="client_name"/>
     </table>
@@ -2594,6 +2652,30 @@
       <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
       <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
     </table>
+    <table name="c_dispatch" schema="public" catalog="yard" type="TABLE" remarks="5Y+R6LSn5Zyw6KGo">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19kaXNwYXRjaF9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
+      <column name="place_name" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5Y+R6LSn5Zyw5ZCN56ew"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <primary-key name="pk_c_dispatch" columns="id"/>
+      <exported-key name="fk_contract_dispatch" table="contract" schema="public" catalog="yard" columns="dispatch_place"/>
+      <index name="uk_dispatch" unique="true" columns="place_name"/>
+    </table>
+    <table name="c_dispatch_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
     <table name="c_fee" schema="public" catalog="yard" type="TABLE" remarks="5Z+656GA5Luj56CB6LS555So5ZCN56ew">
       <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19mZWVfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
       <column name="fee_name" sqlType="varchar" length="20" precision="0" nullable="false" jdbcType="12" remarks="6LS555So5ZCN56ew"/>
@@ -2650,7 +2732,7 @@
     <table name="c_fee_protocol" schema="public" catalog="yard" type="TABLE" remarks="5Y2P6K6u6LS5546H">
       <column name="client_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5a6i5oi3"/>
       <column name="fee_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="6LS555So5ZCN56ewaWQ="/>
-      <column name="contract_type" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5Lia5Yqh57G75Z6L"/>
+      <column name="contract_type" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" def="MQ==" remarks="5Lia5Yqh57G75Z6L"/>
       <column name="fee_cal_type" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="6K6h6LS55Y2V5L2N"/>
       <column name="rate" sqlType="numeric" length="8" precision="2" nullable="false" jdbcType="2" remarks="6LS5546H"/>
       <column name="free_day" sqlType="int2" length="5" precision="0" nullable="true" jdbcType="5" remarks="5YeP5YWN5aSp5pWw"/>
@@ -2660,11 +2742,12 @@
       <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
       <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
       <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19mZWVfcHJvdG9jb2xfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
+      <column name="dispatch_place" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" def="MQ==" remarks="5Y+R6LSn5Zyw"/>
       <primary-key name="pk_c_fee_protocol" columns="id"/>
-      <foreign-key name="fk_fee_protocol_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
-      <foreign-key name="fk_fee_protocol_fee" columns="fee_id" ref-table="c_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
-      <foreign-key name="fk_fee_protocol_cal" columns="fee_cal_type" ref-table="sys_code" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
-      <foreign-key name="fk_fee_protocol_contract" columns="contract_type" ref-table="sys_code" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
+      <foreign-key name="fk_fee_protocol_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_fee_protocol_fee" columns="fee_id" ref-table="c_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_fee_protocol_cal" columns="fee_cal_type" ref-table="sys_code" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_fee_protocol_contract" columns="contract_type" ref-table="sys_code" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
       <index name="uk_c_fee_protocol" unique="true" columns="client_id,fee_id,contract_type,fee_cal_type"/>
     </table>
     <table name="c_fee_protocol_id_seq" schema="public" catalog="yard" type="SEQUENCE">
@@ -2703,13 +2786,35 @@
       <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
       <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
     </table>
+    <table name="c_place" schema="public" catalog="yard" type="TABLE">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY19wbGFjZV9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
+      <column name="place_name" sqlType="varchar" length="20" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="true" jdbcType="12"/>
+      <primary-key name="pk_c_place" columns="id"/>
+      <exported-key name="fk_contract_originplace" table="contract" schema="public" catalog="yard" columns="origin_place"/>
+      <index name="uk_c_place" unique="true" columns="place_name"/>
+    </table>
+    <table name="c_place_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
     <table name="contract" schema="public" catalog="yard" type="TABLE" remarks="5aeU5omY6KGo">
       <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY29udHJhY3RfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
       <column name="bill_no" sqlType="varchar" length="25" precision="0" nullable="false" jdbcType="12" remarks="5o+Q5Y2V5Y+3"/>
-      <column name="cargo_name" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="6LSn54mp5ZCN56ew"/>
-      <column name="origin_place" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5Lqn5Zyw"/>
       <column name="client_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5aeU5omY5pa5SUQ="/>
-      <column name="contract_type" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5aeU5omY57G75Z6LIOWklumUriBzeXNfY29kZS5pZCAK5pys57O757uf5peg55SoICDotYvnvLrnnIHlgLw="/>
+      <column name="contract_type" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" def="MQ==" remarks="5aeU5omY57G75Z6LIOWklumUriBzeXNfY29kZS5pZCAK5pys57O757uf5peg55SoICDotYvnvLrnnIHlgLw="/>
       <column name="cargo_fee_type" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6LSn54mp6LS555So6K6h6LS557G75Z6LCuacrOezu+e7n+aXoOeUqOi1i+e8uuecgeWAvA=="/>
       <column name="cargo_piece" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6LSn54mp5Lu25pWw"/>
       <column name="cargo_weight" sqlType="numeric" length="13" precision="2" nullable="true" jdbcType="2" remarks="6LSn54mp6YeN6YeP5YWs5pak"/>
@@ -2721,7 +2826,7 @@
       <column name="ship_corp_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6Ii55YWs5Y+4"/>
       <column name="port_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="56CB5aS0aWQ="/>
       <column name="yard_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5Zy656uZaWQ="/>
-      <column name="finish_flag" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U=" remarks="5aeU5omY5a6M57uT5qCH6K+G"/>
+      <column name="finish_flag" sqlType="bool" length="1" precision="0" nullable="true" jdbcType="-7" def="ZmFsc2U=" remarks="5aeU5omY5a6M57uT5qCH6K+G"/>
       <column name="finish_time" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="5aeU5omY5a6M57uT5pe26Ze0"/>
       <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5aSH5rOo"/>
       <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5Yib5bu65Lq65ZGY"/>
@@ -2729,12 +2834,32 @@
       <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5L+u5pS55Lq65ZGY"/>
       <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="5L+u5pS55pe26Ze0"/>
       <column name="vslvoy" sqlType="varchar" length="40" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="6Ii55ZCN6Iiq5qyh"/>
+      <column name="contract_no" sqlType="varchar" length="20" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5ZCI5ZCM5Y+3"/>
+      <column name="dispatch_place" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5Y+R6LSn5ZywSUQ="/>
+      <column name="custom_title1" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5oql5YWz5oqs5aS0MQ=="/>
+      <column name="custom_title2" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5oql5YWz5oqs5aS0Mg=="/>
+      <column name="landtrans_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6ZmG6L+Q6L2m6ZifSUQ="/>
+      <column name="check_yard_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5p+l6aqM5Zy656uZSUQ="/>
+      <column name="unbox_yard_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5ouG566x5Zy656uZ"/>
+      <column name="credit_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5L+h55So6K+B5YWs5Y+4SUQ="/>
+      <column name="cargo_name" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6LSn54mp5ZCN56ewSUQ="/>
+      <column name="origin_place" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5Lqn5ZywSUQ="/>
+      <column name="cargo_type" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="6LSn54mp5YiG57G7SUQ="/>
+      <column name="cntr_freedays" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="566x5L2/5aSp5pWw"/>
       <primary-key name="pk_contract" columns="id"/>
-      <foreign-key name="fk_contract_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_contract_custom" columns="custom_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_contract_port" columns="port_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_contract_ship_corp" columns="ship_corp_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_contract_yard" columns="yard_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_contract_cargoname" columns="cargo_name" ref-table="c_cargo" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_cargotype" columns="cargo_type" ref-table="c_cargo_type" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_credit" columns="credit_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_custom" columns="custom_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_landtrans" columns="landtrans_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_yard" columns="yard_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_checkyard" columns="check_yard_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_ship_corp" columns="ship_corp_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_unboxyard" columns="unbox_yard_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_port" columns="port_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_dispatch" columns="dispatch_place" ref-table="c_dispatch" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_contract_originplace" columns="origin_place" ref-table="c_place" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
       <exported-key name="fk_contract-action_contract" table="contract_action" schema="public" catalog="yard" columns="contract_id"/>
       <exported-key name="fk_contract_cntr_contract" table="contract_cntr" schema="public" catalog="yard" columns="contract_id"/>
       <exported-key name="fk_pre_fee_contract" table="pre_fee" schema="public" catalog="yard" columns="contract_id"/>
@@ -2753,7 +2878,7 @@
       <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5L+u5pS55Lq65ZGY"/>
       <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="5L+u5pS55pe26Ze0"/>
       <primary-key name="pk_contract_action" columns="id"/>
-      <foreign-key name="fk_contract_action_action" columns="action_id" ref-table="c_contract_action" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_contract_action_action" columns="action_id" ref-table="c_contract_action" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
       <foreign-key name="fk_contract-action_contract" columns="contract_id" ref-table="contract" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
       <index name="uk_contract_action" unique="true" columns="contract_id,action_id"/>
     </table>
@@ -2779,6 +2904,7 @@
       <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
       <column name="cntr_type" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="566x5Z6L"/>
       <column name="contract_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5aeU5omYSUQ="/>
+      <column name="check_num" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5p+l6aqM566x6YeP"/>
       <primary-key name="pk_contract_cntr" columns="id"/>
       <foreign-key name="fk_contract_cntr_type" columns="cntr_type" ref-table="c_cntr_type" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
       <foreign-key name="fk_contract_cntr_contract" columns="contract_id" ref-table="contract" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
@@ -2866,12 +2992,12 @@
     </table>
     <table name="pre_fee" schema="public" catalog="yard" type="TABLE" remarks="5bqU5pS25bqU5LuY6LS555So">
       <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgncHJlX2ZlZV9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
-      <column name="contract_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5aeU5omYSUQ="/>
+      <column name="contract_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5aeU5omYSUQ="/>
       <column name="fee_typ" sqlType="bpchar" length="1" precision="0" nullable="false" jdbcType="1" remarks="6LS555So57G75Z6L77yM5bqU5pS2L+W6lOS7mCBJL08="/>
       <column name="fee_cod" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="6LS555So5ZCN56ew"/>
       <column name="client_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5a6i5oi3SUQ="/>
       <column name="amount" sqlType="numeric" length="10" precision="2" nullable="true" jdbcType="2" remarks="6YeR6aKd"/>
-      <column name="fee_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="6LS555So5Lqn55Sf5pe26Ze0"/>
+      <column name="fee_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93" remarks="6LS555So5Lqn55Sf5pe26Ze0"/>
       <column name="lock_flag" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U=" remarks="6LS555So6ZSB5a6a"/>
       <column name="fee_financial_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="6LSi5Yqh57uf6K6h5pe26Ze0"/>
       <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
@@ -2885,12 +3011,67 @@
       <column name="audit_id" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U="/>
       <column name="audit_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93" remarks="5qC46ZSA5pe26Ze0"/>
       <primary-key name="pk_pre_fee" columns="id"/>
-      <foreign-key name="fk_pre_fee_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_pre_fee_cod" columns="fee_cod" ref-table="c_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_pre_fee_contract" columns="contract_id" ref-table="contract" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <exported-key name="fk_writefee_pre" table="writeoff_fee" schema="public" catalog="yard" columns="pre_fee_id"/>
+      <foreign-key name="fk_pre_fee_client" columns="client_id" ref-table="c_client" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_pre_fee_cod" columns="fee_cod" ref-table="c_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
+      <foreign-key name="fk_pre_fee_contract" columns="contract_id" ref-table="contract" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
     </table>
     <table name="pre_fee_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
+    <table name="s_filter_body" schema="public" catalog="yard" type="TABLE">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnc19maWx0ZXJfYm9keV9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
+      <column name="filter_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="content_col" sqlType="varchar" length="30" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5p2h5Lu25a2X5q615ZCN"/>
+      <column name="content_value" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5p2h5Lu25YC8"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <column name="content_type" sqlType="bpchar" length="1" precision="0" nullable="false" jdbcType="1" def="J1cn" remarks="5YaF5a6557G75Z6LJ1cnLXdoZXJlICdTJy1vcmRlciAnQyctY29s"/>
+      <column name="content_condition" sqlType="varchar" length="10" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="5YaF5a655p2h5Lu2"/>
+      <column name="value_text" sqlType="varchar" length="100" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="display_value" sqlType="varchar" length="100" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <primary-key name="pk_s_filter_body" columns="id"/>
+      <foreign-key name="fk_filter_id" columns="filter_id" ref-table="s_filter_head" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="0" deferrability="2"/>
+    </table>
+    <table name="s_filter_body_id_seq" schema="public" catalog="yard" type="SEQUENCE">
+      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
+      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
+      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
+    </table>
+    <table name="s_filter_head" schema="public" catalog="yard" type="TABLE" remarks="5p+l6K+i5p2h5Lu25aS0">
+      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnc19maWx0ZXJfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
+      <column name="datagrid" sqlType="varchar" length="100" precision="0" nullable="false" jdbcType="12" def="Jyc=" remarks="ZGF0YWdyaWTlkI3np7A="/>
+      <column name="filter_type" sqlType="bpchar" length="1" precision="0" nullable="false" jdbcType="1" def="J0cn" remarks="J0cnLeWFqOWxgCAnUCct5Liq5Lq6"/>
+      <column name="filter_owner" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" remarks="5p+l6K+i5p2h5Lu25omA5pyJ6ICF"/>
+      <column name="filter_name" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" remarks="5p+l6K+i5p2h5Lu25ZCN56ew"/>
+      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" def="Jyc="/>
+      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
+      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
+      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
+      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
+      <primary-key name="pk_s_filter" columns="id"/>
+      <exported-key name="fk_filter_id" table="s_filter_body" schema="public" catalog="yard" columns="filter_id"/>
+      <index name="idx_s_filter" unique="false" columns="datagrid"/>
+    </table>
+    <table name="s_filter_id_seq" schema="public" catalog="yard" type="SEQUENCE">
       <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
       <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
       <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
@@ -3137,7 +3318,7 @@
       <column name="parent_id" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4" def="MA==" remarks="54i25Yqf6IO9SUQK"/>
       <column name="menushowname" sqlType="varchar" length="50" precision="0" nullable="false" jdbcType="12" remarks="6I+c5Y2V5pi+56S65ZCN56ew"/>
       <column name="sortno" sqlType="int2" length="5" precision="0" nullable="true" jdbcType="5" remarks="5bqP5Y+3"/>
-      <column name="sys_flag" sqlType="bool" length="1" precision="0" nullable="true" jdbcType="-7" remarks="57O757uf5Yqf6IO977yM56aB5q2i55So5oi35LiA5YiH5pON5L2c"/>
+      <column name="sys_flag" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7" def="ZmFsc2U=" remarks="57O757uf5Yqf6IO977yM56aB5q2i55So5oi35LiA5YiH5pON5L2c"/>
       <primary-key name="pk_sys_menu" columns="id"/>
       <foreign-key name="fk_sys_menu_parent" columns="parent_id" ref-table="sys_menu" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_s_postmenu_menu" table="s_postmenu" schema="public" catalog="yard" columns="menu_id"/>
@@ -3161,33 +3342,6 @@
       <index name="uk_sys_menu_func" unique="true" columns="menu_id,func_id"/>
     </table>
     <table name="sys_menu_func_id_seq" schema="public" catalog="yard" type="SEQUENCE">
-      <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
-      <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="increment_by" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="max_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="min_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="cache_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="log_cnt" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
-      <column name="is_cycled" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
-      <column name="is_called" sqlType="bool" length="1" precision="0" nullable="false" jdbcType="-7"/>
-    </table>
-    <table name="writeoff_fee" schema="public" catalog="yard" type="TABLE" remarks="5qC46ZSA6KGo">
-      <column name="id" sqlType="serial" length="10" precision="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnd3JpdGVvZmZfZmVlX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
-      <column name="act_fee_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5bey5pS25bey5LuYSUQ="/>
-      <column name="pre_fee_id" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4" remarks="5bqU5pS25bqU5LuYSUQ="/>
-      <column name="amount" sqlType="numeric" length="10" precision="2" nullable="false" jdbcType="2" remarks="6YeR6aKd"/>
-      <column name="rec_nam" sqlType="int4" length="10" precision="0" nullable="false" jdbcType="4"/>
-      <column name="rec_tim" sqlType="timestamp" length="29" precision="6" nullable="false" jdbcType="93"/>
-      <column name="upd_nam" sqlType="int4" length="10" precision="0" nullable="true" jdbcType="4"/>
-      <column name="upd_tim" sqlType="timestamp" length="29" precision="6" nullable="true" jdbcType="93"/>
-      <column name="remark" sqlType="varchar" length="50" precision="0" nullable="true" jdbcType="12"/>
-      <primary-key name="pk_writeoff_fee" columns="id"/>
-      <foreign-key name="fk_writeoff_fee_act" columns="act_fee_id" ref-table="act_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
-      <foreign-key name="fk_writefee_pre" columns="pre_fee_id" ref-table="pre_fee" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="1" deferrability="2"/>
-      <index name="uk_writeoff_fee" unique="true" columns="act_fee_id,pre_fee_id"/>
-    </table>
-    <table name="writeoff_fee_id_seq" schema="public" catalog="yard" type="SEQUENCE">
       <column name="sequence_name" sqlType="name" length="2147483647" precision="0" nullable="false" jdbcType="12"/>
       <column name="last_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
       <column name="start_value" sqlType="int8" length="19" precision="0" nullable="false" jdbcType="-5"/>
@@ -19700,12 +19854,44 @@
         <parameter name="returnValue" sqlType="bool" length="0" precision="0" nullable="true" jdbcType="-7" type="5" index="0"/>
       </prototype>
     </procedure>
+    <procedure name="f_create_lump_fee" schema="public" catalog="yard" type="2">
+      <prototype>
+        <parameter name="p_contract_id" sqlType="int4" length="0" precision="0" nullable="true" jdbcType="4" type="1" index="1"/>
+        <parameter name="p_tim" sqlType="timestamp" length="0" precision="0" nullable="true" jdbcType="93" type="1" index="2"/>
+        <parameter name="oper_id" sqlType="int4" length="0" precision="0" nullable="true" jdbcType="4" type="1" index="3"/>
+        <parameter name="ov_rtn" sqlType="varchar" length="0" precision="0" nullable="true" jdbcType="12" type="4" index="4"/>
+        <parameter name="returnValue" sqlType="varchar" length="0" precision="0" nullable="true" jdbcType="12" type="5" index="0"/>
+      </prototype>
+    </procedure>
+    <procedure name="f_create_protocol_fee" schema="public" catalog="yard" type="2">
+      <prototype>
+        <parameter name="p_contract_id" sqlType="int4" length="0" precision="0" nullable="true" jdbcType="4" type="1" index="1"/>
+        <parameter name="oper_id" sqlType="int4" length="0" precision="0" nullable="true" jdbcType="4" type="1" index="2"/>
+        <parameter name="ov_rtn" sqlType="varchar" length="0" precision="0" nullable="true" jdbcType="12" type="4" index="3"/>
+        <parameter name="returnValue" sqlType="varchar" length="0" precision="0" nullable="true" jdbcType="12" type="5" index="0"/>
+      </prototype>
+    </procedure>
+    <procedure name="fun4tri_c_fee" schema="public" catalog="yard" type="2">
+      <prototype>
+        <parameter name="returnValue" sqlType="trigger" length="0" precision="0" nullable="true" jdbcType="1111" type="5" index="0"/>
+      </prototype>
+    </procedure>
     <procedure name="fun4tri_contract" schema="public" catalog="yard" type="2">
       <prototype>
         <parameter name="returnValue" sqlType="trigger" length="0" precision="0" nullable="true" jdbcType="1111" type="5" index="0"/>
       </prototype>
     </procedure>
-    <procedure name="fun4tri_pre_fee" schema="public" catalog="yard" type="2">
+    <procedure name="fun4tri_contract_action" schema="public" catalog="yard" type="2">
+      <prototype>
+        <parameter name="returnValue" sqlType="trigger" length="0" precision="0" nullable="true" jdbcType="1111" type="5" index="0"/>
+      </prototype>
+    </procedure>
+    <procedure name="fun4tri_s_postmenufunc" schema="public" catalog="yard" type="2">
+      <prototype>
+        <parameter name="returnValue" sqlType="trigger" length="0" precision="0" nullable="true" jdbcType="1111" type="5" index="0"/>
+      </prototype>
+    </procedure>
+    <procedure name="fun4tri_s_user" schema="public" catalog="yard" type="2">
       <prototype>
         <parameter name="returnValue" sqlType="trigger" length="0" precision="0" nullable="true" jdbcType="1111" type="5" index="0"/>
       </prototype>
