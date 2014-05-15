@@ -356,7 +356,8 @@ $(function () {
         common.createsearchform.sorterdatagrid.datagrid('manualEndEdit');
         common.createsearchform.colsdatagrid.datagrid('manualEndEdit');
     }
-    common.createsearchform.getfilterdata = function () {
+    common.createsearchform.getfilterdata = function (flag) {
+        //flag:'Q'-查询 'S'-保存
         var rows = common.createsearchform.filterdatagrid.datagrid('getRows');
         var d = [];
         for (var i = 0, ilen = rows.length; i < ilen; i++) {
@@ -369,7 +370,8 @@ $(function () {
                         return null;
                     }
                 }
-                d.push(
+                if (flag == 'S'){
+                    d.push(
                         {
                             cod: rows[i].cod,
                             operatorTyp: rows[i].operatorTyp,
@@ -377,6 +379,14 @@ $(function () {
                             value_text:rows[i].value_text.toString(),
                             display_value:rows[i].display_value.toString(),
                         });
+                }else{
+                    d.push(
+                        {
+                            cod: rows[i].cod,
+                            operatorTyp: rows[i].operatorTyp,
+                            value: rows[i].value.toString()
+                        });
+                }
             }
         }
         return d;
@@ -406,7 +416,7 @@ $(function () {
 
     $('#common-createsearchform-ok').bind('click', function () {
         common.createsearchform.pregetdata();
-        sy.searchWindowReturnData.filters = common.createsearchform.getfilterdata();
+        sy.searchWindowReturnData.filters = common.createsearchform.getfilterdata('Q');
         if (sy.searchWindowReturnData.filters == null) {
             return;
         }
@@ -435,7 +445,7 @@ $(function () {
                 var filter_opt = common.createsearchform.filtersavewin.window('options').returnData;
                 var uuid = (new UUID()).id
                 var filterbody = [];
-                var filterrows = common.createsearchform.getfilterdata();
+                var filterrows = common.createsearchform.getfilterdata('S');
                 if (filterrows == null || filterrows.length == 0) {
                     return;
                 }
@@ -569,7 +579,57 @@ $(function () {
                     data: {jpargs: JSON.stringify(p)},
                     success: function (r, t, a) {
                         if ($.ajaxSettings.success(r, t, a, true) == true) {
-                            console.info(r.rows);
+                            var filterrows = common.createsearchform.filterdatagrid.datagrid('getRows');
+                            var sortrows = common.createsearchform.sorterdatagrid.datagrid('getRows');
+                            var colrows = common.createsearchform.colsdatagrid.datagrid('getRows');
+                            var col = '';
+                            var find = false;
+                            for(var i= 0,ilen=filterrows.length;i<ilen;i++){
+                                col = filterrows[i].cod;
+                                find = false;
+                                for(var j= 0,jlen= r.rows.length;j<jlen;j++){
+                                    if (r.rows[j].content_col == col && r.rows[j].content_type == 'W'){
+                                        filterrows[i].operatorTyp = r.rows[j].content_condition;
+                                        filterrows[i].value = r.rows[j].content_value;
+                                        filterrows[i].value_text = r.rows[j].value_text;
+                                        filterrows[i].display_value = r.rows[j].display_value;
+                                        find = true;
+                                        break;
+                                    }
+                                }
+                                if (!find){
+                                    filterrows[i].operatorTyp = '';
+                                    filterrows[i].value = '';
+                                    filterrows[i].value_text = '';
+                                    filterrows[i].display_value = '';
+                                }
+                                common.createsearchform.filterdatagrid.datagrid('refreshRow',i);
+                            }
+                            for(var i= 0,ilen=sortrows.length;i<ilen;i++){
+                                col = sortrows[i].cod;
+                                find = false;
+                                for(var j= 0,jlen= r.rows.length;j<jlen;j++){
+                                    if (r.rows[j].content_col == col && r.rows[j].content_type == 'S'){
+                                        sortrows[i].order_typ = r.rows[j].content_condition;
+                                        find = true;
+                                        break;
+                                    }
+                                }
+                                if (!find){
+                                   sortrows[i].order_typ = '';
+                                }
+                                common.createsearchform.sorterdatagrid.datagrid('refreshRow',i);
+                            }
+                            common.createsearchform.colsdatagrid.datagrid('uncheckAll');
+                            for(var i= 0,ilen=colrows.length;i<ilen;i++){
+                                col = colrows[i].cod;
+                                for(var j= 0,jlen= r.rows.length;j<jlen;j++){
+                                    if (r.rows[j].content_col == col && r.rows[j].content_type == 'C'){
+                                        common.createsearchform.colsdatagrid.datagrid('checkRow',i);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
