@@ -417,6 +417,27 @@ $.extend($.fn.datagrid.defaults, {
             $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('enable');
         }
     },
+    onRowContextMenu:function(e,rowIndex,rowData){
+        e.preventDefault();
+        var that = $(this);
+        $('#datagridcontextmenu').menu({
+            onClick:function(item){
+                if (item.text == '导出Excel'){
+                    var fcols = that.datagrid('')
+                    var p = {
+                        func: 'excel导出',
+                        ex_parm:{
+                            title:''
+
+                        }
+                    }
+                }
+            }
+        }).menu('show',{
+           left: e.pageX,
+           top: e.pageY
+        });
+    },
     loader: function (param, success, error) {
         var that = $(this);
         var opts = that.datagrid('options');
@@ -501,6 +522,47 @@ $.extend($.fn.datagrid.methods, {
          取datagrid的原始值 返回数组
          */
         return $(jq).data("datagrid").originalRows;
+    },
+    getExportExcelData:function(jq){
+        var cols = [];
+        var data = [];
+        var columns = jq.datagrid('getColumnFields',true).concat(jq.datagrid('getColumnFields'));
+        var colopt;
+        var editor;
+        for (var i= 0,ilen=columns.length;i<ilen;i++){
+            colopt = jq.datagrid('getColumnOption',columns[i]);
+            if (!colopt.hasOwnProperty('hidden') || colopt.hidden == false || colopt.hidden == 'false'){
+                cols.push(columns[i]);
+            }
+        }
+        var rows = jq.datagrid('getRows');
+        for(var i= 0,ilen=rows.length;i<ilen;i++){
+            data[i] = [];
+            for(var j= 0,jlen=cols.length;j<jlen;j++){
+                colopt = jq.datagrid('getColumnOption',cols[j]);
+                if (!colopt.hasOwnProperty('editor')){
+                    data[i].push(rows[i][cols[j]]);
+                }else if (!colopt.editor.hasOwnProperty('type')){
+                    data[i].push(rows[i][cols[j]]);
+                }else if (colopt.editor.type == 'checkbox'){
+                    if (rows[i][cols[j]] == 'true'){
+                        data[i].push('是');
+                    }else{
+                        data[i].push('否');
+                    }
+                }else if (colopt.editor.type == 'combobox'){
+                    editor = jq.datagrid('getEditor',{index:i,field:cols[j]});
+                    data[i].push($(editor.target).combobox('getText'));
+                }else{
+                    data[i].push(rows[i][cols[j]]);
+                }
+            }
+        }
+        var p = {
+            cols:cols,
+            data:data
+        };
+        return p;
     },
     getChangeUpdate: function (jq) {
         /*
