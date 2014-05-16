@@ -91,7 +91,7 @@ def getBussSumary(request, aDict):
         return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
 
     ls_sqlsum = ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum, b.cntr_type  || ' X ' ||  sum(check_num) as checksum   from contract_cntr as A , c_cntr_type as B
-                    where A.contract_id in (select id from contract where client_id = %s and cargo_type  = %s and cargo_name = %s and origin_place = %s)
+                    where A.contract_id in (select id from contract where COALESCE(client_id,0) = %s and COALESCE(cargo_type,0)  = %s and COALESCE(cargo_name,0) = %s and COALESCE(origin_place,0) = %s)
                     and A.cntr_type = B.id
                     group by b.cntr_type
                 '''
@@ -103,18 +103,18 @@ def getBussSumary(request, aDict):
         ls_originPlace = "0"
         if len(str(i["cargo_type"])) > 0:
             ls_cargoType = str(i["cargo_type"])
-        if len(str(i["cargo_type"])) > 0:
-            ls_cargoType = str(i["cargo_name"])
-        if len(str(i["cargo_type"])) > 0:
-            ls_cargoType = str(i["origin_place"])
+        if len(str(i["cargo_name"])) > 0:
+            ls_cargoName = str(i["cargo_name"])
+        if len(str(i["origin_place"])) > 0:
+            ls_originPlace = str(i["origin_place"])
         #l_sumCntr = rawSql2JsonDict(ls_sqlsum % (str(i["client_id"]),str(i["cargo_type"]),str(i["cargo_name"]),str(i["origin_place"])) )
         l_sumCntr = rawSql2JsonDict(ls_sqlsum % (str(i["client_id"]),ls_cargoType,ls_cargoName,ls_originPlace ))
         if len(l_sumCntr) > 0:
             ls = ";".join([x["showsum"] for x in l_sumCntr])
             ls2 = ";".join([x["checksum"] for x in l_sumCntr])
-            i.update({  "cntr_sum": ls  , "check_num": ls2  })
+            i.update({  "cntr_num": ls  , "check_num": ls2  })
         else:
-            i.update({ "cntr_sum": "None",  "check_num": "None"   })
+            i.update({ "cntr_num": "None",  "check_num": "None"   })
 
     # get all the cntr for all the sum bill .
     ls_sumcntr4footer =  ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum,  b.cntr_type  || ' X ' ||  sum(check_num) as checksum  from contract_cntr as A , c_cntr_type as B
@@ -125,9 +125,9 @@ def getBussSumary(request, aDict):
     if len(ldict_sum) > 0 :
         ls_sumCheck = ";".join([x["checksum"] for x in ldict_sum])
         ls_sumall = ";".join([x["showsum"] for x in ldict_sum])
-        lrtn.update( { "footer" : [{"cntr_sum":ls_sumall , "client_id": "合计", "check_num": ls_sumCheck } ] } )
+        lrtn.update( { "footer" : [{"cntr_num":ls_sumall , "client_id": "合计", "check_num": ls_sumCheck } ] } )
     else:
-        lrtn.update( { "footer" : [{"cntr_sum":"None" , "client_id": "合计", "check_num": "None" } ] } )
+        lrtn.update( { "footer" : [{"cntr_num":"None" , "client_id": "合计", "check_num": "None" } ] } )
     # get all the cntr for check  from the contract.
     return HttpResponse(json.dumps(lrtn, ensure_ascii = False))
 
