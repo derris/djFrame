@@ -239,7 +239,11 @@ def rawsql2json(aSql, aSqlCount):
             l_sum.append( l_dictSub )
             l_count += 1
         l_cur.execute(aSqlCount)
-        l_sqlcount = l_cur.fetchone()[0]
+        l_sqlcount = l_cur.fetchone()
+        if l_sqlcount:
+            l_sqlcount = l_sqlcount[0]
+        else:
+            l_sqlcount = 0
     except Exception as e:
         logErr("查询失败：%s" % str(e.args))
         raise e
