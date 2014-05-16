@@ -420,17 +420,30 @@ $.extend($.fn.datagrid.defaults, {
     onRowContextMenu:function(e,rowIndex,rowData){
         e.preventDefault();
         var that = $(this);
+        var opts = that.datagrid('options');
         $('#datagridcontextmenu').menu({
             onClick:function(item){
                 if (item.text == '导出Excel'){
-                    var fcols = that.datagrid('')
+                    var exportdata = that.datagrid('getExportExcelData');
                     var p = {
                         func: 'excel导出',
                         ex_parm:{
-                            title:''
-
+                            title:'',
+                            cols:exportdata.cols,
+                            rows:exportdata.data
                         }
                     }
+                    $.ajax({
+                        url: opts.url,
+                        data: {jpargs: JSON.stringify(p)},
+                        success: function (r, t, a) {
+                            if ($.ajaxSettings.success(r, t, a, false)){
+                                console.info(r);
+                            }else{
+                                error();
+                            }
+                        }
+                    });
                 }
             }
         }).menu('show',{
@@ -525,41 +538,54 @@ $.extend($.fn.datagrid.methods, {
     },
     getExportExcelData:function(jq){
         var cols = [];
+        var coltitles = [];
+        var colopts = [];
         var data = [];
         var columns = jq.datagrid('getColumnFields',true).concat(jq.datagrid('getColumnFields'));
         var colopt;
-        var editor;
+        var find = false;
         for (var i= 0,ilen=columns.length;i<ilen;i++){
             colopt = jq.datagrid('getColumnOption',columns[i]);
             if (!colopt.hasOwnProperty('hidden') || colopt.hidden == false || colopt.hidden == 'false'){
-                cols.push(columns[i]);
+                cols.push(colopt.field);
+                coltitles.push(colopt.title);
+                colopts.push(colopt);
             }
         }
         var rows = jq.datagrid('getRows');
         for(var i= 0,ilen=rows.length;i<ilen;i++){
             data[i] = [];
             for(var j= 0,jlen=cols.length;j<jlen;j++){
-                colopt = jq.datagrid('getColumnOption',cols[j]);
-                if (!colopt.hasOwnProperty('editor')){
+                //colopt = jq.datagrid('getColumnOption',cols[j]);
+                if (!colopts[j].hasOwnProperty('editor')){
                     data[i].push(rows[i][cols[j]]);
-                }else if (!colopt.editor.hasOwnProperty('type')){
+                }else if (!colopts[j].editor.hasOwnProperty('type')){
                     data[i].push(rows[i][cols[j]]);
-                }else if (colopt.editor.type == 'checkbox'){
+                }else if (colopts[j].editor.type == 'checkbox'){
                     if (rows[i][cols[j]] == 'true'){
                         data[i].push('是');
                     }else{
                         data[i].push('否');
                     }
-                }else if (colopt.editor.type == 'combobox'){
-                    editor = jq.datagrid('getEditor',{index:i,field:cols[j]});
-                    data[i].push($(editor.target).combobox('getText'));
+                }else if (colopts[j].editor.type == 'combobox' ){
+                    find = false;
+                    for(var m= 0,mlen=colopts[j].editor.options.data.length;m<mlen;m++){
+                        if (rows[i][cols[j]] == colopts[j].editor.options.data[m].value){
+                            data[i].push(colopts[j].editor.options.data[m].text);
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find == false){
+                        data[i].push(rows[i][cols[j]]);
+                    }
                 }else{
                     data[i].push(rows[i][cols[j]]);
                 }
             }
         }
         var p = {
-            cols:cols,
+            cols:coltitles,
             data:data
         };
         return p;
