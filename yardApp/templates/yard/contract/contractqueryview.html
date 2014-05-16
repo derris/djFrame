@@ -47,6 +47,7 @@
             contract.contractqueryview.prefeeingrid.datagrid('reload');
             contract.contractqueryview.prefeeoutgrid.datagrid('reload');
             $('#contract-contractqueryview-tabs').tabs('select',0);
+            control.contract.contractgrid.lock_{{ seq }} = false;
         });
     });
 

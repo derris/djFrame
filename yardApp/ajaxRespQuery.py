@@ -88,7 +88,7 @@ def getBussSumary(request, aDict):
     if lrtn["total"] > 0 :
         pass
     else:
-        lrtn = { "msg":"查询成功",  "stateCod": "1", "error": [""],"rows":[] }
+        lrtn = { "msg":"查询成功",  "stateCod": "1", "error": [""],"rows":[],"footer":[] }
         return HttpResponse(json.dumps(lrtn,ensure_ascii = False))
 
     ls_sqlsum = ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum, b.cntr_type  || ' X ' ||  sum(check_num) as checksum   from contract_cntr as A , c_cntr_type as B

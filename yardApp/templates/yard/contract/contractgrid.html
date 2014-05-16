@@ -1,6 +1,7 @@
 <script>
     Namespace.register('control.contract.contractgrid');
     $(function () {
+        control.contract.contractgrid.lock_{{ seq }} = false;
         control.contract.contractgrid._{{ seq }} = $('#control-contract-datagrid-{{ seq }}').datagrid({
             autoLoad: false,
             columns: [
@@ -58,7 +59,10 @@
                 return;
             },
             onClickRow: function (rowindex, rowdata) {
-                control.contract.contractgrid._{{ seq }}.trigger('clickrow', rowdata.id);
+                if (control.contract.contractgrid.lock_{{ seq }} == false) {
+                    control.contract.contractgrid.lock_{{ seq }} = true;
+                    control.contract.contractgrid._{{ seq }}.trigger('clickrow', rowdata.id);
+                }
             }
         });
         control.contract.contractgrid._{{ seq }}.trigger('afterrender', control.contract.contractgrid._{{ seq }});
