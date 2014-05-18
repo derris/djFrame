@@ -1,39 +1,3 @@
-todo 7
-func: '业务汇总报表查询'
-查询条件：客户，还箱日期段。客户为空，查询全部客户，日期段不能空
-查询内容：体积、箱量、查验箱量
-分组：客户+货物分类+货名+产地
-接收参数接口：
-{
-    func: '业务汇总报表查询',
-    ex_parm: {
-        client_id: '客户ID', //int型 客户id
-        begindate: '还箱开始日期', //date型
-        enddate: '还箱截止日期'} //date型
-}
-返回接口：
-  {"stateCod": 1,
-   "rows": [
-    {
-        "client_id": 53, //客户ID
-        "cargo_type": 2   //货物分类
-        "cargo_name": 2 //货物名称,
-        "origin_place": 1 //产地,
-        "cargo_volume": "409.508" //体积,
-        "cntr_num": "20GPX5,40GPX10",
-        "check_num": "20GPX3,40GPX6"
-    }
-    ],
-   "total": 1,
-   "error": [],
-   "msg": "查询完毕",
-   "footer":[
-        {"cntr_num":"20GPX5,40GPX10",
-         "client_id":"合计",
-         "check_num":"20GPX3,40GPX6"
-        }]
- }
-
 todo 8
 func:'excel导出'
 接收前台传过来数据，生成excel文件，供前台下载

@@ -1,12 +1,13 @@
 __author__ = 'blaczom@163.com'
 
 import json
-from django.db import transaction, connection
-from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
+from django.db import connection
+from zdCommon.dbhelp import rawsql2json,rawsql4request
 from zdCommon.utils import log, logErr
-from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd
-from datetime import datetime
-from django.http import HttpResponse
+from zdCommon.dbhelp import  cursorExec2, json2upd
+from django.http import HttpResponse, HttpResponseRedirect
+from yard.settings import STATIC_PATH, STATIC_URL
+
 
 def update_user(request, adict):
     '''  change pass 密码  '''
@@ -75,3 +76,59 @@ def getfilterbody(request):
     ldict = json.loads( request.POST['jpargs'] )
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_filter_body "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
+
+def exportExcel(request, adict):
+    # 生成文件返回。
+    pass
+    ''' 直接生成文件流返回。
+    import io
+    output = io.BytesIO()
+    book = Workbook(output)
+    sheet = book.add_worksheet('test')
+    sheet.write(0, 0, 'Hello, world!')
+    book.close()
+    # construct response
+    output.seek(0)
+    #response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response = HttpResponse(str(output.read()), content_type="application/json")
+    response['Content-Disposition'] = "attachment; filename=test.xlsx"
+    return response
+    '''
+    l_rtn = {  "msg":"成功",  "stateCod": "004", "error": [""],
+               "result": {"filepath":""}      #  成功返回文件下载路径，失败为空  stateCod -3
+    }
+    # 保存文件到static，然后返回url
+    try:
+        l_parm = adict['ex_parm']
+        l_parm['title']  # : '文档标题', //如果非空，将第一行各列合并居中写入title
+        l_parm['cols']   # :['列名1','列名2','列名3'], //列标题
+        l_parm['rows']   # :[      ['行1列1','行1列2','行1列3'],       #         ['行2列1','行2列2','行2列3'],
+        import uuid
+        import xlsxwriter
+        tt = uuid.uuid1().fields
+        ls_fileName = str(tt[0]) + str(tt[3]) + str(tt[4]) + ".xlsx"
+        ls_file = STATIC_PATH + ls_fileName
+        workbook = xlsxwriter.Workbook(ls_file)
+        worksheet = workbook.add_worksheet()
+        # Widen the first column to make the text clearer.
+        #worksheet.set_column('A:A', 20)
+        # Add a bold format to use to highlight cells.
+        #bold = workbook.add_format({'bold': True})
+        # Write some simple text.
+        worksheet.write('A1',l_parm['title'])
+        # Text with formatting.              ..........  write( row, cols, content )
+        for i in range(len(l_parm['cols'])):
+            worksheet.write(1, i, l_parm['cols'][i])
+        for i in range(len(l_parm['rows'] )):
+            for j in range(len(l_parm['rows'][i])):
+                worksheet.write(i + 2, j, l_parm['rows'][i][j])
+        workbook.close()
+        l_rtn.update({"result": STATIC_URL + ls_fileName} )
+    except Exception as e:
+        ls_err = str(e.args)
+        l_rtn.update( {  "msg":"失败",  "stateCod": "-3", "error": [ls_err],
+               "result": {"filepath":""}      #  成功返回文件下载路径，失败为空  stateCod -3
+            } )
+
+    return HttpResponse(json.dumps(l_rtn,ensure_ascii = False))

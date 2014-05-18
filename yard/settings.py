@@ -102,5 +102,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
+STATIC_PATH = BASE_DIR + "/yardApp/static/"
 

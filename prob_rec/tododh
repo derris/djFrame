@@ -1,70 +1,23 @@
-todo  over zht 2
-func:'客户费用明细报表' 返回错误时返回数据
+todo over zht 8
+func:'excel\u5BFC\u51FA'
+\u63A5\u6536\u524D\u53F0\u4F20\u8FC7\u6765\u6570\u636E\uFF0C\u751F\u6210excel\u6587\u4EF6\uFF0C\u4F9B\u524D\u53F0\u4E0B\u8F7D
+\u63A5\u6536\u53C2\u6570\u63A5\u53E3\uFF1A
 {
-        "msg":"查询成功",
-        "stateCod": "1",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
-        "error": ["xxx", "xx"]...        # 错误数组。
-        "rows":[{},{},{}]
+    func: 'excel\u5BFC\u51FA',
+    ex_parm: {
+        title: '\u6587\u6863\u6807\u9898', //\u5982\u679C\u975E\u7A7A\uFF0C\u5C06\u7B2C\u4E00\u884C\u5404\u5217\u5408\u5E76\u5C45\u4E2D\u5199\u5165title
+        cols:['\u5217\u540D1','\u5217\u540D2','\u5217\u540D3'], //\u5217\u6807\u9898
+        rows:[['\u884C1\u52171','\u884C1\u52172','\u884C1\u52173'],
+              ['\u884C2\u52171','\u884C2\u52172','\u884C2\u52173'],
+              ['\u884C3\u52171','\u884C3\u52172','\u884C3\u52173'],
+              ['\u884C4\u52171','\u884C4\u52172','\u884C4\u52173']] //\u8868\u683C\u6570\u636E
 }
-如果error没内容就返回[],现在返回[""]    --   确定么？返回的是[]啊。没测试数据：
-try:
-        list_rtn = rawSql2JsonDict(ls_sql, list_arg)
-        l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": list_rtn } )
-    except Exception as e:
-        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
-    return l_rtn
-
-todo  over zht 3
-通用查询
-条件 ‘属于’ ‘不属于’  int型 生成where语句，报错
-     from contract where  client_id like '%39,45%'  limit 50 offset 0
-条件 ‘介于’，‘不介于’ 生成where语句，报错
-  from contract
-  where  return_cntr_date between '2014-04-01,2014-05-05'  limit 50 offset 0
-测试时用‘委托查询’测试 那里面字段类型齐
-
-todo over zht 6
-不建议用存储过程。django实现就好。 初步完成，请测试~~  ajaxResp.py
-
-1.func='业务明细报表查询' 在现有委托查询的基础上，增加‘当前委托动态’和‘箱量’，
-  ‘当前委托动态’ current_action :此委托下委托动态中序号(c_contract_action.sortno)最大的动态名称
-  ‘箱量’ cntr_sum :箱量合计的文字描述 '20GPX10,40GPX20'
-  接收接口结构：通用查询接收接口结构(和func='委托查询' 一样)
-  返回接口结构：通用查询返回接口结构，增加'footer'属性.例子如下：
-  {"stateCod": 1, "rows": [
+\u8FD4\u56DE\u53C2\u6570\u63A5\u53E3\uFF1A
     {
-        "cargo_type": "",
-        "booking_date": "2014-04-18",
-        "bill_no": "563178209",
-        "id": "10",
-        "finish_flag": "false",
-        "cargo_volume": "409.508",
-        "client_id": "39",
-        "cargo_weight": "397933.00",
-        "cargo_piece": "837",
-        "return_cntr_date": "",
-        "in_port_date": "2014-05-05",
-        "vslvoy": "LICA MAERSK/433N",
-        "custom_title2": "",
-        "check_yard_id": "",
-        "cntr_freedays": "",
-        "yard_id": "",
-        "credit_id": "",
-        "cargo_name": "",
-        "custom_title1": "",
-        "dispatch_place": "1",
-        "unbox_yard_id": "",
-        "ship_corp_id": "",
-        "remark": "",
-        "contract_no": "",
-        "port_id": "",
-        "finish_time": "",
-        "landtrans_id": "",
-        "origin_place": "",
-        "custom_id": "",
-        "current_action":'查验',
-        "cntr_sum":'20GPX10',
-        "check_num":'20GPX5'
-    }
-], "total": 3, "error": [], "msg": "查询完毕",
-"footer":[{"cntr_num":"箱量合计描述","bill_no":"汉字箱量合计","check_num":"查验箱量合计描述"}]}
+        "msg":"", //\u6210\u529F\u2018\u2019\uFF0C\u5931\u8D25\u8FD4\u56DE\u9519\u8BEF\u4FE1\u606F
+        "stateCod": "004",   #  \u6210\u529F\u2018004\u2019 \u5931\u8D25-3
+        "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
+        "result": {"filepath":""}      #  \u6210\u529F\u8FD4\u56DE\u6587\u4EF6\u4E0B\u8F7D\u8DEF\u5F84\uFF0C\u5931\u8D25\u4E3A\u7A7A
+   }
+
+
