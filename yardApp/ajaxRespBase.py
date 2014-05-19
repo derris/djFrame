@@ -124,7 +124,7 @@ def exportExcelDirect(request, ldict):
     output = io.BytesIO()
     book = xlsxwriter.Workbook(output)
     sheet = book.add_worksheet('test')
-    sheet.write(0, 0, 'Hello, world!')
+    sheet.write(0, 0, 'Hello, world! aaa ')
     book.close()
     # construct response
     output.seek(0)

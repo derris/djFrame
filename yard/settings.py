@@ -106,3 +106,5 @@ STATIC_PATH = BASE_DIR + "/yardApp/static/"
 
 DOWNLOAD_PATH = BASE_DIR + "/yardApp/static/download/"
 DOWNLOAD_URL = '/static/download/'
+
+nouser = ""
