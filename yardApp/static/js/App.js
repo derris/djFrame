@@ -438,7 +438,7 @@ $.extend($.fn.datagrid.defaults, {
                         data: {jpargs: JSON.stringify(p)},
                         success: function (r, t, a) {
                             if ($.ajaxSettings.success(r, t, a, false)){
-                                console.info(r);
+                                 window.win = open (r.result);
                             }else{
                                 error();
                             }

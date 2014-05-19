@@ -201,7 +201,7 @@ def dealPAjax(request):
         # 判断是否有调用的权限。
         if (ls_userid == '1') \
             or (ldict['func'] in ('功能查询','权限查询','功能权限查询','excel导出',
-                                      '查询条件查询','查询体查询','查询增加','查询条件删除')) \
+                                      '查询条件查询','查询体查询','查询增加','查询条件删除','excel导出')) \
             or (ldict['func'] in getFunc4User(ls_userid)):
             pass
         else:
