@@ -393,11 +393,10 @@ def dealPAjax(request):
                 return exportExcel(request,ldict)
             elif ldict['func'] == 'excel导出2':
                 return exportExcelDirect(request,ldict)
-
-
-
             else:
                 pass
+                pass
+
 
 
     except Exception as e:
