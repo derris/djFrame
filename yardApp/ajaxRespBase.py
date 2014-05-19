@@ -6,7 +6,7 @@ from zdCommon.dbhelp import rawsql2json,rawsql4request
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import  cursorExec2, json2upd
 from django.http import HttpResponse, HttpResponseRedirect
-from yard.settings import STATIC_PATH, STATIC_URL
+from yard.settings import DOWNLOAD_PATH, DOWNLOAD_URL
 
 
 def update_user(request, adict):
@@ -80,21 +80,6 @@ def getfilterbody(request):
 
 def exportExcel(request, adict):
     # 生成文件返回。
-    pass
-    ''' 直接生成文件流返回。
-    import io
-    output = io.BytesIO()
-    book = Workbook(output)
-    sheet = book.add_worksheet('test')
-    sheet.write(0, 0, 'Hello, world!')
-    book.close()
-    # construct response
-    output.seek(0)
-    #response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response = HttpResponse(str(output.read()), content_type="application/json")
-    response['Content-Disposition'] = "attachment; filename=test.xlsx"
-    return response
-    '''
     l_rtn = {  "msg":"成功",  "stateCod": "004", "error": [""],
                "result": {"filepath":""}      #  成功返回文件下载路径，失败为空  stateCod -3
     }
@@ -108,7 +93,7 @@ def exportExcel(request, adict):
         import xlsxwriter
         tt = uuid.uuid1().fields
         ls_fileName = str(tt[0]) + str(tt[3]) + str(tt[4]) + ".xlsx"
-        ls_file = STATIC_PATH + ls_fileName
+        ls_file = DOWNLOAD_PATH + ls_fileName
         workbook = xlsxwriter.Workbook(ls_file)
         worksheet = workbook.add_worksheet()
         # Widen the first column to make the text clearer.
@@ -124,7 +109,7 @@ def exportExcel(request, adict):
             for j in range(len(l_parm['rows'][i])):
                 worksheet.write(i + 2, j, l_parm['rows'][i][j])
         workbook.close()
-        l_rtn.update({"result": STATIC_URL + ls_fileName} )
+        l_rtn.update({"result": DOWNLOAD_URL + ls_fileName} )
     except Exception as e:
         ls_err = str(e.args)
         l_rtn.update( {  "msg":"失败",  "stateCod": "-3", "error": [ls_err],
@@ -132,3 +117,18 @@ def exportExcel(request, adict):
             } )
 
     return HttpResponse(json.dumps(l_rtn,ensure_ascii = False))
+
+def exportExcelDirect(request, ldict):
+    import io
+    import xlsxwriter
+    output = io.BytesIO()
+    book = xlsxwriter.Workbook(output)
+    sheet = book.add_worksheet('test')
+    sheet.write(0, 0, 'Hello, world!')
+    book.close()
+    # construct response
+    output.seek(0)
+    #response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response = HttpResponse(str(output.read()), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response['Content-Disposition'] = "attachment; filename=test.xlsx"
+    return response

@@ -1,11 +1,11 @@
-easyui界面参考：
+easyui\u754C\u9762\u53C2\u8003\uFF1A
 
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/layout/complex.html
 
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/datagrid/checkbox.html
 http://127.0.0.1:8000/static/js/jquery-easyui/demo/linkbutton/basic.html
 
-reset 本地的git版本。
+reset \u672C\u5730\u7684git\u7248\u672C\u3002
 C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cdfed0a45783d93651\cmd\git.exe reset --hard
 
 
@@ -13,25 +13,28 @@ C:\Users\Administrator\AppData\Local\GitHub\PortableGit_fed20eba68b3e238e49a47cd
 file:///D:/Program%20Files/PostgreSQL/9.3/doc/postgresql/html/plpgsql-trigger.html#PLPGSQL-DML-TRIGGER
 
 http://w3school.com.cn/jsref/jsref_obj_string.asp
-easyui文档
+easyui\u6587\u6863
 http://www.jeasyui.com/documentation/index.php#
-jquery文档
+jquery\u6587\u6863
 http://www.w3school.com.cn/jquery/jquery_reference.asp
-html5文档
+html5\u6587\u6863
 http://www.w3school.com.cn/html5/index.asp
-nodejs文档
+nodejs\u6587\u6863
 http://nodejs.org/api/documentation.html
-python文档
+python\u6587\u6863
 http://docs.python.org/3/
 http://woodpecker.org.cn/diveintopython3/index.html
-pillow 文档。
+pillow \u6587\u6863\u3002
 http://pillow.readthedocs.org/en/latest/handbook/tutorial.html#converting-between-modes
-postgresql文档
+postgresql\u6587\u6863
 http://www.postgresql.org/docs/9.1/static/index.html
-django文档
+django\u6587\u6863
 https://docs.djangoproject.com/en/dev/topics/db/sql/
-postgresql触发器python
-js文档http://www.postgresql.org/docs/9.1/static/plpython.html
+postgresql\u89E6\u53D1\u5668python
+js\u6587\u6863http://www.postgresql.org/docs/9.1/static/plpython.html
+python\u751F\u6210excel\u6587\u6863\uFF1A
+https://pypi.python.org/pypi/xlwt3
 
-在前台html加checkbox
-    {field: 'check_flag',title: '选择',checkbox:true}
+
+\u5728\u524D\u53F0html\u52A0checkbox
+    {field: 'check_flag',title: '\u9009\u62E9',checkbox:true}
