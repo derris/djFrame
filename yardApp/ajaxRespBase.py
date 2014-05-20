@@ -121,7 +121,7 @@ def exportFile(request, adict):
 def exportExcelDirect(request, adict):
     try:
         l_parm = adict['ex_parm']
-        l_parm['title']  # : '文档标题', //如果非空，将第一行各列合并居中写入title
+        l_parm['title']  # : '文档标题', 第一行各列合并居中写入title
         l_parm['cols']   # :['列名1','列名2','列名3'], //列标题
         l_parm['rows']   # :[      ['行1列1','行1列2','行1列3'],       #         ['行2列1','行2列2','行2列3'],
         import io
