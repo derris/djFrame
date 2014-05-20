@@ -426,7 +426,7 @@ $.extend($.fn.datagrid.defaults, {
                 if (item.text == '导出Excel'){
                     var exportdata = that.datagrid('getExportExcelData');
                     var p = {
-                        func: 'excel导出2',
+                        func: 'excel导出',
                         ex_parm:{
                             title:'',
                             cols:exportdata.cols,

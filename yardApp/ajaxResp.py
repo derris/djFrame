@@ -389,12 +389,11 @@ def dealPAjax(request):
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             elif ldict['func'] == '业务汇总报表查询':
                 return getBussSumary(request,ldict)
+            elif ldict['func'] == '文件导出':
+                return exportFile(request,ldict)
             elif ldict['func'] == 'excel导出':
-                return exportExcel(request,ldict)
-            elif ldict['func'] == 'excel导出2':
                 return exportExcelDirect(request,ldict)
             else:
-                pass
                 pass
 
 

@@ -78,7 +78,7 @@ def getfilterbody(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 
-def exportExcel(request, adict):
+def exportFile(request, adict):
     # 生成文件返回。
     l_rtn = {  "msg":"成功",  "stateCod": "004", "error": [""],
                "result": {"filepath":""}      #  成功返回文件下载路径，失败为空  stateCod -3
@@ -118,17 +118,30 @@ def exportExcel(request, adict):
 
     return HttpResponse(json.dumps(l_rtn,ensure_ascii = False))
 
-def exportExcelDirect(request, ldict):
-    import io
-    import xlsxwriter
-    output = io.BytesIO()
-    book = xlsxwriter.Workbook(output)
-    sheet = book.add_worksheet('test')
-    sheet.write(0, 0, 'Hello, world! aaa ')
-    book.close()
-    # construct response
-    output.seek(0)
-    #response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+def exportExcelDirect(request, adict):
+    try:
+        l_parm = adict['ex_parm']
+        l_parm['title']  # : '文档标题', //如果非空，将第一行各列合并居中写入title
+        l_parm['cols']   # :['列名1','列名2','列名3'], //列标题
+        l_parm['rows']   # :[      ['行1列1','行1列2','行1列3'],       #         ['行2列1','行2列2','行2列3'],
+        import io
+        from xlsxwriter import Workbook
+        output = io.BytesIO()
+        workbook = Workbook(output)
+        worksheet = workbook.add_worksheet('export')
+        worksheet.write('A1',l_parm['title'])
+        # Text with formatting.              ..........  write( row, cols, content )
+        for i in range(len(l_parm['cols'])):
+            worksheet.write(1, i, l_parm['cols'][i])
+        for i in range(len(l_parm['rows'] )):
+            for j in range(len(l_parm['rows'][i])):
+                worksheet.write(i + 2, j, l_parm['rows'][i][j])
+        workbook.close()
+        output.seek(0)
+        response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    except Exception as e:
+        ls_err = str(e.args)
+        response = HttpResponse(str("导出excel失败：" + ls_err), content_type="application/text")
+
     response['Content-Disposition'] = "attachment; filename=test.xlsx"
     return response
