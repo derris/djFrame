@@ -129,6 +129,6 @@ def exportExcelDirect(request, ldict):
     # construct response
     output.seek(0)
     #response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response = HttpResponse(str(output.read()), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response = HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     response['Content-Disposition'] = "attachment; filename=test.xlsx"
     return response

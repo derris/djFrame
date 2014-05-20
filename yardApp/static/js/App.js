@@ -426,24 +426,29 @@ $.extend($.fn.datagrid.defaults, {
                 if (item.text == '导出Excel'){
                     var exportdata = that.datagrid('getExportExcelData');
                     var p = {
-                        func: 'excel导出',
+                        func: 'excel导出2',
                         ex_parm:{
                             title:'',
                             cols:exportdata.cols,
                             rows:exportdata.data
                         }
                     }
+                    $('#exceldownload-jpargs').val(JSON.stringify(p));
+                    $('#exceldownloadform').submit();
+/* 返回文件路径
                     $.ajax({
                         url: opts.url,
                         data: {jpargs: JSON.stringify(p)},
+                        dataType:'text',
                         success: function (r, t, a) {
                             if ($.ajaxSettings.success(r, t, a, false)){
-                                 window.win = open (r.result);
+                                window.win = open(r.result);
                             }else{
                                 error();
                             }
                         }
                     });
+*/
                 }
             }
         }).menu('show',{

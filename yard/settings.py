@@ -68,20 +68,11 @@ DATABASES = {
         'NAME': 'yard',
         'USER': 'yardAdmin',
         'PASSWORD': 'zht+dh=sql2',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-DATABASE111S = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'yard',
-        'USER': 'yardAdmin',
-        'PASSWORD': 'zht+dh=sql2',
         'HOST': '172.40.68.103',
         'PORT': '5432',
     }
 }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -102,7 +93,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_PATH = BASE_DIR + "/yardApp/static/"
+STATIC_PATH = BASE_DIR + "/yardApp/static"
 
 DOWNLOAD_PATH = BASE_DIR + "/yardApp/static/download/"
 DOWNLOAD_URL = '/static/download/'
