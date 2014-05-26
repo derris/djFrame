@@ -49,7 +49,40 @@ def getMenuListByUser(aUserId):
     else:
         pass   # no top menu ... how that posible ....
     return(ldict_1)
-from django.contrib.auth.decorators import login_required
+
+def checkPrivilege(aDict):
+    #  according to  aDict["func"]  ,check the aDict["rows"]    'op': 'insert',
+    #            'table': 'c_client',
+    #    'subs': { rows: [递归] } //没有就空着
+
+    if aDict['reqtype'] == 'query':
+        return True
+
+    ls_sql = "select ref_tables from sys_func where funcname = '%s';" % str(aDict["func"])
+    l_table = cursorSelect(ls_sql)    #  l_userFunc[0][0]   [(1), (2)] ...
+    ls_tableSet = ",".join( [ i[0] for i in l_table ] ) + ","
+    l_rows = aDict["rows"]
+    return checkAllRows(l_rows, ls_tableSet )
+
+def checkAllRows(aRows, aTableSet):
+    for i in aRows:
+        l_mark = True
+        if "table" in i.keys():
+            l_find = i["table"] + ","
+            if aTableSet.find(l_find) > -1:
+                # 查找子列所有的对象。
+                if "subs" in i.keys():
+                    if len(i["subs"]) > 0:
+                        if checkAllRows(i["subs"], aTableSet):
+                            pass
+                        else:
+                            l_mark = False
+            else:
+                l_mark = False
+        if not l_mark:
+            return False
+    return True
+
 #@login_required
 def getFunc4User(aUserId):
     '''

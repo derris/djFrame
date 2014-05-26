@@ -6,7 +6,7 @@ import json
 from django.shortcuts import render
 from django.db import transaction
 from zdCommon.dbhelp import rawsql2json,rawsql4request,json2upd, rawSql2JsonDict
-from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege, getFunc4User
+from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege, getFunc4User, checkPrivilege
 from zdCommon.utils import log, logErr
 from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
 from datetime import datetime
@@ -207,9 +207,18 @@ def dealPAjax(request):
         # 判断是否有调用的权限。
         if (ls_userid == '1') \
             or (ldict['func'] in ('功能查询','权限查询','功能权限查询','excel导出','文件导出',
-                                      '查询条件查询','查询体查询','查询增加','查询条件删除')) \
-            or (ldict['func'] in getFunc4User(ls_userid)):
+                                      '查询条件查询','查询体查询','查询增加','查询条件删除'))    :
             pass
+        elif (ldict['func'] in getFunc4User(ls_userid)):
+            # check if the function is valid
+            if checkPrivilege(ldict) :
+                pass
+            else:
+                ls_errmsg = "功能溢出权限：操作数据库表非法"
+                l_rtn = {"error": [ls_errmsg],
+                        "msg":ldict['func'] + " " + ls_errmsg,
+                        "stateCod":-1}
+                return( HttpResponse(json.dumps( l_rtn,ensure_ascii = False) ))
         else:
             l_rtn = {"error": [ls_err],
                         "msg":ldict['func'] + "没有执行权限",
