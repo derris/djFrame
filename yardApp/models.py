@@ -95,6 +95,7 @@ class SysMenu(BaseModel):
 class SysFunc(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     funcname = models.CharField('权限名称',max_length=50)
+    ref_tables = models.CharField('涉及表',max_length=100,blank=True,null=True)
     def __str__(self):
         return self.funcname
     class Meta:
@@ -303,3 +304,26 @@ class FilterBody(BaseModel):
     display_value = models.CharField('显示值',max_length=100,blank=True,null=True)
     class Meta:
         db_table = 's_filter_body'
+class Rpt(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    rpt_name = models.CharField('报表名称',max_length=30)
+    def __str__(self):
+        return self.rpt_name
+    class Meta:
+        db_table = 'c_rpt'
+class RptItem(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    item_name = models.CharField('报表项目名称',max_length=30)
+    rpt_id = models.ForeignKey('Rpt',related_name='rpt_rptitem',verbose_name='报表id',db_column='rpt_id')
+    sort_no = models.IntegerField('序号',blank=True,null=True)
+    def __str__(self):
+        return self.item_name
+    class Meta:
+        db_table = 'c_rpt_item'
+class RptItemFee(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    rpt_id = models.ForeignKey('Rpt',related_name='rpt_rptitemfee',verbose_name='报表id',db_column='rpt_id')
+    item_id = models.ForeignKey('RptItem',related_name='rptitem_rptitemfee',verbose_name='报表项目id',db_column='item_id')
+    fee_id = models.ForeignKey('FeeCod',related_name='fee_rptitemfee',verbose_name='费用id',db_column='fee_id')
+    class Meta:
+        db_table = 'c_rpt_fee'

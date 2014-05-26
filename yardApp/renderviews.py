@@ -44,6 +44,7 @@ def sysmenuview(request):
 def sysfuncview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='id')
     funcname = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='funcname',width=200)
+    ref_tables = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='ref_tables',width=200)
     remark = easyuihelp.EasyuiFieldUI(model=models.SysFunc,field='remark',width=250)
     return render(request,'yard/sysdata/sysfunc.html',locals())
 def sysmenufuncview(request):
@@ -464,6 +465,16 @@ def feesheetview(request):
     return render(request,"yard/contract/feesheetview.html",locals())
 def filteroptionview(request):
     return render(request,"yard/component/filternametype.html")
+def rptview(request):
+    rpt_id = easyuihelp.EasyuiFieldUI(model=models.Rpt,field='id')
+    rpt_rptname = easyuihelp.EasyuiFieldUI(model=models.Rpt,field='rpt_name',width=120)
+    rptitem_id = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='id')
+    rptitem_rptid = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='rpt_id',hidden=True)
+    rptitem_itemname = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='item_name',title='项目名称',width=120)
+    rptitem_sortno = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='sort_no')
+    fee_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
+    fee_feename = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name',width=180)
+    return render(request,"yard/fee/rptview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -543,6 +554,8 @@ def dealMenuReq(request):
         return(unauditview(request))
     elif ls_args == "核销查询":
         return(auditqueryview(request))
+    elif ls_args == "费用报表定义":
+        return(rptview(request))
 
     else:
         return HttpResponse("找不到功能名，请联系管理员")

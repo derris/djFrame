@@ -54,7 +54,7 @@
 <div id="maintab" data-options="region:'center'">
 
 </div>
-<div>
+<div style="display:none;">
     <div id="datagridcontextmenu" class="easyui-menu" style="width:120px;display:none;">
         <div data-options="iconCls:'icon-export'">导出Excel</div>
     </div>
@@ -63,7 +63,7 @@
         {% csrf_token %}
         <input id="exceldownload-jpargs" name="jpargs" type="text"/>
     </form>
-    <div>
+</div>
 </body>
 
 </html>

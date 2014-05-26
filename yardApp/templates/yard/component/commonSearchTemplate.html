@@ -120,6 +120,13 @@ $(function () {
         },
 
         onAfterEdit: function (rowIndex, rowData, changes) {
+            if (rowData.operatorTyp.length == 0){
+                common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = '';
+                common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].value = '';
+                common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].value_text = '';
+                common.createsearchform.filterdatagrid.datagrid('refreshRow', rowIndex);
+                return;
+            }
             if (rowData.editor.type == 'combobox' || rowData.editor.type == 'datetimebox' || rowData.editor.type == 'datebox') {
                 common.createsearchform.filterdatagrid.datagrid('getRows')[rowIndex].display_value = rowData.value_text;
                 common.createsearchform.filterdatagrid.datagrid('refreshRow', rowIndex);
@@ -377,7 +384,7 @@ $(function () {
                             operatorTyp: rows[i].operatorTyp,
                             value: rows[i].value.toString(),
                             value_text:rows[i].value_text.toString(),
-                            display_value:rows[i].display_value.toString(),
+                            display_value:rows[i].display_value.toString()
                         });
                 }else{
                     d.push(

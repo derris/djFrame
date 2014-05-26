@@ -1,0 +1,278 @@
+<script>
+    Namespace.register("fee.rpt");
+    $(function () {
+        fee.rpt.rptdatagrid = $('#fee-rpt-rptdatagrid').datagrid({
+            autoLoad:true,
+            columns:[[
+                {% autoescape off %}
+                    {{ rpt_id.writeUI|safe|escape }},
+                    {{ rpt_rptname.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]],
+            dataTable:'c_rpt',
+            queryFuncName:'费用报表头查询',
+            pagination:false
+        });
+        fee.rpt.rptitemdatagrid = $('#fee-rpt-rptitemdatagrid').datagrid({
+            autoLoad:false,
+            columns:[[
+                {% autoescape off %}
+                    {{ rptitem_id.writeUI|safe|escape }},
+                    {{ rptitem_rptid.writeUI|safe|escape }},
+                    {{ rptitem_itemname.writeUI|safe|escape }},
+                    {{ rptitem_sortno.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]],
+            dataTable:'c_rpt_item',
+            queryFuncName:'费用报表项目查询',
+            pagination:false
+        });
+        fee.rpt.rptselectedfeedatagrid = $('#fee-rpt-rptselectedfeedatagrid').datagrid({
+            autoLoad:false,
+            columns:[[
+                {% autoescape off %}
+                    {{ fee_id.writeUI|safe|escape }},
+                    {{ fee_feename.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]],
+            dataTable:'c_fee',
+            queryFuncName:'费用报表项目已选费用查询',
+            pagination:false,
+             onDblClickRow:function(){
+                 return;
+             },
+             onClickRow:function(){
+                 return;
+             }
+        });
+        fee.rpt.rptunselectedfeedatagrid = $('#fee-rpt-rptunselectedfeedatagrid').datagrid({
+             autoLoad:true,
+             columns:[[
+                 {% autoescape off %}
+                     {{ fee_id.writeUI|safe|escape }},
+                     {{ fee_feename.writeUI|safe|escape }}
+                 {% endautoescape %}
+             ]],
+             dataTable:'c_fee',
+             queryFuncName:'费用名称查询',
+             pagination:false,
+             onDblClickRow:function(){
+                 return;
+             },
+             onClickRow:function(){
+                 return;
+             }
+        });
+        fee.rpt.refresh = function(t){
+            //t:刷新类型 0--全部 1--刷新项目和费用 2--刷新费用
+            var find = false;
+            switch(t){
+                case 0:
+                    fee.rpt.rptdatagrid.datagrid('rejectChanges');
+                    fee.rpt.rptitemdatagrid.datagrid('loadData',[]);
+                    fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
+                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
+                    fee.rpt.rptdatagrid.datagrid('unselectAll');
+                    fee.rpt.rptitemdatagrid.datagrid('unselectAll');
+                    break;
+                case 1:
+                    fee.rpt.rptitemdatagrid.datagrid('reload');
+                    fee.rpt.rptitemdatagrid.datagrid('unselectAll');
+                    fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
+                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
+                    break;
+                case 2:
+                    fee.rpt.rptselectedfeedatagrid.datagrid('reload');
+                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
+                    var selectedrows = fee.rpt.rptselectedfeedatagrid.datagrid('getRows');
+                    var unselectedrows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
+                    for (var i=(unselectedrows.length - 1);i>=0;i--){
+                        for(var j= 0,jlen=selectedrow.length;j<jlen;j++){
+                            if (unselectedrows[i].id == selectedrow[j].id){
+                                find = true;
+                                break;
+                            }
+                        }
+                        if (find == true){
+                            fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',i);
+                        }
+                    }
+                default:
+                    $.messager.alert('提示','参数错误','info');
+            }
+        }
+        fee.rpt.checkDirty = function(t){
+            //t:检查类型 1--报表,项目,费用 2--项目,费用 3--费用
+            switch(t){
+                case 1 :
+                    if (fee.rpt.rptdatagrid.datagrid('getChanges').length > 0){
+                        return true;
+                    }
+                    if (fee.rpt.rptitemdatagrid.datagrid('getChanges').length > 0) {
+                        return true;
+                    }
+                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
+                        return true;
+                    }
+                    return false;
+                    break;
+                case 2:
+                    if (fee.rpt.rptitemdatagrid.datagrid('getChanges').length > 0) {
+                        return true;
+                    }
+                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
+                        return true;
+                    }
+                    return false;
+                    break;
+                case 3:
+                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
+                        return true;
+                    }
+                    return false;
+                    break;
+                default :
+                    $.messager.alert('提示','参数错误','info');
+                    return false;
+            }
+        }
+        fee.rpt.save = function(f){
+            //f:ajax成功后回调函数
+            var feeinsert = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','insert');
+            var feedelete = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','delete');
+            var feeupdate = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','update');
+            var iteminsert = fee.rpt.rptitemdatagrid.datagrid('getChanges','insert');
+            var itemdelete = fee.rpt.rptitemdatagrid.datagrid('getChanges','delete');
+            var itemupdate = fee.rpt.rptitemdatagrid.datagrid('getChanges','update');
+            var rptinsert = fee.rpt.rptdatagrid.datagrid('getChanges','insert');
+            var rptdelete = fee.rpt.rptdatagrid.datagrid('getChanges','delete');
+            var rptupdate = fee.rpt.rptdatagrid.datagrid('getChanges','update');
+            var p = {
+                reqtype:'update',
+                rows:[]
+            };
+            if (rptinsert.length > 0){ //新报表
+
+            }
+            if (f != null){
+                f();
+            }
+        }
+        $('#fee-rpt-addrptbutton').bind('click',function(e){
+            if (fee.rpt.checkDirty(1)){
+                $.messager.alert('提示','有数据变动,请先保存.','info');
+                return;
+            }else{
+                fee.rpt.rptdatagrid.datagrid('insertData',{
+                    id:-1,
+                    rpt_name:'新报表'
+                });
+            }
+        });
+        $('#fee-rpt-additembutton').bind('click',function(e){
+            var rpt_row = fee.rpt.rptdatagrid.datagrid('getSelected');
+            var rpt_id
+            if (rpt_row != null){
+                rpt_id = rpt_row.id;
+            }else{
+                return;
+            }
+            var count = fee.rpt.rptitemdatagrid.datagrid('getRows').length + 1;
+            fee.rpt.rptitemdatagrid.datagrid('insertData',{
+                item_name:'新项目',
+                rpt_id:rpt_id,
+                sort_no:count
+            });
+        });
+        $('#fee-rpt-selectbutton').bind('click',function(e){
+            var selectrow = fee.rpt.rptunselectedfeedatagrid.datagrid('getSelected');
+            if (selectrow != null){
+                var rowindex = fee.rpt.rptunselectedfeedatagrid.datagrid('getRowIndex',selectrow);
+                fee.rpt.rptselectedfeedatagrid.datagrid('appendRow',selectrow);
+                fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',rowindex);
+            }
+        });
+        $('#fee-rpt-unselectbutton').bind('click',function(e){
+            var selectrow = fee.rpt.rptselectedfeedatagrid.datagrid('getSelected');
+            if (selectrow != null){
+                var rowindex = fee.rpt.rptselectedfeedatagrid.datagrid('getRowIndex',selectrow);
+                fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow',selectrow);
+                fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow',rowindex);
+            }
+        });
+        $('#fee-rpt-selectallbutton').bind('click',function(e){
+            var rows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
+            for (var i=rows.length-1;i>=0;i--){
+                fee.rpt.rptselectedfeedatagrid.datagrid('appendRow',rows[i]);
+                fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',i);
+            }
+        });
+        $('#fee-rpt-unselectallbutton').bind('click',function(e){
+            var rows = fee.rpt.rptselectedfeedatagrid.datagrid('getRows');
+            for (var i=rows.length-1;i>=0;i--){
+                fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow',rows[i]);
+                fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow',i);
+            }
+        });
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:true,split:true" style="width: 200px">
+        <div class="easyui-layout" data-options="fit:true,border:false">
+            <div data-options="region:'north',border:false,height:window.innerHeight * 0.4,title:'报表'">
+                <table id="fee-rpt-rptdatagrid" border="false">
+                </table>
+            </div>
+            <div data-options="region:'center',border:false,title:'报表项目'">
+                <table id="fee-rpt-rptitemdatagrid" border="false">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'west',border:false,
+                        width:window.innerWidth * 0.3,title:'已选费用'">
+                <table id="fee-rpt-rptselectedfeedatagrid" border="false">
+                </table>
+            </div>
+            <div data-options="region:'center',width:90" >
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="fee-rpt-selectbutton" href="#" class="easyui-linkbutton"
+                        data-options="iconCls:'icon-arrow-left',group:'fee-rpt'">选择</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="fee-rpt-unselectbutton" href="#" class="easyui-linkbutton"
+                        data-options="iconCls:'icon-arrow-right',group:'fee-rpt'">取消</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="fee-rpt-selectallbutton" href="#" class="easyui-linkbutton"
+                        data-options="iconCls:'icon-double-arrow-left',group:'fee-rpt'">全选择</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="fee-rpt-unselectallbutton" href="#" class="easyui-linkbutton"
+                        data-options="iconCls:'icon-double-arrow-right',group:'fee-rpt'">全取消</a>
+                </div>
+
+            </div>
+            <div data-options="region:'east',border:false,
+                        width:window.innerWidth * 0.3,title:'可选费用'">
+                <table id="fee-rpt-rptunselectedfeedatagrid" border="false">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:true" class="datagrid-toolbar">
+        <a id="fee-rpt-addrptbutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add',group:'fee-rpt-rpt'">新增报表</a>
+        <a id="fee-rpt-deleterptbutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-remove',group:'fee-rpt-rpt'">删除报表</a>
+        <a id="fee-rpt-saverptbutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-save',group:'fee-rpt'">保存报表</a>
+        <a id="fee-rpt-additembutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add',group:'fee-rpt-item'">新增项目</a>
+        <a id="fee-rpt-deleteitembutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-remove',group:'fee-rpt-item'">删除项目</a>
+    </div>
+</div>

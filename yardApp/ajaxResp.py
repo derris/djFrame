@@ -123,6 +123,12 @@ def getpaytype(request):
 def getprivilege(request):
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps( getMenuPrivilege(ldict['postid']),ensure_ascii = False) )
+def getrpt(request):
+    '''费用报表头查询'''
+    ls_sql = "select id,rpt_name from c_rpt"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
@@ -287,6 +293,8 @@ def dealPAjax(request):
             elif ldict['func'] == '核销删除查询':
                 l_rtn = auditDeleteQuery(request, ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+            elif ldict['func'] == '费用报表头查询':
+                return(getrpt(request))
             ###------------------------------核销删除功能
             elif ldict['func'] == '核销删除':
                 l_rtn = auditDelete(request, ldict)
