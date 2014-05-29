@@ -128,6 +128,16 @@ def getrpt(request):
     ls_sql = "select id,rpt_name from c_rpt"
     ldict = json.loads( request.POST['jpargs'] )
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getrptitem(request):
+    '''费用报表项目查询'''
+    ls_sql = "select id,rpt_id,item_name,sort_no from c_rpt_item"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
+def getrptfee(request):
+    '''费用报表费用查询'''
+    ls_sql = "select id,rpt_id,item_id,fee_id from c_rpt_fee"
+    ldict = json.loads( request.POST['jpargs'] )
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)),ensure_ascii = False))
 
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
@@ -304,6 +314,11 @@ def dealPAjax(request):
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
             elif ldict['func'] == '费用报表头查询':
                 return(getrpt(request))
+            elif ldict['func'] == '费用报表项目查询':
+                return(getrptitem(request))
+            elif ldict['func'] == '费用报表项目费用查询':
+                return(getrptfee(request))
+
             ###------------------------------核销删除功能
             elif ldict['func'] == '核销删除':
                 l_rtn = auditDelete(request, ldict)
@@ -399,6 +414,13 @@ def dealPAjax(request):
             elif ldict['func'] == '客户费用明细报表':
                 l_rtn = clientFeeDetailReport(request,ldict)
                 return HttpResponse(json.dumps( l_rtn ,ensure_ascii = False))
+            elif ldict['func'] == '费用报表头维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '费用报表项目维护':
+                return(updateRaw(request))
+            elif ldict['func'] == '费用报表项目费用维护':
+                return(updateRaw(request))
+
             #########################################################3
             elif ldict['func'] == '密码修改':   # ajax 查询
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}

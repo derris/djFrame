@@ -645,6 +645,7 @@ $.extend($.fn.datagrid.methods, {
             if (jq.datagrid('validateRow', opts.editRow)) {
                 jq.datagrid('endEdit', opts.editRow);
             } else {
+                $.messager.alert('提示','现有数据校验失败，不能增加新数据','info');
                 return;
             }
         }

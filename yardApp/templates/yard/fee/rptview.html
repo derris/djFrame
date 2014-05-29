@@ -1,224 +1,281 @@
 <script>
-    Namespace.register("fee.rpt");
-    $(function () {
-        fee.rpt.rptdatagrid = $('#fee-rpt-rptdatagrid').datagrid({
-            autoLoad:true,
-            columns:[[
+Namespace.register("fee.rpt");
+$(function () {
+    fee.rpt.feeids = [];
+    fee.rpt.initfeeids = function(data){
+        for (var i= 0,ilen=data.length;i<ilen;i++){
+            fee.rpt.feeids.push({id:data[i].value});
+        }
+        fee.rpt.rptunselectedfeedatagrid.datagrid('loadData',fee.rpt.feeids);
+    }
+    fee.rpt.rptdatagrid = $('#fee-rpt-rptdatagrid').datagrid({
+        autoLoad: true,
+        autoSave: true,
+        columns: [
+            [
                 {% autoescape off %}
                     {{ rpt_id.writeUI|safe|escape }},
                     {{ rpt_rptname.writeUI|safe|escape }}
                 {% endautoescape %}
-            ]],
-            dataTable:'c_rpt',
-            queryFuncName:'费用报表头查询',
-            pagination:false
-        });
-        fee.rpt.rptitemdatagrid = $('#fee-rpt-rptitemdatagrid').datagrid({
-            autoLoad:false,
-            columns:[[
+            ]
+        ],
+        dataTable: 'c_rpt',
+        queryFuncName: '费用报表头查询',
+        updateFuncName: '费用报表头维护',
+        pagination: false,
+        onSelect:function(rowIndex,rowData){
+            if (fee.rpt.checkDirty()){
+                fee.rpt.save();
+            }
+            var rptid = rowData.id;
+            if (rptid == -1){
+                fee.rpt.rptitemdatagrid.datagrid('loadData',[]);
+            }else{
+                var opts = fee.rpt.rptitemdatagrid.datagrid('options');
+                opts.filterFields = [{
+                    cod:'rpt_id',
+                    operatorTyp:'等于',
+                    value:rptid
+                }];
+                fee.rpt.rptitemdatagrid.datagrid('reload');
+            }
+            fee.rpt.rptitemdatagrid.datagrid('unselectAll');
+            fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
+        }
+    });
+    fee.rpt.rptitemdatagrid = $('#fee-rpt-rptitemdatagrid').datagrid({
+        autoLoad: false,
+        autoSave: true,
+        columns: [
+            [
                 {% autoescape off %}
                     {{ rptitem_id.writeUI|safe|escape }},
                     {{ rptitem_rptid.writeUI|safe|escape }},
                     {{ rptitem_itemname.writeUI|safe|escape }},
                     {{ rptitem_sortno.writeUI|safe|escape }}
                 {% endautoescape %}
-            ]],
-            dataTable:'c_rpt_item',
-            queryFuncName:'费用报表项目查询',
-            pagination:false
-        });
-        fee.rpt.rptselectedfeedatagrid = $('#fee-rpt-rptselectedfeedatagrid').datagrid({
-            autoLoad:false,
-            columns:[[
-                {% autoescape off %}
-                    {{ fee_id.writeUI|safe|escape }},
-                    {{ fee_feename.writeUI|safe|escape }}
-                {% endautoescape %}
-            ]],
-            dataTable:'c_fee',
-            queryFuncName:'费用报表项目已选费用查询',
-            pagination:false,
-             onDblClickRow:function(){
-                 return;
-             },
-             onClickRow:function(){
-                 return;
-             }
-        });
-        fee.rpt.rptunselectedfeedatagrid = $('#fee-rpt-rptunselectedfeedatagrid').datagrid({
-             autoLoad:true,
-             columns:[[
-                 {% autoescape off %}
-                     {{ fee_id.writeUI|safe|escape }},
-                     {{ fee_feename.writeUI|safe|escape }}
-                 {% endautoescape %}
-             ]],
-             dataTable:'c_fee',
-             queryFuncName:'费用名称查询',
-             pagination:false,
-             onDblClickRow:function(){
-                 return;
-             },
-             onClickRow:function(){
-                 return;
-             }
-        });
-        fee.rpt.refresh = function(t){
-            //t:刷新类型 0--全部 1--刷新项目和费用 2--刷新费用
-            var find = false;
-            switch(t){
-                case 0:
-                    fee.rpt.rptdatagrid.datagrid('rejectChanges');
-                    fee.rpt.rptitemdatagrid.datagrid('loadData',[]);
-                    fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
-                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
-                    fee.rpt.rptdatagrid.datagrid('unselectAll');
-                    fee.rpt.rptitemdatagrid.datagrid('unselectAll');
-                    break;
-                case 1:
-                    fee.rpt.rptitemdatagrid.datagrid('reload');
-                    fee.rpt.rptitemdatagrid.datagrid('unselectAll');
-                    fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
-                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
-                    break;
-                case 2:
-                    fee.rpt.rptselectedfeedatagrid.datagrid('reload');
-                    fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
-                    var selectedrows = fee.rpt.rptselectedfeedatagrid.datagrid('getRows');
-                    var unselectedrows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
-                    for (var i=(unselectedrows.length - 1);i>=0;i--){
-                        for(var j= 0,jlen=selectedrow.length;j<jlen;j++){
-                            if (unselectedrows[i].id == selectedrow[j].id){
-                                find = true;
-                                break;
-                            }
-                        }
-                        if (find == true){
-                            fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',i);
-                        }
-                    }
-                default:
-                    $.messager.alert('提示','参数错误','info');
+            ]
+        ],
+        dataTable: 'c_rpt_item',
+        queryFuncName: '费用报表项目查询',
+        updateFuncName: '费用报表项目维护',
+        pagination: false,
+        onSelect:function(rowIndex,rowData){
+            if (fee.rpt.checkDirty()){
+                fee.rpt.save();
             }
-        }
-        fee.rpt.checkDirty = function(t){
-            //t:检查类型 1--报表,项目,费用 2--项目,费用 3--费用
-            switch(t){
-                case 1 :
-                    if (fee.rpt.rptdatagrid.datagrid('getChanges').length > 0){
-                        return true;
-                    }
-                    if (fee.rpt.rptitemdatagrid.datagrid('getChanges').length > 0) {
-                        return true;
-                    }
-                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
-                        return true;
-                    }
-                    return false;
-                    break;
-                case 2:
-                    if (fee.rpt.rptitemdatagrid.datagrid('getChanges').length > 0) {
-                        return true;
-                    }
-                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
-                        return true;
-                    }
-                    return false;
-                    break;
-                case 3:
-                    if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
-                        return true;
-                    }
-                    return false;
-                    break;
-                default :
-                    $.messager.alert('提示','参数错误','info');
-                    return false;
-            }
-        }
-        fee.rpt.save = function(f){
-            //f:ajax成功后回调函数
-            var feeinsert = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','insert');
-            var feedelete = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','delete');
-            var feeupdate = fee.rpt.rptselectedfeedatagrid.datagrid('getChanges','update');
-            var iteminsert = fee.rpt.rptitemdatagrid.datagrid('getChanges','insert');
-            var itemdelete = fee.rpt.rptitemdatagrid.datagrid('getChanges','delete');
-            var itemupdate = fee.rpt.rptitemdatagrid.datagrid('getChanges','update');
-            var rptinsert = fee.rpt.rptdatagrid.datagrid('getChanges','insert');
-            var rptdelete = fee.rpt.rptdatagrid.datagrid('getChanges','delete');
-            var rptupdate = fee.rpt.rptdatagrid.datagrid('getChanges','update');
-            var p = {
-                reqtype:'update',
-                rows:[]
-            };
-            if (rptinsert.length > 0){ //新报表
-
-            }
-            if (f != null){
-                f();
-            }
-        }
-        $('#fee-rpt-addrptbutton').bind('click',function(e){
-            if (fee.rpt.checkDirty(1)){
-                $.messager.alert('提示','有数据变动,请先保存.','info');
-                return;
+            var rptid = rowData.rpt_id;
+            var itemid = rowData.id;
+            if (rptid == -1 || itemid == -1){
+                fee.rpt.rptselectedfeedatagrid.datagrid('loadData',[]);
             }else{
-                fee.rpt.rptdatagrid.datagrid('insertData',{
-                    id:-1,
-                    rpt_name:'新报表'
-                });
+                var opts = fee.rpt.rptselectedfeedatagrid.datagrid('options');
+                opts.filterFields = [{
+                    cod:'rpt_id',
+                    operatorTyp:'等于',
+                    value:rptid
+                },{
+                    cod:'item_id',
+                    operatorTyp:'等于',
+                    value:itemid
+                }];
+                fee.rpt.rptselectedfeedatagrid.datagrid('reload');
             }
-        });
-        $('#fee-rpt-additembutton').bind('click',function(e){
-            var rpt_row = fee.rpt.rptdatagrid.datagrid('getSelected');
-            var rpt_id
-            if (rpt_row != null){
-                rpt_id = rpt_row.id;
-            }else{
-                return;
-            }
-            var count = fee.rpt.rptitemdatagrid.datagrid('getRows').length + 1;
-            fee.rpt.rptitemdatagrid.datagrid('insertData',{
-                item_name:'新项目',
-                rpt_id:rpt_id,
-                sort_no:count
-            });
-        });
-        $('#fee-rpt-selectbutton').bind('click',function(e){
-            var selectrow = fee.rpt.rptunselectedfeedatagrid.datagrid('getSelected');
-            if (selectrow != null){
-                var rowindex = fee.rpt.rptunselectedfeedatagrid.datagrid('getRowIndex',selectrow);
-                fee.rpt.rptselectedfeedatagrid.datagrid('appendRow',selectrow);
-                fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',rowindex);
-            }
-        });
-        $('#fee-rpt-unselectbutton').bind('click',function(e){
-            var selectrow = fee.rpt.rptselectedfeedatagrid.datagrid('getSelected');
-            if (selectrow != null){
-                var rowindex = fee.rpt.rptselectedfeedatagrid.datagrid('getRowIndex',selectrow);
-                fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow',selectrow);
-                fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow',rowindex);
-            }
-        });
-        $('#fee-rpt-selectallbutton').bind('click',function(e){
-            var rows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
-            for (var i=rows.length-1;i>=0;i--){
-                fee.rpt.rptselectedfeedatagrid.datagrid('appendRow',rows[i]);
-                fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',i);
-            }
-        });
-        $('#fee-rpt-unselectallbutton').bind('click',function(e){
-            var rows = fee.rpt.rptselectedfeedatagrid.datagrid('getRows');
-            for (var i=rows.length-1;i>=0;i--){
-                fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow',rows[i]);
-                fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow',i);
-            }
-        });
-
+        }
     });
+    fee.rpt.rptselectedfeedatagrid = $('#fee-rpt-rptselectedfeedatagrid').datagrid({
+        autoLoad: false,
+        autoSave:true,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ rptfee_id.writeUI|safe|escape }},
+                    {{ rptfee_rptid.writeUI|safe|escape }},
+                    {{ rptfee_itemid.writeUI|safe|escape }},
+                    {{ rptfee_feeid.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'c_rpt_fee',
+        queryFuncName: '费用报表项目费用查询',
+        updateFuncName: '费用报表项目费用维护',
+        pagination: false,
+        onDblClickRow: function () {
+            return;
+        },
+        onClickRow: function () {
+            return;
+        },
+        onLoadSuccess:function(data){
+            fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
+            var rows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
+            for (var i = rows.length - 1;i>=0;i--){
+                for(var j= 0,jlen=data.rows.length;j<jlen;j++){
+                    if (data.rows[j].fee_id == rows[i].id){
+                        fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow',i);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+    fee.rpt.rptunselectedfeedatagrid = $('#fee-rpt-rptunselectedfeedatagrid').datagrid({
+        autoLoad: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ fee_id.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'c_fee',
+        queryFuncName: '费用名称查询',
+        pagination: false,
+        onDblClickRow: function () {
+            return;
+        },
+        onClickRow: function () {
+            return;
+        }
+    });
+    fee.rpt.initfeeids(fee.rpt.rptunselectedfeedatagrid.datagrid('options').columns[0][0].editor.options.data);
+    fee.rpt.checkDirty = function(){
+        if (fee.rpt.rptdatagrid.datagrid('getChanges').length > 0){
+            return true;
+        }
+        if (fee.rpt.rptitemdatagrid.datagrid('getChanges').length > 0){
+            return true;
+        }
+        if (fee.rpt.rptselectedfeedatagrid.datagrid('getChanges').length > 0){
+            return true;
+        }
+        return false;
+    }
+    fee.rpt.save = function () {
+        fee.rpt.rptdatagrid.datagrid('postUpdateAllData');
+        fee.rpt.rptitemdatagrid.datagrid('postUpdateAllData');
+        fee.rpt.rptselectedfeedatagrid.datagrid('postUpdateAllData');
+    }
+    fee.rpt.getrptid = function () {
+        var row = fee.rpt.rptdatagrid.datagrid('getSelected');
+        if (row != null) {
+            return row.id;
+        } else {
+            return null;
+        }
+    }
+    fee.rpt.getitemid = function () {
+        var row = fee.rpt.rptitemdatagrid.datagrid('getSelected');
+        if (row != null) {
+            return row.id;
+        } else {
+            return null;
+        }
+
+    }
+    $('#fee-rpt-addrptbutton').bind('click', function (e) {
+        fee.rpt.rptdatagrid.datagrid('insertData', {
+            id: -1,
+            rpt_name: '新报表'
+        });
+    });
+    $('#fee-rpt-deleterptbutton').bind('click', function (e) {
+        fee.rpt.rptdatagrid.datagrid('deleteData');
+    });
+    $('#fee-rpt-additembutton').bind('click', function (e) {
+        var rptid = fee.rpt.getrptid();
+        var count = fee.rpt.rptitemdatagrid.datagrid('getRows').length + 1;
+        if (rptid == null) {
+            $.messager.alert('提示', '请选择报表', 'info');
+            return;
+        }
+        if (rptid == -1) {
+            $.messager.alert('提示', '请先保存报表', 'info');
+            return;
+        }
+        fee.rpt.rptitemdatagrid.datagrid('insertData', {
+            id: -1,
+            item_name: '新项目',
+            rpt_id: rptid,
+            sort_no: count
+        });
+    });
+    $('#fee-rpt-deleteitembutton').bind('click', function (e) {
+        fee.rpt.rptitemdatagrid.datagrid('deleteData');
+    });
+    $('#fee-rpt-saverptbutton').bind('click', function (e) {
+        fee.rpt.save();
+    });
+    $('#fee-rpt-selectbutton').bind('click', function (e) {
+        var selectrow = fee.rpt.rptunselectedfeedatagrid.datagrid('getSelected');
+        var rptid = fee.rpt.getrptid();
+        var itemid = fee.rpt.getitemid();
+        if (selectrow == null) {
+            return;
+        }
+        if (rptid == null || itemid == null) {
+            $.messager.alert('提示', '请选择报表和项目', 'info');
+            return;
+        }
+        if (rptid == -1 || itemid == -1) {
+            $.messager.alert('提示', '请先保存报表和项目', 'info');
+            return;
+        }
+        var rowindex = fee.rpt.rptunselectedfeedatagrid.datagrid('getRowIndex', selectrow);
+        fee.rpt.rptselectedfeedatagrid.datagrid('appendRow', {
+            id: -1,
+            rpt_id: rptid,
+            item_id: itemid,
+            fee_id: selectrow.id
+        });
+        fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow', rowindex);
+    });
+    $('#fee-rpt-unselectbutton').bind('click', function (e) {
+        var selectrow = fee.rpt.rptselectedfeedatagrid.datagrid('getSelected');
+        if (selectrow != null) {
+            var rowindex = fee.rpt.rptselectedfeedatagrid.datagrid('getRowIndex', selectrow);
+            fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow', {
+                id: selectrow.fee_id
+            });
+            fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow', rowindex);
+        }
+    });
+    $('#fee-rpt-selectallbutton').bind('click', function (e) {
+        var rows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
+        var rptid = fee.rpt.getrptid();
+        var itemid = fee.rpt.getitemid();
+        if (rptid == null || itemid == null) {
+            $.messager.alert('提示', '请选择报表和项目', 'info');
+            return;
+        }
+        if (rptid == -1 || itemid == -1) {
+            $.messager.alert('提示', '请先保存报表和项目', 'info');
+            return;
+        }
+        for (var i = rows.length - 1; i >= 0; i--) {
+            fee.rpt.rptselectedfeedatagrid.datagrid('appendRow', {
+                id: -1,
+                rpt_id: rptid,
+                item_id: itemid,
+                fee_id: rows[i].id
+            });
+            fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow', i);
+        }
+    });
+    $('#fee-rpt-unselectallbutton').bind('click', function (e) {
+        var rows = fee.rpt.rptselectedfeedatagrid.datagrid('getRows');
+        for (var i = rows.length - 1; i >= 0; i--) {
+            fee.rpt.rptunselectedfeedatagrid.datagrid('appendRow', {
+                id: rows[i].fee_id
+            });
+            fee.rpt.rptselectedfeedatagrid.datagrid('deleteRow', i);
+        }
+    });
+
+});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'west',border:true,split:true" style="width: 200px">
+    <div data-options="region:'west',border:true,split:true" style="width: 250px">
         <div class="easyui-layout" data-options="fit:true,border:false">
             <div data-options="region:'north',border:false,height:window.innerHeight * 0.4,title:'报表'">
                 <table id="fee-rpt-rptdatagrid" border="false">
@@ -233,26 +290,26 @@
     <div data-options="region:'center'">
         <div class="easyui-layout" data-options="fit:true">
             <div data-options="region:'west',border:false,
-                        width:window.innerWidth * 0.3,title:'已选费用'">
+                        width:window.innerWidth * 0.25,title:'已选费用'">
                 <table id="fee-rpt-rptselectedfeedatagrid" border="false">
                 </table>
             </div>
-            <div data-options="region:'center',width:90" >
+            <div data-options="region:'center',width:90">
                 <div style="padding:25px 5px 10px 10px">
                     <a id="fee-rpt-selectbutton" href="#" class="easyui-linkbutton"
-                        data-options="iconCls:'icon-arrow-left',group:'fee-rpt'">选择</a>
+                       data-options="iconCls:'icon-arrow-left',group:'fee-rpt'">选择</a>
                 </div>
                 <div style="padding:25px 5px 10px 10px">
                     <a id="fee-rpt-unselectbutton" href="#" class="easyui-linkbutton"
-                        data-options="iconCls:'icon-arrow-right',group:'fee-rpt'">取消</a>
+                       data-options="iconCls:'icon-arrow-right',group:'fee-rpt'">取消</a>
                 </div>
                 <div style="padding:25px 5px 10px 10px">
                     <a id="fee-rpt-selectallbutton" href="#" class="easyui-linkbutton"
-                        data-options="iconCls:'icon-double-arrow-left',group:'fee-rpt'">全选择</a>
+                       data-options="iconCls:'icon-double-arrow-left',group:'fee-rpt'">全选择</a>
                 </div>
                 <div style="padding:25px 5px 10px 10px">
                     <a id="fee-rpt-unselectallbutton" href="#" class="easyui-linkbutton"
-                        data-options="iconCls:'icon-double-arrow-right',group:'fee-rpt'">全取消</a>
+                       data-options="iconCls:'icon-double-arrow-right',group:'fee-rpt'">全取消</a>
                 </div>
 
             </div>

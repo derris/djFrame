@@ -469,11 +469,15 @@ def rptview(request):
     rpt_id = easyuihelp.EasyuiFieldUI(model=models.Rpt,field='id')
     rpt_rptname = easyuihelp.EasyuiFieldUI(model=models.Rpt,field='rpt_name',width=120)
     rptitem_id = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='id')
-    rptitem_rptid = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='rpt_id',hidden=True)
+    rptitem_rptid = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='rpt_id',hidden=True,readonly=True)
     rptitem_itemname = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='item_name',title='项目名称',width=120)
     rptitem_sortno = easyuihelp.EasyuiFieldUI(model=models.RptItem,field='sort_no')
-    fee_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
-    fee_feename = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name',width=180)
+    fee_id = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name',title='费用名称',width=180,displayfield='id')
+    #fee_feename = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name',width=180)
+    rptfee_id = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='id')
+    rptfee_rptid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='rpt_id',hidden=True)
+    rptfee_itemid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='item_id',hidden=True)
+    rptfee_feeid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name',title='费用名称',width=180)
     return render(request,"yard/fee/rptview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
