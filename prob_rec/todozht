@@ -36,9 +36,9 @@ func:‘费用报表结构’
 测试数据：
 接收参数：
 {
-    func: '费用报表结构',
-    ex_parm: {
-        'rptid':1 //费用报表id int型
+    "func": '费用报表结构',
+    "ex_parm": {
+        'rptid':1 #费用报表id int型
     }
 }
 返回参数：

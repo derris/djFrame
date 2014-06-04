@@ -1,0 +1,15 @@
+# \u9700\u8981\u6211\u641E\u7684\u3002\u52A0\u4E2A to dh
+# todo 10  to dh
+# \u6211\u641E\u5B8C\u4E86\uFF0C\u5728\u6211\u7684to\u91CC\u9762\uFF0C\u5199\u4E2A  todo zht 10. over
+
+
+from yardApp.ajaxRespFee import getRptFeeStruct
+aaa = {
+    "func": '\u8D39\u7528\u62A5\u8868\u7ED3\u6784',
+    "ex_parm": {
+        'rptid':1 #\u8D39\u7528\u62A5\u8868id int\u578B
+    }
+}
+>>> aaa
+{'func': '\u8D39\u7528\u62A5\u8868\u7ED3\u6784', 'ex_parm': {'rptid': 1}}
+>>> getRptFeeStruct(aaa, aaa)

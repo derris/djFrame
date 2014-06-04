@@ -380,30 +380,7 @@ def dealPAjax(request):
             elif ldict['func'] == '费用报表项目费用查询':
                 return (getrptfee(request))
             elif ldict['func'] == '费用报表结构':
-                l_rtn = {
-                    "msg": "成功",
-                    "stateCod": "001",
-                    "error": [],
-                    "result": [
-                        [
-                            {"title": "包干费", "colspan": 1},
-                            {"title": "海关费用", "colspan": 2},
-                            {"title": "商检费用","colspan":2},
-                            {"title":"码头费用","colspan":3}
-                        ],
-                        [
-                            {"field": "1", "title": "包干费", "align": "right"},
-                            {"field": "5", "title": "海关验货费", "align": "right"},
-                            {"field": "11", "title": "滞报金", "align": "right"},
-                            {"field": "7", "title": "商检熏蒸场地费", "align": "right"},
-                            {"field": "8", "title": "商检熏蒸拖车费", "align": "right"},
-                            {"field": "2", "title": "码头超期费", "align": "right"},
-                            {"field": "3", "title": "码头堆存费", "align": "right"},
-                            {"field": "4", "title": "码头搬移费", "align": "right"}
-                        ]
-                    ]
-                };
-                return HttpResponse(json.dumps(l_rtn, ensure_ascii = False))
+                return HttpResponse(json.dumps(getRptFeeStruct(request, ldict), ensure_ascii = False))
             elif ldict['func'] == '核销删除':
                 l_rtn = auditDelete(request, ldict)
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))

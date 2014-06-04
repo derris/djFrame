@@ -279,3 +279,44 @@ def clientFeeDetailReport(request, adict):
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
+
+
+def getRptFeeStruct(request, adict):
+    '''  费用报表结构
+        func: '费用报表结构',
+        ex_parm: {
+            'rptid':'xxx' //费用报表id int型
+        }
+                        [
+                            {"title": "包干费", "colspan": 1},
+                            {"title": "海关费用", "colspan": 2},
+                        ],
+                        [
+                            {"field": "1", "title": "包干费", "align": "right"},
+                            {"field": "3", "title": "码头堆存费", "align": "right"},
+                            {"field": "4", "title": "码头搬移费", "align": "right"}
+                        ]
+                };
+    '''
+    ls_rptid = str(adict["ex_parm"]["rptid"])
+    l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "result": [] }
+    ls_sqlitem = 'select id,item_name from c_rpt_item where rpt_id = %s order by sort_no' % ls_rptid
+
+    ls_sqlFee = ''' select c_rpt_fee.fee_id,c_fee.fee_name from c_rpt_fee,c_fee
+                        where c_rpt_fee.rpt_id = %s and c_rpt_fee.item_id = %s
+                       and c_rpt_fee.fee_id = c_fee.id;
+               '''
+    try:
+        l_item = cursorSelect(ls_sqlitem)
+        l_cacheItem = []
+        l_cacheFee = []
+        for i_item in l_item:
+            l_cacheItem.append( {"title": i_item["item_name"], "colspan": 1} )
+            l_fee = cursorSelect(ls_sqlFee % ( str(ls_rptid), str(i_item["id"]) ) )
+            for i_fee in l_fee:
+                l_cacheFee.append( {"field": i_fee["fee_id"], "title": i_fee["fee_name"], "align": "right"} )
+        l_rtn["result"].append(l_cacheItem)
+        l_rtn["result"].append(l_cacheItem)
+    except Exception as e:
+        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+    return l_rtn
