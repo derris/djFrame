@@ -312,9 +312,9 @@ def getRptFeeStruct(request, adict):
         l_cacheItem = []
         l_cacheFee = []
         for i_item in l_item:
-            l_cacheItem.append( {"title": i_item[1], "colspan": 1} )   # i_item[1] -- name
             lx = ls_sqlFee % (str(ls_rptid), str(i_item[0]))   # id
             l_fee = cursorSelect( lx )
+            l_cacheItem.append( {"title": i_item[1], "colspan": len(l_fee)} )   # i_item[1] -- name
             for i_fee in l_fee:
                 l_cacheFee.append( {"field": i_fee[0], "title": i_fee[1], "align": "right"} )
         l_rtn["result"].append(l_cacheItem)
