@@ -1,9 +1,9 @@
 todo 9
 去掉‘费用分组’
 删除表c_fee_group，c_fee去掉fee_group_id字段
-todo 10
+todo 10 to dh
 func:‘费用报表结构’
-从c_rpt,c_rpt_item,c_rpt_fee三个表中返回指定的费用报表结构
+从c_rpt,c_rpt_item,c_rpt_fee三个表中返回指定的费用报表结构,三层关联表
 接收参数：
 {
     func: '费用报表结构',
@@ -11,19 +11,31 @@ func:‘费用报表结构’
         'rptid':'xxx' //费用报表id int型
     }
 }
+查询：
+    select id,item_name from c_rpt_item where rpt_id = xxx order by sort_no
+    for item in itemlist
+        select c_rpt_fee.fee_id,c_fee.fee_name from c_rtp_fee,c_fee
+         where c_rpt_fee.rpt_id = xxx and c_rpt_fee.item_id = item.id
+           and c_rpt_fee.fee_id = c_fee.id
+        将item.item_name写入itemtitle
+        for fee in feelist
+            写入cols内容
 返回参数：
 {
     "msg":"", #成功‘’，失败返回错误信息
     "stateCod": "001",   #  有数据‘001’ 无数据‘201’
     "error": ["xxx", "xx"]...        # 错误数组。
-    "result": {
-        'item_1':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-        'item_2':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+    "result": [
+        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
 
         .........,
-        'item_n':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
 
-    } #返回报表结构 双层表头
+    ] #返回报表结构 双层表头
+      #'item_title' 对应表字段 c_rpt_item.item_name
+      #'fee_id' 对应表字段 c_rpt_fee.fee_id
+      #'fee_name' 对应表字段 与c_rpt_fee.fee_id关联的c_fee.fee_name
 }
 测试数据：
 接收参数：
@@ -35,14 +47,14 @@ func:‘费用报表结构’
 }
 返回参数：
 {
-    "msg":"", #成功‘’，失败返回错误信息
+    "msg":"成功", #成功‘’，失败返回错误信息
     "stateCod": "001",   #  有数据‘001’ 无数据‘201’
-    "error": ["xxx", "xx"]...        # 错误数组。
-    "result": {
-        'item_1':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-        'item_2':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-
-        .........,
-        'item_n':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-    } #返回报表结构 双层表头
+    "error": []...        # 错误数组。
+    "result": [
+        {'itemtitle':'包干费','cols':[{'field':1,'title':'包干费'}]},
+        {'itemtitle':'海关费用','cols':[{'field':5,'title':'海关验货费'},{'field':11,'title':'滞报金'}]},
+        {'itemtitle':'商检费用','cols':[{'field':7,'title':'商检熏蒸场地费'},{'field':8,'title':'商检熏蒸场地费'}]},
+        {'itemtitle':'码头费用','cols':[{'field':2,'title':'码头超期费'},{'field':3,'title':'码头堆存费'},
+                                    ,{'field':4,'title':'码头搬移费'}]}
+    ] #返回报表结构 双层表头
 }
