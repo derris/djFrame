@@ -308,15 +308,17 @@ def getRptFeeStruct(request, adict):
                '''
     try:
         l_item = cursorSelect(ls_sqlitem)
+        log(ls_sqlitem)
         l_cacheItem = []
         l_cacheFee = []
         for i_item in l_item:
-            l_cacheItem.append( {"title": i_item["item_name"], "colspan": 1} )
-            l_fee = cursorSelect(ls_sqlFee % ( str(ls_rptid), str(i_item["id"]) ) )
+            l_cacheItem.append( {"title": i_item[1], "colspan": 1} )   # i_item[1] -- name
+            lx = ls_sqlFee % (str(ls_rptid), str(i_item[0]))   # id
+            l_fee = cursorSelect( lx )
             for i_fee in l_fee:
-                l_cacheFee.append( {"field": i_fee["fee_id"], "title": i_fee["fee_name"], "align": "right"} )
+                l_cacheFee.append( {"field": i_fee[0], "title": i_fee[1], "align": "right"} )
         l_rtn["result"].append(l_cacheItem)
-        l_rtn["result"].append(l_cacheItem)
+        l_rtn["result"].append(l_cacheFee)
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn

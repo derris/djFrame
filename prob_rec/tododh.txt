@@ -4,6 +4,8 @@
 
 
 from yardApp.ajaxRespFee import getRptFeeStruct
+import yardApp.ajaxRespFee
+from imp import reload
 aaa = {
     "func": '\u8D39\u7528\u62A5\u8868\u7ED3\u6784',
     "ex_parm": {
@@ -12,4 +14,6 @@ aaa = {
 }
 >>> aaa
 {'func': '\u8D39\u7528\u62A5\u8868\u7ED3\u6784', 'ex_parm': {'rptid': 1}}
->>> getRptFeeStruct(aaa, aaa)
+>>> yardApp.ajaxRespFee.getRptFeeStruct(aaa, aaa)
+
+from imp import reload
