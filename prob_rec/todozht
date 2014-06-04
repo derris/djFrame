@@ -26,16 +26,12 @@ func:‘费用报表结构’
     "stateCod": "001",   #  有数据‘001’ 无数据‘201’
     "error": ["xxx", "xx"]...        # 错误数组。
     "result": [
-        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+        [{"title": "包干费", "colspan": 1}]  #一级表头,title-对应表字段c_rpt_item.item_name,colspan-包含的费用数量
+        [{"field": "fee_id", "title": "费用名称", "align": "right"},
+        ....
 
-        .........,
-        {'itemtitle':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
-
-    ] #返回报表结构 双层表头
-      #'item_title' 对应表字段 c_rpt_item.item_name
-      #'fee_id' 对应表字段 c_rpt_fee.fee_id
-      #'fee_name' 对应表字段 与c_rpt_fee.fee_id关联的c_fee.fee_name
+        ] #二级表头 fee_id-对应表字段 c_rpt_fee.fee_id
+     ] #返回报表结构 双层表头
 }
 测试数据：
 接收参数：
@@ -47,14 +43,26 @@ func:‘费用报表结构’
 }
 返回参数：
 {
-    "msg":"成功", #成功‘’，失败返回错误信息
-    "stateCod": "001",   #  有数据‘001’ 无数据‘201’
-    "error": []...        # 错误数组。
+    "msg": "成功",
+    "stateCod": "001",
+    "error": [],
     "result": [
-        {'itemtitle':'包干费','cols':[{'field':1,'title':'包干费'}]},
-        {'itemtitle':'海关费用','cols':[{'field':5,'title':'海关验货费'},{'field':11,'title':'滞报金'}]},
-        {'itemtitle':'商检费用','cols':[{'field':7,'title':'商检熏蒸场地费'},{'field':8,'title':'商检熏蒸场地费'}]},
-        {'itemtitle':'码头费用','cols':[{'field':2,'title':'码头超期费'},{'field':3,'title':'码头堆存费'},
-                                    ,{'field':4,'title':'码头搬移费'}]}
-    ] #返回报表结构 双层表头
+        [
+            {"title": "包干费", "colspan": 1},
+            {"title": "海关费用", "colspan": 2},
+            {"title": "商检费用","colspan":2},
+            {"title":"码头费用","colspan":3}
+        ],
+        [
+            {"field": "1", "title": "包干费", "align": "right"},
+            {"field": "5", "title": "海关验货费", "align": "right"},
+            {"field": "11", "title": "滞报金", "align": "right"},
+            {"field": "7", "title": "商检熏蒸场地费", "align": "right"},
+            {"field": "8", "title": "商检熏蒸拖车费", "align": "right"},
+            {"field": "2", "title": "码头超期费", "align": "right"},
+            {"field": "3", "title": "码头堆存费", "align": "right"},
+            {"field": "4", "title": "码头搬移费", "align": "right"}
+
+        ]
+            ]
 }

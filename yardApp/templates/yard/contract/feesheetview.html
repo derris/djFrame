@@ -18,24 +18,49 @@
                 data:{{ feetypdata }}
             });
             contract.feesheet.rpt = $('#contract-feesheet-queryfilter-toolbar-rpt').combobox({
-                valueField:'value',
-                textField:'text',
-                required:false,
-                width:100,
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 100,
                 data:{{ rptdata }},
-                onSelect:function(record){
-
+                onSelect: function (record) {
+                    var p = {
+                        func: '费用报表结构',
+                        ex_parm: {
+                            'rptid': 1 //费用报表id int型
+                        }
+                    };
+                    $.ajax({
+                        url: "./dealPAjax/",
+                        data: {jpargs: JSON.stringify(p)},
+                        dataType: 'json',
+                        success: function (r, t, a) {
+                            //console.info(r.result);
+                            contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
+                                autoLoad: false,
+                                border: false,
+                                loadNumber: 0,
+                                frozenColumns: [
+                                    [
+                                        {field: 'bill_no', title: '提单号', rowspan: 2, sortable: true, width: 180, halign: 'center'},
+                                        {field:"heji",title:"合计",rowspan: 2,halign:"center",align: "right",width:150}
+                                    ]
+                                ],
+                                columns: r.result,
+                                pagination: false
+                            });
+                        }
+                    });
                 }
-
             });
             contract.feesheet.begindate = $('#contract-feesheet-queryfilter-toolbar-begindate').datebox({
-                width:100
+                width: 100
             });
             contract.feesheet.enddate = $('#contract-feesheet-queryfilter-toolbar-enddate').datebox({
-                width:100
+                width: 100
             });
 
-            contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
+            {% comment %}contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
                 autoLoad: false,
                 border: false,
                 columns: [
@@ -65,7 +90,7 @@
                     ]
                 ],
                 pagination: false
-            });
+            });{% endcomment %}
         {% endautoescape %}
         contract.feesheet.refresh = function (parm) {
             if (parm.client.length == 0) {
@@ -95,7 +120,7 @@
                     fee_typ: parm.feetyp,
                     begin_tim: parm.begindate,
                     end_tim: parm.enddate,
-                    rpt:parm.rpt
+                    rpt: parm.rpt
                 }
             };
             $.ajax({
@@ -114,9 +139,9 @@
             var parm = {
                 client: contract.feesheet.client.combobox('getValue'),
                 feetyp: contract.feesheet.feetyp.combobox('getValue'),
-                begindate:contract.feesheet.begindate.datebox('getValue'),
-                enddate:contract.feesheet.enddate.datebox('getValue'),
-                rpt:contract.feesheet.rpt.combobox('getValue')
+                begindate: contract.feesheet.begindate.datebox('getValue'),
+                enddate: contract.feesheet.enddate.datebox('getValue'),
+                rpt: contract.feesheet.rpt.combobox('getValue')
             };
             contract.feesheet.refresh(parm);
         });
@@ -131,7 +156,7 @@
             <label for="fee_typ">费用类型:</label>
             <input id="contract-feesheet-queryfilter-toolbar-feetyp" type="text" name="fee_typ"/>
             <label for="rpt">报表:</label>
-            <input id="contract-feesheet-queryfilter-toolbar-rpt" type="text" name="rpt" />
+            <input id="contract-feesheet-queryfilter-toolbar-rpt" type="text" name="rpt"/>
             <label for="begindate">日期:</label>
             <input id="contract-feesheet-queryfilter-toolbar-begindate" type="text" name="begindate"/>
             <label for="enddate">至:</label>
@@ -142,7 +167,7 @@
 
     </div>
 
-    <div data-options="region:'center',border:'false'">
+    <div id='xxxx' data-options="region:'center',border:'false'">
         <table id="contract-feesheet-datagrid" data-options="border:'false'">
         </table>
     </div>

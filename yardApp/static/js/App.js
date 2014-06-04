@@ -388,7 +388,7 @@ $.extend($.fn.datagrid.defaults, {
     border: false,
     checkOnSelect:false,
     selectOnCheck:false,
-    fit: true,
+    //fit: true,
     idField: 'id',
     method: 'post',
     pageList: [50, 100, 150, 200, 250],
@@ -518,7 +518,7 @@ $.extend($.fn.datagrid.defaults, {
         if (opts.autoLoad == false && opts.loadNumber == 1) {
             return false;
         }
-        console.info(opts.id + ':loader');
+        //console.info(opts.id + ':loader');
         $.ajax({
             url: opts.url,
             data: {jpargs: JSON.stringify(queryParam)},
