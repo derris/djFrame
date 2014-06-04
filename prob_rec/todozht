@@ -2,23 +2,47 @@ todo 9
 去掉‘费用分组’
 删除表c_fee_group，c_fee去掉fee_group_id字段
 todo 10
+func:‘费用报表结构’
+从c_rpt,c_rpt_item,c_rpt_fee三个表中返回指定的费用报表结构
+接收参数：
+{
+    func: '费用报表结构',
+    ex_parm: {
+        'rptid':'xxx' //费用报表id int型
+    }
+}
+返回参数：
+{
+    "msg":"", #成功‘’，失败返回错误信息
+    "stateCod": "001",   #  有数据‘001’ 无数据‘201’
+    "error": ["xxx", "xx"]...        # 错误数组。
+    "result": {
+        'item_1':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+        'item_2':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
 
-todo 11
-func:'费用报表维护'
-jpargs:{
-       'reqtype':'update'      ----- DML功能发起。
-       'rows': [
-           {
-             'op': 'insert',
-             'table': 'c_rpt',
-             'cols': {'rpt_name':'出口货运账单'},  #  根据cols检索字段和插入、更新
-             'uuid': 'xxxx',   # 根据uuid更新子记录。
-             'id': -1,         # 更新时的主键。-1表示忽略id字段。
-             'subs': {
-                rows: [
+        .........,
+        'item_n':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
 
-                ]} //没有就空着
-           }]
-       }
+    } #返回报表结构 双层表头
+}
+测试数据：
+接收参数：
+{
+    func: '费用报表结构',
+    ex_parm: {
+        'rptid':1 //费用报表id int型
+    }
+}
+返回参数：
+{
+    "msg":"", #成功‘’，失败返回错误信息
+    "stateCod": "001",   #  有数据‘001’ 无数据‘201’
+    "error": ["xxx", "xx"]...        # 错误数组。
+    "result": {
+        'item_1':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+        'item_2':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
 
-
+        .........,
+        'item_n':{'title':'item_title','cols':[{'field':fee_id,'title':'fee_name'},....]},
+    } #返回报表结构 双层表头
+}

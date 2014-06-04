@@ -2,66 +2,101 @@
     Namespace.register('contract.feesheet');
     $(function () {
         {% autoescape off %}
+            contract.feesheet.datagrid = null;
+            contract.feesheet.client = $('#contract-feesheet-queryfilter-toolbar-client').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            contract.feesheet.feetyp = $('#contract-feesheet-queryfilter-toolbar-feetyp').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 100,
+                data:{{ feetypdata }}
+            });
+            contract.feesheet.rpt = $('#contract-feesheet-queryfilter-toolbar-rpt').combobox({
+                valueField:'value',
+                textField:'text',
+                required:false,
+                width:100,
+                data:{{ rptdata }},
+                onSelect:function(record){
+
+                }
+
+            });
+            contract.feesheet.begindate = $('#contract-feesheet-queryfilter-toolbar-begindate').datebox({
+                width:100
+            });
+            contract.feesheet.enddate = $('#contract-feesheet-queryfilter-toolbar-enddate').datebox({
+                width:100
+            });
+
             contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
-            autoLoad: false,
-            border: false,
-            columns: [
-                [
-                    {{ bill_no.writeUI|safe|escape }},
-                    {{ baogan.writeUI|safe|escape }},
-                    {{ chaoqi.writeUI|safe|escape }},
-                    {{ duicun.writeUI|safe|escape }},
-                    {{ banyi.writeUI|safe|escape }},
-                    {{ yanhuo.writeUI|safe|escape }},
-                    {{ xunzheng.writeUI|safe|escape }},
-                    {{ changdi.writeUI|safe|escape }},
-                    {{ tuoche.writeUI|safe|escape }},
-                    {{ zhibao.writeUI|safe|escape }},
-                    {{ qita.writeUI|safe|escape }},
-                    {
-                        field:'heji',
-                        title:'合计',
-                        formatter : function(value,data,index){
-                            return parseFloat(data.baogan) + parseFloat(data.chaoqi) + parseFloat(data.duicun) +
-                                    parseFloat(data.banyi) + parseFloat(data.yanhuo) + parseFloat(data.xunzheng) +
-                                    parseFloat(data.changdi) + parseFloat(data.tuoche) + parseFloat(data.zhibao) +
-                                    parseFloat(data.qita);
+                autoLoad: false,
+                border: false,
+                columns: [
+                    [
+                        {{ bill_no.writeUI|safe|escape }},
+                        {{ baogan.writeUI|safe|escape }},
+                        {{ chaoqi.writeUI|safe|escape }},
+                        {{ duicun.writeUI|safe|escape }},
+                        {{ banyi.writeUI|safe|escape }},
+                        {{ yanhuo.writeUI|safe|escape }},
+                        {{ xunzheng.writeUI|safe|escape }},
+                        {{ changdi.writeUI|safe|escape }},
+                        {{ tuoche.writeUI|safe|escape }},
+                        {{ zhibao.writeUI|safe|escape }},
+                        {{ qita.writeUI|safe|escape }},
+                        {
+                            field: 'heji',
+                            title: '合计',
+                            formatter: function (value, data, index) {
+                                return parseFloat(data.baogan) + parseFloat(data.chaoqi) + parseFloat(data.duicun) +
+                                        parseFloat(data.banyi) + parseFloat(data.yanhuo) + parseFloat(data.xunzheng) +
+                                        parseFloat(data.changdi) + parseFloat(data.tuoche) + parseFloat(data.zhibao) +
+                                        parseFloat(data.qita);
+                            }
                         }
-                    }
 
-                ]
-            ],
+                    ]
+                ],
+                pagination: false
+            });
         {% endautoescape %}
-    pagination: false
-    });
-        $(document).on('refresh', '#control-audit-queryfilter-toolbar-{{ seq }}', function (e, parm) {
-            if (parm.client.length == 0){
-                $.messager.alert('提示','客户不能空','info');
+        contract.feesheet.refresh = function (parm) {
+            if (parm.client.length == 0) {
+                $.messager.alert('提示', '客户不能空', 'info');
                 return;
             }
-            if (parm.feetyp.length == 0){
-                $.messager.alert('提示','费用类型不能空','info');
+            if (parm.feetyp.length == 0) {
+                $.messager.alert('提示', '费用类型不能空', 'info');
                 return;
             }
-            if (parm.auditbegintim.length == 0){
-                $.messager.alert('提示','开始时间不能空','info');
+            if (parm.rpt.length == 0) {
+                $.messager.alert('提示', '报表不能空', 'info');
                 return;
             }
-            if (parm.auditendtim.length == 0){
-                $.messager.alert('提示','截止时间不能空','info');
+            if (parm.begindate.length == 0) {
+                $.messager.alert('提示', '开始日期不能空', 'info');
                 return;
             }
-            contract.feesheet.refresh(parm);
-        });
-
-        contract.feesheet.refresh = function (p) {
+            if (parm.enddate.length == 0) {
+                $.messager.alert('提示', '截止日期不能空', 'info');
+                return;
+            }
             var p = {
                 func: '客户费用明细报表',
                 ex_parm: {
-                    client_id: p.client,
-                    fee_typ: p.feetyp,
-                    begin_tim: p.auditbegintim,
-                    end_tim: p.auditendtim}
+                    client_id: parm.client,
+                    fee_typ: parm.feetyp,
+                    begin_tim: parm.begindate,
+                    end_tim: parm.enddate,
+                    rpt:parm.rpt
+                }
             };
             $.ajax({
                 url: "./dealPAjax/",
@@ -75,11 +110,36 @@
                 }
             });
         }
+        $('#contract-feesheet-queryfilter-toolbar-search').bind('click', function (e) {
+            var parm = {
+                client: contract.feesheet.client.combobox('getValue'),
+                feetyp: contract.feesheet.feetyp.combobox('getValue'),
+                begindate:contract.feesheet.begindate.datebox('getValue'),
+                enddate:contract.feesheet.enddate.datebox('getValue'),
+                rpt:contract.feesheet.rpt.combobox('getValue')
+            };
+            contract.feesheet.refresh(parm);
+        });
+
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'north',border:'false'">
-        {% include 'yard/fee/auditqueryfilterview.html' %}
+        <div id="contract-feesheet-queryfilter-toolbar" class="datagrid-toolbar">
+            <label for="client_id">委托客户:</label>
+            <input id="contract-feesheet-queryfilter-toolbar-client" type="text" name="client_id"/>
+            <label for="fee_typ">费用类型:</label>
+            <input id="contract-feesheet-queryfilter-toolbar-feetyp" type="text" name="fee_typ"/>
+            <label for="rpt">报表:</label>
+            <input id="contract-feesheet-queryfilter-toolbar-rpt" type="text" name="rpt" />
+            <label for="begindate">日期:</label>
+            <input id="contract-feesheet-queryfilter-toolbar-begindate" type="text" name="begindate"/>
+            <label for="enddate">至:</label>
+            <input id="contract-feesheet-queryfilter-toolbar-enddate" type="text" name="enddate"/>
+            <a id="contract-feesheet-queryfilter-toolbar-search" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-search',group:'contract-feesheet-queryfilter-toolbar'">查询</a>
+        </div>
+
     </div>
 
     <div data-options="region:'center',border:'false'">

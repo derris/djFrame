@@ -457,6 +457,7 @@ $.extend($.fn.datagrid.defaults, {
         });
     },
     loader: function (param, success, error) {
+
         var that = $(this);
         var opts = that.datagrid('options');
         if (!opts.url) {
@@ -517,6 +518,7 @@ $.extend($.fn.datagrid.defaults, {
         if (opts.autoLoad == false && opts.loadNumber == 1) {
             return false;
         }
+        console.info(opts.id + ':loader');
         $.ajax({
             url: opts.url,
             data: {jpargs: JSON.stringify(queryParam)},

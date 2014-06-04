@@ -461,7 +461,7 @@ def feesheetview(request):
     qita = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='amount',displayfield='qita',title='其他')
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
-
+    rptdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.RptItem,field='rpt_id',autoforeign=True,foreigndisplayfield='rpt_name').editor['options']['data'],ensure_ascii = False)
     return render(request,"yard/contract/feesheetview.html",locals())
 def filteroptionview(request):
     return render(request,"yard/component/filternametype.html")
