@@ -322,3 +322,21 @@ def getRptFeeStruct(request, adict):
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
+def queryRptFee(request, adict):
+    '''
+    {
+    func:'客户费用明细报表',
+    ex_parm:{
+        client_id: 客户ID,
+        fee_typ:费用类型,
+        begin_tim: 开始日期,  #date型
+        end_tim: 截止日期,    #date型
+        rpt: 报表id
+    }
+}
+    '''
+    ls_clientId = str(adict["client_id"])
+    ls_feeType = str(adict["fee_typ"])
+    ls_beginTim = str(adict["begin_tim"])
+    ls_endTim = str(adict["end_tim"])
+    ls_rpt = str(adict["rpt"])

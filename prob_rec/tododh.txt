@@ -17,3 +17,33 @@ aaa = {
 >>> yardApp.ajaxRespFee.getRptFeeStruct(aaa, aaa)
 
 from imp import reload
+
+todo 11 to dh  : doing ~~
+func: '\u5BA2\u6237\u8D39\u7528\u660E\u7EC6\u62A5\u8868'
+\u63A5\u6536\u53C2\u6570\uFF1A
+{
+    func:'\u5BA2\u6237\u8D39\u7528\u660E\u7EC6\u62A5\u8868',
+    ex_parm:{
+        client_id: \u5BA2\u6237ID,
+        fee_typ:\u8D39\u7528\u7C7B\u578B,
+        begin_tim: \u5F00\u59CB\u65E5\u671F,  #date\u578B
+        end_tim: \u622A\u6B62\u65E5\u671F,    #date\u578B
+        rpt: \u62A5\u8868id
+    }
+}
+\u67E5\u8BE2\uFF1A\u53C2\u8003\u8FD9\u4E2Asql
+select c.bill_no,sum(case p.fee_cod when 1 then amount else 0 end) baogan,sum(case p.fee_cod when 2 then amount else 0 end) chaoqi,
+        sum(case p.fee_cod when 3 then amount else 0 end) duicun,sum(case p.fee_cod when 4 then amount else 0 end) banyi,
+        sum(case p.fee_cod when 5 then amount else 0 end) yanhuo,sum(case p.fee_cod when 6 then amount else 0 end) xunzheng,
+        sum(case p.fee_cod when 7 then amount else 0 end) changdi,sum(case p.fee_cod when 8 then amount else 0 end) tuoche,
+        sum(case p.fee_cod when 11 then amount else 0 end) zhibao,
+        sum(case p.fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
+        from pre_fee as p,contract as c
+        where  p.client_id = %s and p.fee_typ = %s and p.ex_feeid = 'O'
+        and (p.fee_financial_tim between %s and %s)
+        and p.contract_id = c.id
+        group by c.bill_no
+
+\u6839\u636E\u4F20\u5165\u7684\u62A5\u8868id\uFF0C\u627E\u51FA\u8FD9\u4E2A\u62A5\u8868\u4E0B\u7684\u6240\u6709\u8D39\u7528\u540D\u79F0\uFF0C\u62FC\u51FAselect\u7684\u5217\uFF0C\u884C\u53D8\u5217\u67E5\u8BE2\uFF0C\u5217\u540D\u53D8\u4E3A\u5B57\u7B26\u578B\u7684feeid\uFF0C
+'bill_no'\u548C'qita'\u8FD9\u4E24\u5217\u540D\u56FA\u5B9A\u3002
+\u8FD4\u56DE\u901A\u7528\u7684\u67E5\u8BE2\u7ED3\u6784

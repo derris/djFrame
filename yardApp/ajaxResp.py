@@ -363,6 +363,9 @@ def dealPAjax(request):
                 return (getrptfee(request))
             elif ldict['func'] == '费用报表结构':
                 return HttpResponse(json.dumps(getRptFeeStruct(request, ldict), ensure_ascii = False))
+            elif ldict['func'] == '客户费用明细报表':
+                return HttpResponse(json.dumps(queryRptFee(request, ldict), ensure_ascii = False))
+
             elif ldict['func'] == '核销删除':
                 l_rtn = auditDelete(request, ldict)
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
