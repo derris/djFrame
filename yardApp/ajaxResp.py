@@ -131,23 +131,9 @@ def getplace(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 
 
-def getfeegroup(request):
-    '''费用分组类型查询'''
-    ls_sql = "select id,group_name,remark from c_fee_group"
-    ldict = json.loads(request.POST['jpargs'])
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getfeecod(request):
     '''费用名称查询'''
-    ls_sql = "select id,fee_name,fee_group_id,pair_flag,protocol_flag,remark from c_fee"
-    ldict = json.loads(request.POST['jpargs'])
-    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
-def getfeeprotocol(request):
-    '''费用名称查询'''
-    ls_sql = "select id,client_id,fee_id,contract_type,dispatch_place,fee_cal_type,rate,free_day,remark from c_fee_protocol"
+    ls_sql = "select id,fee_name,pair_flag,protocol_flag,remark from c_fee"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 
@@ -323,12 +309,8 @@ def dealPAjax(request):
                 return (getaction(request))
             elif ldict['func'] == '发货地查询':
                 return (getdispatch(request))
-            elif ldict['func'] == '费用分组类型查询':
-                return (getfeegroup(request))
             elif ldict['func'] == '费用名称查询':
                 return (getfeecod(request))
-            elif ldict['func'] == '协议费率查询':
-                return (getfeeprotocol(request))
             elif ldict['func'] == '付款方式查询':
                 return (getpaytype(request))
             elif ldict['func'] == '客户查询':
@@ -416,11 +398,7 @@ def dealPAjax(request):
                 return (updateRaw(request))
             elif ldict['func'] == '动态类型维护':
                 return (updateRaw(request))
-            elif ldict['func'] == '费用分组类型维护':
-                return (updateRaw(request))
             elif ldict['func'] == '费用名称维护':
-                return (updateRaw(request))
-            elif ldict['func'] == '协议费率维护':
                 return (updateRaw(request))
             elif ldict['func'] == '付款方式维护':
                 return (updateRaw(request))

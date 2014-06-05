@@ -153,36 +153,15 @@ class Dispatch(BaseModel):
         return self.place_name
     class Meta:
         db_table = 'c_dispatch'
-class FeeGroup(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    group_name = models.CharField('分组名称',max_length=10)
-    def __str__(self):
-        return self.group_name
-    class Meta:
-        db_table = 'c_fee_group'
 class FeeCod(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     fee_name = models.CharField('费用名称',max_length=20)
     protocol_flag = models.NullBooleanField('协议费用标识')
-    fee_group_id = models.ForeignKey('FeeGroup',related_name='feegroup_feecod',verbose_name='费用分组',db_column='fee_group_id')
     pair_flag = models.NullBooleanField('代付标识',blank=True,null=True)
     def __str__(self):
         return self.fee_name
     class Meta:
         db_table = 'c_fee'
-class FeeProtocol(BaseModel):
-    id = models.AutoField('pk',primary_key=True)
-    client_id = models.ForeignKey('Client',limit_choices_to={'financial_flag':True},related_name='client_feeprotocol',verbose_name='客户',db_column='client_id')
-    fee_id = models.ForeignKey('FeeCod',limit_choices_to={'protocol_flag':True},related_name='feecod_feeprotocol',verbose_name='费用代码',db_column='fee_id')
-    contract_type = models.ForeignKey('SysCode',related_name='contract_type_feeprotocol',limit_choices_to={'fld_eng':'contract_type'},verbose_name='业务类型',db_column='contract_type')
-    dispatch_place = models.ForeignKey('Dispatch',related_name='dispatch_place_feeprotocol',verbose_name='发货地',db_column='dispatch_place')
-    fee_cal_type = models.ForeignKey('CntrType',related_name='fee_cal_type_cntrtype',verbose_name='计费单位',db_column='fee_cal_type')
-    rate = models.DecimalField('费率',max_digits=8,decimal_places=2)
-    free_day = models.SmallIntegerField('免费天数',blank=True,null=True)
-    def __str__(self):
-        return self.client_id.client_name + '/' + self.fee_id.fee_name
-    class Meta:
-        db_table = 'c_fee_protocol'
 class PayType(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     pay_name = models.CharField('付款方式',max_length=20)

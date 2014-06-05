@@ -167,6 +167,8 @@ $(function () {
         });
     });
     $('#contract-contractprefeeview-calfee-button').bind('click', function (e) {
+        $.messager.alert('提示','功能为实现','info');
+        return;
         var p = {
             func: '委托协议费用生成',
             ex_parm: {
