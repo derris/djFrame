@@ -91,5 +91,6 @@ select c.bill_no,sum(case p.fee_cod when 1 then amount else 0 end) baogan,sum(ca
         and p.contract_id = c.id
         group by c.bill_no
 
-根据传入的报表id，找出这个报表下的所有费用名称，拼出select的列，行变列查询，列名变为字符型的feeid
+根据传入的报表id，找出这个报表下的所有费用名称，拼出select的列，行变列查询，列名变为字符型的feeid，
+'bill_no'和'qita'这两列名固定。
 返回通用的查询结构
