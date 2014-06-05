@@ -146,13 +146,6 @@ def feecodview(request):
     protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark',width=180)
     return render(request,"yard/basedata/feecod.html",locals())
-def batchprotocolview(request):
-    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
-    feedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name').editor['options']['data'],ensure_ascii = False)
-    contracttypedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='contract_type',autoforeign=True,foreigndisplayfield='cod_name').editor['options']['data'],ensure_ascii = False)
-    dispatchplacedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='dispatch_place',autoforeign=True,foreigndisplayfield='place_name').editor['options']['data'],ensure_ascii = False)
-    feecaltypedata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.FeeProtocol,field='fee_cal_type',autoforeign=True,foreigndisplayfield='cntr_type').editor['options']['data'],ensure_ascii = False)
-    return render(request,"yard/basedata/protocoloption.html",locals())
 def paytypeview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.PayType,field='id')
     pay_name = easyuihelp.EasyuiFieldUI(model=models.PayType,field='pay_name')
@@ -502,8 +495,6 @@ def dealMenuReq(request):
         return(actionview(request))
     elif ls_args == '费用名称维护':
         return(feecodview(request))
-    elif ls_args == '批量协议费率选项':
-        return(batchprotocolview(request))
     elif ls_args == '付款方式维护':
         return(paytypeview(request))
     elif ls_args == '客户维护':
