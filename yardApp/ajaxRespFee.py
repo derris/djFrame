@@ -316,7 +316,7 @@ def getRptFeeStruct(request, adict):
             l_fee = cursorSelect( lx )
             l_cacheItem.append( {"title": i_item[1], "colspan": len(l_fee)} )   # i_item[1] -- name
             for i_fee in l_fee:
-                l_cacheFee.append( {"field": i_fee[0], "title": i_fee[1], "align": "right"} )
+                l_cacheFee.append( {"field": str(i_fee[0]), "title": i_fee[1], "align": "right"} )
         l_rtn["result"].append(l_cacheItem)
         l_rtn["result"].append(l_cacheFee)
     except Exception as e:

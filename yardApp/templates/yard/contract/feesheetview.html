@@ -35,7 +35,6 @@
                         data: {jpargs: JSON.stringify(p)},
                         dataType: 'json',
                         success: function (r, t, a) {
-                            //console.info(r.result);
                             contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
                                 autoLoad: false,
                                 border: false,
@@ -59,38 +58,6 @@
             contract.feesheet.enddate = $('#contract-feesheet-queryfilter-toolbar-enddate').datebox({
                 width: 100
             });
-
-            {% comment %}contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
-                autoLoad: false,
-                border: false,
-                columns: [
-                    [
-                        {{ bill_no.writeUI|safe|escape }},
-                        {{ baogan.writeUI|safe|escape }},
-                        {{ chaoqi.writeUI|safe|escape }},
-                        {{ duicun.writeUI|safe|escape }},
-                        {{ banyi.writeUI|safe|escape }},
-                        {{ yanhuo.writeUI|safe|escape }},
-                        {{ xunzheng.writeUI|safe|escape }},
-                        {{ changdi.writeUI|safe|escape }},
-                        {{ tuoche.writeUI|safe|escape }},
-                        {{ zhibao.writeUI|safe|escape }},
-                        {{ qita.writeUI|safe|escape }},
-                        {
-                            field: 'heji',
-                            title: '合计',
-                            formatter: function (value, data, index) {
-                                return parseFloat(data.baogan) + parseFloat(data.chaoqi) + parseFloat(data.duicun) +
-                                        parseFloat(data.banyi) + parseFloat(data.yanhuo) + parseFloat(data.xunzheng) +
-                                        parseFloat(data.changdi) + parseFloat(data.tuoche) + parseFloat(data.zhibao) +
-                                        parseFloat(data.qita);
-                            }
-                        }
-
-                    ]
-                ],
-                pagination: false
-            });{% endcomment %}
         {% endautoescape %}
         contract.feesheet.refresh = function (parm) {
             if (parm.client.length == 0) {

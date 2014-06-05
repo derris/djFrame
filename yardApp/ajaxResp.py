@@ -173,7 +173,7 @@ def getrpt(request):
 
 def getrptitem(request):
     '''费用报表项目查询'''
-    ls_sql = "select id,rpt_id,item_name,sort_no from c_rpt_item"
+    ls_sql = "select id,rpt_id,item_name,sort_no from c_rpt_item order by sort_no"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 

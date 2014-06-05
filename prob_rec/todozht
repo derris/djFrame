@@ -17,9 +17,9 @@ func:‘费用报表结构’
         select c_rpt_fee.fee_id,c_fee.fee_name from c_rtp_fee,c_fee
          where c_rpt_fee.rpt_id = xxx and c_rpt_fee.item_id = item.id
            and c_rpt_fee.fee_id = c_fee.id
-        将item.item_name写入itemtitle
+        将item.item_name写入一级表头title
         for fee in feelist
-            写入cols内容
+            写入二级表头field,title
 返回参数：
 {
     "msg":"", #成功‘’，失败返回错误信息
@@ -30,7 +30,7 @@ func:‘费用报表结构’
         [{"field": "fee_id", "title": "费用名称", "align": "right"},
         ....
 
-        ] #二级表头 fee_id-对应表字段 c_rpt_fee.fee_id
+        ] #二级表头 fee_id-对应表字段 c_rpt_fee.fee_id 字符型
      ] #返回报表结构 双层表头
 }
 测试数据：
@@ -62,7 +62,34 @@ func:‘费用报表结构’
             {"field": "2", "title": "码头超期费", "align": "right"},
             {"field": "3", "title": "码头堆存费", "align": "right"},
             {"field": "4", "title": "码头搬移费", "align": "right"}
-
         ]
             ]
 }
+todo 11 to dh
+func: '客户费用明细报表'
+接收参数：
+{
+    func:'客户费用明细报表',
+    ex_parm:{
+        client_id: 客户ID,
+        fee_typ:费用类型,
+        begin_tim: 开始日期,  #date型
+        end_tim: 截止日期,    #date型
+        rpt: 报表id
+    }
+}
+查询：参考这个sql
+select c.bill_no,sum(case p.fee_cod when 1 then amount else 0 end) baogan,sum(case p.fee_cod when 2 then amount else 0 end) chaoqi,
+        sum(case p.fee_cod when 3 then amount else 0 end) duicun,sum(case p.fee_cod when 4 then amount else 0 end) banyi,
+        sum(case p.fee_cod when 5 then amount else 0 end) yanhuo,sum(case p.fee_cod when 6 then amount else 0 end) xunzheng,
+        sum(case p.fee_cod when 7 then amount else 0 end) changdi,sum(case p.fee_cod when 8 then amount else 0 end) tuoche,
+        sum(case p.fee_cod when 11 then amount else 0 end) zhibao,
+        sum(case p.fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
+        from pre_fee as p,contract as c
+        where  p.client_id = %s and p.fee_typ = %s and p.ex_feeid = 'O'
+        and (p.fee_financial_tim between %s and %s)
+        and p.contract_id = c.id
+        group by c.bill_no
+
+根据传入的报表id，找出这个报表下的所有费用名称，拼出select的列，行变列查询，列名变为字符型的feeid
+返回通用的查询结构
