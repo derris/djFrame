@@ -297,6 +297,17 @@ def getRptFeeStruct(request, adict):
                             {"field": "4", "title": "码头搬移费", "align": "right"}
                         ]
                 };
+        test:
+from yardApp.ajaxRespFee import getRptFeeStruct
+import yardApp.ajaxRespFee
+from imp import reload
+aaa = {
+"func": '费用报表结构',
+"ex_parm": {
+'rptid':1 #费用报表id int型
+}
+}
+ yardApp.ajaxRespFee.getRptFeeStruct(aaa, aaa)
     '''
     ls_rptid = str(adict["ex_parm"]["rptid"])
     l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "result": [] }
@@ -334,9 +345,52 @@ def queryRptFee(request, adict):
         rpt: 报表id
     }
 }
-    '''
-    ls_clientId = str(adict["client_id"])
-    ls_feeType = str(adict["fee_typ"])
-    ls_beginTim = str(adict["begin_tim"])
-    ls_endTim = str(adict["end_tim"])
-    ls_rpt = str(adict["rpt"])
+select * from pre_fee where contract_id in    (
+    select id from contract  where bill_no in   (
+        select c.bill_no  from pre_fee as p,contract as c  where   p.contract_id = c.id   group by c.bill_no) );
+import yardApp.ajaxRespFee
+aaa = {
+"func": '客户费用明细报表',
+"ex_parm": {  "client_id": 53,
+        "fee_typ": I ,
+        "begin_tim": '2001-1-1',
+        "end_tim": '2022-2-2',
+        "rpt": 1   }
+}
+yardApp.ajaxRespFee.queryRptFee(aaa, aaa)
+from imp import reload
+reload(yardApp.ajaxRespFee)
+'''
+    l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "result": [] }
+    ls_clientId = str(adict["ex_parm"]["client_id"])
+    ls_feeType = str(adict["ex_parm"]["fee_typ"])
+    ls_beginTim = str(adict["ex_parm"]["begin_tim"])
+    ls_endTim = str(adict["ex_parm"]["end_tim"])
+    ls_rptid = str(adict["ex_parm"]["rpt"])
+    ls_sqlFee = '''select c_rpt_fee.fee_id,c_fee.fee_name from c_rpt_fee,c_fee
+                      where c_rpt_fee.rpt_id = %s and c_rpt_fee.item_id in
+                      (select id from c_rpt_item where rpt_id = %s )
+                      and c_rpt_fee.fee_id = c_fee.id;''' % (ls_rptid, ls_rptid)
+    try:
+        l_fee = cursorSelect(ls_sqlFee)
+        l_cacheFeeCod = []
+        l_cacheFeeSql = []
+        for i_fee in l_fee:
+            l_cacheFeeSql.append( " sum(case p.fee_cod when %s then amount else 0 end) c%s " % (str(i_fee[0]), str(i_fee[1]) ) )
+            l_cacheFeeCod.append(str(i_fee[0]))
+        if len(l_cacheFeeCod) > 0:
+            ls_sqlAll = ''' select c.bill_no c提单号,%s,
+                  sum(case p.fee_cod in(%s) when true then amount else 0 end) c总计
+                  from pre_fee as p,contract as c
+                  where  p.client_id = %s and p.fee_typ = '%s' and p.ex_feeid = 'O'
+                  and (p.fee_financial_tim between '%s' and '%s')
+                  and p.contract_id = c.id
+                  group by c.bill_no
+            ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_clientId,ls_feeType,ls_beginTim,ls_endTim )
+            l_result = rawSql2JsonDict(ls_sqlAll)
+            l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
+        else:
+            l_rtn.update( {"msg": "没定义查询数据列。", "error": [] , "stateCod" : 0 } )
+    except Exception as e:
+        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+    return l_rtn
