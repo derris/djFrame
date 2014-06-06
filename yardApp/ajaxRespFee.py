@@ -376,11 +376,11 @@ reload(yardApp.ajaxRespFee)
         l_cacheFeeCod = []
         l_cacheFeeSql = []
         for i_fee in l_fee:
-            l_cacheFeeSql.append( " sum(case p.fee_cod when %s then amount else 0 end) c%s " % (str(i_fee[0]), str(i_fee[1]) ) )
+            l_cacheFeeSql.append( ' sum(case p.fee_cod when %s then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[0]) ) )
             l_cacheFeeCod.append(str(i_fee[0]))
         if len(l_cacheFeeCod) > 0:
-            ls_sqlAll = ''' select c.bill_no c提单号,%s,
-                  sum(case p.fee_cod in(%s) when true then amount else 0 end) c总计
+            ls_sqlAll = ''' select c.bill_no,%s,
+                  sum(case p.fee_cod in(%s) when true then amount else 0 end) zongji
                   from pre_fee as p,contract as c
                   where  p.client_id = %s and p.fee_typ = '%s' and p.ex_feeid = 'O'
                   and (p.fee_financial_tim between '%s' and '%s')
