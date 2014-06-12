@@ -1,0 +1,63 @@
+<script>
+    Namespace.register('protocol.protocolview');
+    $(function () {
+        protocol.protocolview.datagrid = $('#protocol-protocolview-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ protocol_name.writeUI|safe|escape }},
+                        {{ write_date.writeUI|safe|escape }},
+                        {{ validate_date.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'p_protocol',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'protocol-protocolview-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(protocol.protocolview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'protocol-protocolview-datagrid',
+                    handler: function () {
+                        protocol.protocolview.datagrid.datagrid('insertData', {
+                            protocol_name: '新协议'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'protocol-protocolview-datagrid',
+                    handler: function () {
+                        protocol.protocolview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'protocol-protocolview-datagrid',
+                    handler: function () {
+                        protocol.protocolview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'协议查询',
+            updateFuncName:'协议维护',
+            pagination:false
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="protocol-protocolview-datagrid" border="false">
+        </table>
+    </div>
+</div>

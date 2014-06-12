@@ -80,8 +80,8 @@ func: '客户费用明细报表'
 }
 查询：参考这个sql
 select c.bill_no,sum(case p.fee_cod when 1 then amount else 0 end) baogan,sum(case p.fee_cod when 2 then amount else 0 end) chaoqi,
-        sum(case p.fee_cod when 3 then amount else 0 end) duicun,sum(case p.fee_cod when 4 then amount else 0 end) banyi,
-        sum(case p.fee_cod when 5 then amount else 0 end) yanhuo,sum(case p.fee_cod when 6 then amount else 0 end) xunzheng,
+        sum(case p.fee_cod when 3 then amount else 0 end) '3',sum(case p.fee_cod when 4 then amount else 0 end) banyi,
+        sum(case p.fee_cod when 5 then amount else 0 end) '5',sum(case p.fee_cod when 6 then amount else 0 end) xunzheng,
         sum(case p.fee_cod when 7 then amount else 0 end) changdi,sum(case p.fee_cod when 8 then amount else 0 end) tuoche,
         sum(case p.fee_cod when 11 then amount else 0 end) zhibao,
         sum(case p.fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita

@@ -169,6 +169,11 @@ def getrptfee(request):
     ls_sql = "select id,rpt_id,item_id,fee_id from c_rpt_fee"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+def getprotocol(request):
+    '''协议查询'''
+    ls_sql = "select id,protocol_name,write_date,validate_date,remark from p_protocol"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 
 
 def getcontract(request):
@@ -323,6 +328,8 @@ def dealPAjax(request):
                 return (getcargotype(request))
             elif ldict['func'] == '产地查询':
                 return (getplace(request))
+            elif ldict['func'] == '协议查询':
+                return (getprotocol(request))
 
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
@@ -461,6 +468,8 @@ def dealPAjax(request):
             elif ldict['func'] == '费用报表项目维护':
                 return (updateRaw(request))
             elif ldict['func'] == '费用报表项目费用维护':
+                return (updateRaw(request))
+            elif ldict['func'] == '协议维护':
                 return (updateRaw(request))
 
             #########################################################3

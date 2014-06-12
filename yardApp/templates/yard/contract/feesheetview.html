@@ -27,7 +27,7 @@
                     var p = {
                         func: '费用报表结构',
                         ex_parm: {
-                            'rptid': 1 //费用报表id int型
+                            'rptid': record.value //费用报表id int型
                         }
                     };
                     $.ajax({
@@ -35,6 +35,9 @@
                         data: {jpargs: JSON.stringify(p)},
                         dataType: 'json',
                         success: function (r, t, a) {
+                            if (contract.feesheet.datagrid != null){
+                                contract.feesheet.datagrid.datagrid('loadData',[]);
+                            }
                             contract.feesheet.datagrid = $('#contract-feesheet-datagrid').datagrid({
                                 autoLoad: false,
                                 border: false,
@@ -42,7 +45,7 @@
                                 frozenColumns: [
                                     [
                                         {field: 'bill_no', title: '提单号', rowspan: 2, sortable: true, width: 180, halign: 'center'},
-                                        {field:"heji",title:"合计",rowspan: 2,halign:"center",align: "right",width:150}
+                                        {field:"zongji",title:"合计",rowspan: 2,halign:"center",align: "right",width:150}
                                     ]
                                 ],
                                 columns: r.result,

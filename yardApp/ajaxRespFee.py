@@ -361,7 +361,7 @@ yardApp.ajaxRespFee.queryRptFee(aaa, aaa)
 from imp import reload
 reload(yardApp.ajaxRespFee)
 '''
-    l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "result": [] }
+    l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "rows": [] }
     ls_clientId = str(adict["ex_parm"]["client_id"])
     ls_feeType = str(adict["ex_parm"]["fee_typ"])
     ls_beginTim = str(adict["ex_parm"]["begin_tim"])
@@ -388,7 +388,7 @@ reload(yardApp.ajaxRespFee)
                   group by c.bill_no
             ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_clientId,ls_feeType,ls_beginTim,ls_endTim )
             l_result = rawSql2JsonDict(ls_sqlAll)
-            l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
+            l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": l_result } )
         else:
             l_rtn.update( {"msg": "没定义查询数据列。", "error": [] , "stateCod" : 0 } )
     except Exception as e:

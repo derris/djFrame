@@ -2,7 +2,7 @@ __author__ = 'zhangtao'
 # render 前台界面
 import json
 from django.shortcuts import render
-from yardApp import models
+from yardApp import models,protocolmodels
 from zdCommon import easyuihelp
 from django.http import HttpResponse
 from zdCommon.sysjson import getMenuList,getMenuListByUser
@@ -455,6 +455,13 @@ def rptview(request):
     rptfee_itemid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='item_id',hidden=True)
     rptfee_feeid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name',title='费用名称',width=180)
     return render(request,"yard/fee/rptview.html",locals())
+def protocolview(request):
+    id = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='id')
+    protocol_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='protocol_name')
+    write_date = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='write_date')
+    validate_date = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='validate_date')
+    remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='remark',width=200)
+    return render(request,"yard/protocol/protocolview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -530,6 +537,8 @@ def dealMenuReq(request):
         return(auditqueryview(request))
     elif ls_args == "费用报表定义":
         return(rptview(request))
-
+    ######## 协议 ##############
+    elif ls_args == '协议维护':
+        return(protocolview(request))
     else:
         return HttpResponse("找不到功能名，请联系管理员")
