@@ -489,7 +489,8 @@ def dealPAjax(request):
                 return (updateRaw(request))
             elif ldict['func'] == '协议要素内容维护':
                 return (updateRaw(request))
-
+            elif ldict['func'] == '协议要素内容初始化':
+                return initProtElemContent(request, ldict)
             #########################################################3
             elif ldict['func'] == '密码修改':  # ajax 查询
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}

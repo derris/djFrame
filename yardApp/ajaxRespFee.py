@@ -394,3 +394,31 @@ reload(yardApp.ajaxRespFee)
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
+
+def initProtElemContent(request, adict):
+    # 协议要素内容初始化
+    l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "rows": [] }
+    pass
+
+    '''
+    select init_data_sql from p_fee_ele where  id = '1';
+    select trim(to_char(id,'9999999999')) lov_cod,cntr_type lov_name from c_cntr_type;  ==> record A
+
+    select * from
+    (select trim(to_char(id,'9999999999')) lov_cod,cntr_type lov_name from c_cntr_type) t2
+    where lov_cod not in ('dd', '44')
+
+    select * from p_fee_ele_lov where ele_id = '1';    ==> record B
+
+    insert into p_fee_ele_lov(ele_id, lov_cod, lov_name)
+    (
+    select 1 as id, trim(to_char(id,'9999999999')) as lov_cod,cntr_type as lov_name from c_cntr_type
+    where trim(to_char(id,'9999999999')) not in ('dd','44')
+    )
+
+    去掉 ：   A.lov_cod==B.lov_cod
+
+    剩余的插入p_fee_ele_lov,最后再执行一次
+    select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov where ele_id = 'XXX'得记录集C
+    返回标准查询结构，rows：C
+    '''
