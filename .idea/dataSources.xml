@@ -4,7 +4,7 @@
     <data-source source="LOCAL" name="Django default" uuid="64a66ccc-3836-4d90-a7ee-e95b7d3a146c">
       <driver-ref>postgresql</driver-ref>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/yard</jdbc-url>
+      <jdbc-url>jdbc:postgresql://172.40.68.103:5432/yard</jdbc-url>
       <user-name>yardAdmin</user-name>
       <user-password>dfd0dfc2dfdedf81dfcedfc2df97dfd9dfdbdfc6df98</user-password>
       <libraries>

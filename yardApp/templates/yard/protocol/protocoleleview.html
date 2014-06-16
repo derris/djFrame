@@ -1,0 +1,62 @@
+<script>
+    Namespace.register('protocol.feeele');
+    $(function () {
+        protocol.feeele.datagrid = $('#protocol-feeele-elegrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ ele_name.writeUI|safe|escape }},
+                        {{ init_data_sql.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'p_fee_ele',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'protocol-feeele-elegrid',
+                    handler: function () {
+                        sy.createSearchWindow(protocol.feeele.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'protocol-feeele-elegrid',
+                    handler: function () {
+                        protocol.feeele.datagrid.datagrid('insertData', {
+                            ele_name: '新要素'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'protocol-feeele-elegrid',
+                    handler: function () {
+                        protocol.feeele.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'protocol-feeele-elegrid',
+                    handler: function () {
+                        protocol.feeele.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'协议要素查询',
+            updateFuncName:'协议要素维护',
+            pagination:false
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="protocol-feeele-elegrid" border="false">
+        </table>
+    </div>
+</div>

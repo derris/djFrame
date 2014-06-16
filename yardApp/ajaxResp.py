@@ -174,8 +174,16 @@ def getprotocol(request):
     ls_sql = "select id,protocol_name,write_date,validate_date,remark from p_protocol"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
+def getprotocolele(request):
+    '''协议要素查询'''
+    ls_sql = "select id,ele_name,init_data_sql,remark from p_fee_ele"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+def getprotocolelelov(request):
+    '''协议要素内容查询'''
+    ls_sql = "select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
@@ -328,8 +336,13 @@ def dealPAjax(request):
                 return (getcargotype(request))
             elif ldict['func'] == '产地查询':
                 return (getplace(request))
+            ##-----------计费协议----------------------------------
             elif ldict['func'] == '协议查询':
                 return (getprotocol(request))
+            elif ldict['func'] == '协议要素查询':
+                return (getprotocolele(request))
+            elif ldict['func'] == '协议要素内容查询':
+                return (getprotocolelelov(request))
 
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
@@ -469,7 +482,12 @@ def dealPAjax(request):
                 return (updateRaw(request))
             elif ldict['func'] == '费用报表项目费用维护':
                 return (updateRaw(request))
+            ##-----------计费协议----------------------------------
             elif ldict['func'] == '协议维护':
+                return (updateRaw(request))
+            elif ldict['func'] == '协议要素维护':
+                return (updateRaw(request))
+            elif ldict['func'] == '协议要素内容维护':
                 return (updateRaw(request))
 
             #########################################################3

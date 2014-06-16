@@ -462,6 +462,20 @@ def protocolview(request):
     validate_date = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='validate_date')
     remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='remark',width=200)
     return render(request,"yard/protocol/protocolview.html",locals())
+def protocolfeeeleview(request):
+    id = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEle,field='id')
+    ele_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEle,field='ele_name')
+    init_data_sql = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEle,field='init_data_sql')
+    remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='remark',width=200)
+    return render(request,"yard/protocol/protocoleleview.html",locals())
+def protocolfeeelelovview(request):
+    ele_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEle,field='ele_name')
+    id = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='id')
+    ele_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='ele_id',hidden=True)
+    lov_cod = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='lov_cod')
+    lov_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='lov_name')
+    remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='remark',width=200)
+    return render(request,"yard/protocol/protocolfeeelelovview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -540,5 +554,10 @@ def dealMenuReq(request):
     ######## 协议 ##############
     elif ls_args == '协议维护':
         return(protocolview(request))
+    elif ls_args == '协议要素维护':
+        return(protocolfeeeleview(request))
+    elif ls_args == '协议要素内容维护':
+        return(protocolfeeelelovview(request))
+
     else:
         return HttpResponse("找不到功能名，请联系管理员")

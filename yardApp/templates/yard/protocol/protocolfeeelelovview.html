@@ -1,0 +1,155 @@
+<script>
+    Namespace.register('protocol.feeelelov');
+    $(function () {
+        protocol.feeelelov.elegrid = $('#protocol-feeelelov-feeelegrid').datagrid({
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ ele_name.writeUI|safe|escape }},
+                {% endautoescape %}
+                ]
+            ],
+            pagination: false,
+            queryFuncName: '协议要素查询',
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                var id = rowData.id;
+                var opts = protocol.feeelelov.elelovgrid.datagrid('options');
+                if (protocol.feeelelov.elelovgrid.datagrid('getChanges').length > 0) {
+                    $.messager.confirm('确认', '数据已改变,是否保存?', function (r) {
+                        if (r) {
+                            protocol.feeelelov.elelovgrid.datagrid('options').toolbar[4].handler();
+                        }
+                        opts.filterFields = [
+                            {cod: 'ele_id', operatorTyp: '等于', value: id}
+                        ];
+                        protocol.feeelelov.elelovgrid.datagrid('reload');
+                    });
+                } else {
+                    opts.filterFields = [
+                        {cod: 'ele_id', operatorTyp: '等于', value: id}
+                    ];
+                    protocol.feeelelov.elelovgrid.datagrid('reload');
+                }
+            }
+        });
+        protocol.feeelelov.elelovgrid = $('#protocol-feeelelov-feeelelovgrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [   {% autoescape off %}
+                    {{ id.writeUI|safe|escape }},
+                    {{ ele_id.writeUI|safe|escape }},
+                    {{ lov_cod.writeUI|safe|escape }},
+                    {{ lov_name.writeUI|safe|escape }},
+                    {{ remark.writeUI|safe|escape }}
+                {% endautoescape %}
+                ]
+            ],
+            dataTable: 'p_fee_ele_lov',
+            pagination: false,
+            toolbar: [
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group: 'protocol-feeelelov-feeelelovgrid',
+                    handler: function () {
+                        var eleRow = protocol.feeelelov.elegrid.datagrid('getSelected');
+                        if (eleRow != null && eleRow.id != null) {
+                            protocol.feeelelov.elelovgrid.datagrid('insertData', {
+                                ele_id: eleRow.id
+                            });
+                        } else {
+                            $.messager.alert('提示', '请选择要素', 'info');
+                        }
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group: 'protocol-feeelelov-feeelelovgrid',
+                    handler: function () {
+                        protocol.feeelelov.elelovgrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group: 'protocol-feeelelov-feeelelovgrid',
+                    handler: function () {
+                        if (protocol.feeelelov.elelovgrid.datagrid('preSave') == 1) {
+                            if (protocol.feeelelov.elelovgrid.validateAllData() == 1) {
+                                protocol.feeelelov.elelovgrid.datagrid('postUpdateAllData');
+                            }
+                        } else {
+                            $.messager.alert('提示', '检验失败', 'info');
+                        }
+                    }
+                },
+                '-',
+                {
+                    text: '初始化',
+                    iconCls: 'icon-save',
+                    group: 'protocol-feeelelov-feeelelovgrid',
+                    handle: function () {
+                        var elerow = protocol.feeelelov.elegrid.datagrid('getSelected');
+                        if (elerow == null) {
+                            $.messager.alert('提示', '请选择要素', 'info');
+                            return;
+                        }
+                        var eleid = elerow.id;
+                        var p = {
+                            func: '协议要素内容初始化',
+                            reqtype: 'update',
+                            ex_parm: {
+                                id: eleid
+                            }
+                        };
+                        $.ajax({
+                            url: "./dealPAjax/",
+                            data: {jpargs: JSON.stringify(p)},
+                            success: function (r, t, a) {
+                                if ($.ajaxSettings.success(r, t, a, false)) {
+                                    protocol.feeelelov.elelovgrid.datagrid('loadData', []);
+
+                                }
+                            }
+                        });
+                    }
+                }
+            ],
+            queryFuncName: '协议要素内容查询',
+            updateFuncName: '协议要素内容维护'
+        });
+        protocol.feeelelov.elelovgrid.validateAllData = function () {
+            var rows = protocol.feeelelov.elelovgrid.datagrid('getRows');
+            var find = false;
+            $.each(rows, function (index, data) {
+                for (var i = index + 1, ilen = rows.length; i < ilen; i++) {
+                    if (data.lov_cod == rows[i].lov_cod) {
+                        find = true;
+                        return false;
+                    }
+                }
+            });
+            if (find == true) {
+                $.messager.alert('提示', '要素内容重复', 'info');
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+    });
+</script>
+
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="north" border="false" style="height: 200px" data-options="split:true">
+        <table id="protocol-feeelelov-feeelegrid" border="false">
+        </table>
+    </div>
+    <div region="center" border="false">
+        <table id="protocol-feeelelov-feeelelovgrid" border="false">
+        </table>
+    </div>
+
+</div>
