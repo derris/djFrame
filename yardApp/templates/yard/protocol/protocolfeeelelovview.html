@@ -110,8 +110,9 @@
                             data: {jpargs: JSON.stringify(p)},
                             success: function (r, t, a) {
                                 if ($.ajaxSettings.success(r, t, a, false)) {
-                                    protocol.feeelelov.elelovgrid.datagrid('loadData', []);
-
+                                    if (r.stateCod == 202){
+                                        protocol.feeelelov.elelovgrid.datagrid('loadData', r.rows);
+                                    }
                                 }
                             }
                         });
