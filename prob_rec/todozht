@@ -17,3 +17,9 @@ select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov where ele_id = 'XXX'
 返回标准查询结构，rows：C
 
 返回参数接口：标准查询返回
+{
+    "msg":"初始化成功",
+    "stateCod": "202",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+    "error": ["xxx", "xx"]...        # 错误数组。
+    "rows":[{},{},{}]
+}
