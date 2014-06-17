@@ -259,7 +259,6 @@ def getSequence(aDict):
         ldict_rtn.update({"stateCod": "-1"})
     return ldict_rtn
 
-
 #############################################################    UPDATE    -----
 def updateRaw(request):
     ''' 客户维护  '''

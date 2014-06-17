@@ -476,6 +476,7 @@ def protocolfeeelelovview(request):
     lov_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='lov_name')
     remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='remark',width=200)
     return render(request,"yard/protocol/protocolfeeelelovview.html",locals())
+
 def protocolmodview(request):
     id = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='id')
     mod_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='mod_name')

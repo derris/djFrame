@@ -27,6 +27,7 @@ class FeeEleLov(BaseModel):
         return self.lov_name
     class Meta:
         db_table = 'p_fee_ele_lov'
+
 class FeeMod(BaseModel):
     id = models.AutoField('pk',primary_key=True)
     mod_name = models.CharField('计费模式名称',max_length=20)
