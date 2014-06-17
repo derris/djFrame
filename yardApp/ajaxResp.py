@@ -184,6 +184,13 @@ def getprotocolelelov(request):
     ls_sql = "select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+def getprotocolmod(request):
+    '''协议要素内容查询'''
+    ls_sql = "select id,mod_name,col_1,col_2,col_3,col_4,col_5,col_6,col_7,col_8,col_9,col_10," \
+             "mod_descript,remark from p_fee_mod"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
@@ -343,6 +350,8 @@ def dealPAjax(request):
                 return (getprotocolele(request))
             elif ldict['func'] == '协议要素内容查询':
                 return (getprotocolelelov(request))
+            elif ldict['func'] == '协议模式查询':
+                return (getprotocolmod(request))
 
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
@@ -491,6 +500,9 @@ def dealPAjax(request):
                 return (updateRaw(request))
             elif ldict['func'] == '协议要素内容初始化':
                 return initProtElemContent(request, ldict)
+            elif ldict['func'] == '协议模式维护':
+                return (updateRaw(request))
+
             #########################################################3
             elif ldict['func'] == '密码修改':  # ajax 查询
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}

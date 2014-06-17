@@ -206,9 +206,14 @@ class EasyuiFieldUI:
                                      return value;
                                 }'''
             else:
-                self.editor = {
-                    'type': 'text'
-                }
+                if self.fObj.max_length > 300 :
+                    self.editor = {
+                        'type':'textarea'
+                    }
+                else:
+                    self.editor = {
+                        'type': 'text'
+                    }
             self.width = columnWidth * 18
         if isinstance(self.fObj, (models.ForeignKey,)):
             columnWidth = len(self.title)

@@ -1,0 +1,72 @@
+<script>
+    Namespace.register('protocol.protocolmodview');
+    $(function () {
+        protocol.protocolmodview.datagrid = $('#protocol-protocolmodview-datagrid').datagrid({
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ id.writeUI|safe|escape }},
+                        {{ mod_name.writeUI|safe|escape }},
+                        {{ col_1.writeUI|safe|escape }},
+                        {{ col_2.writeUI|safe|escape }},
+                        {{ col_3.writeUI|safe|escape }},
+                        {{ col_4.writeUI|safe|escape }},
+                        {{ col_5.writeUI|safe|escape }},
+                        {{ col_6.writeUI|safe|escape }},
+                        {{ col_7.writeUI|safe|escape }},
+                        {{ col_8.writeUI|safe|escape }},
+                        {{ col_9.writeUI|safe|escape }},
+                        {{ col_10.writeUI|safe|escape }},
+                        {{ mod_descript.writeUI|safe|escape }},
+                        {{ remark.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'p_fee_mod',
+            toolbar: [
+                {text: '查询',
+                    iconCls: 'icon-search',
+                    group:'protocol-protocolmodview-datagrid',
+                    handler: function () {
+                        sy.createSearchWindow(protocol.protocolmodview.datagrid);
+                    }
+                },
+                '-',
+                {text: '增加',
+                    iconCls: 'icon-add',
+                    group:'protocol-protocolmodview-datagrid',
+                    handler: function () {
+                        protocol.protocolmodview.datagrid.datagrid('insertData', {
+                            mod_name: '新模式'
+                        });
+                    }
+                },
+                '-',
+                {text: '删除',
+                    iconCls: 'icon-remove',
+                    group:'protocol-protocolmodview-datagrid',
+                    handler: function () {
+                        protocol.protocolmodview.datagrid.datagrid('deleteData');
+                    }
+                },
+                '-',
+                {text: '保存',
+                    iconCls: 'icon-save',
+                    group:'protocol-protocolmodview-datagrid',
+                    handler: function () {
+                        protocol.protocolmodview.datagrid.datagrid('postUpdateAllData');
+                    }
+                }
+            ],
+            queryFuncName:'协议模式查询',
+            updateFuncName:'协议模式维护',
+            pagination:false
+        });
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div region="center" border="false">
+        <table id="protocol-protocolmodview-datagrid" border="false">
+        </table>
+    </div>
+</div>

@@ -476,6 +476,22 @@ def protocolfeeelelovview(request):
     lov_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='lov_name')
     remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeEleLov,field='remark',width=200)
     return render(request,"yard/protocol/protocolfeeelelovview.html",locals())
+def protocolmodview(request):
+    id = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='id')
+    mod_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='mod_name')
+    col_1 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_1',autoforeign=True,foreigndisplayfield='ele_name')
+    col_2 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_2',autoforeign=True,foreigndisplayfield='ele_name')
+    col_3 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_3',autoforeign=True,foreigndisplayfield='ele_name')
+    col_4 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_4',autoforeign=True,foreigndisplayfield='ele_name')
+    col_5 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_5',autoforeign=True,foreigndisplayfield='ele_name')
+    col_6 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_6',autoforeign=True,foreigndisplayfield='ele_name')
+    col_7 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_7',autoforeign=True,foreigndisplayfield='ele_name')
+    col_8 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_8',autoforeign=True,foreigndisplayfield='ele_name')
+    col_9 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_9',autoforeign=True,foreigndisplayfield='ele_name')
+    col_10 = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='col_10',autoforeign=True,foreigndisplayfield='ele_name')
+    mod_descript = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='mod_descript')
+    remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='remark',width=200)
+    return render(request,"yard/protocol/protocolmodview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -558,6 +574,8 @@ def dealMenuReq(request):
         return(protocolfeeeleview(request))
     elif ls_args == '协议要素内容维护':
         return(protocolfeeelelovview(request))
+    elif ls_args == '协议模式维护':
+        return(protocolmodview(request))
 
     else:
         return HttpResponse("找不到功能名，请联系管理员")
