@@ -92,7 +92,7 @@
                     text: '初始化',
                     iconCls: 'icon-save',
                     group: 'protocol-feeelelov-feeelelovgrid',
-                    handle: function () {
+                    handler: function () {
                         var elerow = protocol.feeelelov.elegrid.datagrid('getSelected');
                         if (elerow == null) {
                             $.messager.alert('提示', '请选择要素', 'info');
