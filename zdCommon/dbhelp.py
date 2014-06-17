@@ -442,7 +442,7 @@ def json2upd(aJsonDict):
         l_cur.close()
     return(l_rtn)
 
-def cursorExec(aSql):
+def cursorExec(aSql, aList=None):
     '''
         execute sql use cursor, return effect rows.
     '''
@@ -451,7 +451,7 @@ def cursorExec(aSql):
     try:
         with transaction.atomic():
             l_cur = connection.cursor()
-            l_cur.execute(aSql)
+            l_cur.execute(aSql, aList)
             l_rtn = l_cur.cursor.rowcount
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))
@@ -460,7 +460,7 @@ def cursorExec(aSql):
         l_cur.close
     return l_rtn
 
-def cursorExec2(aSql, aList ):  #list 方式不会自动会转换数据类型。
+def cursorExec2(aSql, aList=None ):  #list 方式不会自动会转换数据类型。
     '''
         注意返回的是一个值。
         lrtn = cursorExec2("update s_user set password = %s where id = %s and password = %s ", [ls_newpass,l_userid, ls_oldpass])
@@ -479,16 +479,16 @@ def cursorExec2(aSql, aList ):  #list 方式不会自动会转换数据类型。
         l_cur.close
     return l_rtn
 
-def cursorSelect(aSql):
+def cursorSelect(aSql, aList=None):
     '''
         execute sql use cursor, return all. fetchall()
         l_rtn[0][0]  单值。 注意此结构不能json序列话，因为没有进行json列处理。
     '''
     log(aSql)
-    l_rtn = -1
+    l_rtn = []
     try:
         l_cur = connection.cursor()
-        l_cur.execute(aSql)
+        l_cur.execute(aSql, aList)
         l_rtn = l_cur.fetchall()
     except Exception as e:
         logErr("数据库执行错误：%s" % str(e.args))

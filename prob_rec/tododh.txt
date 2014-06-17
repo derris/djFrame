@@ -2,7 +2,7 @@
 # todo 10  to dh
 # \u6211\u641E\u5B8C\u4E86\uFF0C\u5728\u6211\u7684to\u91CC\u9762\uFF0C\u5199\u4E2A  todo from zht 10. over
 
-todo from zht 11 : doing
+todo from zht 11 : over
 
 \u6574\u5408sql\u8BED\u53E5\uFF0C\u4E89\u53D6\u4E00\u6B21\u63D2\u5165\uFF0C\u4E00\u6B21\u67E5\u8BE2\u641E\u5B9A\u3002
     select * from

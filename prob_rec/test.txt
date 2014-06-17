@@ -1,66 +1,88 @@
-系统管理/岗位权限维护：
-   进口货运。下面，委托查询。选中了。点保存生成不了sql语句。就是不提交json的insert操作。 20140415
+import yardApp.ajaxRespFee
+import zdCommon.dbhelp
+
+from imp import reload
+reload(zdCommon.dbhelp)
+reload(yardApp.ajaxRespFee)
+
+==============================================
+aaa = {"func": '\u5BA2\u6237\u8D39\u7528\u660E\u7EC6\u62A5\u8868',
+"ex_parm": {  "client_id": 53, "fee_typ": I , "begin_tim": '2001-1-1', "end_tim": '2022-2-2',   "rpt": 1   } }
+yardApp.ajaxRespFee.queryRptFee(aaa, aaa)
+
+====================================
+aaa = { "func": '\u534F\u8BAE\u8981\u7D20\u5185\u5BB9\u521D\u59CB\u5316',
+    "reqtype": 'update',
+    "ex_parm": {   "id": '1'  } }
+yardApp.ajaxRespFee.initProtElemContent(aaa, aaa)
+reload(yardApp.ajaxRespFee)
+====================================
 
 
 
 
-一 委托维护
-  1.查询：弹出查询窗口，输入提单号返回模糊查询的委托列表，选择委托后，查询窗口关闭，
-         根据选择的提单号，刷新委托表单、委托动态表格、委托箱量表格。                     ---     ok
-  2.增加：清空委托、委托动态、委托箱量                                                    ---   ok
-  3.删除：删除当前委托，数据库级联删除委托动态、委托箱量                              -- ok
-  4.保存：将委托、委托动态、委托箱量打包保存                                         -- ok
-  5.锁定：委托锁定,contract.finish_flag = true,contract.finish_time = '指定时间'    -- ok
-  6.解锁：委托解锁,contract.finish_flag = null,contract.finish_time = null       -- error :  see below
-  7.增加动态：contract_action增加记录                                                       ok
-  8.删除动态：contract_action删除记录                                                        ok
-  9.增加箱量：contract_cntr增加记录                                                            ok
-  10.删除箱量：contract_cntr删除记录                                                             ok
 
-  --------  有时候会出现 js 错误。怀疑是网页刷新代码不全导致的错误。
 
-二 委托应收付维护（pre_fee）
-  1.查询：弹出查询窗口，输入提单号返回模糊查询的委托列表，选择委托后，查询窗口关闭，
-         根据选择的提单号，刷新委托表单、应收费用、应付费用。                            -- ok
-  2.保存：保存应收付费用                                                               -- ok
-  3.费用锁定：锁定选择的应收付费用，pre_fee.lock_flag = true                        -- ok
-  4.费用解锁：解锁选择的应收付费用，pre_fee.lock_flag = null.已核销的禁止执行。     -- ok
+\u7CFB\u7EDF\u7BA1\u7406/\u5C97\u4F4D\u6743\u9650\u7EF4\u62A4\uFF1A
+   \u8FDB\u53E3\u8D27\u8FD0\u3002\u4E0B\u9762\uFF0C\u59D4\u6258\u67E5\u8BE2\u3002\u9009\u4E2D\u4E86\u3002\u70B9\u4FDD\u5B58\u751F\u6210\u4E0D\u4E86sql\u8BED\u53E5\u3002\u5C31\u662F\u4E0D\u63D0\u4EA4json\u7684insert\u64CD\u4F5C\u3002 20140415
+
+\u4E00 \u59D4\u6258\u7EF4\u62A4
+  1.\u67E5\u8BE2\uFF1A\u5F39\u51FA\u67E5\u8BE2\u7A97\u53E3\uFF0C\u8F93\u5165\u63D0\u5355\u53F7\u8FD4\u56DE\u6A21\u7CCA\u67E5\u8BE2\u7684\u59D4\u6258\u5217\u8868\uFF0C\u9009\u62E9\u59D4\u6258\u540E\uFF0C\u67E5\u8BE2\u7A97\u53E3\u5173\u95ED\uFF0C
+         \u6839\u636E\u9009\u62E9\u7684\u63D0\u5355\u53F7\uFF0C\u5237\u65B0\u59D4\u6258\u8868\u5355\u3001\u59D4\u6258\u52A8\u6001\u8868\u683C\u3001\u59D4\u6258\u7BB1\u91CF\u8868\u683C\u3002                     ---     ok
+  2.\u589E\u52A0\uFF1A\u6E05\u7A7A\u59D4\u6258\u3001\u59D4\u6258\u52A8\u6001\u3001\u59D4\u6258\u7BB1\u91CF                                                    ---   ok
+  3.\u5220\u9664\uFF1A\u5220\u9664\u5F53\u524D\u59D4\u6258\uFF0C\u6570\u636E\u5E93\u7EA7\u8054\u5220\u9664\u59D4\u6258\u52A8\u6001\u3001\u59D4\u6258\u7BB1\u91CF                              -- ok
+  4.\u4FDD\u5B58\uFF1A\u5C06\u59D4\u6258\u3001\u59D4\u6258\u52A8\u6001\u3001\u59D4\u6258\u7BB1\u91CF\u6253\u5305\u4FDD\u5B58                                         -- ok
+  5.\u9501\u5B9A\uFF1A\u59D4\u6258\u9501\u5B9A,contract.finish_flag = true,contract.finish_time = '\u6307\u5B9A\u65F6\u95F4'    -- ok
+  6.\u89E3\u9501\uFF1A\u59D4\u6258\u89E3\u9501,contract.finish_flag = null,contract.finish_time = null       -- error :  see below
+  7.\u589E\u52A0\u52A8\u6001\uFF1Acontract_action\u589E\u52A0\u8BB0\u5F55                                                       ok
+  8.\u5220\u9664\u52A8\u6001\uFF1Acontract_action\u5220\u9664\u8BB0\u5F55                                                        ok
+  9.\u589E\u52A0\u7BB1\u91CF\uFF1Acontract_cntr\u589E\u52A0\u8BB0\u5F55                                                            ok
+  10.\u5220\u9664\u7BB1\u91CF\uFF1Acontract_cntr\u5220\u9664\u8BB0\u5F55                                                             ok
+
+  --------  \u6709\u65F6\u5019\u4F1A\u51FA\u73B0 js \u9519\u8BEF\u3002\u6000\u7591\u662F\u7F51\u9875\u5237\u65B0\u4EE3\u7801\u4E0D\u5168\u5BFC\u81F4\u7684\u9519\u8BEF\u3002
+
+\u4E8C \u59D4\u6258\u5E94\u6536\u4ED8\u7EF4\u62A4\uFF08pre_fee\uFF09
+  1.\u67E5\u8BE2\uFF1A\u5F39\u51FA\u67E5\u8BE2\u7A97\u53E3\uFF0C\u8F93\u5165\u63D0\u5355\u53F7\u8FD4\u56DE\u6A21\u7CCA\u67E5\u8BE2\u7684\u59D4\u6258\u5217\u8868\uFF0C\u9009\u62E9\u59D4\u6258\u540E\uFF0C\u67E5\u8BE2\u7A97\u53E3\u5173\u95ED\uFF0C
+         \u6839\u636E\u9009\u62E9\u7684\u63D0\u5355\u53F7\uFF0C\u5237\u65B0\u59D4\u6258\u8868\u5355\u3001\u5E94\u6536\u8D39\u7528\u3001\u5E94\u4ED8\u8D39\u7528\u3002                            -- ok
+  2.\u4FDD\u5B58\uFF1A\u4FDD\u5B58\u5E94\u6536\u4ED8\u8D39\u7528                                                               -- ok
+  3.\u8D39\u7528\u9501\u5B9A\uFF1A\u9501\u5B9A\u9009\u62E9\u7684\u5E94\u6536\u4ED8\u8D39\u7528\uFF0Cpre_fee.lock_flag = true                        -- ok
+  4.\u8D39\u7528\u89E3\u9501\uFF1A\u89E3\u9501\u9009\u62E9\u7684\u5E94\u6536\u4ED8\u8D39\u7528\uFF0Cpre_fee.lock_flag = null.\u5DF2\u6838\u9500\u7684\u7981\u6B62\u6267\u884C\u3002     -- ok
 
 
 
 
 --------------
-03-31 21:52:49 -> dealPAjax -> {'rows': [{'id': 4, 'table': 'contract', 'subs': {}, 'cols': {'finish_flag': [''], 'finish_time': ['']}, 'op': 'update'}], 'func': '委托解锁', 'reqtype': 'updatedirty'}
-委托解锁。功能写反了。 op：是updatedirty。。。。reqtype：是update        --ok
+03-31 21:52:49 -> dealPAjax -> {'rows': [{'id': 4, 'table': 'contract', 'subs': {}, 'cols': {'finish_flag': [''], 'finish_time': ['']}, 'op': 'update'}], 'func': '\u59D4\u6258\u89E3\u9501', 'reqtype': 'updatedirty'}
+\u59D4\u6258\u89E3\u9501\u3002\u529F\u80FD\u5199\u53CD\u4E86\u3002 op\uFF1A\u662Fupdatedirty\u3002\u3002\u3002\u3002reqtype\uFF1A\u662Fupdate        --ok
 
-三 核销
-  1.查询：查询条件 客户+费用类型(收/付)，根据此组合条件，查询未核销的act_fee和pre_fee，缺少任一条件，核销按钮禁用。
-  2.选择费用：选择要进行核销的act_fee和pre_fee,如果选择的act_fee数组或pre_fee数组为空，禁止核销。
-  3.核销：act_fee的拆分条件为 client_id + fee_typ + pay_typ
-         pre_fee的拆分条件为 client_id + fee_typ + contract_id + fee_cod
-    测试数据:
-    a. act_fee: 现金 1000
-                现金 500
-       pre_fee: 提单号：A  包干费：300
-       结果：act_fee从1000或500两个任意选一条核销，增加一条act_fee,现金700或200,
-            pre_fee 提单号：A  包干费：300已核销 未生成新记录
-    b. act_fee: 现金 1000
-                现金 500
-       pre_fee: 提单号：B  包干费：800
-       结果：act_fee 1000核销完毕，增加一条act_fee现金200,原有现金500不变
-            pre_fee 提单号：B  包干费：800已核销 未生成新记录
-    c. act_fee: 支票 1000
-                现金 500
-       pre_fee: 提单号：C  包干费：300
-       结果：act_fee从支票1000或现金500两个任意选一条核销，增加一条act_fee现金200或支票700,未核销的保持不变
-            pre_fee 提单号：C  包干费：300已核销 未生成新记录
-    d. act_fee: 支票 1000
-                现金 500
-       pre_fee: 提单号：D  包干费：800
-       结果：act_fee 支票1000核销完毕，增加一条act_fee支票200,原有现金500不变
-            pre_fee 提单号：D  包干费：800已核销 未生成新记录
-    e. act_fee: 支票 1000
-                现金 500
-       pre_fee: 提单号：E  包干费：800  堆存费：1000
-       结果：
+\u4E09 \u6838\u9500
+  1.\u67E5\u8BE2\uFF1A\u67E5\u8BE2\u6761\u4EF6 \u5BA2\u6237+\u8D39\u7528\u7C7B\u578B(\u6536/\u4ED8)\uFF0C\u6839\u636E\u6B64\u7EC4\u5408\u6761\u4EF6\uFF0C\u67E5\u8BE2\u672A\u6838\u9500\u7684act_fee\u548Cpre_fee\uFF0C\u7F3A\u5C11\u4EFB\u4E00\u6761\u4EF6\uFF0C\u6838\u9500\u6309\u94AE\u7981\u7528\u3002
+  2.\u9009\u62E9\u8D39\u7528\uFF1A\u9009\u62E9\u8981\u8FDB\u884C\u6838\u9500\u7684act_fee\u548Cpre_fee,\u5982\u679C\u9009\u62E9\u7684act_fee\u6570\u7EC4\u6216pre_fee\u6570\u7EC4\u4E3A\u7A7A\uFF0C\u7981\u6B62\u6838\u9500\u3002
+  3.\u6838\u9500\uFF1Aact_fee\u7684\u62C6\u5206\u6761\u4EF6\u4E3A client_id + fee_typ + pay_typ
+         pre_fee\u7684\u62C6\u5206\u6761\u4EF6\u4E3A client_id + fee_typ + contract_id + fee_cod
+    \u6D4B\u8BD5\u6570\u636E:
+    a. act_fee: \u73B0\u91D1 1000
+                \u73B0\u91D1 500
+       pre_fee: \u63D0\u5355\u53F7\uFF1AA  \u5305\u5E72\u8D39\uFF1A300
+       \u7ED3\u679C\uFF1Aact_fee\u4ECE1000\u6216500\u4E24\u4E2A\u4EFB\u610F\u9009\u4E00\u6761\u6838\u9500\uFF0C\u589E\u52A0\u4E00\u6761act_fee,\u73B0\u91D1700\u6216200,
+            pre_fee \u63D0\u5355\u53F7\uFF1AA  \u5305\u5E72\u8D39\uFF1A300\u5DF2\u6838\u9500 \u672A\u751F\u6210\u65B0\u8BB0\u5F55
+    b. act_fee: \u73B0\u91D1 1000
+                \u73B0\u91D1 500
+       pre_fee: \u63D0\u5355\u53F7\uFF1AB  \u5305\u5E72\u8D39\uFF1A800
+       \u7ED3\u679C\uFF1Aact_fee 1000\u6838\u9500\u5B8C\u6BD5\uFF0C\u589E\u52A0\u4E00\u6761act_fee\u73B0\u91D1200,\u539F\u6709\u73B0\u91D1500\u4E0D\u53D8
+            pre_fee \u63D0\u5355\u53F7\uFF1AB  \u5305\u5E72\u8D39\uFF1A800\u5DF2\u6838\u9500 \u672A\u751F\u6210\u65B0\u8BB0\u5F55
+    c. act_fee: \u652F\u7968 1000
+                \u73B0\u91D1 500
+       pre_fee: \u63D0\u5355\u53F7\uFF1AC  \u5305\u5E72\u8D39\uFF1A300
+       \u7ED3\u679C\uFF1Aact_fee\u4ECE\u652F\u79681000\u6216\u73B0\u91D1500\u4E24\u4E2A\u4EFB\u610F\u9009\u4E00\u6761\u6838\u9500\uFF0C\u589E\u52A0\u4E00\u6761act_fee\u73B0\u91D1200\u6216\u652F\u7968700,\u672A\u6838\u9500\u7684\u4FDD\u6301\u4E0D\u53D8
+            pre_fee \u63D0\u5355\u53F7\uFF1AC  \u5305\u5E72\u8D39\uFF1A300\u5DF2\u6838\u9500 \u672A\u751F\u6210\u65B0\u8BB0\u5F55
+    d. act_fee: \u652F\u7968 1000
+                \u73B0\u91D1 500
+       pre_fee: \u63D0\u5355\u53F7\uFF1AD  \u5305\u5E72\u8D39\uFF1A800
+       \u7ED3\u679C\uFF1Aact_fee \u652F\u79681000\u6838\u9500\u5B8C\u6BD5\uFF0C\u589E\u52A0\u4E00\u6761act_fee\u652F\u7968200,\u539F\u6709\u73B0\u91D1500\u4E0D\u53D8
+            pre_fee \u63D0\u5355\u53F7\uFF1AD  \u5305\u5E72\u8D39\uFF1A800\u5DF2\u6838\u9500 \u672A\u751F\u6210\u65B0\u8BB0\u5F55
+    e. act_fee: \u652F\u7968 1000
+                \u73B0\u91D1 500
+       pre_fee: \u63D0\u5355\u53F7\uFF1AE  \u5305\u5E72\u8D39\uFF1A800  \u5806\u5B58\u8D39\uFF1A1000
+       \u7ED3\u679C\uFF1A
 
