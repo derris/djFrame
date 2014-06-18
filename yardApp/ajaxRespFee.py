@@ -420,7 +420,7 @@ def initProtElemContent(request, adict):
             cursorExec(ls_sqlIns)
         ls_sqlrtn = "select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov where ele_id = %s "
         l_result = rawSql2JsonDict(ls_sqlrtn, [ls_eleId])
-        l_rtn.update( {"msg": "操作成功", "error":[], "stateCod" : 1, "rows": l_result } )
+        l_rtn.update( {"msg": "操作成功", "error":[], "stateCod" : 202, "rows": l_result } )
     except Exception as e:
         l_rtn.update( {"msg": "操作失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn

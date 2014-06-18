@@ -498,7 +498,8 @@ def dealPAjax(request):
             elif ldict['func'] == '协议要素内容维护':
                 return (updateRaw(request))
             elif ldict['func'] == '协议要素内容初始化':
-                return initProtElemContent(request, ldict)
+                l_rtn = initProtElemContent(request, ldict)
+                return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
             elif ldict['func'] == '协议模式维护':
                 return (updateRaw(request))
 
