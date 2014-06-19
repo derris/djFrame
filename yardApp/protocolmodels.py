@@ -52,5 +52,6 @@ class ProtocolMod(BaseModel):
     fee_id = models.ForeignKey('FeeCod',verbose_name='费用名称',related_name='fee_protocolmod',db_column='fee_id')
     mod_id = models.ForeignKey('FeeMod',verbose_name='模式',related_name='mod_protocolmod',db_column='mod_id')
     sort_no = models.IntegerField('序号',blank=True,null=True)
+    active_flag = models.NullBooleanField('激活')
     class Meta:
         db_table = 'p_protocol_fee_mod'

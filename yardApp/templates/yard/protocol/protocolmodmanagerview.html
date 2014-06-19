@@ -1,9 +1,274 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+<script>
+Namespace.register("protocol.protocolmodmanager");
+$(function () {
+    protocol.protocolmodmanager.mods = [];
+    protocol.protocolmodmanager.initmods = function(data){
+        for (var i= 0,ilen=data.length;i<ilen;i++){
+            protocol.protocolmodmanager.mods.push({mod_id:data[i].value});
+        }
+        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData',protocol.protocolmodmanager.mods);
+    }
+    protocol.protocolmodmanager.protocoldatagrid = $('#protocol-protocolmodmanagerview-protocolgrid').datagrid({
+        autoLoad: true,
+        autoSave: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ protocol_id.writeUI|safe|escape }},
+                    {{ protocol_protocol_name.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'p_protocol',
+        queryFuncName: '协议查询',
+        pagination: false,
+        onClickRow:function(rowIndex,rowData){
+            return;
+        },
+        onDblClickRow: function (rowIndex, rowData) {
+            return;
+        },
+        onSelect:function(rowIndex,rowData){
+            if (protocol.protocolmodmanager.checkDirty()){
+                protocol.protocolmodmanager.save();
+            }
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData',[]);
+            protocol.protocolmodmanager.feedatagrid.datagrid('unselectAll');
+        }
+    });
+    protocol.protocolmodmanager.feedatagrid = $('#protocol-protocolmodmanagerview-feegrid').datagrid({
+        autoLoad: true,
+        autoSave: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ fee_id.writeUI|safe|escape }},
+                    {{ fee_fee_name.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'c_fee',
+        queryFuncName: '费用名称查询',
+        pagination: false,
+        onSelect:function(rowIndex,rowData){
+            if (protocol.protocolmodmanager.checkDirty()){
+                protocol.protocolmodmanager.save();
+            }
+            var protocolrow = protocol.protocolmodmanager.protocoldatagrid.datagrid('getSelected');
+            if (protocolrow == null){
+                protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData',[]);
+                protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
+                return;
+            }
+            var feeid = rowData.id;
+            var opts = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('options');
+            opts.filterFields = [{
+                    cod:'protocol_id',
+                    operatorTyp:'等于',
+                    value:protocolrow.id
+                },{
+                    cod:'fee_id',
+                    operatorTyp:'等于',
+                    value:feeid
+            }];
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('reload');
+        }
+    });
+    protocol.protocolmodmanager.selectedmoddatagrid = $('#protocol-protocolmodmanagerview-selectedmod').datagrid({
+        autoLoad: false,
+        autoSave:false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ feemod_id.writeUI|safe|escape }},
+                    {{ feemod_protocol_id.writeUI|safe|escape }},
+                    {{ feemod_fee_id.writeUI|safe|escape }},
+                    {{ feemod_mod_id.writeUI|safe|escape }},
+                    {{ feemod_sort_no.writeUI|safe|escape }},
+                    {{ feemod_active_flag.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        dataTable: 'p_protocol_fee_mod',
+        queryFuncName: '协议费用模式查询',
+        updateFuncName: '协议费用模式维护',
+        pagination: false,
+        onLoadSuccess:function(data){
+            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
+            var rows = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRows');
+            for (var i = rows.length - 1;i>=0;i--){
+                for(var j= 0,jlen=data.rows.length;j<jlen;j++){
+                    if (data.rows[j].mod_id == rows[i].id){
+                        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow',i);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+    protocol.protocolmodmanager.unselectedmoddatagrid = $('#protocol-protocolmodmanagerview-unselectedmod').datagrid({
+        autoLoad: false,
+        columns: [
+            [
+                {% autoescape off %}
+                    {{ feemod_mod_id.writeUI|safe|escape }}
+                {% endautoescape %}
+            ]
+        ],
+        pagination: false,
+        onDblClickRow: function () {
+            return;
+        },
+        onClickRow: function () {
+            return;
+        }
+    });
+    protocol.protocolmodmanager.initmods(protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('options').columns[0][0].editor.options.data);
+    protocol.protocolmodmanager.checkDirty = function(){
+        if (protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getChanges').length > 0){
+            return true;
+        }
+        return false;
+    }
+    protocol.protocolmodmanager.save = function () {
+        protocol.protocolmodmanager.selectedmoddatagrid.datagrid('postUpdateAllData');
+    }
+    protocol.protocolmodmanager.getprotocolid = function () {
+        var row = protocol.protocolmodmanager.protocoldatagrid.datagrid('getSelected');
+        if (row != null) {
+            return row.id;
+        } else {
+            return null;
+        }
+    }
+    protocol.protocolmodmanager.getfeeid = function () {
+        var row = protocol.protocolmodmanager.feedatagrid.datagrid('getSelected');
+        if (row != null) {
+            return row.id;
+        } else {
+            return null;
+        }
 
-</body>
-</html>
+    }
+    $('#protocol-protocolmodmanagerview-savebutton').bind('click', function (e) {
+        protocol.protocolmodmanager.save();
+    });
+    $('#protocol-protocolmodmanagerview-selectbutton').bind('click', function (e) {
+        var selectrow = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getSelected');
+        var protocolid = protocol.protocolmodmanager.getprotocolid();
+        var feeid = protocol.protocolmodmanager.getfeeid();
+        if (selectrow == null) {
+            return;
+        }
+        if (protocolid == null || feeid == null) {
+            $.messager.alert('提示', '请选择协议和费用', 'info');
+            return;
+        }
+        var rowindex = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRowIndex', selectrow);
+        var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
+        protocol.protocolmodmanager.selectedmoddatagrid.datagrid('appendRow', {
+            id: -1,
+            protocol_id: protocolid,
+            fee_id: feeid,
+            mod_id: selectrow.mod_id,
+            sort_no:count + 1,
+            active_flag:true
+        });
+        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', rowindex);
+    });
+    $('#protocol-protocolmodmanagerview-unselectbutton').bind('click', function (e) {
+        var selectrow = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getSelected');
+        if (selectrow != null) {
+            var rowindex = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRowIndex', selectrow);
+            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('appendRow', {
+                mod_id: selectrow.mod_id
+            });
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('deleteRow', rowindex);
+        }
+    });
+
+    $('#protocol-protocolmodmanagerview-selectallbutton').bind('click', function (e) {
+        var rows = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRows');
+        var protocolid = protocol.protocolmodmanager.getprotocolid();
+        var feeid = protocol.protocolmodmanager.getfeeid();
+        var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
+        if (protocolid == null || feeid == null) {
+            $.messager.alert('提示', '请选择协议和费用', 'info');
+            return;
+        }
+        for (var i = rows.length - 1; i >= 0; i--) {
+            count = count+1;
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('appendRow', {
+                id: -1,
+                protocol_id: protocolid,
+                fee_id: feeid,
+                mod_id: rows[i].mod_id,
+                sort_no:count,
+                active_flag : true
+            });
+            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', i);
+        }
+    });
+    $('#protocol-protocolmodmanagerview-unselectallbutton').bind('click', function (e) {
+        var rows = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows');
+        for (var i = rows.length - 1; i >= 0; i--) {
+            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('appendRow', {
+                mod_id: rows[i].mod_id
+            });
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('deleteRow', i);
+        }
+    });
+
+});
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:true,split:true" style="width: 250px">
+        <div class="easyui-layout" data-options="fit:true,border:false">
+            <div data-options="region:'north',border:false,height:window.innerHeight * 0.4,title:'协议'">
+                <table id="protocol-protocolmodmanagerview-protocolgrid" border="false">
+                </table>
+            </div>
+            <div data-options="region:'center',border:false,title:'费用'">
+                <table id="protocol-protocolmodmanagerview-feegrid" border="false">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'west',border:false,
+                        width:window.innerWidth * 0.25,title:'已选模式'">
+                <table id="protocol-protocolmodmanagerview-selectedmod" border="false">
+                </table>
+            </div>
+            <div data-options="region:'center',width:90">
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="protocol-protocolmodmanagerview-selectbutton" href="#" class="easyui-linkbutton"
+                       data-options="iconCls:'icon-arrow-left',group:'fee-rpt'">选择</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="protocol-protocolmodmanagerview-unselectbutton" href="#" class="easyui-linkbutton"
+                       data-options="iconCls:'icon-arrow-right',group:'fee-rpt'">取消</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="protocol-protocolmodmanagerview-selectallbutton" href="#" class="easyui-linkbutton"
+                       data-options="iconCls:'icon-double-arrow-left',group:'fee-rpt'">全选择</a>
+                </div>
+                <div style="padding:25px 5px 10px 10px">
+                    <a id="protocol-protocolmodmanagerview-unselectallbutton" href="#" class="easyui-linkbutton"
+                       data-options="iconCls:'icon-double-arrow-right',group:'fee-rpt'">全取消</a>
+                </div>
+
+            </div>
+            <div data-options="region:'east',border:false,
+                        width:window.innerWidth * 0.3,title:'可选模式'">
+                <table id="protocol-protocolmodmanagerview-unselectedmod" border="false">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:true" class="datagrid-toolbar">
+        <a id="protocol-protocolmodmanagerview-savebutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-save',group:'fee-rpt'">保存</a>
+    </div>
+</div>

@@ -493,6 +493,18 @@ def protocolmodview(request):
     mod_descript = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='mod_descript')
     remark = easyuihelp.EasyuiFieldUI(model=protocolmodels.FeeMod,field='remark',width=200)
     return render(request,"yard/protocol/protocolmodview.html",locals())
+def protocolfeemodview(request):
+    protocol_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field='id')
+    protocol_protocol_name = easyuihelp.EasyuiFieldUI(model=protocolmodels.Protocol,field="protocol_name",width=180)
+    fee_id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
+    fee_fee_name = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name',width=180)
+    feemod_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='id')
+    feemod_protocol_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='protocol_id',hidden=True)
+    feemod_fee_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='fee_id',hidden=True)
+    feemod_mod_id = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='mod_id',autoforeign=True,foreigndisplayfield='mod_name')
+    feemod_sort_no = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='sort_no')
+    feemod_active_flag = easyuihelp.EasyuiFieldUI(model=protocolmodels.ProtocolMod,field='active_flag')
+    return render(request,"yard/protocol/protocolmodmanagerview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -575,8 +587,9 @@ def dealMenuReq(request):
         return(protocolfeeeleview(request))
     elif ls_args == '协议要素内容维护':
         return(protocolfeeelelovview(request))
-    elif ls_args == '协议模式维护':
+    elif ls_args == '协议模式定义':
         return(protocolmodview(request))
-
+    elif ls_args == '协议费用模式维护':
+        return(protocolfeemodview(request))
     else:
         return HttpResponse("找不到功能名，请联系管理员")
