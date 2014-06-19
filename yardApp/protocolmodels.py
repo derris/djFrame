@@ -55,3 +55,22 @@ class ProtocolMod(BaseModel):
     active_flag = models.NullBooleanField('激活')
     class Meta:
         db_table = 'p_protocol_fee_mod'
+class ProtocolFeeRat(BaseModel):
+    id = models.AutoField('pk',primary_key=True)
+    protocol_id = models.ForeignKey('Protocol',verbose_name='协议',related_name='protocol_protocolfeerat',db_column='protocol_id')
+    fee_id = models.ForeignKey('FeeCod',verbose_name='费用名称',related_name='fee_protocolfeerat',db_column='fee_id')
+    mod_id = models.ForeignKey('FeeMod',verbose_name='模式',related_name='mod_protocolfeerat',db_column='mod_id')
+    fee_ele1 = models.CharField('要素1',max_length=10,blank=True,null=True)
+    fee_ele2 = models.CharField('要素2',max_length=10,blank=True,null=True)
+    fee_ele3 = models.CharField('要素3',max_length=10,blank=True,null=True)
+    fee_ele4 = models.CharField('要素4',max_length=10,blank=True,null=True)
+    fee_ele5 = models.CharField('要素5',max_length=10,blank=True,null=True)
+    fee_ele6 = models.CharField('要素6',max_length=10,blank=True,null=True)
+    fee_ele7 = models.CharField('要素7',max_length=10,blank=True,null=True)
+    fee_ele8 = models.CharField('要素8',max_length=10,blank=True,null=True)
+    fee_ele9 = models.CharField('要素9',max_length=10,blank=True,null=True)
+    fee_ele10 = models.CharField('要素10',max_length=10,blank=True,null=True)
+    fee_rat = models.DecimalField('费率',max_digits=8,decimal_places=2,blank=True,null=True)
+    discount_rat = models.DecimalField('折扣金额',max_digits=8,decimal_places=2,blank=True,null=True)
+    class Meta:
+        db_table = 'p_protocol_rat'
