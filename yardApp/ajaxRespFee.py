@@ -4,7 +4,7 @@ import json
 from django.db import transaction
 from zdCommon.dbhelp import rawSql2JsonDict
 from zdCommon.utils import log, logErr
-from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd
+from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2, json2upd, cursorDict
 from datetime import datetime
 
 def dealAuditFee(request):
@@ -181,30 +181,6 @@ def auditDetailQuery(request,ldict):
         list_act = rawSql2JsonDict("select client_id,fee_typ,amount,pay_type,invoice_no,check_no  from act_fee where ex_over = '%s'" % ls_exOver)
         list_act.extend(rawSql2JsonDict("select client_id,fee_typ,(0-amount) amount,pay_type,invoice_no,check_no from act_fee where ex_from = '%s'" % ls_exOver))
 
-        # ls_pre = '''
-        #     select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
-        #     from pre_fee p right join
-        #     (select ex_over,contract_id,fee_cod,sum(amount) amount
-        #     from pre_fee
-        #     where ex_over = %s
-        #     group by ex_over,contract_id,fee_cod) a
-        #     on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
-        #     group by a.contract_id,a.fee_cod,a.amount
-        # '''
-        # ls_act = '''
-        #     select a.contract_id,a.fee_cod,a.amount - sum(COALESCE(p.amount,0))
-        #     from act_fee p right join
-        #     (select ex_over,contract_id,fee_cod,sum(amount) amount
-        #     from act_fee
-        #     where ex_over = %s
-        #     group by ex_over,contract_id,fee_cod) a
-        #     on p.ex_from = a.ex_over and p.contract_id = a.contract_id and p.fee_cod = a.fee_cod
-        #     group by a.contract_id,a.fee_cod,a.amount
-        # '''
-        #
-        # list_pre = rawSql2JsonDict(ls_pre % ls_exOver)
-        # list_act = rawSql2JsonDict(ls_act % ls_exOver)
-
         l_result = { "act":list_act, "pre":list_pre }
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
     except Exception as e:
@@ -282,33 +258,7 @@ def clientFeeDetailReport(request, adict):
 
 
 def getRptFeeStruct(request, adict):
-    '''  费用报表结构
-        func: '费用报表结构',
-        ex_parm: {
-            'rptid':'xxx' //费用报表id int型
-        }
-                        [
-                            {"title": "包干费", "colspan": 1},
-                            {"title": "海关费用", "colspan": 2},
-                        ],
-                        [
-                            {"field": "1", "title": "包干费", "align": "right"},
-                            {"field": "3", "title": "码头堆存费", "align": "right"},
-                            {"field": "4", "title": "码头搬移费", "align": "right"}
-                        ]
-                };
-        test:
-from yardApp.ajaxRespFee import getRptFeeStruct
-import yardApp.ajaxRespFee
-from imp import reload
-aaa = {
-"func": '费用报表结构',
-"ex_parm": {
-'rptid':1 #费用报表id int型
-}
-}
- yardApp.ajaxRespFee.getRptFeeStruct(aaa, aaa)
-    '''
+
     ls_rptid = str(adict["ex_parm"]["rptid"])
     l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "result": [] }
     ls_sqlitem = 'select id,item_name from c_rpt_item where rpt_id = %s order by sort_no' % ls_rptid
@@ -334,33 +284,6 @@ aaa = {
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
 def queryRptFee(request, adict):
-    '''
-    {
-    func:'客户费用明细报表',
-    ex_parm:{
-        client_id: 客户ID,
-        fee_typ:费用类型,
-        begin_tim: 开始日期,  #date型
-        end_tim: 截止日期,    #date型
-        rpt: 报表id
-    }
-}
-select * from pre_fee where contract_id in    (
-    select id from contract  where bill_no in   (
-        select c.bill_no  from pre_fee as p,contract as c  where   p.contract_id = c.id   group by c.bill_no) );
-import yardApp.ajaxRespFee
-aaa = {
-"func": '客户费用明细报表',
-"ex_parm": {  "client_id": 53,
-        "fee_typ": I ,
-        "begin_tim": '2001-1-1',
-        "end_tim": '2022-2-2',
-        "rpt": 1   }
-}
-yardApp.ajaxRespFee.queryRptFee(aaa, aaa)
-from imp import reload
-reload(yardApp.ajaxRespFee)
-'''
     l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "rows": [] }
     ls_clientId = str(adict["ex_parm"]["client_id"])
     ls_feeType = str(adict["ex_parm"]["fee_typ"])
@@ -425,4 +348,56 @@ def initProtElemContent(request, adict):
         l_rtn.update( {"msg": "操作失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
 
+def queryProtStruct(request, adict):
+    '''
+    接收参数接口：{
+        func: '协议模式结构查询',
+        reqtype: 'query',
+        ex_parm: {
+            modid: 'XXX' //模式id
+        }
+    '''
+    l_rtn = {}
+    ls_modId = str(adict["ex_parm"]["modid"])
+    ls_sqlfeeMod = "select * from p_fee_mod where id = %s"
+    ls_sqlEle = "select * from p_fee_ele where id = %s"
+    try:
+        lds_feeMod = cursorDict(ls_sqlfeeMod, [ls_modId])
+        if lds_feeMod:  # fee mod，仅有1个。
+            l_colIndexZip = zip ( ['col_%s' % i for i in range(1,11)], range(1,11))
+            i_row =  lds_feeMod[0]
+            l_rtn_rows_sum = []
+            for i_colzip in l_colIndexZip:
+                if i_row[i_colzip[0]] :  # 对所有的有数值的col_n进行判断。ele_name     i_row[i_col[0]]是内部值B
+                    lds_ele = cursorDict( ls_sqlEle , [i_row[i_colzip[0]]] )
+                    if lds_ele:
+                        lds_lov = " select id, lov_name from p_fee_ele_lov where ele_id = %s "
+                        lds_c = cursorSelect( lds_lov, [ str(i_row[i_colzip[0]]) ]  )
+                        log(" ---> " + str(i_colzip) )
+                        l_rtn_rows_edit = {}
+                        if lds_c:
+                            l_child = []
+                            for i_edit in lds_c :
+                                l_child.append( { 'text': i_edit[0], 'value': i_edit[1] } )
+                            l_rtn_rows_edit = {
+                                'type':'combobox',
+                                'options':{ 'textField': 'text',
+                                            'valueField': 'value',
+                                            'data': l_child  }
+                                }
+                        else:
+                            l_rtn_rows_edit = {'type': 'text'}
+                        l_rtn_rows_sum.append(  {
+                                'title':    lds_ele[0]["ele_name"] ,
+                                'field':    'fee_ele%s' % i_colzip[1] ,  #   n为1-10
+                                'align':    'right',      #  写死
+                                'halign':   'center',     #  写死
+                                'sortable': 'true',    #  写死
+                                'editor': l_rtn_rows_edit      } )
+            l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "rows": l_rtn_rows_sum }
+        else:
+            l_rtn = {"msg": "成功，无数据", "stateCod": "001", "error": [], "rows": [] }
+    except Exception as e:
+        l_rtn.update( {"msg": "操作失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+    return l_rtn
 

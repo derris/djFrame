@@ -1,15 +1,5 @@
 __author__ = 'dddh'
-
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-import json
-from django.shortcuts import render
-from django.db import transaction
-from zdCommon.dbhelp import rawsql2json, rawsql4request, json2upd, rawSql2JsonDict
 from zdCommon.sysjson import getMenuPrivilege, setMenuPrivilege, getFunc4User, checkPrivilege
-from zdCommon.utils import log, logErr
-from zdCommon.dbhelp import cursorSelect, cursorExec, cursorExec2
-from datetime import datetime
 from yardApp.ajaxRespFee import *
 from yardApp.ajaxRespBase import *
 from yardApp.ajaxRespQuery import *
@@ -20,22 +10,16 @@ def getsysmenu(request):
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu  "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getsysfunc(request):
     '''权限查询'''
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_func "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getsysmenufunc(request):
     '''功能权限查询'''
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu_func "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getuser(request):
     '''用户查询'''
     ldict = json.loads(request.POST['jpargs'])
@@ -44,22 +28,16 @@ def getuser(request):
         del ldict['cols'][ldict['cols'].index('password')]
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_user where username <> 'Admin'"
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getpost(request):
     '''岗位查询'''
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_post "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getpostuser(request):
     '''岗位用户查询'''
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from s_postuser "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getclients(request):
     '''客户查询'''
     #ls_sql = "select id,client_name,client_flag,custom_flag, ship_corp_flag, yard_flag,port_flag,financial_flag,remark,rec_tim from c_client"
@@ -67,103 +45,73 @@ def getclients(request):
     ls_sql = "select " + ", ".join(ldict['cols']) + " from c_client "
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getclientsEx(request, aSql):
     '''客户查询'''
     ls_sql = aSql
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getsyscod(request):
     '''系统参数查询'''
     ls_sql = "select id,fld_eng,fld_chi,cod_name,fld_ext1,fld_ext2,seq,remark from sys_code"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getAuth(request):
     ldict = json.loads(request.POST['jpargs'])
     ls_sql = "select " + ", ".join(ldict['cols']) + " from sys_menu where parent_id <> 0 "
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcntrtype(request):
     '''箱型查询'''
     ls_sql = "select id,cntr_type,cntr_type_name,remark from c_cntr_type"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getaction(request):
     '''动态类型查询'''
     ls_sql = "select id,action_name,require_flag,sortno,remark from c_contract_action"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getdispatch(request):
     '''发货地查询'''
     ls_sql = "select id,place_name,remark from c_dispatch"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcargo(request):
     '''货物查询'''
     ls_sql = "select id,cargo_name,remark from c_cargo"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcargotype(request):
     '''货物分类查询'''
     ls_sql = "select id,type_name,remark from c_cargo_type"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getplace(request):
     '''产地查询'''
     ls_sql = "select id,place_name,remark from c_place"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getfeecod(request):
     '''费用名称查询'''
     ls_sql = "select id,fee_name,pair_flag,protocol_flag,remark from c_fee"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getpaytype(request):
     '''付款方式查询'''
     ls_sql = "select id,pay_name,remark from c_pay_type"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getprivilege(request):
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(getMenuPrivilege(ldict['postid']), ensure_ascii=False))
-
-
 def getrpt(request):
     '''费用报表头查询'''
     ls_sql = "select id,rpt_name from c_rpt"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getrptitem(request):
     '''费用报表项目查询'''
     ls_sql = "select id,rpt_id,item_name,sort_no from c_rpt_item order by sort_no"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getrptfee(request):
     '''费用报表费用查询'''
     ls_sql = "select id,rpt_id,item_id,fee_id from c_rpt_fee"
@@ -195,7 +143,6 @@ def getprotocolfeemod(request):
     ls_sql = "select id,protocol_id,fee_id,mod_id,sort_no,active_flag,remark from p_protocol_fee_mod"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
@@ -203,52 +150,36 @@ def getcontract(request):
              "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcontractbybill(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,client_id,in_port_date,remark from contract"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcontractaction(request):
     ls_sql = "select id,contract_id,action_id,finish_flag,finish_time,remark from contract_action"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcontractcntr(request):
     ls_sql = "select id,contract_id,cntr_type,cntr_num,check_num,remark from contract_cntr"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcontractprefeein(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
              "lock_flag,audit_id,ex_feeid,remark from pre_fee " \
              "where fee_typ = 'I' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getcontractprefeeout(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
              "lock_flag,audit_id,ex_feeid,remark from pre_fee " \
              "where fee_typ = 'O' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
-
-
 def getJson4sql(request, aSql):
     '''已收核销查询'''
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(aSql, ldict)), ensure_ascii=False))
-
-
 def getJson4sqlEx(request, aSql, aSqlCount):
     return HttpResponse(json.dumps(rawsql2json(aSql, aSqlCount), ensure_ascii=False))
-
-
 def getSequence(aDict):
     ''' aDict = {"ex_parm": {"seqname":"seq_4_auditfee"} }
         seq_4_auidtfee  费用核销。结单号的序列号
@@ -269,7 +200,6 @@ def updateRaw(request):
     ''' 客户维护  '''
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(json2upd(ldict), ensure_ascii=False))
-
 
 #####################################################  common interface ----------
 def dealPAjax(request):
@@ -511,7 +441,9 @@ def dealPAjax(request):
                 return (updateRaw(request))
             elif ldict['func'] == '协议费用模式维护':
                 return (updateRaw(request))
-
+            elif ldict['func'] == '协议模式结构查询':
+                l_rtn = queryProtStruct(request, ldict)
+                return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
             #########################################################3
             elif ldict['func'] == '密码修改':  # ajax 查询
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}
@@ -525,9 +457,6 @@ def dealPAjax(request):
                 return exportExcelDirect(request, ldict)
             else:
                 pass
-
-
-
     except Exception as e:
         logErr("ajaxResp.dealPAjax执行错误：%s" % str(e.args))
         ls_err = str(e.args)

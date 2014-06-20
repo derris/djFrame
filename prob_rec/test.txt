@@ -17,8 +17,12 @@ aaa = { "func": '\u534F\u8BAE\u8981\u7D20\u5185\u5BB9\u521D\u59CB\u5316',
 yardApp.ajaxRespFee.initProtElemContent(aaa, aaa)
 reload(yardApp.ajaxRespFee)
 ====================================
-
-
+aaa = {    "func": '\u534F\u8BAE\u6A21\u5F0F\u7ED3\u6784\u67E5\u8BE2',
+    "reqtype": 'query',
+    "ex_parm": {
+        "modid": "2"
+    }  }
+yardApp.ajaxRespFee.queryProtStruct(aaa, aaa)
 
 
 

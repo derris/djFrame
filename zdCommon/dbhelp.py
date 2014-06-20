@@ -496,6 +496,24 @@ def cursorSelect(aSql, aList=None):
     finally:
         l_cur.close
     return l_rtn
+def cursorDict(aSql, aList=None):
+    '''
+        execute sql use cursor, return all. fetchall()
+        l_rtn[0][0]  单值。 注意此结构不能json序列话，因为没有进行json列处理。
+    '''
+    log(aSql)
+    l_rtn = []
+    try:
+        l_cur = connection.cursor()
+        l_cur.execute(aSql, aList)
+        l_desc = l_cur.description
+        l_rtnDict =  [dict(zip([col[0] for col in l_desc], ROW)) for ROW in l_cur.fetchall()]
+    except Exception as e:
+        logErr("数据库执行错误：%s" % str(e.args))
+        raise e
+    finally:
+        l_cur.close
+    return l_rtnDict
 
 def fetchSeq(aSeqName):
     '''
