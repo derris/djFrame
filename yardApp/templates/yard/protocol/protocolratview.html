@@ -84,7 +84,6 @@
                 $.ajax({
                     url: "./dealPAjax/",
                     data: {jpargs: JSON.stringify(p)},
-                    dataType: 'json',
                     success: function (r, t, a) {
                         if (protocol.rat.ratdatagrid != null) {
                             protocol.rat.ratdatagrid.datagrid('loadData', []);
@@ -105,9 +104,30 @@
                                     {% endautoescape %}
                                 ]
                             ],
-                            columns: [[]],
+                            columns: r.rows,
+                            dataTable: 'p_protocol_rat',
+                            queryFuncName: '协议费率查询',
                             pagination: false
                         });
+                        var opts = protocol.rat.ratdatagrid.datagrid('options');
+                        opts.filterFields = [
+                            {
+                                cod: 'protocol_id',
+                                operatorTyp: '等于',
+                                value: rowData.protocol_id
+                            },
+                            {
+                                cod: 'fee_id',
+                                operatorTyp: '等于',
+                                value: rowData.fee_id
+                            },
+                            {
+                                cod: 'mod_id',
+                                operatorTyp: '等于',
+                                value: rowData.mod_id
+                            }
+                        ];
+                        protocol.rat.ratdatagrid.datagrid('reload');
                     }
                 });
             }

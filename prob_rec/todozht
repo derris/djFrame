@@ -47,3 +47,20 @@ for mod in B
     "error": ["xxx", "xx"]...        # 错误数组。
     "rows":数组D
 }
+todo 13 to dh
+协议模式定义自解析
+一、元素定义
+   {n}：传入参数,n>=0
+   [n]：p_protocol_rat中的fee_elen字段, 1<=n<=10
+二、操作符,由()包围
+   (==) (!=) (>) (>=) (<) (<=) (值 between 条件1 and 条件2)
+三、//注释符
+四、过程
+   1.select * from p_protocol_rat where protocol_id = '' and fee_id = '' and mod_id = ''  得集合A
+   2.从业务表中查询得到要进行比较的业务数据，得集合B
+
+   3.调用自定义解析，传入参数(A,B)进行处理
+        select mod_descript from p_fee_mod where id = ''
+        根据传入参数，解析执行 mod_descript ,集合A中有符合条件的返回 (A.fee_rat - A.discount_rat),没有返回null
+
+   1和2在自解析外执行
