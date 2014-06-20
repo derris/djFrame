@@ -56,7 +56,7 @@ todo 13 to dh
    == != > >= < <= between
 
 三、逻辑关系
-   and or not
+   and or
 四、过程
    1.select * from p_protocol_rat where protocol_id = '' and fee_id = '' and mod_id = ''  得集合A
    2.从业务表中查询得到要进行比较的业务数据，得集合B
