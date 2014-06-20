@@ -1,25 +1,49 @@
-todo 11 to dh
-func:'协议要素内容初始化'
+todo 12 to dh
+func:'协议模式结构查询'
 接收参数接口：{
-    func: '协议要素内容初始化',
-    reqtype: 'update',
+    func: '协议模式结构查询',
+    reqtype: 'query',
     ex_parm: {
-        id: 'XXX'
+        modid: 'XXX' //模式id
     }
 }
 过程：
-根据id从表p_fee_ele的init_data_sql字段，取初始化sql语句,执行后得记录集A.
-从p_fee_ele_lov表中取出此要素当前所有内容得记录集B：
-select * from p_fee_ele_lov where ele_id = 'XXX'
-
-过滤掉A.lov_cod==B.lov_cod,剩余的插入p_fee_ele_lov,最后再执行一次
-select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov where ele_id = 'XXX'得记录集C
-返回标准查询结构，rows：C
-
-返回参数接口：标准查询返回
+新建数组D，作为返回对象数组,数组内对象
 {
-    "msg":"初始化成功",
-    "stateCod": "202",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
+    title:'字段标题',
+    field:'fee_elen', //n为1-10
+    align: 'right', //写死
+    halign: 'center',   //写死
+    sortable: true,//写死
+    editor:{}
+}
+
+
+根据传入的modid,查询出记录A，
+select * from p_fee_mod where id = 'XXX';
+记录A中col_1到col_10这10个字段中的非空值组成集合B，
+
+for mod in B
+    select * from p_fee_ele where id = mod
+    取p_fee_ele.ele_name作为返回结构'title'
+    根据col_[n]中的n,作为返回结构'field'，格式'fee_elen'
+    select * from p_fee_ele_lov where ele_id = mod  的集合C
+    if C == 空
+        返回结构的editor: {'type': 'text'}
+    else
+        返回结构的editor:{
+            'type':'combobox',
+            'options':{
+                'textField': 'text',
+                'valueField': 'value',
+                'data': [{'text': C.lov_name, 'value': C.id},{},{},.....],
+            }
+        }
+
+返回参数接口：
+{
+    "msg":"查询成功",
+    "stateCod": "001",   #  错误 < 0 > 正确--不弹出提示框--100--中心弹出提示--200--右下弹出提示--300
     "error": ["xxx", "xx"]...        # 错误数组。
-    "rows":[{},{},{}]
+    "rows":数组D
 }

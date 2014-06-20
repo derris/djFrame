@@ -1,0 +1,151 @@
+<script>
+    Namespace.register('protocol.rat');
+    $(function () {
+        protocol.rat.ratdatagrid = null;
+        protocol.rat.protocoldatagrid = $('#protocol-protocolratview-protocolgrid').datagrid({
+            autoLoad: true,
+            autoSave: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ protocol_id.writeUI|safe|escape }},
+                        {{ protocol_protocol_name.writeUI|safe|escape }}
+                    {% endautoescape %}
+                ]
+            ],
+            dataTable: 'p_protocol',
+            queryFuncName: '协议查询',
+            pagination: false,
+            onClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (protocol.rat.checkDirty()) {
+                    protocol.rat.save();
+                }
+                if (protocol.rat.ratdatagrid != null) {
+                    protocol.rat.ratdatagrid.datagrid('loadData', []);
+                }
+                protocol.rat.feemoddatagrid.datagrid('unselectAll');
+                var opts = protocol.rat.feemoddatagrid.datagrid('options');
+                opts.filterFields = [
+                    {
+                        cod: 'protocol_id',
+                        operatorTyp: '等于',
+                        value: rowData.id
+                    }
+                ];
+                protocol.rat.feemoddatagrid.datagrid('reload');
+            }
+        });
+        protocol.rat.feemoddatagrid = $('#protocol-protocolratview-feemodgrid').datagrid({
+            autoLoad: false,
+            columns: [
+                [
+                    {% autoescape off %}
+                        {{ feemod_id.writeUI|safe|escape }},
+                        {{ feemod_protocol_id.writeUI|safe|escape }},
+                        {{ feemod_fee_id.writeUI|safe|escape }},
+                        {{ feemod_mod_id.writeUI|safe|escape }},
+                    {% endautoescape %}
+                ]
+            ],
+            groupField: 'fee_id',
+            groupFormatter: function (value, rows) {
+                var groupField = $(this).datagrid('options').groupField;
+                var editor = $(this).datagrid('getColumnOption', groupField).editor;
+                for (var i = 0, ilen = editor.options.data.length; i < ilen; i++) {
+                    if (editor.options.data[i].value == value) {
+                        return editor.options.data[i].text;
+                    }
+                }
+                return value;
+            },
+            pagination: false,
+            view: groupview,
+            queryFuncName: '协议费用模式查询',
+            onDblClickRow: function (rowIndex, rowData) {
+                return;
+            },
+            onClickRow: function (rowIndex, rowData) {
+                if (protocol.rat.checkDirty()) {
+                    protocol.rat.save();
+                }
+                var p = {
+                    func: '协议模式结构查询',
+                    reqtype: 'query',
+                    ex_parm: {
+                        modid: rowData.mod_id
+                    }
+                };
+                $.ajax({
+                    url: "./dealPAjax/",
+                    data: {jpargs: JSON.stringify(p)},
+                    dataType: 'json',
+                    success: function (r, t, a) {
+                        if (protocol.rat.ratdatagrid != null) {
+                            protocol.rat.ratdatagrid.datagrid('loadData', []);
+                        }
+                        protocol.rat.ratdatagrid = $('#protocol-protocolratview-ratgrid').datagrid({
+                            autoLoad: false,
+                            border: false,
+                            loadNumber: 0,
+                            frozenColumns: [
+                                [
+                                    {% autoescape off %}
+                                        {{ rat_id.writeUI|safe|escape }},
+                                        {{ rat_protocol_id.writeUI|safe|escape }},
+                                        {{ rat_fee_id.writeUI|safe|escape }},
+                                        {{ rat_mod_id.writeUI|safe|escape }},
+                                        {{ rat_feerat.writeUI|safe|escape }},
+                                        {{ rat_discountrat.writeUI|safe|escape }}
+                                    {% endautoescape %}
+                                ]
+                            ],
+                            columns: [[]],
+                            pagination: false
+                        });
+                    }
+                });
+            }
+        });
+        protocol.rat.checkDirty = function () {
+            if (protocol.rat.ratdatagrid == null) {
+                return false;
+            }
+            if (protocol.rat.ratdatagrid.datagrid('getChanges').length > 0) {
+                return true;
+            }
+            return false;
+        }
+        protocol.rat.save = function () {
+            protocol.rat.ratdatagrid.datagrid('postUpdateAllData');
+        }
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:true,split:true" style="width: 250px">
+        <div class="easyui-layout" data-options="fit:true,border:false">
+            <div data-options="region:'north',border:false,height:window.innerHeight * 0.4,title:'协议'">
+                <table id="protocol-protocolratview-protocolgrid" border="false">
+                </table>
+            </div>
+            <div data-options="region:'center',border:false,title:'费用模式'">
+                <table id="protocol-protocolratview-feemodgrid" border="false">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <table id="protocol-protocolratview-ratgrid" border="false">
+        </table>
+    </div>
+    <div data-options="region:'south',border:true" class="datagrid-toolbar">
+        <a id="protocol-protocolratview-savebutton" href="#" class="easyui-linkbutton"
+           data-options="iconCls:'icon-save',group:'fee-rpt'">保存</a>
+    </div>
+</div>
