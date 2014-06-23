@@ -93,12 +93,18 @@ $(function () {
         queryFuncName: '协议费用模式查询',
         updateFuncName: '协议费用模式维护',
         pagination: false,
+        onDblClickRow: function () {
+            return;
+        },
+        onClickRow: function () {
+            return;
+        },
         onLoadSuccess:function(data){
             protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
             var rows = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRows');
             for (var i = rows.length - 1;i>=0;i--){
                 for(var j= 0,jlen=data.rows.length;j<jlen;j++){
-                    if (data.rows[j].mod_id == rows[i].id){
+                    if (data.rows[j].mod_id == rows[i].mod_id){
                         protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow',i);
                         break;
                     }

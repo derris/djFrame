@@ -283,50 +283,49 @@ sy.createSearchWindow = function (datagrid) {
         }
     });
     var idarray = datagrid[0].id.split('-');
-    if (isNaN(parseInt(idarray[idarray.length - 1]))){
+    if (isNaN(parseInt(idarray[idarray.length - 1]))) {
         common.createsearchform.datagridid = idarray.join('-');
-    }else{
+    } else {
         idarray.length = idarray.length - 1;
         common.createsearchform.datagridid = idarray.join('-');
     }
 }
 
 //***************全局用到的对象**********************//
-    // 对Date的扩展，将 Date 转化为指定格式的String
-    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
-    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
-    // 例子：
-    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
-    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
-    Date.prototype.Format = function(fmt)
-    { //author: meizz
-      var o = {
-        "M+" : this.getMonth()+1,                 //月份
-        "d+" : this.getDate(),                    //日
-        "h+" : this.getHours(),                   //小时
-        "m+" : this.getMinutes(),                 //分
-        "s+" : this.getSeconds(),                 //秒
-        "q+" : Math.floor((this.getMonth()+3)/3), //季度
-        "S"  : this.getMilliseconds()             //毫秒
-      };
-      if(/(y+)/.test(fmt))
-        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-      for(var k in o)
-        if(new RegExp("("+ k +")").test(fmt))
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-      return fmt;
-    }
+// 对Date的扩展，将 Date 转化为指定格式的String
+// 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+// 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+// 例子：
+// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+// (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 
 //***************扩展datebox,datetimebox************//
-$.extend($.fn.datebox.defaults,{
-    onSelect:function(date){
-        $(this).datebox('setValue',date.Format("yyyy-MM-dd"));
+$.extend($.fn.datebox.defaults, {
+    onSelect: function (date) {
+        $(this).datebox('setValue', date.Format("yyyy-MM-dd"));
         $(this).datebox('hidePanel');
     }
 });
-$.extend($.fn.datetimebox.defaults,{
-    onSelect:function(date){
-        $(this).datetimebox('setValue',date.Format("yyyy-MM-dd hh:mm:ss"));
+$.extend($.fn.datetimebox.defaults, {
+    onSelect: function (date) {
+        $(this).datetimebox('setValue', date.Format("yyyy-MM-dd hh:mm:ss"));
         $(this).datetimebox('hidePanel');
     }
 });
@@ -358,8 +357,30 @@ $.extend($.fn.datagrid.defaults.editors, {
     }
 });
 
-//***************扩展datagrid editor ****************//
-
+//***************扩展datagrid view ****************
+$.extend($.fn.datagrid.defaults.view, {
+    onBeforeRender: function (target, rows) {
+        //console.info($(target));
+        var opts = $(target).datagrid('options');
+        //console.info(opts);
+        if (opts.comboboxFormatFlag == true) {
+            for (var i = 0, ilen = opts.columns[0].length; i < ilen; i++) {
+                if (opts.columns[0][i].hasOwnProperty('editor') &&
+                    opts.columns[0][i].editor.hasOwnProperty('type') &&
+                    opts.columns[0][i].editor.type == 'combobox') {
+                    opts.columns[0][i].formatter = function (value, rowData, index) {
+                        for (var i = 0, ilen = this.editor.options.data.length; i < ilen; i++) {
+                            if (this.editor.options.data[i].value == value) {
+                                return this.editor.options.data[i].text;
+                            }
+                        }
+                        return value;
+                    }
+                }
+            }
+        }
+    }
+});
 //***************扩展datagrid ***********************
 $.extend($.fn.datagrid.defaults, {
     //以下为扩展属性
@@ -384,10 +405,11 @@ $.extend($.fn.datagrid.defaults, {
     queryFuncName: '', //查询数据权限名称 views.dealPAjax() 参数    前台 datagrid.loader()
     updateFuncName: '', //修改数据权限名称 views.dealPAjax() 参数    前台 postUpdateAllData()
     ex_parm: {}, //扩展查询参数 load()中使用
+    comboboxFormatFlag: false,
     //以上为扩展属性
     border: false,
-    checkOnSelect:false,
-    selectOnCheck:false,
+    checkOnSelect: false,
+    selectOnCheck: false,
     //fit: true,
     idField: 'id',
     method: 'post',
@@ -407,8 +429,8 @@ $.extend($.fn.datagrid.defaults, {
         $(this).datagrid('click', rowIndex);
     },
     /*onLoadError: function () {
-        sy.onError('加载数据错误', false);
-    },*/
+     sy.onError('加载数据错误', false);
+     },*/
     onAfterEdit: function (rowIndex, rowData, changes) {
         if ($(this).datagrid('options').autoSave) {
             var datagridid = $(this)[0].id;
@@ -417,43 +439,43 @@ $.extend($.fn.datagrid.defaults, {
             $('a[group=' + '"' + datagridid.toString() + '"' + ']').linkbutton('enable');
         }
     },
-    onRowContextMenu:function(e,rowIndex,rowData){
+    onRowContextMenu: function (e, rowIndex, rowData) {
         e.preventDefault();
         var that = $(this);
         var opts = that.datagrid('options');
         $('#datagridcontextmenu').menu({
-            onClick:function(item){
-                if (item.text == '导出Excel'){
+            onClick: function (item) {
+                if (item.text == '导出Excel') {
                     var exportdata = that.datagrid('getExportExcelData');
                     var p = {
                         func: 'excel导出',
-                        ex_parm:{
-                            title:'',
-                            cols:exportdata.cols,
-                            rows:exportdata.data
+                        ex_parm: {
+                            title: '',
+                            cols: exportdata.cols,
+                            rows: exportdata.data
                         }
                     }
                     $('#exceldownload-jpargs').val(JSON.stringify(p));
                     $('#exceldownloadform').submit();
-/* 返回文件路径
-                    $.ajax({
-                        url: opts.url,
-                        data: {jpargs: JSON.stringify(p)},
-                        dataType:'text',
-                        success: function (r, t, a) {
-                            if ($.ajaxSettings.success(r, t, a, false)){
-                                window.win = open(r.result);
-                            }else{
-                                error();
-                            }
-                        }
-                    });
-*/
+                    /* 返回文件路径
+                     $.ajax({
+                     url: opts.url,
+                     data: {jpargs: JSON.stringify(p)},
+                     dataType:'text',
+                     success: function (r, t, a) {
+                     if ($.ajaxSettings.success(r, t, a, false)){
+                     window.win = open(r.result);
+                     }else{
+                     error();
+                     }
+                     }
+                     });
+                     */
                 }
             }
-        }).menu('show',{
-           left: e.pageX,
-           top: e.pageY
+        }).menu('show', {
+            left: e.pageX,
+            top: e.pageY
         });
     },
     loader: function (param, success, error) {
@@ -525,9 +547,9 @@ $.extend($.fn.datagrid.defaults, {
             //data:queryParam,
             success: function (r, t, a) {
                 //console.info(r);
-                if ($.ajaxSettings.success(r, t, a, false)){
+                if ($.ajaxSettings.success(r, t, a, false)) {
                     success(r);
-                }else{
+                } else {
                     error();
                 }
                 //$.ajaxSettings.success(r, t, a, false);
@@ -543,57 +565,57 @@ $.extend($.fn.datagrid.methods, {
          */
         return $(jq).data("datagrid").originalRows;
     },
-    getExportExcelData:function(jq){
+    getExportExcelData: function (jq) {
         var cols = [];
         var coltitles = [];
         var colopts = [];
         var data = [];
-        var columns = jq.datagrid('getColumnFields',true).concat(jq.datagrid('getColumnFields'));
+        var columns = jq.datagrid('getColumnFields', true).concat(jq.datagrid('getColumnFields'));
         var colopt;
         var find = false;
-        for (var i= 0,ilen=columns.length;i<ilen;i++){
-            colopt = jq.datagrid('getColumnOption',columns[i]);
-            if (!colopt.hasOwnProperty('hidden') || colopt.hidden == false || colopt.hidden == 'false'){
+        for (var i = 0, ilen = columns.length; i < ilen; i++) {
+            colopt = jq.datagrid('getColumnOption', columns[i]);
+            if (!colopt.hasOwnProperty('hidden') || colopt.hidden == false || colopt.hidden == 'false') {
                 cols.push(colopt.field);
                 coltitles.push(colopt.title);
                 colopts.push(colopt);
             }
         }
         var rows = jq.datagrid('getRows');
-        for(var i= 0,ilen=rows.length;i<ilen;i++){
+        for (var i = 0, ilen = rows.length; i < ilen; i++) {
             data[i] = [];
-            for(var j= 0,jlen=cols.length;j<jlen;j++){
+            for (var j = 0, jlen = cols.length; j < jlen; j++) {
                 //colopt = jq.datagrid('getColumnOption',cols[j]);
-                if (!colopts[j].hasOwnProperty('editor')){
+                if (!colopts[j].hasOwnProperty('editor')) {
                     data[i].push(rows[i][cols[j]]);
-                }else if (!colopts[j].editor.hasOwnProperty('type')){
+                } else if (!colopts[j].editor.hasOwnProperty('type')) {
                     data[i].push(rows[i][cols[j]]);
-                }else if (colopts[j].editor.type == 'checkbox'){
-                    if (rows[i][cols[j]] == 'true'){
+                } else if (colopts[j].editor.type == 'checkbox') {
+                    if (rows[i][cols[j]] == 'true') {
                         data[i].push('是');
-                    }else{
+                    } else {
                         data[i].push('否');
                     }
-                }else if (colopts[j].editor.type == 'combobox' ){
+                } else if (colopts[j].editor.type == 'combobox') {
                     find = false;
-                    for(var m= 0,mlen=colopts[j].editor.options.data.length;m<mlen;m++){
-                        if (rows[i][cols[j]] == colopts[j].editor.options.data[m].value){
+                    for (var m = 0, mlen = colopts[j].editor.options.data.length; m < mlen; m++) {
+                        if (rows[i][cols[j]] == colopts[j].editor.options.data[m].value) {
                             data[i].push(colopts[j].editor.options.data[m].text);
                             find = true;
                             break;
                         }
                     }
-                    if (find == false){
+                    if (find == false) {
                         data[i].push(rows[i][cols[j]]);
                     }
-                }else{
+                } else {
                     data[i].push(rows[i][cols[j]]);
                 }
             }
         }
         var p = {
-            cols:coltitles,
-            data:data
+            cols: coltitles,
+            data: data
         };
         return p;
     },
@@ -647,7 +669,7 @@ $.extend($.fn.datagrid.methods, {
             if (jq.datagrid('validateRow', opts.editRow)) {
                 jq.datagrid('endEdit', opts.editRow);
             } else {
-                $.messager.alert('提示','现有数据校验失败，不能增加新数据','info');
+                $.messager.alert('提示', '现有数据校验失败，不能增加新数据', 'info');
                 return;
             }
         }
@@ -897,7 +919,6 @@ $.extend($.fn.datagrid.methods, {
 //***************扩展datagrid ***********************//
 
 
-
 //***************扩展form****************************//
 $.extend($.fn.form.defaults, {
     originalData: {}, //保存通过load方法加载的原始数据
@@ -1102,8 +1123,8 @@ $.ajaxSetup({
                 }
                 return true;
             } else {//返回错误
-                if (returnData.msg && returnData.msg.length > 0){
-                    $.messager.alert('提示',returnData.msg,'info');
+                if (returnData.msg && returnData.msg.length > 0) {
+                    $.messager.alert('提示', returnData.msg, 'info');
                 }
                 if (returnData.error && returnData.error.length > 0) {
                     $.messager.show({
@@ -1114,12 +1135,12 @@ $.ajaxSetup({
                     });
                 }
                 if (stateCod <= -101 && stateCod >= -200) {//系统级错误返回登录界面
-                    sy.onError(returnData.msg,true);
+                    sy.onError(returnData.msg, true);
                 }
                 return false;
             }
-        }else{
-            $.messager.alert('错误','返回数据错误！','error');
+        } else {
+            $.messager.alert('错误', '返回数据错误！', 'error');
             return false;
         }
     },

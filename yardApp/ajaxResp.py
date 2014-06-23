@@ -143,6 +143,12 @@ def getprotocolfeemod(request):
     ls_sql = "select id,protocol_id,fee_id,mod_id,sort_no,active_flag,remark from p_protocol_fee_mod"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+def getprotococlrat(request):
+    ls_sql = "select id,protocol_id,fee_id,mod_id,fee_ele1,fee_ele2,fee_ele3,fee_ele4,fee_ele5," \
+             "fee_ele6,fee_ele7,fee_ele8,fee_ele9,fee_ele10,fee_rat,discount_rat from p_protocol_rat"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+
 def getcontract(request):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
@@ -288,6 +294,8 @@ def dealPAjax(request):
                 return (getprotocolmod(request))
             elif ldict['func'] == '协议费用模式查询':
                 return (getprotocolfeemod(request))
+            elif ldict['func'] == '协议费率查询':
+                return (getprotococlrat(request))
 
             ############## 费用  ###################################
             elif ldict['func'] == '委托查询':
@@ -444,6 +452,9 @@ def dealPAjax(request):
             elif ldict['func'] == '协议模式结构查询':
                 l_rtn = queryProtStruct(request, ldict)
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
+            elif ldict['func'] == '协议费率维护':
+                return (updateRaw(request))
+
             #########################################################3
             elif ldict['func'] == '密码修改':  # ajax 查询
                 # jpargs:{"func":"密码修改","ex_parm":{"oldpw":"ok","newpw":"123"}}

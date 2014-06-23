@@ -378,12 +378,12 @@ def queryProtStruct(request, adict):
                         if lds_c:
                             l_child = []
                             for i_edit in lds_c :
-                                l_child.append( { 'text': i_edit[0], 'value': i_edit[1] } )
+                                l_child.append( { 'text': i_edit[1], 'value': i_edit[0] } )
                             l_rtn_rows_edit = {
                                 'type':'combobox',
                                 'options':{ 'textField': 'text',
                                             'valueField': 'value',
-                                            'data': l_child  }
+                                            'data': l_child}
                                 }
                         else:
                             l_rtn_rows_edit = {'type': 'text'}

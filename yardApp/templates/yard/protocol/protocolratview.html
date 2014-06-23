@@ -88,6 +88,10 @@
                         if (protocol.rat.ratdatagrid != null) {
                             protocol.rat.ratdatagrid.datagrid('loadData', []);
                         }
+                        var feemodrow = protocol.rat.feemoddatagrid.datagrid('getSelected');
+                        if (feemodrow == null){
+                            return;
+                        }
                         protocol.rat.ratdatagrid = $('#protocol-protocolratview-ratgrid').datagrid({
                             autoLoad: false,
                             border: false,
@@ -104,10 +108,42 @@
                                     {% endautoescape %}
                                 ]
                             ],
-                            columns: r.rows,
+                            columns: [r.rows],
                             dataTable: 'p_protocol_rat',
                             queryFuncName: '协议费率查询',
-                            pagination: false
+                            updateFuncName: '协议费率维护',
+                            pagination: false,
+                            comboboxFormatFlag:true,
+                            toolbar: [
+                                {text: '增加',
+                                    iconCls: 'icon-add',
+                                    group: 'protocol-protocolratview-ratgrid',
+                                    handler: function () {
+                                        protocol.rat.ratdatagrid.datagrid('insertData', {
+                                            protocol_id: feemodrow.protocol_id,
+                                            fee_id:feemodrow.fee_id,
+                                            mod_id:feemodrow.mod_id
+                                        });
+                                    }
+                                },
+                                '-',
+                                {text: '删除',
+                                    iconCls: 'icon-remove',
+                                    group: 'protocol-protocolratview-ratgrid',
+                                    handler: function () {
+                                        protocol.rat.ratdatagrid.datagrid('deleteData');
+                                    }
+                                },
+                                '-',
+                                {text: '保存',
+                                    iconCls: 'icon-save',
+                                    group: 'protocol-protocolratview-ratgrid',
+                                    handler: function () {
+                                        protocol.rat.ratdatagrid.datagrid('postUpdateAllData');
+                                    }
+                                }
+                            ]
+
                         });
                         var opts = protocol.rat.ratdatagrid.datagrid('options');
                         opts.filterFields = [
@@ -163,9 +199,5 @@
     <div data-options="region:'center'">
         <table id="protocol-protocolratview-ratgrid" border="false">
         </table>
-    </div>
-    <div data-options="region:'south',border:true" class="datagrid-toolbar">
-        <a id="protocol-protocolratview-savebutton" href="#" class="easyui-linkbutton"
-           data-options="iconCls:'icon-save',group:'fee-rpt'">保存</a>
     </div>
 </div>
