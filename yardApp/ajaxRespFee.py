@@ -371,7 +371,7 @@ def queryProtStruct(request, adict):
                 if i_row[i_colzip[0]] :  # 对所有的有数值的col_n进行判断。ele_name     i_row[i_col[0]]是内部值B
                     lds_ele = cursorDict( ls_sqlEle , [i_row[i_colzip[0]]] )
                     if lds_ele:
-                        lds_lov = " select id, lov_name from p_fee_ele_lov where ele_id = %s "
+                        lds_lov = " select lov_cod, lov_name from p_fee_ele_lov where ele_id = %s "
                         lds_c = cursorSelect( lds_lov, [ str(i_row[i_colzip[0]]) ]  )
                         log(" ---> " + str(i_colzip) )
                         l_rtn_rows_edit = {}
