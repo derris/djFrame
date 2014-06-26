@@ -181,7 +181,7 @@ sy.csrfSafeMethod = function (method) {
  sy.searchWindowReturnData 由通用查询窗口返回的过滤和排序信息
  sy.csrftoken csrf令牌
  * */
-sy.apptitle = '堆场系统';
+sy.apptitle = '进口货运系统';
 //sy.logonPath = '';
 sy.onError = function (msg, logout) {
     /*msg:错误信息

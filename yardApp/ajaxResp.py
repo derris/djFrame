@@ -66,7 +66,7 @@ def getcntrtype(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getaction(request):
     '''动态类型查询'''
-    ls_sql = "select id,action_name,require_flag,sortno,remark from c_contract_action"
+    ls_sql = "select id,action_name,sortno,remark from c_contract_action"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getdispatch(request):
@@ -91,7 +91,7 @@ def getplace(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getfeecod(request):
     '''费用名称查询'''
-    ls_sql = "select id,fee_name,pair_flag,protocol_flag,remark from c_fee"
+    ls_sql = "select id,fee_name,pair_flag,remark from c_fee"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getpaytype(request):
@@ -414,7 +414,7 @@ def dealPAjax(request):
                          "where COALESCE(audit_id,false) = false "
                 return (getJson4sql(request, ls_sql))
             elif ldict['func'] == '应收付未核销查询':  # ajax 查询
-                ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_cod," \
+                ls_sql = "select pre_fee.id,pre_fee.contract_id,contract.bill_no,pre_fee.fee_typ,pre_fee.fee_cod," \
                          "pre_fee.amount,pre_fee.fee_tim,pre_fee.ex_feeid,pre_fee.remark " \
                          "from pre_fee,contract " \
                          "where pre_fee.contract_id = contract.id and COALESCE(pre_fee.audit_id,false) = false "

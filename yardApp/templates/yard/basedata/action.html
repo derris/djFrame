@@ -7,13 +7,17 @@
                     {% autoescape off %}
                         {{ id.writeUI|safe|escape }},
                         {{ action_name.writeUI|safe|escape }},
-                        {{ require_flag.writeUI|safe|escape }},
+{#                        {{ require_flag.writeUI|safe|escape }},#}
                         {{ sortno.writeUI|safe|escape }},
                         {{ remark.writeUI|safe|escape }}
                     {% endautoescape %}
                 ]
             ],
             dataTable: 'c_contract_action',
+            sortFields: [{
+                cod:'sortno',
+                order_typ:'升序'
+            }],
             toolbar: [
                 {text: '查询',
                     iconCls: 'icon-search',

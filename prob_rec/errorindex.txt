@@ -1,24 +1,26 @@
-syUtil.js :  POST错误1  /  请求错误1  /
+syUtil.js :  POST\u9519\u8BEF1  /  \u8BF7\u6C42\u9519\u8BEF1  /
 
-App.js  : ajax提示1 /
+App.js  : ajax\u63D0\u793A1 /
 
-stateCod: >0 正常执行  <0 错误 居中弹出错误提示
-           0-100 不弹出提示信息
-           101-200 居中弹出返回信息
-           201-300 右下角弹出返回信息
-          -1至-100    应用级错误
-          -101至-200  系统级错误 前台退出系统 转到登录界面
+stateCod: >0 \u6B63\u5E38\u6267\u884C  <0 \u9519\u8BEF \u5C45\u4E2D\u5F39\u51FA\u9519\u8BEF\u63D0\u793A
+           0-100 \u4E0D\u5F39\u51FA\u63D0\u793A\u4FE1\u606F
+           101-200 \u5C45\u4E2D\u5F39\u51FA\u8FD4\u56DE\u4FE1\u606F
+           201-300 \u53F3\u4E0B\u89D2\u5F39\u51FA\u8FD4\u56DE\u4FE1\u606F
+          -1\u81F3-100    \u5E94\u7528\u7EA7\u9519\u8BEF
+          -101\u81F3-200  \u7CFB\u7EDF\u7EA7\u9519\u8BEF \u524D\u53F0\u9000\u51FA\u7CFB\u7EDF \u8F6C\u5230\u767B\u5F55\u754C\u9762
 
-000：
-001：查询成功,有数据
-002：登录系统成功
-003：注销系统
-004：生成文件成功
-201：查询成功,无数据
-202：修改成功
+000\uFF1A
+001\uFF1A\u67E5\u8BE2\u6210\u529F,\u6709\u6570\u636E
+002\uFF1A\u767B\u5F55\u7CFB\u7EDF\u6210\u529F
+003\uFF1A\u6CE8\u9500\u7CFB\u7EDF
+004\uFF1A\u751F\u6210\u6587\u4EF6\u6210\u529F
+201\uFF1A\u67E5\u8BE2\u6210\u529F,\u65E0\u6570\u636E
+202\uFF1A\u4FEE\u6539\u6210\u529F
 
 
--1：登录失败
--2:没有权限
--3：生成文件失败
--101:登录过期
+-1\uFF1A\u767B\u5F55\u5931\u8D25
+-2:\u6CA1\u6709\u6743\u9650
+-3\uFF1A\u751F\u6210\u6587\u4EF6\u5931\u8D25
+-4:\u4FEE\u6539\u6216\u5220\u9664\u6570\u636E\u5931\u8D25
+-5\uFF1A\u67E5\u8BE2\u6570\u636E\u5931\u8D25
+-101:\u767B\u5F55\u8FC7\u671F

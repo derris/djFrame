@@ -114,7 +114,7 @@ def cntrtypeview(request):
 def actionview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Action,field='id')
     action_name = easyuihelp.EasyuiFieldUI(model=models.Action,field='action_name')
-    require_flag = easyuihelp.EasyuiFieldUI(model=models.Action,field='require_flag')
+    #require_flag = easyuihelp.EasyuiFieldUI(model=models.Action,field='require_flag')
     sortno = easyuihelp.EasyuiFieldUI(model=models.Action,field='sortno')
     remark = easyuihelp.EasyuiFieldUI(model=models.Action,field='remark',width=180)
     return render(request,"yard/basedata/action.html",locals())
@@ -143,7 +143,7 @@ def feecodview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='id')
     fee_name = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='fee_name')
     pair_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='pair_flag')
-    protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
+    #protocol_flag = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='protocol_flag')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeCod,field='remark',width=180)
     return render(request,"yard/basedata/feecod.html",locals())
 def paytypeview(request):
@@ -400,7 +400,7 @@ def auditqueryview(request):    # 核销查询
     feetypdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_typ').editor['options']['data'],ensure_ascii = False)
     audit_amount = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='amount')
     audit_ex_over = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='ex_over',hidden=True)
-    audit_tim = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_tim',title='核销时间')
+    audit_tim = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='audit_tim')
     actfee_id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='id')
     actfee_client_Id = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='client_id',autoforeign=True,foreigndisplayfield='client_name')
     actfee_fee_typ = easyuihelp.EasyuiFieldUI(model=models.ActFee,field='fee_typ')

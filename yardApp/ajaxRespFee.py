@@ -86,14 +86,24 @@ def auditDeleteQuery(request, ldict):
     if len(l_actRecord) > 0 :
         pass
     else:
-        l_rtn.update( {"msg": "查询成功，但没有符合条件记录", "error": '',"stateCod":101,"result":{"act":[], "pre":[]} } )
+        l_rtn.update( {"msg": "查询成功，但没有符合条件记录", "error": '',"stateCod":1,"result":{"act":[], "pre":[]} } )
         return l_rtn
     ls_auditTim = l_actRecord[0][1]
     ls_exOver = l_actRecord[0][0]
-    ls_sqlpre1 = "select * from pre_fee where audit_id = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
-    ls_sqlpre2 = "select * from pre_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
-    ls_sqlact1 = "select * from act_fee where audit_id = true and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
-    ls_sqlact2 = "select * from act_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
+    ls_sqlpre1 = "select id,contract_id,fee_typ,fee_cod,client_id,amount," \
+                 "fee_tim,lock_flag,fee_financial_tim,remark,ex_from,ex_over,ex_feeid,audit_id,audit_tim " \
+                 "from pre_fee where audit_id = true " \
+                 "and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+    ls_sqlpre2 = "select id,contract_id,fee_typ,fee_cod,client_id,(0-amount) amount," \
+                 "fee_tim,lock_flag,fee_financial_tim,remark,ex_from,ex_over,ex_feeid,audit_id,audit_tim " \
+                 "from pre_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
+    ls_sqlact1 = "select id,client_id,fee_typ,amount,invoice_no,check_no,pay_type," \
+                 "fee_tim,remark,ex_from,ex_over,ex_feeid,audit_id,audit_tim,accept_no " \
+                 "from act_fee where audit_id = true " \
+                 "and audit_tim = '%s' and ex_over='%s' " % (ls_auditTim, ls_exOver)
+    ls_sqlact2 = "select id,client_id,fee_typ,(0-amount) amount,invoice_no,check_no,pay_type," \
+                 "fee_tim,remark,ex_from,ex_over,ex_feeid,audit_id,audit_tim,accept_no " \
+                 "from act_fee where audit_id = false and rec_tim = '%s' and ex_from='%s' " % (ls_auditTim, ls_exOver)
     try:
         list_pre = rawSql2JsonDict(ls_sqlpre1)
         list_pre.extend(rawSql2JsonDict(ls_sqlpre2))
@@ -102,7 +112,7 @@ def auditDeleteQuery(request, ldict):
         l_result = { "act":list_act, "pre":list_pre }
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "result": l_result } )
     except Exception as e:
-        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+        l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -5 } )
     return l_rtn
 
 def auditDelete(request, ldict):
@@ -128,9 +138,9 @@ def auditDelete(request, ldict):
                 l_sql.append("update pre_fee set ex_over = '', audit_id=false, audit_tim=null where ex_over='%s'" % ls_exOver)
                 for i in l_sql:
                     cursorExec(i)
-                l_rtn.update( {"msg": "删除成功", "error":[], "stateCod" : 101, "result": [] } )
+                l_rtn.update( {"msg": "删除成功", "error":[], "stateCod" : 202, "result": [] } )
         except Exception as e:
-            l_rtn.update( {"msg": "删除失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
+            l_rtn.update( {"msg": "删除失败", "error": list( (str(e.args),) ) , "stateCod" : -4 } )
     return l_rtn
 
 def auditSumQuery(request, ldict):

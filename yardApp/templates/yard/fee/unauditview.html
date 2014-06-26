@@ -35,6 +35,8 @@
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(p)},
                 success: function (r, t, a) {
+                    audit.unauditview.actfeegrid.datagrid('unselectAll');
+                    audit.unauditview.prefeegrid.datagrid('unselectAll');
                     if ($.ajaxSettings.success(r, t, a, true)) {
                         audit.unauditview.actfeegrid.datagrid('loadData', r.result.act);
                         audit.unauditview.prefeegrid.datagrid('loadData', r.result.pre);
@@ -42,6 +44,8 @@
                         audit.unauditview.actfeegrid.datagrid('loadData', []);
                         audit.unauditview.prefeegrid.datagrid('loadData', []);
                     }
+                    audit.unauditview.actfeegrid.datagrid('checkAll');
+                    audit.unauditview.prefeegrid.datagrid('checkAll');
                 }
             });
         }
@@ -49,7 +53,6 @@
             audit.unauditview.refresh(parm);
         });
         $(document).on('audit', '#control-audit-filter-toolbar-{{ seq }}', function (e, parm) {
-            console.info(parm);
             if (parm == '取消') {
                 audit.unauditview.unaudit();
             }
