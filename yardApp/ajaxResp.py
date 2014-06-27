@@ -426,9 +426,9 @@ def dealPAjax(request):
             elif ldict['func'] == '核销明细查询':  # ajax 查询
                 l_rtn = auditDetailQuery(request, ldict)
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
-            elif ldict['func'] == '客户费用明细报表':
-                l_rtn = clientFeeDetailReport(request, ldict)
-                return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
+            # elif ldict['func'] == '客户费用明细报表':
+            #     l_rtn = clientFeeDetailReport(request, ldict)
+            #     return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
             elif ldict['func'] == '费用报表头维护':
                 return (updateRaw(request))
             elif ldict['func'] == '费用报表项目维护':
