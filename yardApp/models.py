@@ -240,6 +240,7 @@ class PreFee(BaseModel):
     ex_over = models.CharField('完结号',max_length=36,blank=True,null=True)
     audit_id =  models.NullBooleanField('核销',blank=True,null=True)
     audit_tim = models.DateTimeField('核销时间')
+    currency_cod = models.CharField('货币',max_length=3,choices=(('RMB','人民币'),('USD','美元')))
     def __str__(self):
         return self.contract_id.bill_no + '/' + self.fee_typ + '/' + self.fee_cod.fee_name + '/' + self.client_id.client_name + '/' + str(self.amount)
     class Meta:
@@ -259,6 +260,7 @@ class ActFee(BaseModel):
     ex_over = models.CharField('完结号',max_length=36,blank=True,null=True)
     audit_id =  models.NullBooleanField('核销',blank=True,null=True)
     audit_tim = models.DateTimeField('核销时间')
+    currency_cod = models.CharField('货币',max_length=3,choices=(('RMB','人民币'),('USD','美元')))
     def __str__(self):
         return self.client_id.client_name + '/' + self.fee_typ + '/' + self.pay_type.pay_name + '/' + str(self.amount)
     class Meta:
