@@ -23,3 +23,19 @@ todo 13 to dh
    传入的第一个参数等于p_protocol_rat.fee_ele1的值，并且传入的第二个参数大于p_protocol_rat.fee_ele2的值
    {1} == [1] and {2} > [2]
 
+todo 14 to dh
+func:'用户维护'
+用户名‘Admin’超级管理员，禁止增、删、改操作。
+用户名'管理员',禁止增、删、改操作。
+上面这两个用户在初始化数据库的时候插入。
+‘Admin’id固定为1，密码：'zht+dh=sql2'
+‘管理员’id固定为2，密码在初始化时由客户录入。
+todo 15 to dh
+func：‘密码修改’
+用户名‘Admin’禁止修改密码
+todo 16 to dh
+func：‘岗位维护’
+岗位名‘管理员’禁止增、删、改操作。在初始化数据库时插入，id固定为1
+todo 17 to dh
+func:‘menufuncpost’ #岗位权限维护
+岗位名‘管理员’禁止增、删、改操作。在初始化数据库时插入
