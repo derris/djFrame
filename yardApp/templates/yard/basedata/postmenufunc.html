@@ -22,6 +22,7 @@
         basedata.postmenufuncview.postdg.refreshFunc = function (postid) {
             var param = {
                 type: 'query',
+                reqtype:'query',
                 func: '岗位权限查询',
                 postid: postid
             }
@@ -92,7 +93,7 @@
             rows.sort(sy.createComparsion('op', 'desc'));
             var p = {
                 reqtype: 'sysfunc',
-                func: 'menufuncpost',
+                func: '岗位权限维护',
                 rows: rows
             }
             $.ajax({

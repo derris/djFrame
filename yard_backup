@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.1.13
 -- Dumped by pg_dump version 9.2.4
--- Started on 2014-06-30 14:49:11 CST
+-- Started on 2014-07-01 08:51:01 CST
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -74,7 +74,7 @@ end;$$;
 ALTER FUNCTION public.f_create_lump_fee(p_contract_id integer, p_tim timestamp without time zone, oper_id integer, OUT ov_rtn character varying) OWNER TO "yardAdmin";
 
 --
--- TOC entry 263 (class 1255 OID 27684)
+-- TOC entry 262 (class 1255 OID 27684)
 -- Name: f_create_protocol_fee(integer, integer); Type: FUNCTION; Schema: public; Owner: yardAdmin
 --
 
@@ -136,7 +136,7 @@ $$;
 ALTER FUNCTION public.f_create_protocol_fee(p_contract_id integer, oper_id integer, OUT ov_rtn character varying) OWNER TO "yardAdmin";
 
 --
--- TOC entry 264 (class 1255 OID 27686)
+-- TOC entry 263 (class 1255 OID 27686)
 -- Name: fun4tri_contract(); Type: FUNCTION; Schema: public; Owner: yardAdmin
 --
 
@@ -166,7 +166,7 @@ $$;
 ALTER FUNCTION public.fun4tri_contract() OWNER TO "yardAdmin";
 
 --
--- TOC entry 265 (class 1255 OID 27687)
+-- TOC entry 264 (class 1255 OID 27687)
 -- Name: fun4tri_contract_action(); Type: FUNCTION; Schema: public; Owner: yardAdmin
 --
 
@@ -249,13 +249,13 @@ begin
 	return NEW;    
      end if;
      if TG_OP = 'UPDATE' then
-	if (NEW.post_id = 1 ) then
-		raise exception '禁止增加管理员岗位权限';
+	if (OLD.post_id = 1 ) then
+		raise exception '禁止修改管理员岗位权限';
 	end if;    	
 	return NEW;
      end if;
      if TG_OP = 'DELETE' then
-	if (NEW.post_id = 1) then
+	if (OLD.post_id = 1) then
 		raise exception '禁止删除管理员岗位权限';
 	end if;
      end if;
@@ -266,7 +266,7 @@ end;$$;
 ALTER FUNCTION public.fun4tri_s_postmenu() OWNER TO "yardAdmin";
 
 --
--- TOC entry 262 (class 1255 OID 28738)
+-- TOC entry 266 (class 1255 OID 28738)
 -- Name: fun4tri_s_postuser(); Type: FUNCTION; Schema: public; Owner: yardAdmin
 --
 
@@ -280,13 +280,13 @@ CREATE FUNCTION fun4tri_s_postuser() RETURNS trigger
 	return NEW;    
      end if;
      if TG_OP = 'UPDATE' then
-	if (NEW.user_id = 1 or NEW.user_id = 2 )then
+	if (OLD.user_id = 1 or OLD.user_id = 2 )then
 		raise exception '禁止修改管理员';
 	end if;    	
 	return NEW;
      end if;
      if TG_OP = 'DELETE' then
-	if (NEW.user_id = 1 or NEW.user_id = 2 ) then
+	if (OLD.user_id = 1 or OLD.user_id = 2 ) then
 		raise exception '禁止删除管理员';
 	end if;
      end if;
@@ -297,7 +297,7 @@ end; $$;
 ALTER FUNCTION public.fun4tri_s_postuser() OWNER TO "yardAdmin";
 
 --
--- TOC entry 266 (class 1255 OID 27689)
+-- TOC entry 265 (class 1255 OID 27689)
 -- Name: fun4tri_s_user(); Type: FUNCTION; Schema: public; Owner: yardAdmin
 --
 
@@ -1387,7 +1387,7 @@ ALTER SEQUENCE c_place_id_seq OWNED BY c_place.id;
 
 
 --
--- TOC entry 231 (class 1259 OID 28408)
+-- TOC entry 230 (class 1259 OID 28408)
 -- Name: c_rpt; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -1406,7 +1406,7 @@ ALTER TABLE public.c_rpt OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2657 (class 0 OID 0)
--- Dependencies: 231
+-- Dependencies: 230
 -- Name: TABLE c_rpt; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1415,7 +1415,7 @@ COMMENT ON TABLE c_rpt IS '费用报表名称';
 
 --
 -- TOC entry 2658 (class 0 OID 0)
--- Dependencies: 231
+-- Dependencies: 230
 -- Name: COLUMN c_rpt.rpt_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1423,7 +1423,7 @@ COMMENT ON COLUMN c_rpt.rpt_name IS '报表名称';
 
 
 --
--- TOC entry 235 (class 1259 OID 28432)
+-- TOC entry 234 (class 1259 OID 28432)
 -- Name: c_rpt_fee; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -1444,7 +1444,7 @@ ALTER TABLE public.c_rpt_fee OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2659 (class 0 OID 0)
--- Dependencies: 235
+-- Dependencies: 234
 -- Name: TABLE c_rpt_fee; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1453,7 +1453,7 @@ COMMENT ON TABLE c_rpt_fee IS '费用报表项目费用';
 
 --
 -- TOC entry 2660 (class 0 OID 0)
--- Dependencies: 235
+-- Dependencies: 234
 -- Name: COLUMN c_rpt_fee.rpt_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1462,7 +1462,7 @@ COMMENT ON COLUMN c_rpt_fee.rpt_id IS '报表id';
 
 --
 -- TOC entry 2661 (class 0 OID 0)
--- Dependencies: 235
+-- Dependencies: 234
 -- Name: COLUMN c_rpt_fee.item_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1471,7 +1471,7 @@ COMMENT ON COLUMN c_rpt_fee.item_id IS '项目id';
 
 --
 -- TOC entry 2662 (class 0 OID 0)
--- Dependencies: 235
+-- Dependencies: 234
 -- Name: COLUMN c_rpt_fee.fee_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1479,7 +1479,7 @@ COMMENT ON COLUMN c_rpt_fee.fee_id IS '费用id';
 
 
 --
--- TOC entry 234 (class 1259 OID 28430)
+-- TOC entry 233 (class 1259 OID 28430)
 -- Name: c_rpt_fee_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -1495,7 +1495,7 @@ ALTER TABLE public.c_rpt_fee_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2663 (class 0 OID 0)
--- Dependencies: 234
+-- Dependencies: 233
 -- Name: c_rpt_fee_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -1503,7 +1503,7 @@ ALTER SEQUENCE c_rpt_fee_id_seq OWNED BY c_rpt_fee.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 28406)
+-- TOC entry 229 (class 1259 OID 28406)
 -- Name: c_rpt_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -1519,7 +1519,7 @@ ALTER TABLE public.c_rpt_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2664 (class 0 OID 0)
--- Dependencies: 230
+-- Dependencies: 229
 -- Name: c_rpt_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -1527,7 +1527,7 @@ ALTER SEQUENCE c_rpt_id_seq OWNED BY c_rpt.id;
 
 
 --
--- TOC entry 233 (class 1259 OID 28419)
+-- TOC entry 232 (class 1259 OID 28419)
 -- Name: c_rpt_item; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -1548,7 +1548,7 @@ ALTER TABLE public.c_rpt_item OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2665 (class 0 OID 0)
--- Dependencies: 233
+-- Dependencies: 232
 -- Name: TABLE c_rpt_item; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1557,7 +1557,7 @@ COMMENT ON TABLE c_rpt_item IS '费用报表项目';
 
 --
 -- TOC entry 2666 (class 0 OID 0)
--- Dependencies: 233
+-- Dependencies: 232
 -- Name: COLUMN c_rpt_item.item_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1566,7 +1566,7 @@ COMMENT ON COLUMN c_rpt_item.item_name IS '项目名称';
 
 --
 -- TOC entry 2667 (class 0 OID 0)
--- Dependencies: 233
+-- Dependencies: 232
 -- Name: COLUMN c_rpt_item.rpt_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1575,7 +1575,7 @@ COMMENT ON COLUMN c_rpt_item.rpt_id IS '报表id';
 
 --
 -- TOC entry 2668 (class 0 OID 0)
--- Dependencies: 233
+-- Dependencies: 232
 -- Name: COLUMN c_rpt_item.sort_no; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -1583,7 +1583,7 @@ COMMENT ON COLUMN c_rpt_item.sort_no IS '序号';
 
 
 --
--- TOC entry 232 (class 1259 OID 28417)
+-- TOC entry 231 (class 1259 OID 28417)
 -- Name: c_rpt_item_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -1599,7 +1599,7 @@ ALTER TABLE public.c_rpt_item_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2669 (class 0 OID 0)
--- Dependencies: 232
+-- Dependencies: 231
 -- Name: c_rpt_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2316,7 +2316,7 @@ CREATE TABLE django_session (
 ALTER TABLE public.django_session OWNER TO "yardAdmin";
 
 --
--- TOC entry 239 (class 1259 OID 28474)
+-- TOC entry 238 (class 1259 OID 28474)
 -- Name: p_fee_ele; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2336,7 +2336,7 @@ ALTER TABLE public.p_fee_ele OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2725 (class 0 OID 0)
--- Dependencies: 239
+-- Dependencies: 238
 -- Name: TABLE p_fee_ele; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2345,7 +2345,7 @@ COMMENT ON TABLE p_fee_ele IS '协议要素表';
 
 --
 -- TOC entry 2726 (class 0 OID 0)
--- Dependencies: 239
+-- Dependencies: 238
 -- Name: COLUMN p_fee_ele.ele_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2354,7 +2354,7 @@ COMMENT ON COLUMN p_fee_ele.ele_name IS '要素名称';
 
 --
 -- TOC entry 2727 (class 0 OID 0)
--- Dependencies: 239
+-- Dependencies: 238
 -- Name: COLUMN p_fee_ele.init_data_sql; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2362,7 +2362,7 @@ COMMENT ON COLUMN p_fee_ele.init_data_sql IS '初始化要素内容sql语句';
 
 
 --
--- TOC entry 238 (class 1259 OID 28472)
+-- TOC entry 237 (class 1259 OID 28472)
 -- Name: p_fee_ele_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2378,7 +2378,7 @@ ALTER TABLE public.p_fee_ele_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2728 (class 0 OID 0)
--- Dependencies: 238
+-- Dependencies: 237
 -- Name: p_fee_ele_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2386,7 +2386,7 @@ ALTER SEQUENCE p_fee_ele_id_seq OWNED BY p_fee_ele.id;
 
 
 --
--- TOC entry 241 (class 1259 OID 28485)
+-- TOC entry 240 (class 1259 OID 28485)
 -- Name: p_fee_ele_lov; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2407,7 +2407,7 @@ ALTER TABLE public.p_fee_ele_lov OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2729 (class 0 OID 0)
--- Dependencies: 241
+-- Dependencies: 240
 -- Name: TABLE p_fee_ele_lov; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2416,7 +2416,7 @@ COMMENT ON TABLE p_fee_ele_lov IS '协议要素内容表';
 
 --
 -- TOC entry 2730 (class 0 OID 0)
--- Dependencies: 241
+-- Dependencies: 240
 -- Name: COLUMN p_fee_ele_lov.ele_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2425,7 +2425,7 @@ COMMENT ON COLUMN p_fee_ele_lov.ele_id IS '要素id';
 
 --
 -- TOC entry 2731 (class 0 OID 0)
--- Dependencies: 241
+-- Dependencies: 240
 -- Name: COLUMN p_fee_ele_lov.lov_cod; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2434,7 +2434,7 @@ COMMENT ON COLUMN p_fee_ele_lov.lov_cod IS '要素内容代码';
 
 --
 -- TOC entry 2732 (class 0 OID 0)
--- Dependencies: 241
+-- Dependencies: 240
 -- Name: COLUMN p_fee_ele_lov.lov_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2442,7 +2442,7 @@ COMMENT ON COLUMN p_fee_ele_lov.lov_name IS '要素内容名称';
 
 
 --
--- TOC entry 240 (class 1259 OID 28483)
+-- TOC entry 239 (class 1259 OID 28483)
 -- Name: p_fee_ele_lov_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2458,7 +2458,7 @@ ALTER TABLE public.p_fee_ele_lov_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2733 (class 0 OID 0)
--- Dependencies: 240
+-- Dependencies: 239
 -- Name: p_fee_ele_lov_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2466,7 +2466,7 @@ ALTER SEQUENCE p_fee_ele_lov_id_seq OWNED BY p_fee_ele_lov.id;
 
 
 --
--- TOC entry 243 (class 1259 OID 28509)
+-- TOC entry 242 (class 1259 OID 28509)
 -- Name: p_fee_mod; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2496,7 +2496,7 @@ ALTER TABLE public.p_fee_mod OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2734 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: TABLE p_fee_mod; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2505,7 +2505,7 @@ COMMENT ON TABLE p_fee_mod IS '费用模式头表';
 
 --
 -- TOC entry 2735 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.mod_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2514,7 +2514,7 @@ COMMENT ON COLUMN p_fee_mod.mod_name IS '费用模式名称';
 
 --
 -- TOC entry 2736 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_1; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2523,7 +2523,7 @@ COMMENT ON COLUMN p_fee_mod.col_1 IS '模式要素1';
 
 --
 -- TOC entry 2737 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_2; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2532,7 +2532,7 @@ COMMENT ON COLUMN p_fee_mod.col_2 IS '模式要素2';
 
 --
 -- TOC entry 2738 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_3; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2541,7 +2541,7 @@ COMMENT ON COLUMN p_fee_mod.col_3 IS '模式要素3';
 
 --
 -- TOC entry 2739 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_4; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2550,7 +2550,7 @@ COMMENT ON COLUMN p_fee_mod.col_4 IS '模式要素4';
 
 --
 -- TOC entry 2740 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_5; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2559,7 +2559,7 @@ COMMENT ON COLUMN p_fee_mod.col_5 IS '模式要素5';
 
 --
 -- TOC entry 2741 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_6; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2568,7 +2568,7 @@ COMMENT ON COLUMN p_fee_mod.col_6 IS '模式要素6';
 
 --
 -- TOC entry 2742 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_7; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2577,7 +2577,7 @@ COMMENT ON COLUMN p_fee_mod.col_7 IS '模式要素7';
 
 --
 -- TOC entry 2743 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_8; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2586,7 +2586,7 @@ COMMENT ON COLUMN p_fee_mod.col_8 IS '模式要素8';
 
 --
 -- TOC entry 2744 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_9; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2595,7 +2595,7 @@ COMMENT ON COLUMN p_fee_mod.col_9 IS '模式要素9';
 
 --
 -- TOC entry 2745 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.col_10; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2604,7 +2604,7 @@ COMMENT ON COLUMN p_fee_mod.col_10 IS '模式要素10';
 
 --
 -- TOC entry 2746 (class 0 OID 0)
--- Dependencies: 243
+-- Dependencies: 242
 -- Name: COLUMN p_fee_mod.mod_descript; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2612,7 +2612,7 @@ COMMENT ON COLUMN p_fee_mod.mod_descript IS '模式自解析描述';
 
 
 --
--- TOC entry 242 (class 1259 OID 28507)
+-- TOC entry 241 (class 1259 OID 28507)
 -- Name: p_fee_mod_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2628,7 +2628,7 @@ ALTER TABLE public.p_fee_mod_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2747 (class 0 OID 0)
--- Dependencies: 242
+-- Dependencies: 241
 -- Name: p_fee_mod_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2636,7 +2636,7 @@ ALTER SEQUENCE p_fee_mod_id_seq OWNED BY p_fee_mod.id;
 
 
 --
--- TOC entry 237 (class 1259 OID 28464)
+-- TOC entry 236 (class 1259 OID 28464)
 -- Name: p_protocol; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2657,7 +2657,7 @@ ALTER TABLE public.p_protocol OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2748 (class 0 OID 0)
--- Dependencies: 237
+-- Dependencies: 236
 -- Name: TABLE p_protocol; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2666,7 +2666,7 @@ COMMENT ON TABLE p_protocol IS '协议头表';
 
 --
 -- TOC entry 2749 (class 0 OID 0)
--- Dependencies: 237
+-- Dependencies: 236
 -- Name: COLUMN p_protocol.protocol_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2675,7 +2675,7 @@ COMMENT ON COLUMN p_protocol.protocol_name IS '协议名称';
 
 --
 -- TOC entry 2750 (class 0 OID 0)
--- Dependencies: 237
+-- Dependencies: 236
 -- Name: COLUMN p_protocol.write_date; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2684,7 +2684,7 @@ COMMENT ON COLUMN p_protocol.write_date IS '签订日期';
 
 --
 -- TOC entry 2751 (class 0 OID 0)
--- Dependencies: 237
+-- Dependencies: 236
 -- Name: COLUMN p_protocol.validate_date; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2692,7 +2692,7 @@ COMMENT ON COLUMN p_protocol.validate_date IS '有效日期';
 
 
 --
--- TOC entry 245 (class 1259 OID 28582)
+-- TOC entry 244 (class 1259 OID 28582)
 -- Name: p_protocol_fee_mod; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2715,7 +2715,7 @@ ALTER TABLE public.p_protocol_fee_mod OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2752 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: TABLE p_protocol_fee_mod; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2724,7 +2724,7 @@ COMMENT ON TABLE p_protocol_fee_mod IS '协议费用模式表';
 
 --
 -- TOC entry 2753 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: COLUMN p_protocol_fee_mod.protocol_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2733,7 +2733,7 @@ COMMENT ON COLUMN p_protocol_fee_mod.protocol_id IS '协议id';
 
 --
 -- TOC entry 2754 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: COLUMN p_protocol_fee_mod.fee_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2742,7 +2742,7 @@ COMMENT ON COLUMN p_protocol_fee_mod.fee_id IS '费用名称id';
 
 --
 -- TOC entry 2755 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: COLUMN p_protocol_fee_mod.mod_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2751,7 +2751,7 @@ COMMENT ON COLUMN p_protocol_fee_mod.mod_id IS '模式id';
 
 --
 -- TOC entry 2756 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: COLUMN p_protocol_fee_mod.sort_no; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2760,7 +2760,7 @@ COMMENT ON COLUMN p_protocol_fee_mod.sort_no IS '模式序号';
 
 --
 -- TOC entry 2757 (class 0 OID 0)
--- Dependencies: 245
+-- Dependencies: 244
 -- Name: COLUMN p_protocol_fee_mod.active_flag; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2768,7 +2768,7 @@ COMMENT ON COLUMN p_protocol_fee_mod.active_flag IS '激活';
 
 
 --
--- TOC entry 244 (class 1259 OID 28580)
+-- TOC entry 243 (class 1259 OID 28580)
 -- Name: p_protocol_fee_mod_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2784,7 +2784,7 @@ ALTER TABLE public.p_protocol_fee_mod_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2758 (class 0 OID 0)
--- Dependencies: 244
+-- Dependencies: 243
 -- Name: p_protocol_fee_mod_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2792,7 +2792,7 @@ ALTER SEQUENCE p_protocol_fee_mod_id_seq OWNED BY p_protocol_fee_mod.id;
 
 
 --
--- TOC entry 236 (class 1259 OID 28462)
+-- TOC entry 235 (class 1259 OID 28462)
 -- Name: p_protocol_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2808,7 +2808,7 @@ ALTER TABLE public.p_protocol_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2759 (class 0 OID 0)
--- Dependencies: 236
+-- Dependencies: 235
 -- Name: p_protocol_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -2816,7 +2816,7 @@ ALTER SEQUENCE p_protocol_id_seq OWNED BY p_protocol.id;
 
 
 --
--- TOC entry 247 (class 1259 OID 28614)
+-- TOC entry 246 (class 1259 OID 28614)
 -- Name: p_protocol_rat; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -2849,7 +2849,7 @@ ALTER TABLE public.p_protocol_rat OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2760 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: TABLE p_protocol_rat; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2858,7 +2858,7 @@ COMMENT ON TABLE p_protocol_rat IS '协议费率表';
 
 --
 -- TOC entry 2761 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: COLUMN p_protocol_rat.protocol_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2867,7 +2867,7 @@ COMMENT ON COLUMN p_protocol_rat.protocol_id IS '协议id';
 
 --
 -- TOC entry 2762 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: COLUMN p_protocol_rat.fee_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2876,7 +2876,7 @@ COMMENT ON COLUMN p_protocol_rat.fee_id IS '费用id';
 
 --
 -- TOC entry 2763 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: COLUMN p_protocol_rat.mod_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2885,7 +2885,7 @@ COMMENT ON COLUMN p_protocol_rat.mod_id IS '模式id';
 
 --
 -- TOC entry 2764 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: COLUMN p_protocol_rat.fee_rat; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2894,7 +2894,7 @@ COMMENT ON COLUMN p_protocol_rat.fee_rat IS '费率';
 
 --
 -- TOC entry 2765 (class 0 OID 0)
--- Dependencies: 247
+-- Dependencies: 246
 -- Name: COLUMN p_protocol_rat.discount_rat; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -2902,7 +2902,7 @@ COMMENT ON COLUMN p_protocol_rat.discount_rat IS '折扣金额';
 
 
 --
--- TOC entry 246 (class 1259 OID 28612)
+-- TOC entry 245 (class 1259 OID 28612)
 -- Name: p_protocol_rat_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -2918,7 +2918,7 @@ ALTER TABLE public.p_protocol_rat_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2766 (class 0 OID 0)
--- Dependencies: 246
+-- Dependencies: 245
 -- Name: p_protocol_rat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -3107,7 +3107,7 @@ ALTER SEQUENCE pre_fee_id_seq OWNED BY pre_fee.id;
 
 
 --
--- TOC entry 229 (class 1259 OID 28380)
+-- TOC entry 228 (class 1259 OID 28380)
 -- Name: s_filter_body; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -3132,7 +3132,7 @@ ALTER TABLE public.s_filter_body OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2782 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 228
 -- Name: COLUMN s_filter_body.content_col; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3141,7 +3141,7 @@ COMMENT ON COLUMN s_filter_body.content_col IS '条件字段名';
 
 --
 -- TOC entry 2783 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 228
 -- Name: COLUMN s_filter_body.content_value; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3150,7 +3150,7 @@ COMMENT ON COLUMN s_filter_body.content_value IS '条件值';
 
 --
 -- TOC entry 2784 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 228
 -- Name: COLUMN s_filter_body.content_type; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3159,7 +3159,7 @@ COMMENT ON COLUMN s_filter_body.content_type IS '内容类型''W''-where ''S''-o
 
 --
 -- TOC entry 2785 (class 0 OID 0)
--- Dependencies: 229
+-- Dependencies: 228
 -- Name: COLUMN s_filter_body.content_condition; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3167,7 +3167,7 @@ COMMENT ON COLUMN s_filter_body.content_condition IS '内容条件';
 
 
 --
--- TOC entry 228 (class 1259 OID 28378)
+-- TOC entry 227 (class 1259 OID 28378)
 -- Name: s_filter_body_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -3183,7 +3183,7 @@ ALTER TABLE public.s_filter_body_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2786 (class 0 OID 0)
--- Dependencies: 228
+-- Dependencies: 227
 -- Name: s_filter_body_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -3191,7 +3191,7 @@ ALTER SEQUENCE s_filter_body_id_seq OWNED BY s_filter_body.id;
 
 
 --
--- TOC entry 227 (class 1259 OID 28353)
+-- TOC entry 226 (class 1259 OID 28353)
 -- Name: s_filter_head; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -3213,7 +3213,7 @@ ALTER TABLE public.s_filter_head OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2787 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 226
 -- Name: TABLE s_filter_head; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3222,7 +3222,7 @@ COMMENT ON TABLE s_filter_head IS '查询条件头';
 
 --
 -- TOC entry 2788 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 226
 -- Name: COLUMN s_filter_head.datagrid; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3231,7 +3231,7 @@ COMMENT ON COLUMN s_filter_head.datagrid IS 'datagrid名称';
 
 --
 -- TOC entry 2789 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 226
 -- Name: COLUMN s_filter_head.filter_type; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3240,7 +3240,7 @@ COMMENT ON COLUMN s_filter_head.filter_type IS '''G''-全局 ''P''-个人';
 
 --
 -- TOC entry 2790 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 226
 -- Name: COLUMN s_filter_head.filter_owner; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3249,7 +3249,7 @@ COMMENT ON COLUMN s_filter_head.filter_owner IS '查询条件所有者';
 
 --
 -- TOC entry 2791 (class 0 OID 0)
--- Dependencies: 227
+-- Dependencies: 226
 -- Name: COLUMN s_filter_head.filter_name; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3257,7 +3257,7 @@ COMMENT ON COLUMN s_filter_head.filter_name IS '查询条件名称';
 
 
 --
--- TOC entry 226 (class 1259 OID 28351)
+-- TOC entry 225 (class 1259 OID 28351)
 -- Name: s_filter_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -3273,7 +3273,7 @@ ALTER TABLE public.s_filter_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 2792 (class 0 OID 0)
--- Dependencies: 226
+-- Dependencies: 225
 -- Name: s_filter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -3794,50 +3794,19 @@ ALTER SEQUENCE sys_code_id_seq OWNED BY sys_code.id;
 
 
 --
--- TOC entry 220 (class 1259 OID 27914)
--- Name: sys_func; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
+-- TOC entry 247 (class 1259 OID 28746)
+-- Name: sys_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
-CREATE TABLE sys_func (
-    funcname character varying(50) NOT NULL,
-    rec_nam integer NOT NULL,
-    rec_tim timestamp without time zone NOT NULL,
-    upd_nam integer,
-    upd_tim timestamp without time zone,
-    remark character varying(50) DEFAULT ''::character varying NOT NULL,
-    id integer NOT NULL,
-    ref_tables character varying(100) DEFAULT ''::character varying NOT NULL
-);
+CREATE SEQUENCE sys_menu_id_seq
+    START WITH 49
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 
-ALTER TABLE public.sys_func OWNER TO "yardAdmin";
-
---
--- TOC entry 2823 (class 0 OID 0)
--- Dependencies: 220
--- Name: TABLE sys_func; Type: COMMENT; Schema: public; Owner: yardAdmin
---
-
-COMMENT ON TABLE sys_func IS '系统权限表';
-
-
---
--- TOC entry 2824 (class 0 OID 0)
--- Dependencies: 220
--- Name: COLUMN sys_func.funcname; Type: COMMENT; Schema: public; Owner: yardAdmin
---
-
-COMMENT ON COLUMN sys_func.funcname IS '权限名称';
-
-
---
--- TOC entry 2825 (class 0 OID 0)
--- Dependencies: 220
--- Name: COLUMN sys_func.ref_tables; Type: COMMENT; Schema: public; Owner: yardAdmin
---
-
-COMMENT ON COLUMN sys_func.ref_tables IS '涉及表，多表用‘，’分隔';
-
+ALTER TABLE public.sys_menu_id_seq OWNER TO "yardAdmin";
 
 --
 -- TOC entry 221 (class 1259 OID 27918)
@@ -3845,7 +3814,7 @@ COMMENT ON COLUMN sys_func.ref_tables IS '涉及表，多表用‘，’分隔';
 --
 
 CREATE TABLE sys_menu (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('sys_menu_id_seq'::regclass) NOT NULL,
     menuname character varying(50) NOT NULL,
     rec_nam integer NOT NULL,
     rec_tim timestamp without time zone NOT NULL,
@@ -3862,7 +3831,7 @@ CREATE TABLE sys_menu (
 ALTER TABLE public.sys_menu OWNER TO "yardAdmin";
 
 --
--- TOC entry 2826 (class 0 OID 0)
+-- TOC entry 2823 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: TABLE sys_menu; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3871,7 +3840,7 @@ COMMENT ON TABLE sys_menu IS '系统功能表';
 
 
 --
--- TOC entry 2827 (class 0 OID 0)
+-- TOC entry 2824 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_menu.menuname; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3880,7 +3849,7 @@ COMMENT ON COLUMN sys_menu.menuname IS '功能名称';
 
 
 --
--- TOC entry 2828 (class 0 OID 0)
+-- TOC entry 2825 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_menu.parent_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3890,7 +3859,7 @@ COMMENT ON COLUMN sys_menu.parent_id IS '父功能ID
 
 
 --
--- TOC entry 2829 (class 0 OID 0)
+-- TOC entry 2826 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_menu.menushowname; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3899,7 +3868,7 @@ COMMENT ON COLUMN sys_menu.menushowname IS '菜单显示名称';
 
 
 --
--- TOC entry 2830 (class 0 OID 0)
+-- TOC entry 2827 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_menu.sortno; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3908,7 +3877,7 @@ COMMENT ON COLUMN sys_menu.sortno IS '序号';
 
 
 --
--- TOC entry 2831 (class 0 OID 0)
+-- TOC entry 2828 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: COLUMN sys_menu.sys_flag; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
@@ -3932,7 +3901,7 @@ CREATE SEQUENCE sys_func_id_seq
 ALTER TABLE public.sys_func_id_seq OWNER TO "yardAdmin";
 
 --
--- TOC entry 2832 (class 0 OID 0)
+-- TOC entry 2829 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: sys_func_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
@@ -3941,31 +3910,53 @@ ALTER SEQUENCE sys_func_id_seq OWNED BY sys_menu.id;
 
 
 --
--- TOC entry 223 (class 1259 OID 27926)
--- Name: sys_func_id_seq1; Type: SEQUENCE; Schema: public; Owner: yardAdmin
+-- TOC entry 220 (class 1259 OID 27914)
+-- Name: sys_func; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
-CREATE SEQUENCE sys_func_id_seq1
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE sys_func (
+    funcname character varying(50) NOT NULL,
+    rec_nam integer NOT NULL,
+    rec_tim timestamp without time zone NOT NULL,
+    upd_nam integer,
+    upd_tim timestamp without time zone,
+    remark character varying(50) DEFAULT ''::character varying NOT NULL,
+    id integer DEFAULT nextval('sys_func_id_seq'::regclass) NOT NULL,
+    ref_tables character varying(100) DEFAULT ''::character varying NOT NULL
+);
 
 
-ALTER TABLE public.sys_func_id_seq1 OWNER TO "yardAdmin";
-
---
--- TOC entry 2833 (class 0 OID 0)
--- Dependencies: 223
--- Name: sys_func_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
---
-
-ALTER SEQUENCE sys_func_id_seq1 OWNED BY sys_func.id;
-
+ALTER TABLE public.sys_func OWNER TO "yardAdmin";
 
 --
--- TOC entry 224 (class 1259 OID 27928)
+-- TOC entry 2830 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE sys_func; Type: COMMENT; Schema: public; Owner: yardAdmin
+--
+
+COMMENT ON TABLE sys_func IS '系统权限表';
+
+
+--
+-- TOC entry 2831 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN sys_func.funcname; Type: COMMENT; Schema: public; Owner: yardAdmin
+--
+
+COMMENT ON COLUMN sys_func.funcname IS '权限名称';
+
+
+--
+-- TOC entry 2832 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: COLUMN sys_func.ref_tables; Type: COMMENT; Schema: public; Owner: yardAdmin
+--
+
+COMMENT ON COLUMN sys_func.ref_tables IS '涉及表，多表用‘，’分隔';
+
+
+--
+-- TOC entry 223 (class 1259 OID 27928)
 -- Name: sys_menu_func; Type: TABLE; Schema: public; Owner: yardAdmin; Tablespace: 
 --
 
@@ -3984,8 +3975,8 @@ CREATE TABLE sys_menu_func (
 ALTER TABLE public.sys_menu_func OWNER TO "yardAdmin";
 
 --
--- TOC entry 2834 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 2833 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: TABLE sys_menu_func; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -3993,8 +3984,8 @@ COMMENT ON TABLE sys_menu_func IS '功能权限表';
 
 
 --
--- TOC entry 2835 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 2834 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: COLUMN sys_menu_func.menu_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -4002,8 +3993,8 @@ COMMENT ON COLUMN sys_menu_func.menu_id IS '功能ID';
 
 
 --
--- TOC entry 2836 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 2835 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: COLUMN sys_menu_func.func_id; Type: COMMENT; Schema: public; Owner: yardAdmin
 --
 
@@ -4011,7 +4002,7 @@ COMMENT ON COLUMN sys_menu_func.func_id IS '权限ID';
 
 
 --
--- TOC entry 225 (class 1259 OID 27932)
+-- TOC entry 224 (class 1259 OID 27932)
 -- Name: sys_menu_func_id_seq; Type: SEQUENCE; Schema: public; Owner: yardAdmin
 --
 
@@ -4026,8 +4017,8 @@ CREATE SEQUENCE sys_menu_func_id_seq
 ALTER TABLE public.sys_menu_func_id_seq OWNER TO "yardAdmin";
 
 --
--- TOC entry 2837 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 2836 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: sys_menu_func_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: yardAdmin
 --
 
@@ -4347,22 +4338,6 @@ ALTER TABLE ONLY sys_code ALTER COLUMN id SET DEFAULT nextval('sys_code_id_seq':
 
 
 --
--- TOC entry 2212 (class 2604 OID 27964)
--- Name: id; Type: DEFAULT; Schema: public; Owner: yardAdmin
---
-
-ALTER TABLE ONLY sys_func ALTER COLUMN id SET DEFAULT nextval('sys_func_id_seq1'::regclass);
-
-
---
--- TOC entry 2217 (class 2604 OID 27965)
--- Name: id; Type: DEFAULT; Schema: public; Owner: yardAdmin
---
-
-ALTER TABLE ONLY sys_menu ALTER COLUMN id SET DEFAULT nextval('sys_func_id_seq'::regclass);
-
-
---
 -- TOC entry 2219 (class 2604 OID 27966)
 -- Name: id; Type: DEFAULT; Schema: public; Owner: yardAdmin
 --
@@ -4383,7 +4358,7 @@ INSERT INTO act_fee VALUES (29, 53, 'I', 8887233.00, '', '', 3, '2014-06-26 16:0
 
 
 --
--- TOC entry 2838 (class 0 OID 0)
+-- TOC entry 2837 (class 0 OID 0)
 -- Dependencies: 162
 -- Name: act_fee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4400,7 +4375,7 @@ SELECT pg_catalog.setval('act_fee_id_seq', 29, true);
 
 
 --
--- TOC entry 2839 (class 0 OID 0)
+-- TOC entry 2838 (class 0 OID 0)
 -- Dependencies: 164
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4417,7 +4392,7 @@ SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
 
 
 --
--- TOC entry 2840 (class 0 OID 0)
+-- TOC entry 2839 (class 0 OID 0)
 -- Dependencies: 166
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4452,7 +4427,7 @@ INSERT INTO auth_permission VALUES (18, 'Can delete session', 6, 'delete_session
 
 
 --
--- TOC entry 2841 (class 0 OID 0)
+-- TOC entry 2840 (class 0 OID 0)
 -- Dependencies: 168
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4478,7 +4453,7 @@ INSERT INTO auth_user VALUES (1, 'pbkdf2_sha256$12000$3jjm9jpUglTT$vA1wcUUsxCiZM
 
 
 --
--- TOC entry 2842 (class 0 OID 0)
+-- TOC entry 2841 (class 0 OID 0)
 -- Dependencies: 171
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4487,7 +4462,7 @@ SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
 
 
 --
--- TOC entry 2843 (class 0 OID 0)
+-- TOC entry 2842 (class 0 OID 0)
 -- Dependencies: 172
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4504,7 +4479,7 @@ SELECT pg_catalog.setval('auth_user_id_seq', 1, true);
 
 
 --
--- TOC entry 2844 (class 0 OID 0)
+-- TOC entry 2843 (class 0 OID 0)
 -- Dependencies: 174
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4531,7 +4506,7 @@ INSERT INTO c_cargo VALUES (11, 1, '2014-05-08 09:10:13', NULL, NULL, '', '巴�
 
 
 --
--- TOC entry 2845 (class 0 OID 0)
+-- TOC entry 2844 (class 0 OID 0)
 -- Dependencies: 176
 -- Name: c_cargo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4553,7 +4528,7 @@ INSERT INTO c_cargo_type VALUES (6, 'test4', 1, '2014-06-30 00:00:00', NULL, NUL
 
 
 --
--- TOC entry 2846 (class 0 OID 0)
+-- TOC entry 2845 (class 0 OID 0)
 -- Dependencies: 178
 -- Name: c_cargo_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4636,7 +4611,7 @@ INSERT INTO c_client VALUES (53, '红日森林', true, false, false, false, fals
 
 
 --
--- TOC entry 2847 (class 0 OID 0)
+-- TOC entry 2846 (class 0 OID 0)
 -- Dependencies: 180
 -- Name: c_client_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4657,7 +4632,7 @@ INSERT INTO c_cntr_type VALUES (4, '45HC', '45尺超高干箱', 1, '2014-04-23 1
 
 
 --
--- TOC entry 2848 (class 0 OID 0)
+-- TOC entry 2847 (class 0 OID 0)
 -- Dependencies: 182
 -- Name: c_cntr_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4684,7 +4659,7 @@ INSERT INTO c_contract_action VALUES (7, '拆箱', '', 1, '2014-03-03 14:12:04',
 
 
 --
--- TOC entry 2849 (class 0 OID 0)
+-- TOC entry 2848 (class 0 OID 0)
 -- Dependencies: 184
 -- Name: c_contract_action_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4703,7 +4678,7 @@ INSERT INTO c_dispatch VALUES (2, '欧洲', '', 1, '2014-04-24 18:16:46', NULL, 
 
 
 --
--- TOC entry 2850 (class 0 OID 0)
+-- TOC entry 2849 (class 0 OID 0)
 -- Dependencies: 186
 -- Name: c_dispatch_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4729,7 +4704,7 @@ INSERT INTO c_fee VALUES (11, '滞报金', false, '', 1, '2014-04-28 15:21:54', 
 
 
 --
--- TOC entry 2851 (class 0 OID 0)
+-- TOC entry 2850 (class 0 OID 0)
 -- Dependencies: 188
 -- Name: c_fee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4750,7 +4725,7 @@ INSERT INTO c_pay_type VALUES (4, '承兑', 1, '2014-04-23 14:31:51', NULL, NULL
 
 
 --
--- TOC entry 2852 (class 0 OID 0)
+-- TOC entry 2851 (class 0 OID 0)
 -- Dependencies: 190
 -- Name: c_pay_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4784,7 +4759,7 @@ INSERT INTO c_place VALUES (18, '斯洛伐克', 1, '2014-05-08 09:14:38', NULL, 
 
 
 --
--- TOC entry 2853 (class 0 OID 0)
+-- TOC entry 2852 (class 0 OID 0)
 -- Dependencies: 192
 -- Name: c_place_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4793,8 +4768,8 @@ SELECT pg_catalog.setval('c_place_id_seq', 18, true);
 
 
 --
--- TOC entry 2575 (class 0 OID 28408)
--- Dependencies: 231
+-- TOC entry 2574 (class 0 OID 28408)
+-- Dependencies: 230
 -- Data for Name: c_rpt; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -4802,8 +4777,8 @@ INSERT INTO c_rpt VALUES (1, '客户账单', NULL, 1, '2014-05-27 16:33:58', NUL
 
 
 --
--- TOC entry 2579 (class 0 OID 28432)
--- Dependencies: 235
+-- TOC entry 2578 (class 0 OID 28432)
+-- Dependencies: 234
 -- Data for Name: c_rpt_fee; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -4818,8 +4793,8 @@ INSERT INTO c_rpt_fee VALUES (9, 1, 2, 5, NULL, 1, '2014-05-29 14:18:15', NULL, 
 
 
 --
--- TOC entry 2854 (class 0 OID 0)
--- Dependencies: 234
+-- TOC entry 2853 (class 0 OID 0)
+-- Dependencies: 233
 -- Name: c_rpt_fee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -4827,8 +4802,8 @@ SELECT pg_catalog.setval('c_rpt_fee_id_seq', 9, true);
 
 
 --
--- TOC entry 2855 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 2854 (class 0 OID 0)
+-- Dependencies: 229
 -- Name: c_rpt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -4836,8 +4811,8 @@ SELECT pg_catalog.setval('c_rpt_id_seq', 3, true);
 
 
 --
--- TOC entry 2577 (class 0 OID 28419)
--- Dependencies: 233
+-- TOC entry 2576 (class 0 OID 28419)
+-- Dependencies: 232
 -- Data for Name: c_rpt_item; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -4848,8 +4823,8 @@ INSERT INTO c_rpt_item VALUES (2, '海关费用', 1, NULL, 1, '2014-05-28 11:11:
 
 
 --
--- TOC entry 2856 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 2855 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: c_rpt_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -4882,7 +4857,7 @@ INSERT INTO contract_action VALUES (14, 15, 2, false, NULL, '', 1, '2014-05-13 1
 
 
 --
--- TOC entry 2857 (class 0 OID 0)
+-- TOC entry 2856 (class 0 OID 0)
 -- Dependencies: 195
 -- Name: contract_action_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4901,7 +4876,7 @@ INSERT INTO contract_cntr VALUES (11, 11, 1, '2014-05-06 16:00:36', NULL, NULL, 
 
 
 --
--- TOC entry 2858 (class 0 OID 0)
+-- TOC entry 2857 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: contract_cntr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4910,7 +4885,7 @@ SELECT pg_catalog.setval('contract_cntr_id_seq', 11, true);
 
 
 --
--- TOC entry 2859 (class 0 OID 0)
+-- TOC entry 2858 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: contract_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4927,7 +4902,7 @@ SELECT pg_catalog.setval('contract_id_seq', 15, true);
 
 
 --
--- TOC entry 2860 (class 0 OID 0)
+-- TOC entry 2859 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4950,7 +4925,7 @@ INSERT INTO django_content_type VALUES (6, 'session', 'sessions', 'session');
 
 
 --
--- TOC entry 2861 (class 0 OID 0)
+-- TOC entry 2860 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -4992,6 +4967,8 @@ INSERT INTO django_session VALUES ('yibqkipkacwcntfwjnruk5z3908njp2f', 'YmViMmE3
 INSERT INTO django_session VALUES ('usf7ako5qshmv9mrz716qjihx6cy6bcq', 'YzA3MzY5ZWE3ZjM4MjJiNWFmMjE4ZjBjYTIzNmRiYmIxZGMwZjI0Nzp7ImxvZ29uIjp0cnVlLCJ1c2VyaWQiOjF9', '2014-06-26 22:16:06.463158+08');
 INSERT INTO django_session VALUES ('2dpd2htmj8spyhii6wwbjv0wyaify5s8', 'YjM0ZTk5NDRjZGJiODY2ZmQ0ZjEzNGRiZTk2Y2UxNGU1ZTRhNDA4YTp7InVzZXJpZCI6MSwibG9nb24iOnRydWV9', '2014-07-09 09:03:28.131304+08');
 INSERT INTO django_session VALUES ('zqc1vdw4ab4gmq1hhywkmobkyauvo8i6', 'YjM0ZTk5NDRjZGJiODY2ZmQ0ZjEzNGRiZTk2Y2UxNGU1ZTRhNDA4YTp7InVzZXJpZCI6MSwibG9nb24iOnRydWV9', '2014-06-30 12:48:42.653339+08');
+INSERT INTO django_session VALUES ('efffrrgbitpnm0blj5p13jb9ki3pk8ez', 'OTEwZjZiYjhiNTk0MmM2YzNmYTExYWY5MWQ4NzE2ZmM0ZjdiYTViOTp7fQ==', '2014-06-30 17:16:54.055412+08');
+INSERT INTO django_session VALUES ('7w18icvdwxbw65k1ubuqzxeq4flbax5s', 'ODNlMmE4ZDNlM2NhODRmNmEyMDQzOGYzYWM1MzJkYzNlZmJhNjRlNTp7InVzZXJpZCI6NiwibG9nb24iOnRydWV9', '2014-07-01 10:48:45.018381+08');
 INSERT INTO django_session VALUES ('kpenqt2ukrowmy34u0iorc94bj9fwsam', 'YzA3MzY5ZWE3ZjM4MjJiNWFmMjE4ZjBjYTIzNmRiYmIxZGMwZjI0Nzp7ImxvZ29uIjp0cnVlLCJ1c2VyaWQiOjF9', '2014-07-09 16:30:22.016435+08');
 INSERT INTO django_session VALUES ('nuqfhliky149l2479epv0p5ea7w63pq5', 'ODNlMmE4ZDNlM2NhODRmNmEyMDQzOGYzYWM1MzJkYzNlZmJhNjRlNTp7InVzZXJpZCI6NiwibG9nb24iOnRydWV9', '2014-05-27 09:16:20.238777+08');
 INSERT INTO django_session VALUES ('ocpb3cytmee7m2veshqx82y9sbpdhtk4', 'YzA3MzY5ZWE3ZjM4MjJiNWFmMjE4ZjBjYTIzNmRiYmIxZGMwZjI0Nzp7ImxvZ29uIjp0cnVlLCJ1c2VyaWQiOjF9', '2014-06-26 18:31:21.017856+08');
@@ -5002,8 +4979,8 @@ INSERT INTO django_session VALUES ('111xv56ovm11hgp4iwjpepkr9pjsxujy', 'YzA3MzY5
 
 
 --
--- TOC entry 2583 (class 0 OID 28474)
--- Dependencies: 239
+-- TOC entry 2582 (class 0 OID 28474)
+-- Dependencies: 238
 -- Data for Name: p_fee_ele; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5014,8 +4991,8 @@ INSERT INTO p_fee_ele VALUES (4, '免费天数', '', '', 1, '2014-06-20 10:44:39
 
 
 --
--- TOC entry 2862 (class 0 OID 0)
--- Dependencies: 238
+-- TOC entry 2861 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: p_fee_ele_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5023,8 +5000,8 @@ SELECT pg_catalog.setval('p_fee_ele_id_seq', 4, true);
 
 
 --
--- TOC entry 2585 (class 0 OID 28485)
--- Dependencies: 241
+-- TOC entry 2584 (class 0 OID 28485)
+-- Dependencies: 240
 -- Data for Name: p_fee_ele_lov; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5039,8 +5016,8 @@ INSERT INTO p_fee_ele_lov VALUES (11, 1, '4', '45HC', NULL, 1, '2014-06-18 00:34
 
 
 --
--- TOC entry 2863 (class 0 OID 0)
--- Dependencies: 240
+-- TOC entry 2862 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: p_fee_ele_lov_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5048,8 +5025,8 @@ SELECT pg_catalog.setval('p_fee_ele_lov_id_seq', 11, true);
 
 
 --
--- TOC entry 2587 (class 0 OID 28509)
--- Dependencies: 243
+-- TOC entry 2586 (class 0 OID 28509)
+-- Dependencies: 242
 -- Data for Name: p_fee_mod; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5058,8 +5035,8 @@ INSERT INTO p_fee_mod VALUES (3, '月结堆存费模式', '', 1, '2014-06-20 10:
 
 
 --
--- TOC entry 2864 (class 0 OID 0)
--- Dependencies: 242
+-- TOC entry 2863 (class 0 OID 0)
+-- Dependencies: 241
 -- Name: p_fee_mod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5067,8 +5044,8 @@ SELECT pg_catalog.setval('p_fee_mod_id_seq', 3, true);
 
 
 --
--- TOC entry 2581 (class 0 OID 28464)
--- Dependencies: 237
+-- TOC entry 2580 (class 0 OID 28464)
+-- Dependencies: 236
 -- Data for Name: p_protocol; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5076,8 +5053,8 @@ INSERT INTO p_protocol VALUES (1, '红日森林', '2014-06-05', '2016-06-30', ''
 
 
 --
--- TOC entry 2589 (class 0 OID 28582)
--- Dependencies: 245
+-- TOC entry 2588 (class 0 OID 28582)
+-- Dependencies: 244
 -- Data for Name: p_protocol_fee_mod; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5086,8 +5063,8 @@ INSERT INTO p_protocol_fee_mod VALUES (6, 1, 3, 3, 1, '', 1, '2014-06-23 09:33:1
 
 
 --
--- TOC entry 2865 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 2864 (class 0 OID 0)
+-- Dependencies: 243
 -- Name: p_protocol_fee_mod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5095,8 +5072,8 @@ SELECT pg_catalog.setval('p_protocol_fee_mod_id_seq', 6, true);
 
 
 --
--- TOC entry 2866 (class 0 OID 0)
--- Dependencies: 236
+-- TOC entry 2865 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: p_protocol_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5104,8 +5081,8 @@ SELECT pg_catalog.setval('p_protocol_id_seq', 1, true);
 
 
 --
--- TOC entry 2591 (class 0 OID 28614)
--- Dependencies: 247
+-- TOC entry 2590 (class 0 OID 28614)
+-- Dependencies: 246
 -- Data for Name: p_protocol_rat; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5116,8 +5093,8 @@ INSERT INTO p_protocol_rat VALUES (6, 1, 1, 2, '3', '1', '', '', '', '', '', '',
 
 
 --
--- TOC entry 2867 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 2866 (class 0 OID 0)
+-- Dependencies: 245
 -- Name: p_protocol_rat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5143,7 +5120,7 @@ INSERT INTO pre_fee VALUES (54, 11, 'I', 1, 53, 666.00, '2014-06-05 00:00:00', f
 
 
 --
--- TOC entry 2868 (class 0 OID 0)
+-- TOC entry 2867 (class 0 OID 0)
 -- Dependencies: 205
 -- Name: pre_fee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -5152,8 +5129,8 @@ SELECT pg_catalog.setval('pre_fee_id_seq', 55, true);
 
 
 --
--- TOC entry 2573 (class 0 OID 28380)
--- Dependencies: 229
+-- TOC entry 2572 (class 0 OID 28380)
+-- Dependencies: 228
 -- Data for Name: s_filter_body; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5196,8 +5173,8 @@ INSERT INTO s_filter_body VALUES (211, 17, 'remark', '', '', 1, '2014-05-21 07:4
 
 
 --
--- TOC entry 2869 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 2868 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: s_filter_body_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5205,8 +5182,8 @@ SELECT pg_catalog.setval('s_filter_body_id_seq', 211, true);
 
 
 --
--- TOC entry 2571 (class 0 OID 28353)
--- Dependencies: 227
+-- TOC entry 2570 (class 0 OID 28353)
+-- Dependencies: 226
 -- Data for Name: s_filter_head; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5216,8 +5193,8 @@ INSERT INTO s_filter_head VALUES (17, 'basedata-user-datagrid', 'G', 6, 'uuu', '
 
 
 --
--- TOC entry 2870 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 2869 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: s_filter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
@@ -5232,10 +5209,11 @@ SELECT pg_catalog.setval('s_filter_id_seq', 17, true);
 
 INSERT INTO s_post VALUES (3, '单证', 1, '2014-02-28 09:10:50', NULL, NULL, '');
 INSERT INTO s_post VALUES (2, '商务', 1, '2014-02-28 09:10:35', 1, '2014-05-23 02:40:13', '1');
+INSERT INTO s_post VALUES (1, '管理员', 1, '2014-07-01 00:00:00', NULL, NULL, '');
 
 
 --
--- TOC entry 2871 (class 0 OID 0)
+-- TOC entry 2870 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: s_post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -5292,15 +5270,21 @@ INSERT INTO s_postmenu VALUES (2, 43, true, 1, '2014-06-27 02:51:18.769944', NUL
 INSERT INTO s_postmenu VALUES (2, 44, true, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '', 78);
 INSERT INTO s_postmenu VALUES (2, 46, true, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '', 79);
 INSERT INTO s_postmenu VALUES (2, 49, true, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '', 80);
+INSERT INTO s_postmenu VALUES (1, 33, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 82);
+INSERT INTO s_postmenu VALUES (1, 34, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 83);
+INSERT INTO s_postmenu VALUES (1, 9, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 84);
+INSERT INTO s_postmenu VALUES (1, 10, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 85);
+INSERT INTO s_postmenu VALUES (1, 11, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 86);
+INSERT INTO s_postmenu VALUES (1, 12, true, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '', 87);
 
 
 --
--- TOC entry 2872 (class 0 OID 0)
+-- TOC entry 2871 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: s_postmenu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
-SELECT pg_catalog.setval('s_postmenu_id_seq', 80, true);
+SELECT pg_catalog.setval('s_postmenu_id_seq', 87, true);
 
 
 --
@@ -5409,15 +5393,26 @@ INSERT INTO s_postmenufunc VALUES (114, 2, 49, 85, 1, '2014-06-27 02:51:18.76994
 INSERT INTO s_postmenufunc VALUES (115, 2, 49, 87, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '');
 INSERT INTO s_postmenufunc VALUES (116, 2, 49, 88, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '');
 INSERT INTO s_postmenufunc VALUES (117, 2, 49, 89, 1, '2014-06-27 02:51:18.769944', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (118, 1, 34, 55, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (119, 1, 9, 16, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (120, 1, 9, 17, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (121, 1, 10, 12, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (122, 1, 10, 13, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (123, 1, 11, 14, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (124, 1, 11, 15, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (125, 1, 11, 12, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (126, 1, 12, 12, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (127, 1, 12, 32, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
+INSERT INTO s_postmenufunc VALUES (128, 1, 12, 33, 1, '2014-07-01 00:48:06.217065', NULL, NULL, '');
 
 
 --
--- TOC entry 2873 (class 0 OID 0)
+-- TOC entry 2872 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: s_postmenufunc_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
-SELECT pg_catalog.setval('s_postmenufunc_id_seq', 117, true);
+SELECT pg_catalog.setval('s_postmenufunc_id_seq', 128, true);
 
 
 --
@@ -5426,18 +5421,18 @@ SELECT pg_catalog.setval('s_postmenufunc_id_seq', 117, true);
 -- Data for Name: s_postuser; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
-INSERT INTO s_postuser VALUES (2, 4, 1, '2014-03-01 09:00:35', NULL, NULL, '', 1);
 INSERT INTO s_postuser VALUES (2, 6, 1, '2014-04-17 08:56:55', NULL, NULL, '', 2);
 INSERT INTO s_postuser VALUES (3, 6, 1, '2014-04-17 08:57:03', NULL, NULL, '', 3);
+INSERT INTO s_postuser VALUES (1, 2, 1, '2014-07-01 08:37:32', NULL, NULL, '', 7);
 
 
 --
--- TOC entry 2874 (class 0 OID 0)
+-- TOC entry 2873 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: s_postuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
-SELECT pg_catalog.setval('s_postuser_id_seq', 5, true);
+SELECT pg_catalog.setval('s_postuser_id_seq', 7, true);
 
 
 --
@@ -5447,14 +5442,14 @@ SELECT pg_catalog.setval('s_postuser_id_seq', 5, true);
 --
 
 INSERT INTO s_user VALUES (1, 'Admin', 'Admin', 1, '2014-02-21 14:33:46.185167', NULL, NULL, '', false);
-INSERT INTO s_user VALUES (4, '管理员', 'ok', 1, '2014-03-01 07:25:54', NULL, NULL, '', false);
 INSERT INTO s_user VALUES (5, 'xxx', 'ok', 1, '2014-03-04 09:40:34', NULL, NULL, '', false);
 INSERT INTO s_user VALUES (6, 'uuu', 'ok', 1, '2014-03-24 14:01:13', NULL, NULL, '', false);
 INSERT INTO s_user VALUES (7, 'yyy', 'ok', 1, '2014-03-24 14:19:54', NULL, NULL, '', false);
+INSERT INTO s_user VALUES (2, '管理员', 'ok', 1, '2014-03-01 07:25:54', NULL, NULL, '', false);
 
 
 --
--- TOC entry 2875 (class 0 OID 0)
+-- TOC entry 2874 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: s_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -5463,7 +5458,7 @@ SELECT pg_catalog.setval('s_user_id_seq', 10, true);
 
 
 --
--- TOC entry 2876 (class 0 OID 0)
+-- TOC entry 2875 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: seq_4_auditfee; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -5472,12 +5467,12 @@ SELECT pg_catalog.setval('seq_4_auditfee', 18, true);
 
 
 --
--- TOC entry 2877 (class 0 OID 0)
+-- TOC entry 2876 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: seq_html; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
-SELECT pg_catalog.setval('seq_html', 683, true);
+SELECT pg_catalog.setval('seq_html', 684, true);
 
 
 --
@@ -5493,7 +5488,7 @@ INSERT INTO sys_code VALUES (9, 'fee_cal_type', '计费单位', '40尺', '', 2, 
 
 
 --
--- TOC entry 2878 (class 0 OID 0)
+-- TOC entry 2877 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: sys_code_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
@@ -5538,7 +5533,6 @@ INSERT INTO sys_func VALUES ('费用名称维护', 1, '2014-03-03 16:39:33', 1, 
 INSERT INTO sys_func VALUES ('付款方式查询', 1, '2014-03-26 10:34:27', 1, '2014-05-26 00:31:02', '', 30, 'c_pay_type');
 INSERT INTO sys_func VALUES ('付款方式维护', 1, '2014-03-26 10:34:27', 1, '2014-05-26 00:31:02', '', 31, 'c_pay_type');
 INSERT INTO sys_func VALUES ('岗位权限查询', 1, '2014-03-26 10:35:23', 1, '2014-05-26 00:31:02', '', 32, 's_postmenufunc');
-INSERT INTO sys_func VALUES ('岗位权限维护', 1, '2014-03-26 10:35:23', 1, '2014-05-26 00:31:02', '', 33, 's_postmenufunc');
 INSERT INTO sys_func VALUES ('核销', 1, '2014-04-09 10:29:32', 1, '2014-05-26 00:32:32', '', 48, 'pre_fee,act_fee');
 INSERT INTO sys_func VALUES ('费用报表头维护', 1, '2014-05-27 16:31:43', NULL, NULL, '', 72, 'c_rpt');
 INSERT INTO sys_func VALUES ('费用报表项目维护', 1, '2014-05-28 10:58:55', NULL, NULL, '', 73, 'c_rpt_item');
@@ -5585,25 +5579,17 @@ INSERT INTO sys_func VALUES ('协议费用模式查询', 1, '2014-06-19 09:50:24
 INSERT INTO sys_func VALUES ('协议费用模式维护', 1, '2014-06-19 09:50:24', NULL, NULL, '', 86, 'p_protocol_fee_mod');
 INSERT INTO sys_func VALUES ('协议模式结构查询', 1, '2014-06-23 08:55:21', NULL, NULL, '', 87, 'p_fee_mod,p_fee_ele,p_fee_ele_lov');
 INSERT INTO sys_func VALUES ('协议费率维护', 1, '2014-06-23 08:58:08', 1, '2014-06-23 00:58:50', '', 88, 'p_protocol_rat');
+INSERT INTO sys_func VALUES ('岗位权限维护', 1, '2014-03-26 10:35:23', 1, '2014-07-01 00:42:46', '', 33, 's_postmenufunc,s_postmenu');
 INSERT INTO sys_func VALUES ('协议费率查询', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 89, 'p_protocol_rat');
 
 
 --
--- TOC entry 2879 (class 0 OID 0)
+-- TOC entry 2878 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: sys_func_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
-SELECT pg_catalog.setval('sys_func_id_seq', 49, true);
-
-
---
--- TOC entry 2880 (class 0 OID 0)
--- Dependencies: 223
--- Name: sys_func_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
---
-
-SELECT pg_catalog.setval('sys_func_id_seq1', 89, true);
+SELECT pg_catalog.setval('sys_func_id_seq', 89, true);
 
 
 --
@@ -5658,8 +5644,8 @@ INSERT INTO sys_menu VALUES (16, '费用名称维护', 1, '2014-02-25 11:18:14',
 
 
 --
--- TOC entry 2568 (class 0 OID 27928)
--- Dependencies: 224
+-- TOC entry 2567 (class 0 OID 27928)
+-- Dependencies: 223
 -- Data for Name: sys_menu_func; Type: TABLE DATA; Schema: public; Owner: yardAdmin
 --
 
@@ -5759,12 +5745,21 @@ INSERT INTO sys_menu_func VALUES (106, 49, 89, 1, '2014-06-23 08:59:40', NULL, N
 
 
 --
--- TOC entry 2881 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 2879 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: sys_menu_func_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
 --
 
 SELECT pg_catalog.setval('sys_menu_func_id_seq', 106, true);
+
+
+--
+-- TOC entry 2880 (class 0 OID 0)
+-- Dependencies: 247
+-- Name: sys_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: yardAdmin
+--
+
+SELECT pg_catalog.setval('sys_menu_id_seq', 49, false);
 
 
 --
@@ -7273,7 +7268,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2014-06-30 14:49:14 CST
+-- Completed on 2014-07-01 08:51:03 CST
 
 --
 -- PostgreSQL database dump complete
