@@ -728,6 +728,26 @@ COMMENT ON COLUMN s_filter_body.content_col IS '条件字段名';;
 COMMENT ON COLUMN s_filter_body.content_value IS '条件值';;
 COMMENT ON COLUMN s_filter_body.content_type IS '内容类型''W''-where ''S''-order ''C''-col';;
 COMMENT ON COLUMN s_filter_body.content_condition IS '内容条件';;
+CREATE TABLE c_cargo_type
+(
+  id serial NOT NULL,
+  type_name character varying(20) NOT NULL DEFAULT ''::character varying, -- 货物分类名称
+  rec_nam integer NOT NULL,
+  rec_tim timestamp without time zone NOT NULL,
+  upd_nam integer,
+  upd_tim timestamp without time zone,
+  remark character varying(50),
+  CONSTRAINT pk_c_cargo_type PRIMARY KEY (id),
+  CONSTRAINT uk_c_cargo_type UNIQUE (type_name)
+)
+WITH (
+  OIDS=FALSE
+);;
+ALTER TABLE c_cargo_type
+  OWNER TO "yardAdmin";;
+COMMENT ON COLUMN c_cargo_type.type_name IS '货物分类名称';;
+
+
 
 CREATE TABLE c_cargo
 (
