@@ -750,6 +750,32 @@ COMMENT ON TABLE c_cargo
   IS '货物名称';;
 
 
+CREATE TABLE p_protocol
+(
+  id serial NOT NULL,
+  protocol_name character varying(50) NOT NULL, -- 协议名称
+  write_date date, -- 签订日期
+  validate_date date, -- 有效日期
+  remark character varying(50),
+  rec_nam integer NOT NULL,
+  rec_tim timestamp without time zone NOT NULL,
+  upd_nam integer,
+  upd_tim timestamp without time zone,
+  CONSTRAINT pk_p_protocol PRIMARY KEY (id),
+  CONSTRAINT uk_p_protocol UNIQUE (protocol_name)
+)
+WITH (
+  OIDS=FALSE
+);;
+ALTER TABLE p_protocol
+  OWNER TO "yardAdmin";;
+COMMENT ON TABLE p_protocol
+  IS '协议头表';;
+COMMENT ON COLUMN p_protocol.protocol_name IS '协议名称';;
+COMMENT ON COLUMN p_protocol.write_date IS '签订日期';;
+COMMENT ON COLUMN p_protocol.validate_date IS '有效日期';;
+
+
 CREATE TABLE c_client
 (
   id serial NOT NULL,
@@ -1443,30 +1469,6 @@ CREATE INDEX idx_act_fee_ex_over
   USING btree
   (ex_over COLLATE pg_catalog."default");;
 --协议
-CREATE TABLE p_protocol
-(
-  id serial NOT NULL,
-  protocol_name character varying(50) NOT NULL, -- 协议名称
-  write_date date, -- 签订日期
-  validate_date date, -- 有效日期
-  remark character varying(50),
-  rec_nam integer NOT NULL,
-  rec_tim timestamp without time zone NOT NULL,
-  upd_nam integer,
-  upd_tim timestamp without time zone,
-  CONSTRAINT pk_p_protocol PRIMARY KEY (id),
-  CONSTRAINT uk_p_protocol UNIQUE (protocol_name)
-)
-WITH (
-  OIDS=FALSE
-);;
-ALTER TABLE p_protocol
-  OWNER TO "yardAdmin";;
-COMMENT ON TABLE p_protocol
-  IS '协议头表';;
-COMMENT ON COLUMN p_protocol.protocol_name IS '协议名称';;
-COMMENT ON COLUMN p_protocol.write_date IS '签订日期';;
-COMMENT ON COLUMN p_protocol.validate_date IS '有效日期';;
 
 CREATE TABLE p_fee_mod
 (
