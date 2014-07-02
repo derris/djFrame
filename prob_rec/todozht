@@ -32,6 +32,6 @@ func:'客户费用明细报表' 修改 返回增加合计费用
  "error": [],
  "rows": [],
  "footer":[{"bill_no":"合计：",
-            "zongji":合计费用
+            "zongji":合计费用   sum([ i['zongji'] for i in row ])
             }]
 }

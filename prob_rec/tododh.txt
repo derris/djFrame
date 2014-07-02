@@ -2,34 +2,16 @@
 # todo 10  to dh
 # \u6211\u641E\u5B8C\u4E86\uFF0C\u5728\u6211\u7684to\u91CC\u9762\uFF0C\u5199\u4E2A  todo from zht 10. over
 
-todo from zht 11 : over
+todo from zht 14 : over
 
-\u6574\u5408sql\u8BED\u53E5\uFF0C\u4E89\u53D6\u4E00\u6B21\u63D2\u5165\uFF0C\u4E00\u6B21\u67E5\u8BE2\u641E\u5B9A\u3002
-    select * from
-    (select trim(to_char(id,'9999999999')) lov_cod,cntr_type lov_name from c_cntr_type) t2
-    where lov_cod not in ('dd', '44')
+func:'\u5BA2\u6237\u8D39\u7528\u660E\u7EC6\u62A5\u8868' \u4FEE\u6539 \u8FD4\u56DE\u589E\u52A0\u5408\u8BA1\u8D39\u7528
+\u8FD4\u56DE\u5BF9\u8C61\u589E\u52A0footer\u5C5E\u6027,\u5BF9\u8C61\u6570\u7EC4
 
-func:'\u534F\u8BAE\u8981\u7D20\u5185\u5BB9\u521D\u59CB\u5316'
-\u63A5\u6536\u53C2\u6570\u63A5\u53E3\uFF1A{
-    func: '\u534F\u8BAE\u8981\u7D20\u5185\u5BB9\u521D\u59CB\u5316',
-    reqtype: 'update',
-    ex_parm: {
-        id: 'XXX'
-    }
-}
-\u8FC7\u7A0B\uFF1A
-\u6839\u636Eid\u4ECE\u8868p_fee_ele\u7684init_data_sql\u5B57\u6BB5\uFF0C\u53D6\u521D\u59CB\u5316sql\u8BED\u53E5,\u6267\u884C\u540E\u5F97\u8BB0\u5F55\u96C6A.
-\u4ECEp_fee_ele_lov\u8868\u4E2D\u53D6\u51FA\u6B64\u8981\u7D20\u5F53\u524D\u6240\u6709\u5185\u5BB9\u5F97\u8BB0\u5F55\u96C6B\uFF1A
-select * from p_fee_ele_lov where ele_id = 'XXX'
-
-\u8FC7\u6EE4\u6389A.lov_cod==B.lov_cod,\u5269\u4F59\u7684\u63D2\u5165p_fee_ele_lov,\u6700\u540E\u518D\u6267\u884C\u4E00\u6B21
-select id,ele_id,lov_cod,lov_name,remark from p_fee_ele_lov where ele_id = 'XXX'\u5F97\u8BB0\u5F55\u96C6C
-\u8FD4\u56DE\u6807\u51C6\u67E5\u8BE2\u7ED3\u6784\uFF0Crows\uFF1AC
-
-\u8FD4\u56DE\u53C2\u6570\u63A5\u53E3\uFF1A\u6807\u51C6\u67E5\u8BE2\u8FD4\u56DE
-{
-    "msg":"\u521D\u59CB\u5316\u6210\u529F",
-    "stateCod": "202",   #  \u9519\u8BEF < 0 > \u6B63\u786E--\u4E0D\u5F39\u51FA\u63D0\u793A\u6846--100--\u4E2D\u5FC3\u5F39\u51FA\u63D0\u793A--200--\u53F3\u4E0B\u5F39\u51FA\u63D0\u793A--300
-    "error": ["xxx", "xx"]...        # \u9519\u8BEF\u6570\u7EC4\u3002
-    "rows":[{},{},{}]
+{"msg": "\u6210\u529F",
+ "stateCod": "001",
+ "error": [],
+ "rows": [],
+ "footer":[{"bill_no":"\u5408\u8BA1\uFF1A",
+            "zongji":\u5408\u8BA1\u8D39\u7528   sum([ i['zongji'] for i in row ])
+            }]
 }

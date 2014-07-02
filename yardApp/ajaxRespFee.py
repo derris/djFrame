@@ -321,7 +321,10 @@ def queryRptFee(request, adict):
                   group by c.bill_no
             ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_clientId,ls_feeType,ls_beginTim,ls_endTim )
             l_result = rawSql2JsonDict(ls_sqlAll)
-            l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": l_result } )
+            l_sum = sum([float(i["zongji"]) for i in l_result])
+            l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": l_result,
+                "footer":[{"bill_no":"合计：",  "zongji": l_sum }]
+                } )
         else:
             l_rtn.update( {"msg": "没定义查询数据列。", "error": [] , "stateCod" : 0 } )
     except Exception as e:
