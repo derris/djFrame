@@ -667,7 +667,7 @@ CREATE TRIGGER tri_s_postmenufunc
   EXECUTE PROCEDURE fun4tri_s_postmenu();;
 CREATE TABLE s_filter_head
 (
-  id integer NOT NULL DEFAULT nextval('s_filter_id_seq'::regclass),
+  id serial NOT NULL,
   datagrid character varying(100) NOT NULL DEFAULT ''::character varying, -- datagrid名称
   filter_type character(1) NOT NULL DEFAULT 'G'::character varying, -- 'G'-全局 'P'-个人
   filter_owner integer, -- 查询条件所有者
