@@ -398,11 +398,8 @@ COMMENT ON COLUMN s_user.password IS '密码';;
 COMMENT ON COLUMN s_user.lock IS '锁住';;
 
 
--- Trigger: tri_s_user on s_user
-
--- DROP TRIGGER tri_s_user ON s_user;;
-INSERT INTO s_user VALUES (1, 'Admin', 'zht+dh=sql2', 1, '2014-02-21 14:33:46.185167', NULL, NULL, '', false);
-INSERT INTO s_user VALUES (2, '管理员', {user_pw}, 1, '2014-03-01 07:25:54', NULL, NULL, '', false);
+INSERT INTO s_user VALUES (1, 'Admin', 'zht+dh=sql2', 1, '2014-02-21 14:33:46.185167', NULL, NULL, '', false);;
+INSERT INTO s_user VALUES (2, '管理员', {user_pw}, 1, '2014-03-01 07:25:54', NULL, NULL, '', false);;
 
 SELECT pg_catalog.setval('s_user_id_seq', 2, true);;
 
