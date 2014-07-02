@@ -26,6 +26,7 @@ todo 14 to dh
 
 func:'客户费用明细报表' 修改 返回增加合计费用
 返回对象增加footer属性,对象数组
+
 {"msg": "成功",
  "stateCod": "001",
  "error": [],
