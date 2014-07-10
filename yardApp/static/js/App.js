@@ -364,17 +364,19 @@ $.extend($.fn.datagrid.defaults.view, {
         var opts = $(target).datagrid('options');
         //console.info(opts);
         if (opts.comboboxFormatFlag == true) {
-            for (var i = 0, ilen = opts.columns[0].length; i < ilen; i++) {
-                if (opts.columns[0][i].hasOwnProperty('editor') &&
-                    opts.columns[0][i].editor.hasOwnProperty('type') &&
-                    opts.columns[0][i].editor.type == 'combobox') {
-                    opts.columns[0][i].formatter = function (value, rowData, index) {
-                        for (var i = 0, ilen = this.editor.options.data.length; i < ilen; i++) {
-                            if (this.editor.options.data[i].value == value) {
-                                return this.editor.options.data[i].text;
+            for (var j = 0, jlen = opts.columns.length; j < jlen; j++) {
+                for (var i = 0, ilen = opts.columns[j].length; i < ilen; i++) {
+                    if (opts.columns[j][i].hasOwnProperty('editor') &&
+                        opts.columns[j][i].editor.hasOwnProperty('type') &&
+                        opts.columns[j][i].editor.type == 'combobox') {
+                        opts.columns[j][i].formatter = function (value, rowData, index) {
+                            for (var i = 0, ilen = this.editor.options.data.length; i < ilen; i++) {
+                                if (this.editor.options.data[i].value == value) {
+                                    return this.editor.options.data[i].text;
+                                }
                             }
+                            return value;
                         }
-                        return value;
                     }
                 }
             }

@@ -101,8 +101,10 @@
                 success: function (r, t, a) {
                     if ($.ajaxSettings.success(r, t, a, false)) {
                         contract.feesheet.datagrid.datagrid('loadData', r.rows);
+                        contract.feesheet.datagrid.datagrid('reloadFooter', r.footer);
                     } else {
                         contract.feesheet.datagrid.datagrid('loadData', []);
+                        contract.feesheet.datagrid.datagrid('reloadFooter', []);
                     }
                 }
             });
