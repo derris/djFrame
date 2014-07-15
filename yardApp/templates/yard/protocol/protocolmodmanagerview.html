@@ -86,9 +86,11 @@ $(function () {
                     {{ feemod_id.writeUI|safe|escape }},
                     {{ feemod_protocol_id.writeUI|safe|escape }},
                     {{ feemod_fee_id.writeUI|safe|escape }},
-                    {{ feemod_mod_id.writeUI|safe|escape }},
+                    {{ feemod_mod_id.writeUI|safe|escape }}
+{% comment %}
                     {{ feemod_sort_no.writeUI|safe|escape }},
                     {{ feemod_active_flag.writeUI|safe|escape }}
+{% endcomment %}
                 {% endautoescape %}
             ]
         ],
@@ -192,14 +194,14 @@ $(function () {
             return;
         }
         var rowindex = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRowIndex', selectrow);
-        var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
+        //var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
         protocol.protocolmodmanager.selectedmoddatagrid.datagrid('appendRow', {
             id: -1,
             protocol_id: protocolid,
             fee_id: feeid,
-            mod_id: selectrow.id,
-            sort_no: count + 1,
-            active_flag: true
+            mod_id: selectrow.id
+            //sort_no: count + 1,
+            //active_flag: true
         });
         protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', rowindex);
     });
@@ -222,20 +224,20 @@ $(function () {
         var rows = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRows');
         var protocolid = protocol.protocolmodmanager.getprotocolid();
         var feeid = protocol.protocolmodmanager.getfeeid();
-        var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
+        //var count = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows').length;
         if (protocolid == null || feeid == null) {
             $.messager.alert('提示', '请选择协议和费用', 'info');
             return;
         }
         for (var i = rows.length - 1; i >= 0; i--) {
-            count = count + 1;
+            //count = count + 1;
             protocol.protocolmodmanager.selectedmoddatagrid.datagrid('appendRow', {
                 id: -1,
                 protocol_id: protocolid,
                 fee_id: feeid,
-                mod_id: rows[i].id,
-                sort_no: count,
-                active_flag: true
+                mod_id: rows[i].id
+                //sort_no: count,
+                //active_flag: true
             });
             protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', i);
         }

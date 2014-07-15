@@ -74,9 +74,9 @@ INSERT INTO sys_menu VALUES (11, '岗位用户维护', 1, '2014-02-25 11:03:01',
 INSERT INTO sys_menu VALUES (12, '岗位权限维护', 1, '2014-02-25 11:03:01', 1, '2014-06-27 02:49:46', '', 33, '岗位权限维护', 5, false);;
 INSERT INTO sys_menu VALUES (45, '协议要素维护', 1, '2014-06-13 15:47:15', 1, '2014-06-27 02:54:47', '', 4, '协议要素维护', 5, true);;
 INSERT INTO sys_menu VALUES (47, '协议模式定义', 1, '2014-06-17 10:37:33', 1, '2014-06-27 02:54:47', '', 4, '协议模式定义', 6, true);;
-INSERT INTO sys_menu VALUES (48, '协议费用模式维护', 1, '2014-06-19 09:45:41', 1, '2014-06-27 02:54:47', '', 4, '协议费用模式维护', 7, true);;
+INSERT INTO sys_menu VALUES (48, '协议费用模式维护', 1, '2014-06-19 09:45:41', 1, '2014-06-27 02:54:47', '', 43, '协议费用模式维护', 3, true);;
 INSERT INTO sys_menu VALUES (46, '协议要素内容维护', 1, '2014-06-13 17:05:36', 1, '2014-06-27 02:55:27', '', 43, '协议要素内容维护', 2, false);;
-INSERT INTO sys_menu VALUES (49, '协议费率维护', 1, '2014-06-19 14:02:37', 1, '2014-06-27 02:55:27', '', 43, '协议费率维护', 3, false);;
+INSERT INTO sys_menu VALUES (49, '协议费率维护', 1, '2014-06-19 14:02:37', 1, '2014-06-27 02:55:27', '', 43, '协议费率维护', 4, false);;
 INSERT INTO sys_menu VALUES (14, '箱型维护', 1, '2014-02-25 11:13:33', 1, '2014-06-27 02:56:36', '', 8, '箱型维护', 1, false);;
 INSERT INTO sys_menu VALUES (35, '发货地维护', 1, '2014-04-24 18:12:20', 1, '2014-06-27 02:56:36', '', 8, '发货地维护', 2, false);;
 INSERT INTO sys_menu VALUES (38, '产地维护', 1, '2014-05-05 18:01:46', 1, '2014-06-27 02:56:36', '', 8, '产地维护', 3, false);;
@@ -186,7 +186,8 @@ INSERT INTO sys_func VALUES ('协议费用模式维护', 1, '2014-06-19 09:50:24
 INSERT INTO sys_func VALUES ('协议模式结构查询', 1, '2014-06-23 08:55:21', NULL, NULL, '', 87, 'p_fee_mod,p_fee_ele,p_fee_ele_lov');;
 INSERT INTO sys_func VALUES ('协议费率维护', 1, '2014-06-23 08:58:08', 1, '2014-06-23 00:58:50', '', 88, 'p_protocol_rat');;
 INSERT INTO sys_func VALUES ('协议费率查询', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 89, 'p_protocol_rat');;
-SELECT pg_catalog.setval('sys_func_id_seq', 89, true);;
+INSERT INTO sys_func VALUES ('模式描述查询', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 90, 'p_fee_mod');;
+SELECT pg_catalog.setval('sys_func_id_seq', 90, true);;
 CREATE TABLE sys_menu_func
 (
   id serial NOT NULL,
@@ -309,7 +310,8 @@ INSERT INTO sys_menu_func VALUES (104, 49, 87, 1, '2014-06-23 08:55:35', NULL, N
 INSERT INTO sys_menu_func VALUES (105, 49, 88, 1, '2014-06-23 08:58:36', NULL, NULL, '');;
 INSERT INTO sys_menu_func VALUES (106, 49, 89, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
 INSERT INTO sys_menu_func VALUES (107, 46, 78, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
-SELECT pg_catalog.setval('sys_menu_func_id_seq', 107, true);;
+INSERT INTO sys_menu_func VALUES (108, 48, 90, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
+SELECT pg_catalog.setval('sys_menu_func_id_seq', 108, true);;
 CREATE TABLE sys_code
 (
   id serial NOT NULL,
@@ -1596,14 +1598,14 @@ CREATE TABLE p_protocol_fee_mod
   protocol_id integer NOT NULL, -- 协议id
   fee_id integer NOT NULL, -- 费用名称id
   mod_id integer NOT NULL, -- 模式id
-  sort_no integer NOT NULL, -- 模式序号
+  sort_no integer , -- 模式序号
   remark character varying(50) NOT NULL DEFAULT ''::character varying,
   rec_nam integer NOT NULL,
   rec_tim timestamp without time zone NOT NULL,
   upd_nam integer,
   upd_tim timestamp without time zone,
   active_flag boolean NOT NULL DEFAULT true, -- 激活
-  CONSTRAINT pk_p_protocol_fee_mod PRIMARY KEY (id, protocol_id),
+  CONSTRAINT pk_p_protocol_fee_mod PRIMARY KEY (id),
   CONSTRAINT fk_p_protocol_fee_mod_f FOREIGN KEY (fee_id)
       REFERENCES c_fee (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE,
