@@ -1509,7 +1509,7 @@ CREATE TABLE p_fee_mod
   col_8 integer, -- 模式要素8
   col_9 integer, -- 模式要素9
   col_10 integer, -- 模式要素10
-  mod_descript character varying(500) NOT NULL DEFAULT ''::character varying, -- 模式自解析描述
+  mod_descript character varying(500) NOT NULL DEFAULT ''::character varying, -- 模式描述
   CONSTRAINT pk_p_fee_mod PRIMARY KEY (id),
   CONSTRAINT fk_p_fee_mod_1 FOREIGN KEY (col_1)
       REFERENCES p_fee_ele (id) MATCH SIMPLE
@@ -1561,7 +1561,7 @@ COMMENT ON COLUMN p_fee_mod.col_7 IS '模式要素7';;
 COMMENT ON COLUMN p_fee_mod.col_8 IS '模式要素8';;
 COMMENT ON COLUMN p_fee_mod.col_9 IS '模式要素9';;
 COMMENT ON COLUMN p_fee_mod.col_10 IS '模式要素10';;
-COMMENT ON COLUMN p_fee_mod.mod_descript IS '模式自解析描述';;
+COMMENT ON COLUMN p_fee_mod.mod_descript IS '模式描述';;
 CREATE TABLE p_fee_ele
 (
   id serial NOT NULL,
