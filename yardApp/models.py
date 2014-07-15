@@ -349,7 +349,7 @@ class FeeMod(BaseModel):
     col_8 = models.ForeignKey('FeeEle',verbose_name='要素8',related_name='ele_modcol8',db_column='col_8',blank=True,null=True)
     col_9 = models.ForeignKey('FeeEle',verbose_name='要素9',related_name='ele_modcol9',db_column='col_9',blank=True,null=True)
     col_10 = models.ForeignKey('FeeEle',verbose_name='要素10',related_name='ele_modcol10',db_column='col_10',blank=True,null=True)
-    mod_descript = models.CharField('模式自解析描述',max_length=500,blank=True,null=True)
+    mod_descript = models.CharField('模式描述',max_length=500,blank=True,null=True)
     def __str__(self):
         return self.mod_name
     class Meta:

@@ -138,6 +138,12 @@ def getprotocolmod(request):
              "mod_descript,remark from p_fee_mod"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+def getprotocolmodremark(request):
+    '''协议模式备注查询'''
+    ls_sql = "select id,mod_name,mod_descript from p_fee_mod"
+    ldict = json.loads(request.POST['jpargs'])
+    return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
+
 def getprotocolfeemod(request):
     '''协议费用模式查询'''
     ls_sql = "select id,protocol_id,fee_id,mod_id,sort_no,active_flag,remark from p_protocol_fee_mod"
@@ -292,6 +298,9 @@ def dealPAjax(request):
                 return (getprotocolelelov(request))
             elif ldict['func'] == '协议模式查询':
                 return (getprotocolmod(request))
+            elif ldict['func'] == '模式描述查询':
+                return (getprotocolmodremark(request))
+
             elif ldict['func'] == '协议费用模式查询':
                 return (getprotocolfeemod(request))
             elif ldict['func'] == '协议费率查询':

@@ -2,11 +2,11 @@
 Namespace.register("protocol.protocolmodmanager");
 $(function () {
     protocol.protocolmodmanager.mods = [];
-    protocol.protocolmodmanager.initmods = function(data){
-        for (var i= 0,ilen=data.length;i<ilen;i++){
-            protocol.protocolmodmanager.mods.push({mod_id:data[i].value});
+    protocol.protocolmodmanager.initmods = function (data) {
+        for (var i = 0, ilen = data.length; i < ilen; i++) {
+            protocol.protocolmodmanager.mods.push({mod_id: data[i].value});
         }
-        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData',protocol.protocolmodmanager.mods);
+        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData', protocol.protocolmodmanager.mods);
     }
     protocol.protocolmodmanager.protocoldatagrid = $('#protocol-protocolmodmanagerview-protocolgrid').datagrid({
         autoLoad: true,
@@ -22,17 +22,17 @@ $(function () {
         dataTable: 'p_protocol',
         queryFuncName: '协议查询',
         pagination: false,
-        onClickRow:function(rowIndex,rowData){
+        onClickRow: function (rowIndex, rowData) {
             return;
         },
         onDblClickRow: function (rowIndex, rowData) {
             return;
         },
-        onSelect:function(rowIndex,rowData){
-            if (protocol.protocolmodmanager.checkDirty()){
+        onSelect: function (rowIndex, rowData) {
+            if (protocol.protocolmodmanager.checkDirty()) {
                 protocol.protocolmodmanager.save();
             }
-            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData',[]);
+            protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData', []);
             protocol.protocolmodmanager.feedatagrid.datagrid('unselectAll');
         }
     });
@@ -50,33 +50,36 @@ $(function () {
         dataTable: 'c_fee',
         queryFuncName: '费用名称查询',
         pagination: false,
-        onSelect:function(rowIndex,rowData){
-            if (protocol.protocolmodmanager.checkDirty()){
+        onSelect: function (rowIndex, rowData) {
+            if (protocol.protocolmodmanager.checkDirty()) {
                 protocol.protocolmodmanager.save();
             }
             var protocolrow = protocol.protocolmodmanager.protocoldatagrid.datagrid('getSelected');
-            if (protocolrow == null){
-                protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData',[]);
+            if (protocolrow == null) {
+                protocol.protocolmodmanager.selectedmoddatagrid.datagrid('loadData', []);
                 protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
                 return;
             }
             var feeid = rowData.id;
             var opts = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('options');
-            opts.filterFields = [{
-                    cod:'protocol_id',
-                    operatorTyp:'等于',
-                    value:protocolrow.id
-                },{
-                    cod:'fee_id',
-                    operatorTyp:'等于',
-                    value:feeid
-            }];
+            opts.filterFields = [
+                {
+                    cod: 'protocol_id',
+                    operatorTyp: '等于',
+                    value: protocolrow.id
+                },
+                {
+                    cod: 'fee_id',
+                    operatorTyp: '等于',
+                    value: feeid
+                }
+            ];
             protocol.protocolmodmanager.selectedmoddatagrid.datagrid('reload');
         }
     });
     protocol.protocolmodmanager.selectedmoddatagrid = $('#protocol-protocolmodmanagerview-selectedmod').datagrid({
         autoLoad: false,
-        autoSave:false,
+        autoSave: false,
         columns: [
             [
                 {% autoescape off %}
@@ -99,13 +102,13 @@ $(function () {
         onClickRow: function () {
             return;
         },
-        onLoadSuccess:function(data){
+        onLoadSuccess: function (data) {
             protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
             var rows = protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('getRows');
-            for (var i = rows.length - 1;i>=0;i--){
-                for(var j= 0,jlen=data.rows.length;j<jlen;j++){
-                    if (data.rows[j].mod_id == rows[i].mod_id){
-                        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow',i);
+            for (var i = rows.length - 1; i >= 0; i--) {
+                for (var j = 0, jlen = data.rows.length; j < jlen; j++) {
+                    if (data.rows[j].mod_id == rows[i].id) {
+                        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', i);
                         break;
                     }
                 }
@@ -117,21 +120,39 @@ $(function () {
         columns: [
             [
                 {% autoescape off %}
-                    {{ feemod_mod_id.writeUI|safe|escape }}
+                    {{ mod_id.writeUI|safe|escape }},
+                    {{ mod_mod_name.writeUI|safe|escape }},
+                    {{ mod_mod_descript.writeUI|safe|escape }}
                 {% endautoescape %}
             ]
         ],
-        pagination: false,
-        onDblClickRow: function () {
-            return;
-        },
-        onClickRow: function () {
-            return;
+        pagination: false
+    });
+    var p = {
+        reqtype: 'query',
+        func: '模式描述查询',
+        cols: ['id', 'mod_name', 'mod_descript'],
+        filter: [],
+        sort: [],
+        ex_parm: {}
+    };
+    $.ajax({
+        url: "./dealPAjax/",
+        data: {jpargs: JSON.stringify(p)},
+        success: function (r, t, a) {
+            if ($.ajaxSettings.success(r, t, a, false)) {
+                protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData', r.rows);
+                protocol.protocolmodmanager.mods = r.rows;
+            } else {
+                protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData', []);
+                protocol.protocolmodmanager.mods = [];
+            }
         }
     });
-    protocol.protocolmodmanager.initmods(protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('options').columns[0][0].editor.options.data);
-    protocol.protocolmodmanager.checkDirty = function(){
-        if (protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getChanges').length > 0){
+
+    //protocol.protocolmodmanager.initmods(protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('options').columns[0][0].editor.options.data);
+    protocol.protocolmodmanager.checkDirty = function () {
+        if (protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getChanges').length > 0) {
             return true;
         }
         return false;
@@ -176,9 +197,9 @@ $(function () {
             id: -1,
             protocol_id: protocolid,
             fee_id: feeid,
-            mod_id: selectrow.mod_id,
-            sort_no:count + 1,
-            active_flag:true
+            mod_id: selectrow.id,
+            sort_no: count + 1,
+            active_flag: true
         });
         protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', rowindex);
     });
@@ -186,9 +207,13 @@ $(function () {
         var selectrow = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getSelected');
         if (selectrow != null) {
             var rowindex = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRowIndex', selectrow);
-            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('appendRow', {
-                mod_id: selectrow.mod_id
-            });
+            for (var i = 0, ilen = protocol.protocolmodmanager.mods.length; i < ilen; i++) {
+                if (protocol.protocolmodmanager.mods[i].id == selectrow.mod_id) {
+                    protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('appendRow',
+                            protocol.protocolmodmanager.mods[i]);
+                    break;
+                }
+            }
             protocol.protocolmodmanager.selectedmoddatagrid.datagrid('deleteRow', rowindex);
         }
     });
@@ -203,14 +228,14 @@ $(function () {
             return;
         }
         for (var i = rows.length - 1; i >= 0; i--) {
-            count = count+1;
+            count = count + 1;
             protocol.protocolmodmanager.selectedmoddatagrid.datagrid('appendRow', {
                 id: -1,
                 protocol_id: protocolid,
                 fee_id: feeid,
-                mod_id: rows[i].mod_id,
-                sort_no:count,
-                active_flag : true
+                mod_id: rows[i].id,
+                sort_no: count,
+                active_flag: true
             });
             protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('deleteRow', i);
         }
@@ -218,11 +243,9 @@ $(function () {
     $('#protocol-protocolmodmanagerview-unselectallbutton').bind('click', function (e) {
         var rows = protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getRows');
         for (var i = rows.length - 1; i >= 0; i--) {
-            protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('appendRow', {
-                mod_id: rows[i].mod_id
-            });
             protocol.protocolmodmanager.selectedmoddatagrid.datagrid('deleteRow', i);
         }
+        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('rejectChanges');
     });
 
 });
