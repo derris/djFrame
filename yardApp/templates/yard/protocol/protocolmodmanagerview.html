@@ -2,12 +2,6 @@
 Namespace.register("protocol.protocolmodmanager");
 $(function () {
     protocol.protocolmodmanager.mods = [];
-    protocol.protocolmodmanager.initmods = function (data) {
-        for (var i = 0, ilen = data.length; i < ilen; i++) {
-            protocol.protocolmodmanager.mods.push({mod_id: data[i].value});
-        }
-        protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('loadData', protocol.protocolmodmanager.mods);
-    }
     protocol.protocolmodmanager.protocoldatagrid = $('#protocol-protocolmodmanagerview-protocolgrid').datagrid({
         autoLoad: true,
         autoSave: false,
@@ -87,10 +81,6 @@ $(function () {
                     {{ feemod_protocol_id.writeUI|safe|escape }},
                     {{ feemod_fee_id.writeUI|safe|escape }},
                     {{ feemod_mod_id.writeUI|safe|escape }}
-{% comment %}
-                    {{ feemod_sort_no.writeUI|safe|escape }},
-                    {{ feemod_active_flag.writeUI|safe|escape }}
-{% endcomment %}
                 {% endautoescape %}
             ]
         ],
@@ -128,7 +118,13 @@ $(function () {
                 {% endautoescape %}
             ]
         ],
-        pagination: false
+        pagination: false,
+        onDblClickRow: function () {
+            return;
+        },
+        onClickRow: function (rowIndex, rowData) {
+            $('#protocol-protocolmodmanagerview-moddescript').text(rowData.mod_descript);
+        }
     });
     var p = {
         reqtype: 'query',
@@ -151,8 +147,6 @@ $(function () {
             }
         }
     });
-
-    //protocol.protocolmodmanager.initmods(protocol.protocolmodmanager.unselectedmoddatagrid.datagrid('options').columns[0][0].editor.options.data);
     protocol.protocolmodmanager.checkDirty = function () {
         if (protocol.protocolmodmanager.selectedmoddatagrid.datagrid('getChanges').length > 0) {
             return true;
@@ -293,8 +287,15 @@ $(function () {
             </div>
             <div data-options="region:'east',border:false,
                         width:window.innerWidth * 0.3,title:'可选模式'">
-                <table id="protocol-protocolmodmanagerview-unselectedmod" border="false">
-                </table>
+                <div class="easyui-layout" data-options="fit:true">
+                    <div data-options="region:'center'">
+                        <table id="protocol-protocolmodmanagerview-unselectedmod" border="false">
+                        </table>
+                    </div>
+                    <div data-options="region:'south',title:'模式说明',height:window.innerHeight * 0.2">
+                        <div id="protocol-protocolmodmanagerview-moddescript"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

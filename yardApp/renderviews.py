@@ -507,7 +507,7 @@ def protocolfeemodview(request):
     #feemod_active_flag = easyuihelp.EasyuiFieldUI(model=models.ProtocolMod,field='active_flag')
     mod_id = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='id')
     mod_mod_name = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='mod_name')
-    mod_mod_descript = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='mod_descript',width='250')
+    mod_mod_descript = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='mod_descript',readonly=True,hidden=True)
     return render(request,"yard/protocol/protocolmodmanagerview.html",locals())
 def protocolratview(request):
     protocol_id = easyuihelp.EasyuiFieldUI(model=models.Protocol,field='id')
