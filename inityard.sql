@@ -1389,6 +1389,7 @@ CREATE TABLE pre_fee
   audit_id boolean NOT NULL DEFAULT false,
   audit_tim timestamp without time zone, -- 核销时间
   currency_cod character varying(3) NOT NULL DEFAULT 'RMB'::character varying, -- 货币种类
+  create_flag character varying(1) NOT NULL DEFAULT 'M'::character varying, -- 费用产生方式 'M'-手工录入 'P'-协议计费
   CONSTRAINT pk_pre_fee PRIMARY KEY (id),
   CONSTRAINT fk_pre_fee_client FOREIGN KEY (client_id)
       REFERENCES c_client (id) MATCH SIMPLE
@@ -1420,6 +1421,7 @@ COMMENT ON COLUMN pre_fee.ex_over IS '结单号';;
 COMMENT ON COLUMN pre_fee.ex_feeid IS '生成标记''O''原生''E''核销拆分';;
 COMMENT ON COLUMN pre_fee.audit_tim IS '核销时间';;
 COMMENT ON COLUMN pre_fee.currency_cod IS '货币种类';;
+COMMENT ON COLUMN pre_fee.create_flag IS '费用产生方式 ''M''-手工录入 ''P''-协议计费';;
 CREATE TABLE act_fee
 (
   id serial NOT NULL,
@@ -1512,6 +1514,7 @@ CREATE TABLE p_fee_mod
   col_9 integer, -- 模式要素9
   col_10 integer, -- 模式要素10
   mod_descript character varying(500) NOT NULL DEFAULT ''::character varying, -- 模式描述
+	deal_process character varying(50) NOT NULL DEFAULT ''::character varying, -- 模式绑定存储过程
   CONSTRAINT pk_p_fee_mod PRIMARY KEY (id),
   CONSTRAINT fk_p_fee_mod_1 FOREIGN KEY (col_1)
       REFERENCES p_fee_ele (id) MATCH SIMPLE
@@ -1564,6 +1567,7 @@ COMMENT ON COLUMN p_fee_mod.col_8 IS '模式要素8';;
 COMMENT ON COLUMN p_fee_mod.col_9 IS '模式要素9';;
 COMMENT ON COLUMN p_fee_mod.col_10 IS '模式要素10';;
 COMMENT ON COLUMN p_fee_mod.mod_descript IS '模式描述';;
+COMMENT ON COLUMN p_fee_mod.deal_process IS '模式绑定存储过程';;
 CREATE TABLE p_fee_ele
 (
   id serial NOT NULL,

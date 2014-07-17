@@ -241,6 +241,7 @@ class PreFee(BaseModel):
     audit_id =  models.NullBooleanField('核销',blank=True,null=True)
     audit_tim = models.DateTimeField('核销时间')
     currency_cod = models.CharField('货币',max_length=3,choices=(('RMB','人民币'),('USD','美元')))
+    create_flag = models.CharField('费用产生方式',max_length=1,choices=(('M','手工录入'),('P','协议生成')))
     def __str__(self):
         return self.contract_id.bill_no + '/' + self.fee_typ + '/' + self.fee_cod.fee_name + '/' + self.client_id.client_name + '/' + str(self.amount)
     class Meta:
@@ -350,6 +351,7 @@ class FeeMod(BaseModel):
     col_9 = models.ForeignKey('FeeEle',verbose_name='要素9',related_name='ele_modcol9',db_column='col_9',blank=True,null=True)
     col_10 = models.ForeignKey('FeeEle',verbose_name='要素10',related_name='ele_modcol10',db_column='col_10',blank=True,null=True)
     mod_descript = models.CharField('模式描述',max_length=500,blank=True,null=True)
+    deal_process = models.CharField('模式绑定存储过程',max_length=50,blank=True,null=True)
     def __str__(self):
         return self.mod_name
     class Meta:

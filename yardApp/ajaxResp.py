@@ -135,7 +135,7 @@ def getprotocolelelov(request):
 def getprotocolmod(request):
     '''协议模式查询'''
     ls_sql = "select id,mod_name,col_1,col_2,col_3,col_4,col_5,col_6,col_7,col_8,col_9,col_10," \
-             "mod_descript,remark from p_fee_mod"
+             "mod_descript,deal_process,remark from p_fee_mod"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getprotocolmodremark(request):
@@ -176,13 +176,13 @@ def getcontractcntr(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getcontractprefeein(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
-             "lock_flag,audit_id,ex_feeid,remark from pre_fee " \
+             "lock_flag,audit_id,ex_feeid,create_flag,remark from pre_fee " \
              "where fee_typ = 'I' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getcontractprefeeout(request):
     ls_sql = "select id,contract_id,fee_typ,fee_cod,client_id,amount,fee_tim,fee_financial_tim," \
-             "lock_flag,audit_id,ex_feeid,remark from pre_fee " \
+             "lock_flag,audit_id,ex_feeid,create_flag,remark from pre_fee " \
              "where fee_typ = 'O' and ex_feeid = 'O'"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))

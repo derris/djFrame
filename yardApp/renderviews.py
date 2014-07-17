@@ -235,7 +235,8 @@ def contractqueryview(request):
     prefee_financialtim = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='fee_financial_tim')
     prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag')
     prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id')
-    prefee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid')
+    prefee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid',hidden=True)
+    prefee_create_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='create_flag')
     prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
     display_toolbar = False
     return render(request,"yard/contract/contractqueryview.html",locals())
@@ -306,6 +307,7 @@ def prefeeview(request):
     prefee_lock_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='lock_flag',readonly=True)
     prefee_audit_id = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='audit_id',readonly=True)
     prefee_ex_feeid = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='ex_feeid',hidden=True)
+    prefee_create_flag = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='create_flag',hidden=True)
     prefee_remark = easyuihelp.EasyuiFieldUI(model=models.PreFee,field='remark',width=200)
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
     customdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='custom_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
@@ -492,6 +494,7 @@ def protocolmodview(request):
     col_9 = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='col_9',autoforeign=True,foreigndisplayfield='ele_name')
     col_10 = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='col_10',autoforeign=True,foreigndisplayfield='ele_name')
     mod_descript = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='mod_descript')
+    deal_process = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='deal_process')
     remark = easyuihelp.EasyuiFieldUI(model=models.FeeMod,field='remark',width=200)
     return render(request,"yard/protocol/protocolmodview.html",locals())
 def protocolfeemodview(request):
