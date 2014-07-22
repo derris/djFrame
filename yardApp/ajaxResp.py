@@ -355,7 +355,7 @@ def dealPAjax(request):
             elif ldict['func'] == '已收核销客户查询':
                 ls_t = "select * from c_client where id > 0 "  #查询有未结费用的客户。
                 return (getclientsEx(request, ls_t))
-            elif ldict['func'] == '委托协议费用生成':
+            elif ldict['func'] == '协议费用生成':
                 l_rtn = contrProFeeGen(request, ldict)
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
             ########################################################## update

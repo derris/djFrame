@@ -458,6 +458,9 @@ def rptview(request):
     rptfee_itemid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='item_id',hidden=True)
     rptfee_feeid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name',title='费用名称',width=180)
     return render(request,"yard/fee/rptview.html",locals())
+def protocolfeecreateview(request):
+    clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)
+    return render(request,"yard/fee/protocolfeeview.html",locals())
 def protocolview(request):
     id = easyuihelp.EasyuiFieldUI(model=models.Protocol,field='id')
     protocol_name = easyuihelp.EasyuiFieldUI(model=models.Protocol,field='protocol_name')
@@ -601,6 +604,9 @@ def dealMenuReq(request):
         return(auditqueryview(request))
     elif ls_args == "费用报表定义":
         return(rptview(request))
+    elif ls_args == "协议费用生成":
+        return(protocolfeecreateview(request))
+
     ######## 协议 ##############
     elif ls_args == '协议维护':
         return(protocolview(request))

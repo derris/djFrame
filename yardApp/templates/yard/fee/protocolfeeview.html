@@ -1,0 +1,85 @@
+<script>
+    Namespace.register('fee.protocolfeeview');
+    $(function(){
+        {% autoescape off %}
+            fee.protocolfeeview.client = $('#fee-protocolfeeview-client').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ clientdata }}
+            });
+            fee.protocolfeeview.begindate = $('#fee-protocolfeeview-begindate').datebox({
+                width: 100
+            });
+            fee.protocolfeeview.enddate = $('#fee-protocolfeeview-enddate').datebox({
+                width: 100
+            });
+            fee.protocolfeeview.financialdate = $('#fee-protocolfeeview-financialdate').datebox({
+                width: 100
+            });
+
+        {% endautoescape %}
+        $('#fee-protocolfeeview-search').bind('click', function (e) {
+{% comment %}
+            if (fee.protocolfeeview.client.combobox('getValue').length == 0){
+                $.messager.alert('提示', '客户不能空', 'info');
+                return;
+            }
+{% endcomment %}
+            if (fee.protocolfeeview.begindate.datebox('getValue').length == 0) {
+                $.messager.alert('提示', '开始日期不能空', 'info');
+                return;
+            }
+            if (fee.protocolfeeview.enddate.datebox('getValue').length == 0) {
+                $.messager.alert('提示', '截止日期不能空', 'info');
+                return;
+            }
+            if (fee.protocolfeeview.financialdate.datebox('getValue').length == 0) {
+                $.messager.alert('提示', '财务统计日期不能空', 'info');
+                return;
+            }
+
+            var p = {
+                func: '协议费用生成',
+                reqtype:'query',
+                ex_parm: {
+                    client_id: fee.protocolfeeview.client.combobox('getValue'),
+                    begin_date: fee.protocolfeeview.begindate.datebox('getValue'),
+                    end_date: fee.protocolfeeview.enddate.datebox('getValue'),
+                    financial_date:fee.protocolfeeview.financialdate.datebox('getValue')
+                }
+            };
+            $.ajax({
+                url: "./dealPAjax/",
+                data: {jpargs: JSON.stringify(p)},
+                success: function (r, t, a) {
+                    if ($.ajaxSettings.success(r, t, a, false)) {
+                        console.info(r);
+                    }
+                }
+            });
+
+        });
+
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center',border:'false'">
+        <div id="fee-protocolfeeview-filterbar" class="datagrid-toolbar">
+            <label for="client_id">委托客户:</label>
+            <input id="fee-protocolfeeview-client" type="text" name="client_id"/>
+            <label for="begindate">到港日期:</label>
+            <input id="fee-protocolfeeview-begindate" type="text" name="begindate"/>
+            <label for="enddate">至:</label>
+            <input id="fee-protocolfeeview-enddate" type="text" name="enddate"/>
+            <label for="financialdate">财务统计日期:</label>
+            <input id="fee-protocolfeeview-financialdate" type="text" name="financialdate"/>
+            <a id="fee-protocolfeeview-search" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-search',group:'fee-protocolfeeview-filterbar'">生成</a>
+        </div>
+
+    </div>
+
+
+</div>

@@ -83,7 +83,8 @@ INSERT INTO sys_menu VALUES (38, '产地维护', 1, '2014-05-05 18:01:46', 1, '2
 INSERT INTO sys_menu VALUES (37, '货物分类维护', 1, '2014-05-05 17:48:18', 1, '2014-06-27 02:56:36', '', 8, '货物分类维护', 4, false);;
 INSERT INTO sys_menu VALUES (36, '货物维护', 1, '2014-05-05 17:39:26', 1, '2014-06-27 02:56:36', '', 8, '货物维护', 5, false);;
 INSERT INTO sys_menu VALUES (16, '费用名称维护', 1, '2014-02-25 11:18:14', 1, '2014-06-27 02:56:36', '', 8, '费用名称维护', 7, false);;
-SELECT pg_catalog.setval('sys_menu_id_seq', 49, true);;
+INSERT INTO sys_menu VALUES (51, '协议费用生成', 1, '2014-02-25 11:18:14', 1, '2014-06-27 02:56:36', '', 21, '协议费用生成', 7, false);;
+SELECT pg_catalog.setval('sys_menu_id_seq', 51, true);;
 CREATE TABLE sys_func
 (
   funcname character varying(50) NOT NULL, -- 权限名称
@@ -187,7 +188,8 @@ INSERT INTO sys_func VALUES ('协议模式结构查询', 1, '2014-06-23 08:55:21
 INSERT INTO sys_func VALUES ('协议费率维护', 1, '2014-06-23 08:58:08', 1, '2014-06-23 00:58:50', '', 88, 'p_protocol_rat');;
 INSERT INTO sys_func VALUES ('协议费率查询', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 89, 'p_protocol_rat');;
 INSERT INTO sys_func VALUES ('模式描述查询', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 90, 'p_fee_mod');;
-SELECT pg_catalog.setval('sys_func_id_seq', 90, true);;
+INSERT INTO sys_func VALUES ('协议费用生成', 1, '2014-06-23 08:59:13', 1, '2014-06-23 00:59:03', '', 91, 'pre_fee');;
+SELECT pg_catalog.setval('sys_func_id_seq', 91, true);;
 CREATE TABLE sys_menu_func
 (
   id serial NOT NULL,
@@ -311,7 +313,8 @@ INSERT INTO sys_menu_func VALUES (105, 49, 88, 1, '2014-06-23 08:58:36', NULL, N
 INSERT INTO sys_menu_func VALUES (106, 49, 89, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
 INSERT INTO sys_menu_func VALUES (107, 46, 78, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
 INSERT INTO sys_menu_func VALUES (108, 48, 90, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
-SELECT pg_catalog.setval('sys_menu_func_id_seq', 108, true);;
+INSERT INTO sys_menu_func VALUES (109, 51, 91, 1, '2014-06-23 08:59:40', NULL, NULL, '');;
+SELECT pg_catalog.setval('sys_menu_func_id_seq', 109, true);;
 CREATE TABLE sys_code
 (
   id serial NOT NULL,
@@ -1422,6 +1425,17 @@ COMMENT ON COLUMN pre_fee.ex_feeid IS '生成标记''O''原生''E''核销拆分'
 COMMENT ON COLUMN pre_fee.audit_tim IS '核销时间';;
 COMMENT ON COLUMN pre_fee.currency_cod IS '货币种类';;
 COMMENT ON COLUMN pre_fee.create_flag IS '费用产生方式 ''M''-手工录入 ''P''-协议计费';;
+
+CREATE OR REPLACE VIEW v_prefee_original AS 
+ SELECT pre_fee.id, pre_fee.contract_id, pre_fee.fee_typ, pre_fee.fee_cod, pre_fee.client_id, pre_fee.amount, pre_fee.fee_tim, pre_fee.lock_flag, pre_fee.fee_financial_tim, pre_fee.rec_nam, pre_fee.rec_tim, pre_fee.upd_nam, pre_fee.upd_tim, pre_fee.remark, pre_fee.ex_from, pre_fee.ex_over, pre_fee.ex_feeid, pre_fee.audit_id, pre_fee.audit_tim, pre_fee.currency_cod, pre_fee.create_flag
+   FROM pre_fee
+  WHERE pre_fee.ex_feeid::text = 'O'::text;;
+
+ALTER TABLE v_prefee_original
+  OWNER TO "yardAdmin";;
+COMMENT ON VIEW v_prefee_original
+  IS '原始记录非核销拆分,ex_feeid = ''O''';;
+
 CREATE TABLE act_fee
 (
   id serial NOT NULL,
@@ -1492,6 +1506,17 @@ CREATE INDEX idx_act_fee_ex_over
   ON act_fee
   USING btree
   (ex_over COLLATE pg_catalog."default");;
+
+CREATE OR REPLACE VIEW v_actfee_original AS 
+ SELECT act_fee.id, act_fee.client_id, act_fee.fee_typ, act_fee.amount, act_fee.invoice_no, act_fee.check_no, act_fee.pay_type, act_fee.fee_tim, act_fee.rec_nam, act_fee.rec_tim, act_fee.upd_nam, act_fee.upd_tim, act_fee.remark, act_fee.ex_from, act_fee.ex_over, act_fee.ex_feeid, act_fee.audit_id, act_fee.audit_tim, act_fee.accept_no, act_fee.currency_cod
+   FROM act_fee
+  WHERE act_fee.ex_feeid::text = 'O'::text;
+
+ALTER TABLE v_actfee_original
+  OWNER TO "yardAdmin";
+COMMENT ON VIEW v_actfee_original
+  IS '原始记录非核销拆分,ex_feeid = ''O''';
+
 --协议
 
 CREATE TABLE p_fee_mod
@@ -1665,7 +1690,8 @@ CREATE TABLE p_protocol_rat
       ON UPDATE NO ACTION ON DELETE CASCADE,
   CONSTRAINT fk_p_protocol_rat_protocol FOREIGN KEY (protocol_id)
       REFERENCES p_protocol (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
+      ON UPDATE NO ACTION ON DELETE CASCADE,
+	CONSTRAINT uk_p_protocol_rat UNIQUE (protocol_id, fee_id, mod_id, fee_ele1, fee_ele2, fee_ele3, fee_ele4, fee_ele5, fee_ele6, fee_ele7, 			fee_ele8, fee_ele9, fee_ele10)
 )
 WITH (
   OIDS=FALSE
