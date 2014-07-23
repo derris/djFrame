@@ -1426,15 +1426,6 @@ COMMENT ON COLUMN pre_fee.audit_tim IS '核销时间';;
 COMMENT ON COLUMN pre_fee.currency_cod IS '货币种类';;
 COMMENT ON COLUMN pre_fee.create_flag IS '费用产生方式 ''M''-手工录入 ''P''-协议计费';;
 
-CREATE OR REPLACE VIEW v_prefee_original AS 
- SELECT pre_fee.id, pre_fee.contract_id, pre_fee.fee_typ, pre_fee.fee_cod, pre_fee.client_id, pre_fee.amount, pre_fee.fee_tim, pre_fee.lock_flag, pre_fee.fee_financial_tim, pre_fee.rec_nam, pre_fee.rec_tim, pre_fee.upd_nam, pre_fee.upd_tim, pre_fee.remark, pre_fee.ex_from, pre_fee.ex_over, pre_fee.ex_feeid, pre_fee.audit_id, pre_fee.audit_tim, pre_fee.currency_cod, pre_fee.create_flag
-   FROM pre_fee
-  WHERE pre_fee.ex_feeid::text = 'O'::text;;
-
-ALTER TABLE v_prefee_original
-  OWNER TO "yardAdmin";;
-COMMENT ON VIEW v_prefee_original
-  IS '原始记录非核销拆分,ex_feeid = ''O''';;
 
 CREATE TABLE act_fee
 (
@@ -1507,17 +1498,36 @@ CREATE INDEX idx_act_fee_ex_over
   USING btree
   (ex_over COLLATE pg_catalog."default");;
 
-CREATE OR REPLACE VIEW v_actfee_original AS 
- SELECT act_fee.id, act_fee.client_id, act_fee.fee_typ, act_fee.amount, act_fee.invoice_no, act_fee.check_no, act_fee.pay_type, act_fee.fee_tim, act_fee.rec_nam, act_fee.rec_tim, act_fee.upd_nam, act_fee.upd_tim, act_fee.remark, act_fee.ex_from, act_fee.ex_over, act_fee.ex_feeid, act_fee.audit_id, act_fee.audit_tim, act_fee.accept_no, act_fee.currency_cod
-   FROM act_fee
-  WHERE act_fee.ex_feeid::text = 'O'::text;
-
-ALTER TABLE v_actfee_original
-  OWNER TO "yardAdmin";
-COMMENT ON VIEW v_actfee_original
-  IS '原始记录非核销拆分,ex_feeid = ''O''';
 
 --协议
+CREATE TABLE p_fee_ele
+(
+  id serial NOT NULL,
+  ele_name character varying(30) NOT NULL, -- 要素名称
+  init_data_sql character varying(100) NOT NULL DEFAULT ''::character varying, -- 初始化要素内容sql语句
+  remark character varying(50),
+  rec_nam integer NOT NULL,
+  rec_tim timestamp without time zone NOT NULL,
+  upd_nam integer,
+  upd_tim timestamp without time zone,
+  CONSTRAINT pk_p_fee_ele PRIMARY KEY (id),
+  CONSTRAINT uk_p_fee_ele UNIQUE (ele_name)
+)
+WITH (
+  OIDS=FALSE
+);;
+ALTER TABLE p_fee_ele
+  OWNER TO "yardAdmin";;
+COMMENT ON TABLE p_fee_ele
+  IS '协议要素表';;
+COMMENT ON COLUMN p_fee_ele.ele_name IS '要素名称';;
+COMMENT ON COLUMN p_fee_ele.init_data_sql IS '初始化要素内容sql语句';;
+INSERT INTO p_fee_ele VALUES (1, '箱型', 'select trim(to_char(id,"9999999999")) lov_cod,cntr_type lov_name from c_cntr_type', '代码表的id转换为字符型，字段名称固定为lov_cod和lov_name', 1, '2014-06-13 16:01:00', 1, '2014-06-13 08:09:46');;
+INSERT INTO p_fee_ele VALUES (2, '发货地', 'select trim(to_char(id,"9999999999")) lov_cod,place_name lov_name from c_dispatch', '', 1, '2014-06-13 16:17:17', NULL, NULL);;
+INSERT INTO p_fee_ele VALUES (3, '货物分类', 'select trim(to_char(id,"9999999999")) lov_cod,type_name lov_name from c_cargo_type', '', 1, '2014-06-13 16:18:46', NULL, NULL);;
+INSERT INTO p_fee_ele VALUES (4, '免费天数', '', '', 1, '2014-06-20 10:44:39', NULL, NULL);;
+
+SELECT pg_catalog.setval('p_fee_ele_id_seq', 4, true);;
 
 CREATE TABLE p_fee_mod
 (
@@ -1593,34 +1603,7 @@ COMMENT ON COLUMN p_fee_mod.col_9 IS '模式要素9';;
 COMMENT ON COLUMN p_fee_mod.col_10 IS '模式要素10';;
 COMMENT ON COLUMN p_fee_mod.mod_descript IS '模式描述';;
 COMMENT ON COLUMN p_fee_mod.deal_process IS '模式绑定存储过程';;
-CREATE TABLE p_fee_ele
-(
-  id serial NOT NULL,
-  ele_name character varying(30) NOT NULL, -- 要素名称
-  init_data_sql character varying(100) NOT NULL DEFAULT ''::character varying, -- 初始化要素内容sql语句
-  remark character varying(50),
-  rec_nam integer NOT NULL,
-  rec_tim timestamp without time zone NOT NULL,
-  upd_nam integer,
-  upd_tim timestamp without time zone,
-  CONSTRAINT pk_p_fee_ele PRIMARY KEY (id),
-  CONSTRAINT uk_p_fee_ele UNIQUE (ele_name)
-)
-WITH (
-  OIDS=FALSE
-);;
-ALTER TABLE p_fee_ele
-  OWNER TO "yardAdmin";;
-COMMENT ON TABLE p_fee_ele
-  IS '协议要素表';;
-COMMENT ON COLUMN p_fee_ele.ele_name IS '要素名称';;
-COMMENT ON COLUMN p_fee_ele.init_data_sql IS '初始化要素内容sql语句';;
-INSERT INTO p_fee_ele VALUES (1, '箱型', 'select trim(to_char(id,"9999999999")) lov_cod,cntr_type lov_name from c_cntr_type', '代码表的id转换为字符型，字段名称固定为lov_cod和lov_name', 1, '2014-06-13 16:01:00', 1, '2014-06-13 08:09:46');;
-INSERT INTO p_fee_ele VALUES (2, '发货地', 'select trim(to_char(id,"9999999999")) lov_cod,place_name lov_name from c_dispatch', '', 1, '2014-06-13 16:17:17', NULL, NULL);;
-INSERT INTO p_fee_ele VALUES (3, '货物分类', 'select trim(to_char(id,"9999999999")) lov_cod,type_name lov_name from c_cargo_type', '', 1, '2014-06-13 16:18:46', NULL, NULL);;
-INSERT INTO p_fee_ele VALUES (4, '免费天数', '', '', 1, '2014-06-20 10:44:39', NULL, NULL);;
 
-SELECT pg_catalog.setval('p_fee_ele_id_seq', 4, true);;
 CREATE TABLE p_protocol_fee_mod
 (
   id serial NOT NULL,
