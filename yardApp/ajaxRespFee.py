@@ -199,9 +199,13 @@ def auditDetailQuery(request,ldict):
 
 def contrProFeeGen(aRequest, aDict):
     l_rtn = { }
-    ls_contractid = str(aDict["ex_parm"]["contract_id"])
-    #ls_fee = "select fun4fee_genlumpsum(%s)" % ls_contractid   # get the protocel fee.
-    ls_fee = "select f_create_protocol_fee(%s,%s)" % (ls_contractid,str(1))   # get the protocel fee.
+    l_userid = request.session['userid']
+    ls_clientid = str(aDict["ex_parm"]["client_id"])
+    ls_begid = str(aDict["ex_parm"]["begin_date"])
+    ls_endid = str(aDict["ex_parm"]["end_date"])
+    ls_finid = str(aDict["ex_parm"]["financial_date"])
+
+    ls_fee = "select f_create_protocol_fee(%s,%s,%s,%s,%s)" % (ls_clientid,ls_begid,ls_endid,ls_finid,l_userid )
     l_fee = cursorSelect(ls_fee)
     #if l_fee[0][0] < 0 :
     if l_fee[0][0] != 'SUC' :
