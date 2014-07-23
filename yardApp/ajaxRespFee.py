@@ -199,7 +199,7 @@ def auditDetailQuery(request,ldict):
 
 def contrProFeeGen(aRequest, aDict):
     l_rtn = { }
-    l_userid = request.session['userid']
+    l_userid = aRequest.session['userid']
     ls_clientid = str(aDict["ex_parm"]["client_id"])
     ls_begid = str(aDict["ex_parm"]["begin_date"])
     ls_endid = str(aDict["ex_parm"]["end_date"])
