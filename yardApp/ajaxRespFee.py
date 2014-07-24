@@ -205,8 +205,8 @@ def contrProFeeGen(aRequest, aDict):
     ls_endid = str(aDict["ex_parm"]["end_date"])
     ls_finid = str(aDict["ex_parm"]["financial_date"])
 
-    ls_fee = "select f_create_protocol_fee(%s,%s,%s,%s,%s)" % (ls_clientid,ls_begid,ls_endid,ls_finid,l_userid )
-    l_fee = cursorSelect(ls_fee)
+    ls_fee = "select f_create_protocol_fee(%s,%s,%s,%s,%s)"
+    l_fee = cursorSelect(ls_fee, [ls_clientid,ls_begid,ls_endid,ls_finid,l_userid ])
     #if l_fee[0][0] < 0 :
     if l_fee[0][0] != 'SUC' :
         #l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
