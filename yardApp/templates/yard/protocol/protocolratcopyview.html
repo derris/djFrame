@@ -1,0 +1,66 @@
+<script>
+    Namespace.register('protocol.protocolratcopyview');
+    $(function () {
+        {% autoescape off %}
+            protocol.protocolratcopyview.source = $('#protocol-protocolratcopyview-source').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ protocoldata }}
+            });
+            protocol.protocolratcopyview.target = $('#protocol-protocolratcopyview-target').combobox({
+                valueField: 'value',
+                textField: 'text',
+                required: false,
+                width: 180,
+                data:{{ protocoldata }}
+            });
+            $('#protocol-protocolratcopyview-save').bind('click', function () {
+                var source = protocol.protocolratcopyview.source.combobox('getValue');
+                var target = protocol.protocolratcopyview.target.combobox('getValue');
+                if (source.length > 0 && target.length > 0) {
+                    var p = {
+                        func: '协议费率复制',
+                        reqtype: 'update',
+                        ex_parm: {
+                            source_id: source,
+                            target_id: target
+                        }
+                    };
+                    $.ajax({
+                        url: "./dealPAjax/",
+                        data: {jpargs: JSON.stringify(p)},
+                        success: function (r, t, a) {
+                            if ($.ajaxSettings.success(r, t, a, true)) {
+
+                            }
+                        }
+                    });
+
+                } else {
+                    $.messager.alert('提示', '源协议与目标协议不能为空', 'info');
+                }
+            });
+        {% endautoescape %}
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'center'">
+        <form class="editform" method="post">
+            <br/>
+            <label for="source_protocol">源协议:</label>
+            <input type="text" name="source_protocol" id="protocol-protocolratcopyview-source"/>
+            <br/>
+            <br/>
+            <br/>
+            <label for="target_protocol">目标协议:</label>
+            <input type="text" name="target_protocol" id="protocol-protocolratcopyview-target"/>
+            <br/>
+            <br/>
+            <br/>
+            <a id="protocol-protocolratcopyview-save" href="#" class="easyui-linkbutton"
+               data-options="iconCls:'icon-save',group:'protocol-protocolratcopyview'">复制</a>
+        </form>
+    </div>
+</div>

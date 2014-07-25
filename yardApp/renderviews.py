@@ -529,6 +529,9 @@ def protocolratview(request):
     rat_feerat = easyuihelp.EasyuiFieldUI(model=models.ProtocolFeeRat,field='fee_rat')
     rat_discountrat = easyuihelp.EasyuiFieldUI(model=models.ProtocolFeeRat,field='discount_rat')
     return render(request,"yard/protocol/protocolratview.html",locals())
+def protocolratcopyview(request):
+    protocoldata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.ProtocolFeeRat,field='protocol_id',autoforeign=True,foreigndisplayfield='protocol_name').editor['options']['data'],ensure_ascii = False)
+    return render(request,"yard/protocol/protocolratcopyview.html",locals())
 def dealMenuReq(request):
     ls_args = request.GET['menutext']
     if ls_args == '主窗口':
@@ -620,6 +623,8 @@ def dealMenuReq(request):
         return(protocolfeemodview(request))
     elif ls_args == '协议费率维护':
         return(protocolratview(request))
+    elif ls_args == '协议费率复制':
+        return(protocolratcopyview(request))
 
     else:
         return HttpResponse("找不到功能名，请联系管理员")

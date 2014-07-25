@@ -54,8 +54,8 @@
                 url: "./dealPAjax/",
                 data: {jpargs: JSON.stringify(p)},
                 success: function (r, t, a) {
-                    if ($.ajaxSettings.success(r, t, a, false)) {
-                        console.info(r);
+                    if ($.ajaxSettings.success(r, t, a, true)) {
+
                     }
                 }
             });
@@ -78,8 +78,5 @@
             <a id="fee-protocolfeeview-search" href="#" class="easyui-linkbutton"
                data-options="iconCls:'icon-search',group:'fee-protocolfeeview-filterbar'">生成</a>
         </div>
-
     </div>
-
-
 </div>

@@ -1,22 +1,30 @@
-todo 15 to dh
-数据库增加了两个视图 v_actfee_original，v_prefee_original
-pre_fee增加两个字段：currency_cod 货币类型 默认 'RMB'
-                   create_flag 费用产生方式 'M'-手工录入 'P'-协议计费 默认'M'
-act_fee增加:    currency_cod 货币类型 默认 'RMB'
 
-todo 16 to dh
-func:'协议费用生成'    已有此功能，更改接收参数和调用的后台过程
+todo 17 to dh
+func:'协议费率复制'
 接收参数:
 {
-    func: '协议费用生成',
-    reqtype:'query',
+    func: '协议费率复制',
+    reqtype:'update',
     ex_parm: {
-        client_id: //客户id,
-        begin_date: //统计日期段开始日期 date型 到港日期,
-        end_date: //统计日期段截止日期 date型 到港日期,
-        financial_date:  //生成pre_fee的财务统计日期
+        source_id: //源协议id,
+        target_id: //目标协议id
         }
-    }
-过程：调用f_create_protocol_fee(client_id,begin_date,end_date,financial_date,oper_id);
-     oper_id：当前操作员id
-返回参数： 不变
+}
+
+过程：
+1. delete from p_protocol_fee_mod where protocol_id = target_id
+   delete from p_protocol_rat where protocol_id = target_id
+2. select count(1) into target_count from p_protocol where id = target_id
+   if target_count = 1 then
+        将p_protocol_fee_mod,p_protocol_rat两个表中protocol_id = source_id的数据，复制后插入这两个表，
+        注意修改表的protocol_id为target_id
+   else
+       错误返回 msg:'目标协议不存在，请先添加目标协议'  stateCod:'-4'
+   end if
+
+返回参数：{
+        "msg":"复制成功"/"复制失败",
+        "stateCod": 成功"202" 失败“-4”,
+        "error": ["xxx", "xx"]...        # 错误数组。
+
+}
