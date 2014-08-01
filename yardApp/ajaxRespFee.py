@@ -418,3 +418,31 @@ def queryProtStruct(request, adict):
         l_rtn.update( {"msg": "操作失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
 
+def copyProtocel(request, adict):
+    l_rtn = {"msg": "复制成功","stateCod" : 202}
+    ls_sourceId = str(adict["ex_parm"]["source_id"])
+    ls_targetId = str(adict["ex_parm"]["target_id"])
+    try:
+        ls_sqldel = "delete from p_protocol_fee_mod where protocol_id = %s"
+        ls_sqldel2 = "delete from p_protocol_rat where protocol_id = %s"
+        cursorExec2(ls_sqldel, [ls_targetId])
+        cursorExec2(ls_sqldel2, [ls_targetId])
+        ls_sqlcount = "select count(1) from p_protocol where id = %s"
+        lds_c = cursorSelect( ls_sqlcount, ls_targetId )
+        if lds_c:
+            if int(lds_c[0][0]) > 0:
+                ls_ins1 = '''insert into p_protocol_fee_mod values
+                  (select id, %s ,fee_id,mod_id,sort_no,remark,rec_nam,rec_tim,upd_nam,upd_tim,active_flag
+                   from p_protocol_fee_mod where protocol_id = %s) '''
+                cursorExec2(ls_ins1, [ls_targetId, ls_sourceId])
+                ls_ins2 = '''insert into p_protocol_rat values
+                  (select id,  %s,  fee_id,  mod_id,  fee_ele1,  fee_ele2,  fee_ele3,
+                  fee_ele4,  fee_ele5,  fee_ele6,  fee_ele7,  fee_ele8,  fee_ele9,  fee_ele10,
+                  fee_rat,  discount_rat,  remark,  rec_nam,  rec_tim,  upd_nam,  upd_tim
+                  from p_protocol_rat where protocol_id = %s) '''
+                cursorExec2(ls_ins2, [ls_targetId, ls_sourceId])
+        else:
+            l_rtn.update( {"msg": "目标协议不存在，请先添加目标协议", "error": [""] , "stateCod" : 202} )
+    except Exception as e:
+        l_rtn.update( {"msg": "复制失败", "error": list( (str(e.args),) ) , "stateCod" : -4 } )
+    return l_rtn
