@@ -463,6 +463,8 @@ def dealPAjax(request):
                 return HttpResponse(json.dumps(l_rtn, ensure_ascii=False))
             elif ldict['func'] == '协议费率维护':
                 return (updateRaw(request))
+            elif ldict['func'] == '协议费率复制':
+                return HttpResponse(json.dumps(copyProFeeRat(request, ldict), ensure_ascii = False))
 
             #########################################################3
             elif ldict['func'] == '密码修改':  # ajax 查询
