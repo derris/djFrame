@@ -418,3 +418,19 @@ def queryProtStruct(request, adict):
         l_rtn.update( {"msg": "操作失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
 
+def copyProFeeRat(aRequest, aDict):
+    l_rtn = { }
+    l_userid = aRequest.session['userid']
+    ls_sourceid = str(aDict["ex_parm"]["source_id"])
+    ls_targetid = str(aDict["ex_parm"]["target_id"])
+
+    ls_fee = "select f_copy_protocol_rat(%s,%s,%s)"
+    l_fee = cursorSelect(ls_fee, [ls_sourceid,ls_targetid,l_userid ])
+    #if l_fee[0][0] < 0 :
+    if l_fee[0][0] != 'SUC' :
+        #l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][1])], "stateCod" : -1 } )
+        l_rtn.update( {"msg": "失败", "error":[str(l_fee[0][0])], "stateCod" : -4 } )
+    else:
+        #l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 101 } )
+        l_rtn.update( {"msg": '复制成功', "error":[], "stateCod" : 202 } )
+    return l_rtn
