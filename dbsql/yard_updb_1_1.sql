@@ -29,18 +29,3 @@ CREATE INDEX django_session_session_key_like
   USING btree
   (session_key COLLATE pg_catalog."default" varchar_pattern_ops);;
 
-CREATE TABLE django_content_type
-(
-  id serial NOT NULL,
-  name character varying(100) NOT NULL,
-  app_label character varying(100) NOT NULL,
-  model character varying(100) NOT NULL,
-  CONSTRAINT django_content_type_pkey PRIMARY KEY (id),
-  CONSTRAINT django_content_type_app_label_model_key UNIQUE (app_label, model)
-)
-WITH (
-  OIDS=FALSE
-);;
-ALTER TABLE django_content_type
-  OWNER TO "yardAdmin";;
-

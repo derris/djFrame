@@ -1548,7 +1548,7 @@ CREATE TABLE p_fee_mod
   col_8 integer, -- 模式要素8
   col_9 integer, -- 模式要素9
   col_10 integer, -- 模式要素10
-  mod_descript character varying(500) NOT NULL DEFAULT ''::character varying, -- 模式描述
+  mod_descript character varying(200) NOT NULL DEFAULT ''::character varying, -- 模式描述
 	deal_process character varying(50) NOT NULL DEFAULT ''::character varying, -- 模式绑定存储过程
   CONSTRAINT pk_p_fee_mod PRIMARY KEY (id),
   CONSTRAINT fk_p_fee_mod_1 FOREIGN KEY (col_1)

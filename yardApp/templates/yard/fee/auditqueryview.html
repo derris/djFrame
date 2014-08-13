@@ -13,6 +13,7 @@
         $(document).on('dbClickRow', '#control-audit-auditsumgrid-{{ seq }}', function (e, ex_over) {
             var p = {
                 func: '核销明细查询',
+                reqtype:'query',
                 ex_parm: {
                     ex_over: ex_over}
             };
@@ -43,6 +44,7 @@
             audit.auditqueryview.sumgrid.datagrid('uncheckAll');
             var p = {
                 func: '核销汇总查询',
+                reqtype:'query',
                 ex_parm: {
                     client_id: '',
                     fee_typ: '',

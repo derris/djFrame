@@ -12,6 +12,7 @@
             audit.unauditview.prefeegrid.datagrid('uncheckAll');
             var p = {
                 func: '核销删除查询',
+                reqtype:'query',
                 ex_parm: {
                     client_id: '',
                     fee_typ: ''}
@@ -71,6 +72,7 @@
             }
             param = {
                 func: "核销删除",
+                reqtype:'update',
                 ex_parm: {
                     ex_over: actRows[0].ex_over
                 }
