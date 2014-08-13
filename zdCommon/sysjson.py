@@ -61,8 +61,12 @@ def checkPrivilege(aDict):
     ls_sql = "select ref_tables from sys_func where funcname = '%s';" % str(aDict["func"])
     l_table = cursorSelect(ls_sql)    #  l_userFunc[0][0]   [(1), (2)] ...
     ls_tableSet = ",".join( [ i[0] for i in l_table ] ) + ","
-    l_rows = aDict["rows"]
-    return checkAllRows(l_rows, ls_tableSet )
+
+    if "rows" in aDict.keys():
+        l_rows = aDict["rows"]
+        return checkAllRows(l_rows, ls_tableSet )
+    else:
+        return True
 
 def checkAllRows(aRows, aTableSet):
     for i in aRows:
