@@ -54,23 +54,21 @@ def checkPrivilege(aDict):
     #  according to  aDict["func"]  ,check the aDict["rows"]    'op': 'insert',
     #            'table': 'c_client',
     #    'subs': { rows: [递归] } //没有就空着
-    return True
 
-    #if aDict['reqtype'] == 'query':
-    #    return True
+    if aDict['reqtype'] == 'query':
+        return True
 
-    #ls_sql = "select ref_tables from sys_func where funcname = '%s';" % str(aDict["func"])
-    #l_table = cursorSelect(ls_sql)    #  l_userFunc[0][0]   [(1), (2)] ...
-    #ls_tableSet = ",".join( [ i[0] for i in l_table ] ) + ","
+    ls_sql = "select ref_tables from sys_func where funcname = '%s';" % str(aDict["func"])
+    l_table = cursorSelect(ls_sql)    #  l_userFunc[0][0]   [(1), (2)] ...
+    ls_tableSet = ",".join( [ i[0] for i in l_table ] ) + ","
 
-    #if "rows" in aDict.keys():
-    #    l_rows = aDict["rows"]
-    #    return checkAllRows(l_rows, ls_tableSet )
-    #else:
-    #    return True
+    if "rows" in aDict.keys():
+        l_rows = aDict["rows"]
+        return checkAllRows(l_rows, ls_tableSet )
+    else:
+        return True
 
 def checkAllRows(aRows, aTableSet):
-    return True
     for i in aRows:
         l_mark = True
         if "table" in i.keys():
@@ -78,8 +76,8 @@ def checkAllRows(aRows, aTableSet):
             if aTableSet.find(l_find) > -1:
                 # 查找子列所有的对象。
                 if "subs" in i.keys():
-                    if len(i["subs"]) > 0:
-                        if checkAllRows(i["subs"], aTableSet):
+                    if "rows" in i["subs"].keys():
+                        if checkAllRows(i["subs"]['rows'], aTableSet):
                             pass
                         else:
                             l_mark = False
