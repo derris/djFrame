@@ -320,7 +320,7 @@ def queryRptFee(request, adict):
                   sum(case p.fee_cod in(%s) when true then amount else 0 end) zongji
                   from pre_fee as p,contract as c
                   where  p.client_id = %s and p.fee_typ = '%s' and p.ex_feeid = 'O'
-                  and (p.fee_financial_tim between '%s' and '%s')
+                  and (c.finish_time between '%s' and '%s')
                   and p.contract_id = c.id
                   group by c.bill_no
             ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_clientId,ls_feeType,ls_beginTim,ls_endTim )
