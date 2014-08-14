@@ -64,14 +64,14 @@
             });
         {% endautoescape %}
         contract.feesheet.refresh = function (parm) {
-            if (parm.client.length == 0) {
+            {% comment %}if (parm.client.length == 0) {
                 $.messager.alert('提示', '客户不能空', 'info');
                 return;
             }
             if (parm.feetyp.length == 0) {
                 $.messager.alert('提示', '费用类型不能空', 'info');
                 return;
-            }
+            }{% endcomment %}
             if (parm.rpt.length == 0) {
                 $.messager.alert('提示', '报表不能空', 'info');
                 return;
