@@ -1,1 +1,19 @@
-
+todo 17 to dh
+func:'客户费用明细报表'  修改
+接口参数结构没有改动，client_id和fee_typ改为可空
+{
+    func: '客户费用明细报表',
+    reqtype:'query',
+    ex_parm: {
+        client_id: parm.client,
+        fee_typ: parm.feetyp,
+        begin_tim: parm.begindate,
+        end_tim: parm.enddate,
+        rpt: parm.rpt
+    }
+}
+过程改动：def queryRptFee(request, adict):
+1.where  p.client_id = %s and p.fee_typ = '%s'
+        如果参数client_id为空 则p.client_id = %s 条件忽略
+        如果参数fee_typ为空 则为p.fee_typ = '%s' 条件忽略
+2. p.fee_typ 是应收的 金额取正值， 应付的 金额取负值
