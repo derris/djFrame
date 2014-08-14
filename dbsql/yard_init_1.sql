@@ -1130,7 +1130,7 @@ CREATE TABLE contract
   port_id integer, -- 码头id
   yard_id integer, -- 场站id
   finish_flag boolean DEFAULT false, -- 委托完结标识
-  finish_time timestamp without time zone, -- 委托完结时间
+  finish_time date, -- 委托完结时间
   remark character varying(50) NOT NULL DEFAULT ''::character varying, -- 备注
   rec_nam integer NOT NULL, -- 创建人员
   rec_tim timestamp without time zone NOT NULL, -- 创建时间
