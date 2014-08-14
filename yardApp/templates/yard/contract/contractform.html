@@ -148,14 +148,15 @@
         <label for="booking_date">接单日期</label>
         <input type="date" name="booking_date" class="easyui-datebox"
                data-options="width:180"/>
+        <label for="pre_inport_date">预计到港</label>
+        <input type="date" name="pre_inport_date" class="easyui-datebox"
+               data-options="width:180"/>
+
         <label for="in_port_date">到港日期</label>
         <input type="date" name="in_port_date" class="easyui-datebox"
                data-options="width:180"/>
         <label for="return_cntr_date">还箱日期</label>
         <input type="date" name="return_cntr_date" class="easyui-datebox"
-               data-options="width:180"/>
-        <label for="finish_tim">完结日期</label>
-        <input type="date" name="finish_time" class="easyui-datebox"
                data-options="width:180"/>
     </div>
     <div>
@@ -177,6 +178,12 @@
         <input id="control-contract-contractform-yard-{{ seq }}" type="text" name="yard_id" />
         <label for="cntr_freedays">箱使天数</label>
         <input class="easyui-numberbox" data-options="min:0,width:180" type="text" name="cntr_freedays" />
+    </div>
+    <div>
+        <label for="finish_tim">完结日期</label>
+        <input type="date" name="finish_time" class="easyui-datebox"
+               data-options="width:180"/>
+
     </div>
     <div>
         <label for="" remark>备注</label>

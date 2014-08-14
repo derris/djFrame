@@ -201,6 +201,7 @@ class Contract(BaseModel):
     origin_place = models.ForeignKey('Place',blank=True,null=True,verbose_name='产地',related_name='place_contract',db_column='origin_place')
     cargo_type = models.ForeignKey('CargoType',blank=True,null=True,verbose_name='货物分类',related_name='cargotype_contract',db_column='cargo_type')
     cntr_freedays = models.IntegerField('箱使天数',blank=True,null=True)
+    pre_inport_date = models.DateField('预计到港',blank=True,null=True)
     def __str__(self):
         return self.bill_no
     class Meta:

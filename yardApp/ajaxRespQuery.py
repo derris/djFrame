@@ -12,7 +12,8 @@ def getContractDetail(request, ldict):
     ls_sql = "select id,bill_no,vslvoy,cargo_name,origin_place,client_id,cargo_piece,cargo_weight," \
              "cargo_volume,booking_date,in_port_date,return_cntr_date,custom_id,ship_corp_id,port_id," \
              "yard_id,finish_flag,finish_time,remark,contract_no,dispatch_place,custom_title1," \
-             "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays from contract"
+             "custom_title2,landtrans_id,check_yard_id,unbox_yard_id,credit_id,cargo_type,cntr_freedays," \
+             "pre_inport_date from contract"
 
     #ldict = json.loads(request.POST['jpargs'])
     lrtn = rawsql2json(*rawsql4request(ls_sql, ldict))
@@ -82,7 +83,7 @@ def getBussSumary(request, aDict):
 
     ls_sql = "select client_id, cargo_type, cargo_name,  origin_place,  sum(cargo_volume)" \
              " from contract where " + ls_sqlclient + \
-            " return_cntr_date between '%s' and '%s' group by client_id, cargo_type, cargo_name, origin_place" % ( ls_time1, ls_time2)
+            " finish_time between '%s' and '%s' group by client_id, cargo_type, cargo_name, origin_place" % ( ls_time1, ls_time2)
 
     lrtn = rawsql2json(*rawsql4request(ls_sql, aDict))
     if lrtn["total"] > 0 :
@@ -119,7 +120,7 @@ def getBussSumary(request, aDict):
 
     # get all the cntr for all the sum bill .
     ls_sumcntr4footer =  ''' select b.cntr_type  || ' X ' ||  sum(cntr_num) as showsum,  b.cntr_type  || ' X ' ||  sum(check_num) as checksum  from contract_cntr as A , c_cntr_type as B
-                        where  A.contract_id in  (select id from contract where %s  return_cntr_date between '%s' and '%s')
+                        where  A.contract_id in  (select id from contract where %s  finish_time between '%s' and '%s')
                         and A.cntr_type = B.id group by b.cntr_type  '''  % ( ls_sqlclient, ls_time1, ls_time2)
     ldict_sum = rawSql2JsonDict(ls_sumcntr4footer )
     ls_sumCheck = "None"
