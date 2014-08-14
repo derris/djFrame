@@ -29,3 +29,6 @@ CREATE INDEX django_session_session_key_like
   USING btree
   (session_key COLLATE pg_catalog."default" varchar_pattern_ops);;
 
+ALTER TABLE contract
+  ADD COLUMN pre_inport_date date;
+COMMENT ON COLUMN contract.pre_inport_date IS '预计到港日期';
