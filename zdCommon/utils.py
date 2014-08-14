@@ -13,7 +13,7 @@ def log(aMsg, alogFile = BASE_DIR + 'djgw.log'):
     '''
     if DEBUG:
         lMsg = datetime.now().strftime('%m-%d %H:%M:%S -> ') + sys._getframe(1).f_code.co_name + ' -> ' + str(aMsg)
-        print(lMsg)
+        print(lMsg + str(type(aMsg)))
         a = open(alogFile, 'a+')
         a.write(lMsg+os.linesep)
         a.close()
