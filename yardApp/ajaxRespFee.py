@@ -249,6 +249,12 @@ def update_gotfee(request, adict):
 def clientFeeDetailReport(request, adict):
     '''  客户费用明细报表   ex_parm:{ client_id:'', //客户id  fee_typ:'', //费用类型  begin_tim:'', //开始时间 end_tim:'' //截止时间 }'''
     l_rtn = { }
+    ls_clientId = str(adict['ex_parm']['client_id']).strip()
+    ls_feeType = str(adict['ex_parm']['fee_typ']).strip()
+
+    ls_client_q = ("p.client_id = %s and " % ls_clientId) if len(ls_clientId) > 0 else ""
+    ls_feeType_q =  ("p.fee_typ = '%s' and " % ls_feeType) if len(ls_feeType) > 0 else ""
+
     ls_sql = '''
         select c.bill_no,sum(case p.fee_cod when 1 then amount else 0 end) baogan,sum(case p.fee_cod when 2 then amount else 0 end) chaoqi,
         sum(case p.fee_cod when 3 then amount else 0 end) duicun,sum(case p.fee_cod when 4 then amount else 0 end) banyi,
@@ -257,14 +263,14 @@ def clientFeeDetailReport(request, adict):
         sum(case p.fee_cod when 11 then amount else 0 end) zhibao,
         sum(case p.fee_cod in(1,2,3,4,5,6,7,8,11) when true then 0 else amount end) qita
         from pre_fee as p,contract as c
-        where  p.client_id = %s and p.fee_typ = %s and p.ex_feeid = 'O'
-        and (p.fee_financial_tim between %s and %s)
+        where  %s  %s  and p.ex_feeid = 'O'
+        and (p.fee_financial_tim between '%s' and '%s')
         and p.contract_id = c.id
         group by c.bill_no
         '''
-    list_arg = [str(adict['ex_parm']['client_id']), str(adict['ex_parm']['fee_typ']), str(adict['ex_parm']['begin_tim']) ,str(adict['ex_parm']['end_tim'])]
+
     try:
-        list_rtn = rawSql2JsonDict(ls_sql, list_arg)
+        list_rtn = rawSql2JsonDict(ls_sql % ( ls_client_q, ls_feeType_q, str(adict['ex_parm']['begin_tim'] ), str(adict['ex_parm']['end_tim'])) )
         l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": list_rtn } )
     except Exception as e:
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
@@ -298,6 +304,12 @@ def getRptFeeStruct(request, adict):
         l_rtn.update( {"msg": "查询失败", "error": list( (str(e.args),) ) , "stateCod" : -1 } )
     return l_rtn
 def queryRptFee(request, adict):
+    '''
+    1.where  p.client_id = %s and p.fee_typ = '%s'
+        如果参数client_id为空 则p.client_id = %s 条件忽略
+        如果参数fee_typ为空 则为p.fee_typ = '%s' 条件忽略
+2. p.fee_typ 是应收的 金额取正值， 应付的 金额取负值
+    '''
     l_rtn = {"msg": "成功", "stateCod": "001", "error": [], "rows": [] }
     ls_clientId = str(adict["ex_parm"]["client_id"])
     ls_feeType = str(adict["ex_parm"]["fee_typ"])
@@ -316,14 +328,20 @@ def queryRptFee(request, adict):
             l_cacheFeeSql.append( ' sum(case p.fee_cod when %s then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[0]) ) )
             l_cacheFeeCod.append(str(i_fee[0]))
         if len(l_cacheFeeCod) > 0:
+            ls_client_q = ("p.client_id = %s and" % ls_clientId) if len(ls_clientId.strip()) > 0 else ""
+            ls_feeType_q =  ("p.fee_typ = '%s' and" % ls_feeType) if len(ls_feeType.strip()) > 0 else ""
+
             ls_sqlAll = ''' select c.bill_no,%s,
-                  sum(case p.fee_cod in(%s) when true then amount else 0 end) zongji
+                  sum(case p.fee_cod in(%s) when true then case fee_typ when 'I' then amount else 0 - amount end else 0 end) zongji
                   from pre_fee as p,contract as c
-                  where  p.client_id = %s and p.fee_typ = '%s' and p.ex_feeid = 'O'
+                  where   %s and  %s and p.ex_feeid = 'O'
                   and (c.finish_time between '%s' and '%s')
                   and p.contract_id = c.id
                   group by c.bill_no
-            ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_clientId,ls_feeType,ls_beginTim,ls_endTim )
+            ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_client_q, ls_feeType_q, ls_beginTim, ls_endTim )
+
+
+
             l_result = rawSql2JsonDict(ls_sqlAll)
             l_sum = sum([float(i["zongji"]) for i in l_result])
             l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": l_result,
