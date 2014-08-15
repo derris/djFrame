@@ -309,6 +309,7 @@ class RptItemFee(BaseModel):
     rpt_id = models.ForeignKey('Rpt',related_name='rpt_rptitemfee',verbose_name='报表id',db_column='rpt_id')
     item_id = models.ForeignKey('RptItem',related_name='rptitem_rptitemfee',verbose_name='报表项目id',db_column='item_id')
     fee_id = models.ForeignKey('FeeCod',related_name='fee_rptitemfee',verbose_name='费用id',db_column='fee_id')
+    fee_typ = models.CharField('费用类型',max_length=1,choices=(('I','应收'),('O','应付')))
     class Meta:
         db_table = 'c_rpt_fee'
 class Protocol(BaseModel):

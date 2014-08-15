@@ -459,6 +459,7 @@ def rptview(request):
     rptfee_rptid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='rpt_id',hidden=True)
     rptfee_itemid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='item_id',hidden=True)
     rptfee_feeid = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_id',autoforeign=True,foreigndisplayfield='fee_name',title='费用名称',width=180)
+    rptfee_feetyp = easyuihelp.EasyuiFieldUI(model=models.RptItemFee,field='fee_typ')
     return render(request,"yard/fee/rptview.html",locals())
 def protocolfeecreateview(request):
     clientdata = json.dumps(easyuihelp.EasyuiFieldUI(model=models.Contract,field='client_id',autoforeign=True,foreigndisplayfield='client_name').editor['options']['data'],ensure_ascii = False)

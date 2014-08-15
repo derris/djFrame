@@ -92,7 +92,8 @@ $(function () {
                     {{ rptfee_id.writeUI|safe|escape }},
                     {{ rptfee_rptid.writeUI|safe|escape }},
                     {{ rptfee_itemid.writeUI|safe|escape }},
-                    {{ rptfee_feeid.writeUI|safe|escape }}
+                    {{ rptfee_feeid.writeUI|safe|escape }},
+                    {{ rptfee_feetyp.writeUI|safe|escape }}
                 {% endautoescape %}
             ]
         ],
@@ -100,12 +101,12 @@ $(function () {
         queryFuncName: '费用报表项目费用查询',
         updateFuncName: '费用报表项目费用维护',
         pagination: false,
-        onDblClickRow: function () {
+        {% comment %}onDblClickRow: function () {
             return;
         },
         onClickRow: function () {
             return;
-        },
+        },{% endcomment %}
         onLoadSuccess:function(data){
             fee.rpt.rptunselectedfeedatagrid.datagrid('rejectChanges');
             var rows = fee.rpt.rptunselectedfeedatagrid.datagrid('getRows');
@@ -226,7 +227,8 @@ $(function () {
             id: -1,
             rpt_id: rptid,
             item_id: itemid,
-            fee_id: selectrow.id
+            fee_id: selectrow.id,
+            fee_typ:'I'
         });
         fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow', rowindex);
     });
@@ -257,7 +259,8 @@ $(function () {
                 id: -1,
                 rpt_id: rptid,
                 item_id: itemid,
-                fee_id: rows[i].id
+                fee_id: rows[i].id,
+                fee_typ:'I'
             });
             fee.rpt.rptunselectedfeedatagrid.datagrid('deleteRow', i);
         }

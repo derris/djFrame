@@ -1089,6 +1089,7 @@ CREATE TABLE c_rpt_fee
   rec_tim timestamp without time zone NOT NULL,
   upd_nam integer,
   upd_tim timestamp without time zone,
+  fee_typ character(1) NOT NULL,
   CONSTRAINT pk_c_rpt_fee PRIMARY KEY (id),
   CONSTRAINT fk_c_rpt_fee_item FOREIGN KEY (item_id)
       REFERENCES c_rpt_item (id) MATCH SIMPLE

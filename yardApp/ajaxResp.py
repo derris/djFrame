@@ -114,7 +114,7 @@ def getrptitem(request):
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getrptfee(request):
     '''费用报表费用查询'''
-    ls_sql = "select id,rpt_id,item_id,fee_id from c_rpt_fee"
+    ls_sql = "select id,rpt_id,item_id,fee_id,fee_typ from c_rpt_fee"
     ldict = json.loads(request.POST['jpargs'])
     return HttpResponse(json.dumps(rawsql2json(*rawsql4request(ls_sql, ldict)), ensure_ascii=False))
 def getprotocol(request):
