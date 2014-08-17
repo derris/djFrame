@@ -325,7 +325,7 @@ def queryRptFee(request, adict):
         l_cacheFeeCod = []
         l_cacheFeeSql = []
         for i_fee in l_fee:
-            l_cacheFeeSql.append( ' sum(case (p.fee_cod = %s and p.fee_typ = %s) when true then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[0]) ) )
+            l_cacheFeeSql.append( ' sum(case (p.fee_cod = %s and p.fee_typ = %s) when true then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[1]), str(i_fee[0]) ) )
             l_cacheFeeCod.append(str(i_fee[0]))
         if len(l_cacheFeeCod) > 0:
             ls_client_q = ("p.client_id = %s and" % ls_clientId) if len(ls_clientId.strip()) > 0 else ""
