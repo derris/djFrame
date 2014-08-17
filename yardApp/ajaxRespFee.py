@@ -316,7 +316,7 @@ def queryRptFee(request, adict):
     ls_beginTim = str(adict["ex_parm"]["begin_tim"])
     ls_endTim = str(adict["ex_parm"]["end_tim"])
     ls_rptid = str(adict["ex_parm"]["rpt"])
-    ls_sqlFee = '''select c_rpt_fee.fee_id,c_fee.fee_name from c_rpt_fee,c_fee
+    ls_sqlFee = '''select c_rpt_fee.fee_id,c_rpt_fee.fee_typ, c_fee.fee_name from c_rpt_fee,c_fee
                       where c_rpt_fee.rpt_id = %s and c_rpt_fee.item_id in
                       (select id from c_rpt_item where rpt_id = %s )
                       and c_rpt_fee.fee_id = c_fee.id;''' % (ls_rptid, ls_rptid)
@@ -325,7 +325,7 @@ def queryRptFee(request, adict):
         l_cacheFeeCod = []
         l_cacheFeeSql = []
         for i_fee in l_fee:
-            l_cacheFeeSql.append( ' sum(case p.fee_cod when %s then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[0]) ) )
+            l_cacheFeeSql.append( ' sum(case (p.fee_cod = %s and p.fee_typ = %s) when true then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[0]) ) )
             l_cacheFeeCod.append(str(i_fee[0]))
         if len(l_cacheFeeCod) > 0:
             ls_client_q = ("p.client_id = %s and" % ls_clientId) if len(ls_clientId.strip()) > 0 else ""
