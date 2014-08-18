@@ -280,42 +280,43 @@ class EasyuiFieldUI:
                     }})
 
     def writeUI(self):
-        strUI = "{title: '" + self.title + "',\n"
+        strUI = []
+        strUI.append( "{title: '" + self.title + "',\n" )
         if ( self.displayfield is not None):
-            strUI = strUI + "field: '" + self.displayfield + "',\n"
+            strUI.append( "field: '" + self.displayfield + "',\n")
         else:
-            strUI = strUI + "field: '" + self.field + "',\n"
+            strUI.append(  "field: '" + self.field + "',\n")
         if ('align' in self.__dict__):
-            strUI = strUI + "align: '" + str(self.align) + "',\n"
+            strUI.append(  "align: '" + str(self.align) + "',\n")
         if ('halign' in self.__dict__):
-            strUI = strUI + "halign: '" + str(self.halign) + "',\n"
+            strUI.append(  "halign: '" + str(self.halign) + "',\n")
         if ('width' in self.__dict__):
-            strUI = strUI + "width: " + str(self.width) + ",\n"
+            strUI.append(  "width: " + str(self.width) + ",\n")
         if ('colspan' in self.__dict__):
-            strUI = strUI + "colspan: " + str(self.colspan) + ",\n"
+            strUI.append(  "colspan: " + str(self.colspan) + ",\n")
         if ('rowspan' in self.__dict__):
-            strUI = strUI + "rowspan: " + str(self.rowspan) + ",\n"
+            strUI.append(  "rowspan: " + str(self.rowspan) + ",\n")
         if ('sortable' in self.__dict__ and self.sortable):
-            strUI = strUI + "sortable: true,\n"
+            strUI.append(  "sortable: true,\n")
         if ('order' in self.__dict__):
-            strUI = strUI + "order: '" + self.order + "',\n"
+            strUI.append(  "order: '" + self.order + "',\n")
         if ('resizable' in self.__dict__ and self.resizable):
-            strUI = strUI + "resizable: true,\n"
+            strUI.append(  "resizable: true,\n")
         if ('fixed' in self.__dict__ and self.fixed):
-            strUI = strUI + "fixed: true,\n"
+            strUI.append(  "fixed: true,\n")
         if ('hidden' in self.__dict__ and self.hidden):
-            strUI = strUI + "hidden: true,\n"
+            strUI.append(  "hidden: true,\n")
         if ('checkbox' in self.__dict__ and self.checkbox):
-            strUI = strUI + "checkbox: true,\n"
+            strUI.append(  "checkbox: true,\n")
         if ('formatter' in self.__dict__):
-            strUI = strUI + "formatter: " + self.formatter + ",\n"
+            strUI.append(  "formatter: " + self.formatter + ",\n")
         if ('styler' in self.__dict__):
-            strUI = strUI + "styler: " + self.styler + ",\n"
+            strUI.append(  "styler: " + self.styler + ",\n")
         if ('sorter' in self.__dict__):
-            strUI = strUI + "sorter: " + self.sorter + ",\n"
+            strUI.append(  "sorter: " + self.sorter + ",\n")
         if ('editor' in self.__dict__ and (not self.readonly)):
-            strUI = strUI + "editor: " + str(self.editor) + ",\n"
-        strUI = strUI.strip().rstrip(',') + "}"
+            strUI.append(  "editor: " + str(self.editor) + ",\n")
+        strUI = "".join(strUI).strip().rstrip(',') + "}"
         return strUI
 
     # def writeUI(self):
