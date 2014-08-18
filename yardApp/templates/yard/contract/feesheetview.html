@@ -45,7 +45,9 @@
                                 frozenColumns: [
                                     [
                                         {field: 'bill_no', title: '提单号', rowspan: 2, sortable: true, width: 180, halign: 'center'},
-                                        {field:"zongji",title:"合计",rowspan: 2,halign:"center",align: "right",width:150}
+                                        {field:"zongji_in",title:"应收合计",rowspan: 2,halign:"center",align: "right",width:100},
+                                        {field:"zongji_out",title:"应付合计",rowspan: 2,halign:"center",align: "right",width:100},
+                                        {field:"zongji_gain",title:"收入",rowspan: 2,halign:"center",align: "right",width:100}
                                     ]
                                 ],
                                 columns: r.result,

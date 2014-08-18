@@ -1,24 +1,10 @@
 todo 17 to dh
 func:'客户费用明细报表'  修改
-接口参数结构没有改动，client_id和fee_typ改为可空
-{
-    func: '客户费用明细报表',
-    reqtype:'query',
-    ex_parm: {
-        client_id: parm.client,
-        fee_typ: parm.feetyp,
-        begin_tim: parm.begindate,
-        end_tim: parm.enddate,
-        rpt: parm.rpt
-    }
-}
-过程改动：def queryRptFee(request, adict):
-1.where  p.client_id = %s and p.fee_typ = '%s'
-        如果参数client_id为空 则p.client_id = %s 条件忽略
-        如果参数fee_typ为空 则为p.fee_typ = '%s' 条件忽略
-2. p.fee_typ 是应收的 金额取正值， 应付的 金额取负值
+zongji 改成三个字段
+1,。zongji_in  应收合计
+     sum(case fee_typ when 'I' then amount else 0 end) zongji_in,
+2.zongji_out 应付合计
+     sum(case fee_typ when 'O' then amount else 0 end) zongji_out,
+3.zongji_gain 收入
+     sum(case fee_typ when 'I' then amount else 0-amount end) zongji_gain,
 
-2014-8-15 增加
-表c_rpt_fee增加字段fee_typ费用类型，I-收 O-付
-在报表定义的时候，原来只有费用名称，现在改为费用名称+费用类型。
-在queryRptFee(request, adict):中 具体费用原来只判断费用名称，现在改为判断费用名称+费用类型.合计不变。
