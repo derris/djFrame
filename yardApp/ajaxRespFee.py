@@ -325,27 +325,30 @@ def queryRptFee(request, adict):
         l_cacheFeeCod = []
         l_cacheFeeSql = []
         for i_fee in l_fee:
-            l_cacheFeeSql.append( ' sum(case (p.fee_cod = %s and p.fee_typ = %s) when true then amount else 0 end) "%s" ' % (str(i_fee[0]), str(i_fee[1]), str(i_fee[0]) ) )
+            l_cacheFeeSql.append( (" sum(case (p.fee_cod = %s and p.fee_typ = '%s')" + ' when true then amount else 0 end) "%s" ') % (str(i_fee[0]), str(i_fee[1]), str(i_fee[0]) ) )
             l_cacheFeeCod.append(str(i_fee[0]))
         if len(l_cacheFeeCod) > 0:
             ls_client_q = ("p.client_id = %s and" % ls_clientId) if len(ls_clientId.strip()) > 0 else ""
             ls_feeType_q =  ("p.fee_typ = '%s' and" % ls_feeType) if len(ls_feeType.strip()) > 0 else ""
 
             ls_sqlAll = ''' select c.bill_no,%s,
-                  sum(case p.fee_cod in(%s) when true then case fee_typ when 'I' then amount else 0 - amount end else 0 end) zongji
+                  sum(case fee_typ when 'I' then amount else 0 end) zongji_in,
+                  sum(case fee_typ when 'O' then amount else 0 end) zongji_out,
+                  sum(case fee_typ when 'I' then amount else 0-amount end) zongji_gain
                   from pre_fee as p,contract as c
-                  where   %s and  %s and p.ex_feeid = 'O'
+                  where   %s %s  p.ex_feeid = 'O'
                   and (c.finish_time between '%s' and '%s')
                   and p.contract_id = c.id
                   group by c.bill_no
-            ''' % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_client_q, ls_feeType_q, ls_beginTim, ls_endTim )
-
-
+            ''' % ( ",".join(l_cacheFeeSql) ,  ls_client_q, ls_feeType_q, ls_beginTim, ls_endTim )
+            # % ( ",".join(l_cacheFeeSql) ,  ",".join(l_cacheFeeCod), ls_client_q, ls_feeType_q, ls_beginTim, ls_endTim )
 
             l_result = rawSql2JsonDict(ls_sqlAll)
-            l_sum = sum([float(i["zongji"]) for i in l_result])
+            l_zongji_in = sum([float(i["zongji_in"]) for i in l_result])
+            l_zongji_out = sum([float(i["zongji_out"]) for i in l_result])
+            l_zongji_gain = sum([float(i["zongji_gain"]) for i in l_result])
             l_rtn.update( {"msg": "查询成功", "error":[], "stateCod" : 1, "rows": l_result,
-                "footer":[{"bill_no":"合计：",  "zongji": l_sum }]
+                "footer":[{"bill_no":"合计：",  "zongji_in": l_zongji_in,"zongji_out": l_zongji_out,"zongji_gain": l_zongji_gain }]
                 } )
         else:
             l_rtn.update( {"msg": "没定义查询数据列。", "error": [] , "stateCod" : 0 } )
